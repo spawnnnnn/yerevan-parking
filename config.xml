@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.colibri.yerevanparking" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>YerevanParking</name>
+    <description>Yerevan Parking Application</description>
+    <author email="vahan.grigoryan@gmail.com" href="https://colibrilab.pro">
+        ColibriLab
+    </author>
+    <content src="index.html" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <access origin="https://127.0.0.1*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
+    <preference name="useBrowserHistory" value="true" />
+    <preference name="exit-on-suspend" value="true" />
+    <preference name="disallowOverscroll" value="true" />
+    <preference name="loadUrlTimeoutValue" value="60000" />
+    <preference name="ShowSplashScreenSpinner" value="false"/>
+    <preference name="SplashMaintainAspectRatio" value="true" />
+
+    <platform name="android">
+        <preference name="AndroidXEnabled" value="true" />
+
+    </platform>
+
+</widget>
