@@ -560,8 +560,10 @@ Object.map = function (obj, func) {
 RegExp.prototype.all = function(str) {
     let ret = [];
     const matches = str.match(this);
-    for(let index = 1; index<matches.length; index++) {
-        ret.push(matches[index]);
+    if(matches) {
+        for(let index = 1; index<matches.length; index++) {
+            ret.push(matches[index]);
+        }
     }
     return ret;
 }
@@ -5746,6 +5748,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._toolTip = '';
         this._toolTipPosition = 'left bottom';
 
+        this._routeIsRegExp = true;
+
         this._storage = null;
         this._binding = '';
         this._clickToCopyHandler = (e) => this.value.copyToClipboard() && App.Notices.Add(new Colibri.UI.Notice('', Colibri.UI.Notice.Success));
@@ -7754,6 +7758,22 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._routePattern = value;
     }
 
+    /**
+     * Is Regexp pattern
+     * @type {Boolean}
+     */
+    get routeIsRegExp() {
+        return this._routeIsRegExp;
+    }
+    /**
+     * Is Regexp pattern
+     * @type {Boolean}
+     */
+    set routeIsRegExp(value) {
+        value = this._convertProperty('Boolean', value);
+        this._routeIsRegExp = value;
+    }
+
     __processChangeOnRouteSwitch(patternMatches) {
         this.ReloadBinding();
     }
@@ -7871,6 +7891,21 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
     _showHalign() {
         this._element.css('text-align', this._halign);
+    }
+
+    /**
+     * Key for sending metrix
+     * @type {String}
+     */
+    get metrixKey() {
+        return this._metrixKey;
+    }
+    /**
+     * Key for sending metrix
+     * @type {String}
+     */
+    set metrixKey(value) {
+        this._metrixKey = value;
     }
 
 }
@@ -9649,13 +9684,19 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
     __appRouteChanged(event, args) {
         if(args.url.substring(0, this._current.length) === this._current) {
             this.ForEach((name, component) => {
-                const pattern = this._current + (component.routePattern ?? '').replace('#', '.+').replaceAll('?', '.*') + '$';
-                const reg = new RegExp(pattern);
-                if(reg.test(args.url)) {
+                let isPattern = component.routePattern === args.url;
+                let match = args.url;
+                if(component.routeIsRegExp) {
+                    const pattern = this._current + (component.routePattern ?? '').replace('#', '.+').replaceAll('?', '.*') + '$';
+                    const reg = new RegExp(pattern);
+                    isPattern = reg.test(args.url);
+                    match = reg.all(args.url);
+                }
+                if(isPattern) {
                     if(!component.isConnected) {
                         component.ConnectTo(this, null, true);
                     }
-                    component.__processChangeOnRouteSwitch(reg.all(args.url));
+                    component.__processChangeOnRouteSwitch(match);
                 } else {
                     if(component.isConnected) {
                         component.Disconnect();
@@ -9992,6 +10033,24 @@ Colibri.UI.PaneGrid = class extends Colibri.UI.Component {
      */
     set columns(value) {
         this._element.css('grid-template-columns', value);
+    }
+
+    /**
+     * Gap of grid
+     * @type {String}
+     */
+    get gap() {
+        return this._element.css('gap');
+    }
+    /**
+     * Gap of grid
+     * @type {String}
+     */
+    set gap(value) {
+        this._element.css('gap', value);
+    }
+    _showGap() {
+        
     }
 
 }
@@ -19558,7 +19617,7 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         } else if(typeof value == 'string') {
             this._hiddenElement.value = value;
         } else {
-            this._hiddenElement.value = value ? value?.toShortDateString() : '';
+            this._hiddenElement.value = value && value?.date ? value?.date?.toDate()?.toShortDateString() : '';
         }
         this._showValue();
         this.Dispatch('Changed');
@@ -29332,7 +29391,7 @@ Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-success-button-component');
-        this.AddClass('app-upload-button-component');
+        this.AddClass('app-upload-button-component'); 
 
         this._allowSize = 900000000;
         this._allowTypes = '*';
@@ -29345,6 +29404,9 @@ Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
         this._input.addEventListener('change', (event) => {
             this._checkChoosedFiles(this._input.files);
             this._input.value = '';
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
         });
 
     }
@@ -43914,6 +43976,13 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return this._timerPage;
     }
 
+    get WalletPage() {
+        if(!this._walletPage) {
+            this._walletPage = new App.Modules.YerevanParking.Layers.WalletPage('wallet-page', document.body);
+        }
+        return this._walletPage;
+    }
+
     _hideAll() {
         if(this._registrationPage) {
             this._registrationPage.Hide();
@@ -43933,6 +44002,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         if(this._timerPage) {
             this._timerPage.Hide();
         }
+        if(this._walletPage) {
+            this._walletPage.Hide();
+        }
     }
 
     _swithInterface(layer) {
@@ -43951,6 +44023,8 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             this.SettingsPage.Show();
         } else if(layer === 'timer') {
             this.TimerPage.Show();
+        } else if(layer === 'wallet') {
+            this.WalletPage.Show();
         }
 
 
@@ -44018,7 +44092,6 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 const zoneSettings = settings.sms;
                 try {
                     App.Device.Sms.Send(zoneSettings[zone], value.vahile, '').then(() => {
-                        App.Device.Dialogs.Alert('Sms sent!', 'Yerevan Parking');
                         this.Call('Client', 'AddHistory', {
                             vahile: vahile,
                             paytime: paytime,
@@ -44056,18 +44129,24 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 }).catch((response) => reject(response));
 
             } else if(paymenttype === 'wallet') {
-    
-                this.Call('Client', 'AddHistory', {
-                    vahile: vahile,
-                    paytime: paytime,
-                    payment_type: paymenttype,
-                    zone: zone,
-                    amount: amount,
-                    dateclient: Date.Now().toDbDate()
-                }).then((response) => {
-                    resolve();
-                }).catch((response) => reject(response));
 
+                if(parseFloat(settings.session.settings.wallet) < amount) {
+                    App.Router.Navigate('/wallet', {zone: zone, amount: amount});
+                } else {
+
+                    this.Call('Client', 'AddHistory', {
+                        vahile: vahile,
+                        paytime: paytime,
+                        payment_type: paymenttype,
+                        zone: zone,
+                        amount: amount,
+                        dateclient: Date.Now().toDbDate()
+                    }).then((response) => {
+                        resolve();
+                    }).catch((response) => reject(response));
+    
+                }
+    
             }
         });
 
@@ -45023,7 +45102,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '                    component: \'List\',' + 
 '                    desc: \'\',' + 
 '                    values: [' + 
-'                        {value: \'sms\', title: \'SMS ուղարկելով համապատասխան համարին\', icon: \'App.Modules.YerevanParking.Icons.SmsIcon\'},' + 
+'                        {value: \'sms\', title: \'SMS ուղարկելով կարճ համարին\', icon: \'App.Modules.YerevanParking.Icons.SmsIcon\'},' + 
 '                        {value: \'card\', title: \'Վճարել իմ դեբետային կամ կրեդիտ քարտով\', icon: \'App.Modules.YerevanParking.Icons.CardIcon\'},' + 
 '                        {value: \'wallet\', title: \'Օգտագործել ներքին դրամապանակ\', icon: \'App.Modules.YerevanParking.Icons.WalletIcon\'},' + 
 '                    ],' + 
@@ -45164,6 +45243,14 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.TimerPage',
 '' + 
 '    </FlexBox>' + 
 '' + 
+'    <FlexBox shown="true" name="timer-minutes">' + 
+'' + 
+'        <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
+'        <SuccessButton shown="true" className="small" name="paynow" value="Վճարե՛ք հիմա:" />' + 
+'        <SimpleButton shown="true" className="small" name="cancel" value="Դադարեցրեք կայանելը" />' + 
+'' + 
+'    </FlexBox>' + 
+'' + 
 '</div>' + 
 '');
 App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
@@ -45176,15 +45263,19 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
         this._timer15minutes = this.Children('timer-15minutes');
         this._timer15minutesTimer = this.Children('timer-15minutes/timer');
+        this._timer15minutesPaynow = this.Children('timer-15minutes/paynow');
+        this._timer15minutesCancel = this.Children('timer-15minutes/cancel');
+
+        this._timerMinutes = this.Children('timer-minutes');
+        this._timerMinutesTimer = this.Children('timer-minutes/timer');
+        this._timerMinutesPaynow = this.Children('timer-minutes/paynow');
+        this._timerMinutesCancel = this.Children('timer-minutes/cancel');        
         
         this._choose = this.Children('choose');
         this._chooseForm = this.Children('choose/form');
         this._choosePayafter15minutes = this.Children('choose/payafter15minutes');
         this._choosePaynow = this.Children('choose/paynow');
-        this._timer15minutesPaynow = this.Children('timer-15minutes/paynow');
         this._chooseCancel = this.Children('choose/cancel');
-        this._timer15minutesCancel = this.Children('timer-15minutes/cancel');
-        
         
         this._choosePayafter15minutes.AddHandler('Clicked', (event, args) => this.__choosePayafter15minutesClicked(event, args));   
         this._choosePaynow.AddHandler('Clicked', (event, args) => this.__choosePaynowClicked(event, args)); 
@@ -45192,8 +45283,13 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
         this._timer15minutesTimer.AddHandler('TimerIsReadyToEnd', (event, args) => this.__timer15minutesTimerTimerIsReadyToEnd(event, args));
         this._timer15minutesTimer.AddHandler('TimerEnds', (event, args) => this.__timer15minutesTimerTimerEnds(event, args));
+
+        this._timerMinutesTimer.AddHandler('TimerIsReadyToEnd', (event, args) => this.__timerMinutesTimerTimerIsReadyToEnd(event, args));
+        this._timerMinutesTimer.AddHandler('TimerEnds', (event, args) => this.__timerMinutesTimerTimerEnds(event, args));
+
         this._chooseCancel.AddHandler('Clicked', (event, args) => this.__chooseCancelClicked(event, args));
         this._timer15minutesCancel.AddHandler('Clicked', (event, args) => this.__chooseCancelClicked(event, args));
+        this._timerMinutesCancel.AddHandler('Clicked', (event, args) => this.__chooseCancelClicked(event, args));
 
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
         
@@ -45235,8 +45331,8 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                                 {value: '1', 'title': '1 ժամ', __selected: true},
                                 {value: '2', 'title': '2 ժամ'},
                                 {value: '3', 'title': '3 ժամ'},
-                                {value: '24', 'title': '1 օր'},
-                                {value: '48', 'title': '2 օր'},
+                                // {value: '24', 'title': '1 օր'},
+                                // {value: '48', 'title': '2 օր'},
                             ])
                         }
                     });
@@ -45253,27 +45349,45 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
         this._showFields();
 
-        const savedInfo = JSON.parse(App.Browser.Get('current-timer-settings')) ?? null;      
-
+        const savedInfo = JSON.parse(App.Browser.Get('current-timer-settings')) ?? null;
         if(savedInfo) {
             this._chooseForm.value = savedInfo;
         }
-
 
         if(this._currentTimerState === 'waiting') {
             const seconds = 15 * 60 - this._currentTimerValue.toDate().Diff(new Date());
             const limit = seconds.toTimeString(':', false);
             
             this._timer15minutes.shown = true;
+            this._timerMinutes.shown = false;
             this._choose.shown = false;
+
             this._timer15minutesTimer.limit = limit;
             this._timer15minutesTimer.beforeReady = '05:00';
             this._timer15minutesTimer.StartTimer();
+        } else if(this._currentTimerState === 'paid') {
+
+            const seconds = savedInfo.paytime * 60 * 60 - this._currentTimerValue.toDate().Diff(new Date());
+            const limit = seconds.toTimeString(':', false);
+            
+            this._timer15minutes.shown = false;
+            this._timerMinutes.shown = true;
+            this._choose.shown = false;
+
+            this._timerMinutesTimer.limit = limit;
+            this._timerMinutesTimer.beforeReady = '05:00';
+            this._timerMinutesTimer.StartTimer();
+
         } else {
             this._timer15minutes.shown = false;
+            this._timerMinutes.shown = false;
             this._choose.shown = true;
             this._timer15minutesTimer.StopTimer();
         }
+
+    }
+
+    __timerMinutesTimerTimerEnds(event, args) {
 
     }
 
@@ -45298,8 +45412,22 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._timer15minutesTimer.StopTimer();
 
         const value = this._chooseForm.value;
-        debugger;
-        YerevanParking.Pay(value.vahile, value.paytime);
+        YerevanParking.Pay(value.vahile, value.paytime).then(() => {
+
+            App.Browser.Set('current-timer-state', 'paid');
+            App.Browser.Set('current-timer-value', Date.Now().toDbDate());
+            App.Browser.Set('current-timer-settings', JSON.stringify(value));
+
+            this._timer15minutes.shown = false;
+            this._timerMinutes.shown = true;
+            this._choose.shown = false;
+
+            this._timerMinutesTimer.RemoveClass('-urgent');
+            this._timerMinutesTimer.limit = (value.paytime * 60 * 60).toTimeString(':');
+            this._timerMinutesTimer.beforeReady = '05:00';
+            this._timerMinutesTimer.StartTimer();
+
+        });
 
 
     }
@@ -45310,6 +45438,10 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         App.Browser.Delete('current-timer-value');
         App.Browser.Delete('current-timer-settings');
         App.Router.Navigate('/main');
+    }
+
+    __timerMinutesTimerTimerIsReadyToEnd(event, args) {
+
     }
 
     __timer15minutesTimerTimerIsReadyToEnd(event, args) {
@@ -45346,6 +45478,60 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
 }
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage', 
+'<div namespace="App.Modules.YerevanParking.Layers.WalletPage">' + 
+'    <!-- yerevanparking-layers-walletpage -->' + 
+'    ' + 
+'    <Layouts.Header shown="true" name="header" />' + 
+'' + 
+'    <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
+'        <fields>' + 
+'            {' + 
+'                type: {' + 
+'                    component: \'List\',' + 
+'                    desc: \'Վճարման եղանակ\',' + 
+'                    values: [' + 
+'                        {value: \'arca\', title: \'Բանկային քարտով\', icon: \'App.Modules.YerevanParking.Icons.Arca\'},' + 
+'                        {value: \'telcell\', title: \'TelCell դրամապանակ\', icon: \'App.Modules.YerevanParking.Icons.TellCell\'},' + 
+'                        {value: \'easy\', title: \'EasyWallet դրամապանակ\', icon: \'App.Modules.YerevanParking.Icons.Easy\'}' + 
+'                    ],' + 
+'                    params: {' + 
+'                        rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\'' + 
+'                    }' + 
+'                },' + 
+'                amount: {' + 
+'                    component: \'Number\',' + 
+'                    desc: \'Լիցքավորման գումարը\'' + 
+'                }' + 
+'            }' + 
+'        </fields>' + 
+'    </Forms.Form>' + 
+'' + 
+'    <SuccessButton shown="true" name="pay" value="Լիցքավորել" />' + 
+'' + 
+'' + 
+'' + 
+'</div>' + 
+'');
+App.Modules.YerevanParking.Layers.WalletPage = class extends Colibri.UI.FlexBox {
+    
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.WalletPage']);
+        this.AddClass('app-modules-yerevanparking-layers-walletpage');
+        this.AddClass('app-layer-component');
+
+        this._form = this.Children('form');
+        this._pay = this.Children('pay');
+        
+
+        if(App.Router.options.amount) {
+            this._form.value = {type: 'arca', amount: App.Router.options.amount};
+        }
+
+    }
+
+}
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header', 
 '<div namespace="App.Modules.YerevanParking.Layouts.Header">' + 
 '    <!-- yerevanparking-layouts-header -->' + 
@@ -45353,6 +45539,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header',
 '    <FlexBox shown="true" name="row1">' + 
 '        <Icon shown="true" name="logo" iconSVG="App.Modules.YerevanParking.Icons.Logo" width="300" height="300" />' + 
 '        <FlexBox shown="true" name="right">' + 
+'            <Wallet shown="false" name="wallet" />' + 
 '            <Icon shown="true" name="settings" iconSVG="App.Modules.YerevanParking.Icons.SettingIcon"  />' + 
 '            <Lang.LangChangeIcon shown="true" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]"  iconSVG="App.Modules.Lang.Icons.LangSettingsIcon"  binding="app.yerevan-parking.langs" />' + 
 '        </FlexBox>' + 
@@ -45375,9 +45562,17 @@ App.Modules.YerevanParking.Layouts.Header = class extends Colibri.UI.FlexBox {
 
         this._row1Langs = this.Children('row1/langs');
         this._row1RightSettings = this.Children('row1/right/settings');
+        this._row1RightWallet = this.Children('row1/right/wallet');
         
         
+        this._row1RightWallet.AddHandler('Clicked', (event, args) => this.__row1RightWalletClicked(event, args));
         this._row1RightSettings.AddHandler('Clicked', (event, args) => this.__row1RightSettingsClicked(event, args));
+    }
+
+    __row1RightWalletClicked(event, args) {
+        YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
+            App.Router.Navigate('/wallet', {amount: settings.wallet.minimal});
+        });
     }
 
     __row1RightSettingsClicked(event, args) {
@@ -45401,6 +45596,70 @@ App.Modules.YerevanParking.Layouts.Header = class extends Colibri.UI.FlexBox {
     }
 
 }
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Wallet', 
+'<div namespace="App.Modules.YerevanParking.Layouts.Wallet">' + 
+'    <!-- yerevanparking-layouts-wallet -->' + 
+'    <NumberViewer shown="true" name="amount" value="0">' + 
+'        <json-field>' + 
+'            {' + 
+'                params: {' + 
+'                    format: \'money\',' + 
+'                    decimal: 0' + 
+'                }' + 
+'            }' + 
+'        </json-field>' + 
+'    </NumberViewer>' + 
+'</div>' + 
+'');
+App.Modules.YerevanParking.Layouts.Wallet = class extends Colibri.UI.Pane {
+    
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layouts.Wallet']);
+        this.AddClass('app-modules-yerevanparking-layouts-wallet');
+
+        this.binding = 'app.yerevan-parking.settings';
+        this._amount = this.Children('amount');
+        
+    }
+
+    /**
+     * Обработка binding
+     */
+    __renderBoundedValues(data, path) {
+        if(!data) {
+            return;
+        }
+        if(data?.session?.settings?.payment_type === 'wallet') {
+            this.shown = true;
+        } else {
+            this.shown = false;
+        }
+
+        this.value = data?.session?.settings?.wallet;
+
+    }
+
+    /**
+     * Value Number
+     * @type {Number}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value Number
+     * @type {Number}
+     */
+    set value(value) {
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        this._amount.value = this._value;
+    }
+
+}
 App.Modules.YerevanParking.Icons = {};
 
 
@@ -45413,4 +45672,7 @@ App.Modules.YerevanParking.Icons.WalletIcon = '<svg width="236" height="178" vie
 App.Modules.YerevanParking.Icons.SettingIcon = '<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_251_2067)"><path d="M47.2603 20.0585H44.6099C44.1172 18.1378 43.3483 16.3389 42.3455 14.6934L44.251 12.7836C44.7654 12.2692 45.0482 11.5829 45.0482 10.8542C45.0482 10.1266 44.7632 9.43924 44.251 8.92589L41.0752 5.75338C40.0452 4.72234 38.2453 4.72342 37.2197 5.75229L35.2337 7.72627C33.6067 6.77789 31.8622 6.04703 29.9404 5.57719V2.74074C29.9404 1.2366 28.7386 0 27.2345 0H22.7449C21.2407 0 20.0574 1.2366 20.0574 2.74074V5.5761C18.1367 6.04485 16.3814 6.7768 14.7521 7.72627L12.7673 5.75229C11.7384 4.72125 9.93735 4.72234 8.90523 5.7512L5.73162 8.92372C5.22263 9.43162 4.93224 10.1342 4.93224 10.852C4.93224 11.5796 5.21393 12.2648 5.72945 12.7792L7.63492 14.6934C6.63324 16.3389 5.86322 18.1378 5.37163 20.0585H2.72007C1.21484 20.0585 0 21.2679 0 22.7688V27.2551C0 28.7604 1.21484 29.9426 2.72007 29.9426H5.37163C5.86322 31.8633 6.63215 33.673 7.63274 35.3186L5.72727 37.236C5.21175 37.7504 4.92898 38.4389 4.92898 39.1676C4.92898 39.8962 5.21284 40.5847 5.72727 41.0991L8.90305 44.2738C9.41857 44.7882 10.1027 45.071 10.8303 45.071C11.5579 45.071 12.2431 44.7872 12.7586 44.2738L14.7521 42.2987C16.3814 43.2482 18.1367 43.9791 20.0574 44.45V47.2821C20.0574 48.7862 21.2407 49.9989 22.7449 49.9989H27.2345C28.7386 49.9989 29.9404 48.7862 29.9404 47.2821V44.4489C31.8622 43.9791 33.6067 43.2482 35.2359 42.2987L37.2121 44.2695C37.7276 44.7861 38.4128 45.0688 39.1425 45.0688C39.8712 45.0688 40.5575 44.785 41.0719 44.2716L44.2477 41.0991C44.7621 40.5858 45.0438 39.8995 45.046 39.1719C45.046 38.4432 44.7611 37.7591 44.2477 37.2436L42.3444 35.3186C43.345 33.6719 44.1139 31.8611 44.6066 29.9426H47.2582C48.7623 29.9426 49.9989 28.7604 49.9989 27.2551V22.7688C50 21.2679 48.7645 20.0585 47.2603 20.0585ZM24.9886 33.5523C20.2271 33.5523 16.3661 29.7272 16.3661 25.0125C16.3661 20.2945 20.2271 16.4749 24.9886 16.4749C29.7512 16.4749 33.6143 20.2945 33.6143 25.0125C33.6132 29.7283 29.7512 33.5523 24.9886 33.5523Z" fill="#C0C0C0"/></g><defs><clipPath id="clip0_251_2067"><rect width="50" height="50" fill="white"/></clipPath></defs></svg>';
 App.Modules.YerevanParking.Icons.VahilesIcon = '<svg width="220" height="170" viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M201.579 55.2393L204.998 51.82C207.91 48.9074 207.91 44.1852 204.998 41.2733C202.084 38.3615 197.364 38.3615 194.451 41.2733L190.947 44.7778L184.218 17.86C181.802 8.20148 172.112 0.635559 162.157 0.635559H57.8422C47.8874 0.635559 38.197 8.20148 35.7815 17.8607L29.0526 44.7778L25.5489 41.2733C22.6355 38.3615 17.9148 38.3615 15.0022 41.2733C12.0896 44.1859 12.0896 48.9082 15.0022 51.82L18.4207 55.2393C7.52295 60.5815 -1.52588e-05 71.7874 -1.52588e-05 84.72V110.915C-1.52588e-05 121.487 5.03035 130.9 12.817 136.905V149.975C12.817 160.667 21.5148 169.364 32.2074 169.364H46.797C57.4889 169.364 66.1867 160.667 66.1867 149.975V143.729H153.813V149.975C153.813 160.667 162.51 169.364 173.202 169.364H187.792C198.484 169.364 207.182 160.667 207.182 149.975V136.907C214.969 130.901 220 121.488 220 110.915V84.72C220 71.7874 212.477 60.5815 201.579 55.2393ZM43.2215 49.5963L50.2511 21.4785C51.0126 18.4311 54.7022 15.5504 57.8422 15.5504H162.156C165.296 15.5504 168.986 18.4311 169.747 21.4785L176.778 49.597C176.972 50.377 176.933 51.0407 176.673 51.3741C176.412 51.7074 175.777 51.9067 174.974 51.9067H45.0244C44.2215 51.9067 43.5867 51.7074 43.3252 51.3741C43.0659 51.0407 43.0274 50.377 43.2215 49.5963ZM14.9155 84.72C14.9155 74.8519 22.9452 66.8222 32.8133 66.8222H187.187C197.055 66.8222 205.084 74.8519 205.084 84.72V110.915C205.084 120.784 197.055 128.813 187.187 128.813H32.8133C22.9452 128.813 14.9155 120.784 14.9155 110.915V84.72ZM51.2711 149.975C51.2711 152.399 49.2215 154.449 46.797 154.449H32.2067C29.7815 154.449 27.7318 152.399 27.7318 149.975V143.334C29.3889 143.593 31.0844 143.729 32.8126 143.729H51.2704V149.975H51.2711ZM192.267 149.975C192.267 152.399 190.217 154.449 187.792 154.449H173.202C170.778 154.449 168.728 152.399 168.728 149.975V143.729H187.187C188.915 143.729 190.61 143.592 192.267 143.334V149.975H192.267Z" fill="black"/></svg>';
 App.Modules.YerevanParking.Icons.PaymentIcon = '<svg width="102" height="98" viewBox="0 0 102 98" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M97.9645 54.1908C98.8837 53.009 99.3301 51.4858 98.9231 49.9321L86.8558 4.19305C86.1555 1.54933 83.4373 -0.0349904 80.7981 0.665253L3.68971 20.9961C1.05918 21.692 -0.529606 24.419 0.161912 27.0582L12.2292 72.7928C12.9207 75.432 15.6519 77.0166 18.2913 76.3251L45.5377 69.1382V84.453C45.5377 93.0187 59.7321 97.5008 73.7646 97.5008C87.7883 97.5008 102 93.0187 102 84.4532V61.2289C102 58.4407 100.472 56.0947 97.9645 54.1908ZM89.2325 38.425L90.4929 43.1872L75.1649 47.2358L73.9131 42.465L89.2325 38.425ZM80.3385 8.29428L82.7326 17.3634L58.7864 23.6836L56.3922 14.6145L80.3385 8.29428ZM69.5932 43.6029L70.8188 48.2599C65.1507 48.5138 59.6358 49.5029 55.2062 51.1924L54.2696 47.6558L69.5932 43.6029ZM16.2296 62.7739L14.9778 58.0205L30.3014 53.9674L31.5619 58.7469L16.2296 62.7739ZM34.6216 52.8339L49.9364 48.7852L51.0963 53.149C50.7241 53.3767 50.3741 53.6129 50.0326 53.8537L35.8733 57.5916L34.6216 52.8339ZM96.8879 84.0764C96.8879 89.0705 86.5409 93.1149 73.7646 93.1149C61.0015 93.1149 50.6456 89.0662 50.6456 84.0764V78.4522C50.6456 78.2639 50.755 78.0932 50.7856 77.9138C51.5165 82.6498 61.4697 86.405 73.7646 86.405C86.0638 86.405 96.0212 82.6496 96.7479 77.9138C96.7785 78.0932 96.8879 78.2641 96.8879 78.4522V84.0764ZM96.8879 73.0115C96.8879 78.0013 86.5409 82.0455 73.7646 82.0455C61.0015 82.0455 50.6456 78.0013 50.6456 73.0115V67.3873C50.6456 67.2034 50.755 67.0283 50.7856 66.8489C51.5165 71.5804 61.4697 75.3446 73.7646 75.3446C86.0638 75.3446 96.0212 71.5804 96.7479 66.8489C96.7785 67.0283 96.8879 67.2034 96.8879 67.3873V73.0115ZM73.7644 70.2584C61.0013 70.2584 50.6454 66.2142 50.6454 61.2287C50.6454 56.2434 61.0011 52.1992 73.7644 52.1992C86.5407 52.1992 96.8877 56.2434 96.8877 61.2287C96.8879 66.2142 86.5407 70.2584 73.7644 70.2584Z" fill="#010002"/></svg>';
- 
+App.Modules.YerevanParking.Icons.TellCell = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="#FF5C39"/><path d="M61 55H137V88V185.5H102V88H61V55Z" fill="white"/><rect x="147" y="55" width="34" height="34" fill="white"/></svg>';
+App.Modules.YerevanParking.Icons.Arca = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M58.1039 120.138C58.1039 118.381 61.1953 102.647 62.741 95H72.2593L74.4558 97.1965C75.5948 112.979 77.9215 144.739 78.1167 145.52C78.2666 146.12 79.4805 146.853 80.4782 147.456C80.7803 147.639 81.0626 147.809 81.2895 147.961H60.0564L58.1039 146.496V136.978H54.6871L56.3955 127.948H59.3242C58.9174 126.077 58.1039 121.895 58.1039 120.138ZM109.356 106.959H90.8078C90.9998 107.17 91.2372 107.377 91.4878 107.595C92.2988 108.301 93.2484 109.128 93.2484 110.62C93.2484 111.678 89.0881 129.01 86.1793 141.129L86.1767 141.139L86.1685 141.174C85.7271 143.013 85.3147 144.731 84.9504 146.252C84.9504 146.496 84.9992 146.838 85.1944 147.229C85.5312 147.902 86.008 147.961 86.1707 147.961H105.939L103.499 145.764V144.544L103.743 143.08C105.289 136.246 108.429 122.383 108.624 121.602C108.735 121.159 108.795 120.917 108.897 120.694C109.019 120.425 109.2 120.183 109.6 119.65C110.186 118.869 111.146 118.674 111.553 118.674L119.607 118.43C119.825 118.357 120.14 118.349 120.465 118.341C120.869 118.331 121.289 118.321 121.559 118.186C122.047 117.942 122.291 117.453 122.535 116.721C122.779 115.989 125.22 106.471 125.22 106.471H117.41C117.085 106.633 116.19 107.203 115.214 108.179C114.237 109.155 112.854 111.515 112.285 112.572H110.088L110.821 110.864V108.179C110.821 107.935 110.088 106.959 109.356 106.959ZM171.103 95H143.036C141.979 95 139.034 95.781 135.715 98.9049C132.395 102.029 131.077 105.576 130.833 106.959L125.22 131.609C125.139 132.016 124.927 133.122 124.732 134.293C124.488 135.758 124.244 137.954 124.732 140.151C125.22 142.347 125.952 143.812 126.684 144.544C126.75 144.609 126.827 144.69 126.915 144.783L126.916 144.784C127.821 145.734 129.94 147.961 133.274 147.961H158.656C159.226 147.961 160.609 147.619 161.585 146.252C162.561 144.886 164.269 137.71 165.002 134.293C164.758 134.7 164.123 135.611 163.537 136.002C162.952 136.392 161.829 136.653 161.341 136.734H148.894C148.243 136.571 146.844 136.099 146.453 135.514L144.989 133.317C144.907 133.317 144.794 133.024 144.989 131.853C145.184 130.681 148.65 116.559 150.358 109.644C150.602 109.155 151.334 108.033 152.311 107.447L154.751 105.983H166.466C167.035 105.739 168.272 105.006 168.663 104.03C169.053 103.054 170.29 98.5795 170.859 96.4644L171.103 95ZM48.0975 95.2441C48.911 95.5695 50.5381 96.6596 50.5381 98.4168C50.5381 100.174 34.9183 130.226 27.1085 145.032C27.1085 145.046 27.1017 145.068 27.0915 145.102C27.0407 145.272 26.9051 145.724 27.1085 146.74C27.499 147.717 28.0847 147.961 28.3288 147.961H45.4129C44.7621 147.473 43.4604 146.301 43.4604 145.52V144.3L47.3654 136.734H50.5381L52.4906 127.948H49.8059L54.199 120.138L59.3242 95.2441H48.0975ZM179.401 122.335H192.336L191.36 127.704C190.953 127.785 189.944 128.094 189.163 128.68C188.382 129.266 187.536 130.877 187.211 131.609C186.967 132.91 186.479 135.709 186.479 136.49C186.479 137.466 187.211 138.198 187.699 138.687C188.09 139.077 188.838 139.175 189.163 139.175V142.103C188.919 142.754 188.187 144.349 187.211 145.52C186.235 146.692 184.364 147.473 183.55 147.717H174.032C172.567 147.717 171.591 146.985 170.615 146.252C169.834 145.667 169.151 143.73 168.907 142.836V137.954C168.907 136.978 169.72 134.131 170.127 132.829C170.94 130.958 172.909 126.728 174.276 124.775C175.643 122.823 178.262 122.335 179.401 122.335ZM182.574 106.959L180.865 113.304C180.784 113.63 180.621 114.329 180.621 114.525C180.621 114.769 180.865 115.989 181.11 115.989C181.191 115.989 181.272 116.016 181.381 116.052C181.598 116.125 181.923 116.233 182.574 116.233H194.777C195.184 116.314 196.046 116.624 196.241 117.209C196.436 117.795 196.485 119.406 196.485 120.138L191.36 144.788C191.279 145.113 191.116 145.911 191.116 146.496C191.116 147.229 191.848 147.961 192.336 147.961H210.641C209.908 147.554 208.444 146.399 208.444 145.032C208.444 143.665 213 125.426 215.278 116.477V111.108C215.196 110.701 214.741 109.644 213.569 108.667C212.398 107.691 211.129 107.122 210.641 106.959H182.574Z" fill="#0F57AB"/></svg>';
+App.Modules.YerevanParking.Icons.Easy = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M43.9488 116.39L66.2566 103.546C69.5014 101.653 69.5014 98.5433 66.2566 96.7857L43.9488 83.8066C40.704 81.9138 38 83.4686 38 87.2542V113.01C38 116.728 40.704 118.215 43.9488 116.39Z" fill="#A5CD39"/><path fill-rule="evenodd" clip-rule="evenodd" d="M67.0002 105.371L43.8812 119.364C40.6364 121.324 38 125.989 38 129.707V154.651C38 158.437 40.6364 159.924 43.8812 157.963L67.0002 143.97C70.245 142.01 72.8814 137.345 72.8814 133.628V108.683C72.8138 104.898 70.1774 103.478 67.0002 105.371ZM43.8812 141.131C42.5292 141.942 41.4476 141.537 41.4476 140.185C41.4476 138.833 42.5292 137.075 43.8812 136.264C45.2332 135.453 46.3148 135.858 46.3148 137.21C46.3148 138.562 45.2332 140.32 43.8812 141.131Z" fill="#A5CD39"/><path fill-rule="evenodd" clip-rule="evenodd" d="M88.2941 124.028C88.4969 128.287 90.9305 130.991 95.1893 130.991C97.6229 130.991 99.9889 129.909 100.935 127.611H110.332C108.439 134.641 101.949 137.751 95.0541 137.751C85.0494 137.751 78.2218 131.667 78.2218 121.392C78.2218 111.996 85.7254 105.168 94.8513 105.168C105.87 105.168 111.413 113.415 110.94 123.893L88.2941 124.028ZM100.8 118.35C100.597 114.835 98.1637 112.063 94.7837 112.063C91.2009 112.063 88.9025 114.564 88.2265 118.35H100.8Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M112.562 115.714C112.765 111.658 114.59 109.021 117.362 107.534C120.134 105.979 123.581 105.371 127.096 105.371C134.33 105.371 141.428 106.993 141.428 115.646V129.098C141.428 131.735 141.428 134.574 142.644 136.94H132.504C132.099 135.993 132.099 135.047 131.896 134.033C129.26 136.805 125.474 137.819 121.756 137.819C115.807 137.819 111.278 134.844 111.278 128.558C111.278 118.62 122.162 119.364 129.192 117.877C130.95 117.471 131.896 116.93 131.896 115.038C131.896 112.739 129.124 111.793 127.029 111.793C124.122 111.793 122.432 113.077 121.959 115.646L112.562 115.714ZM125.542 131.6C130.341 131.6 131.964 128.896 131.761 122.541C130.341 123.42 127.705 123.555 125.542 124.231C123.243 124.772 121.35 125.718 121.35 128.152C121.35 130.586 123.243 131.6 125.542 131.6Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M152.919 126.8C152.919 128.422 153.595 129.504 154.609 130.248C155.556 130.991 156.908 131.329 158.395 131.329C160.288 131.329 163.127 130.45 163.127 128.084C163.127 125.651 159.882 125.313 158.192 124.84C151.838 123.217 143.929 123.082 143.929 114.767C143.929 107.466 151.905 105.371 157.989 105.371C164.682 105.371 171.847 107.331 172.185 115.308H162.924C162.924 114.024 162.519 113.145 161.64 112.604C160.896 112.063 159.815 111.86 158.395 111.86C156.705 111.86 154.069 112.063 154.069 114.159C154.069 116.998 160.761 117.674 165.425 118.62C171.644 119.905 173.199 124.366 173.199 126.868C173.199 135.047 165.425 137.819 158.463 137.819C151.162 137.819 143.726 135.385 143.388 126.8H152.919Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M191.857 139.644C189.491 146.336 185.705 147.215 179.013 147.215H174.281V139.103H177.796C180.094 139.103 181.852 137.819 181.852 135.655C181.852 133.965 179.892 129.233 179.283 127.611L171.374 106.25H181.987L187.801 126.259H187.936L193.749 106.25H204.025L191.857 139.644Z" fill="#58595B"/></svg>';
+

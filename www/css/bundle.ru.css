@@ -5899,6 +5899,19 @@ input, textarea, select {
   line-height: 110%;
   font-family: "Inter";
   text-align: center;
+  margin-bottom: 10px;
+}
+.app-modules-yerevanparking-form-component .app-component-field.app-component-number-field input {
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 100%;
+  font-family: Inter;
+  color: #000000;
+  padding: 15px 20px;
+  text-align: center;
+}
+.app-modules-yerevanparking-form-component .app-component-field.app-component-number-field [data-object-name$="-container"] {
+  border-radius: 10px;
 }
 .app-success-button-component {
   background: #2C79C0;
@@ -6298,7 +6311,7 @@ input, textarea, select {
   gap: 20px;
   flex-wrap: nowrap;
 }
-.app-modules-yerevanparking-layers-timerpage [data-object-name="timer-15minutes"] {
+.app-modules-yerevanparking-layers-timerpage [data-object-name="timer-15minutes"], .app-modules-yerevanparking-layers-timerpage [data-object-name="timer-minutes"] {
   justify-content: center;
   gap: 20px;
 }
@@ -6332,6 +6345,11 @@ input, textarea, select {
 .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] label span {
   padding-bottom: 0px;
 }
+.app-modules-yerevanparking-layers-walletpage {
+  flex-direction: column;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
 .app-modules-yerevanparking-layouts-header {
   gap: 10px;
 }
@@ -6341,6 +6359,7 @@ input, textarea, select {
   justify-content: flex-end;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] {
+  align-items: center;
   width: auto;
   gap: 10px;
 }
@@ -6376,4 +6395,17 @@ input, textarea, select {
   font-size: 16px;
   font-weight: normal;
   line-height: 130%;
+}
+.app-modules-yerevanparking-layouts-wallet {
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background: #65A9E8;
+}
+.app-modules-yerevanparking-layouts-wallet [data-object-name="amount"] {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: Inter;
+  line-height: 100%;
+  color: #ffffff;
 }
