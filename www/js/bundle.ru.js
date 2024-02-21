@@ -35309,7 +35309,7 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
 
     HasPermnission() {
         return new Promise((resolve, reject) => {
-            this._device.local.hasPermission((granted) => {
+            this._plugin.local.hasPermission((granted) => {
                 this._granted = granted;
                 if(granted) {
                     resolve();
@@ -35326,7 +35326,7 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
                 resolve();
             } else {
                 this.HasPermnission().catch(() => {
-                    this._device.local.requestPermission(function (granted) {
+                    this._plugin.local.requestPermission(function (granted) {
                         this._granted = granted;
                         if(granted) {
                             resolve();
@@ -35351,7 +35351,7 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
                 priority: priority,
                 actions: [{ id: buttonKey, title: buttonText }]
             });    
-        })
+        });
     }
 
     On(event, callback, scope) {
@@ -44894,6 +44894,8 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
         
         this._zoneA.AddHandler('Clicked', (event, args) => this.__zoneAClicked(event, args));
         this._zoneB.AddHandler('Clicked', (event, args) => this.__zoneBClicked(event, args));
+        
+        
     }
 
     __zoneAClicked(event, args) {
@@ -45295,6 +45297,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         
         try {
             App.Device.Notifications.On('PayNowClicked', (notification, eopts) => {
+                alert(1);
                 this.__choosePaynowClicked(null, null);
             });
         } catch(e) {}
@@ -45388,7 +45391,19 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
     __timerMinutesTimerTimerEnds(event, args) {
+        try {
+            this._timerMinutesTimer.StopTimer();
 
+            App.Device.Dialogs.Beep(1);
+            App.Device.Notifications.Schedule(
+                'Парковка',
+                'Время парковки закончилось, вам необходимо уехать, либо оплатить следующий час ',
+                'PayNowClicked', 
+                'Оплатить сейчас',
+                { in: 1, unit: 'second' },
+                true, false
+            );
+        } catch(e) {}
     }
 
     __timer15minutesTimerTimerEnds(event, args) {
@@ -45427,6 +45442,18 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
             this._timerMinutesTimer.beforeReady = '05:00';
             this._timerMinutesTimer.StartTimer();
 
+            try {
+                App.Device.Notifications.Schedule(
+                    'Бесплатная парковка',
+                    'До окончания беплатной парковки осталось 5 минут',
+                    'PayNowClicked', 
+                    'Оплатить сейчас',
+                    { in: value.paytime, unit: 'hour' },
+                    true, false
+                );
+    
+            } catch(e) {}  
+
         });
 
 
@@ -45441,7 +45468,8 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
     __timerMinutesTimerTimerIsReadyToEnd(event, args) {
-
+        this._timerMinutesTimer.AddClass('-urgent');
+        App.Device.Dialogs.Beep(1);
     }
 
     __timer15minutesTimerTimerIsReadyToEnd(event, args) {
@@ -45463,6 +45491,15 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._timer15minutesTimer.beforeReady = '05:00';
         this._timer15minutesTimer.StartTimer();
         
+        App.Device.Notifications.Schedule(
+            'Бесплатная парковка',
+            'До окончания беплатной парковки осталось 5 минут',
+            'PayNowClicked', 
+            'Оплатить сейчас',
+            { in: 1, unit: 'second' },
+            true, false
+        );
+
         try {
             App.Device.Notifications.Schedule(
                 'Бесплатная парковка',
