@@ -93,6 +93,8 @@ function Cookie(c_name) {
     return null;
 }
 
+const notifications = [];
+
 function onDeviceReady() {
 
     console.log('ready');
@@ -104,10 +106,23 @@ function onDeviceReady() {
     const cssFile = 'bundle.' + lang + '.css';
     const jsFile = 'bundle.' + lang + '.js';
 
+    // cordova.plugins.backgroundMode.enable();
+    // cordova.plugins.backgroundMode.setDefaults({ silent: true });
+    // // cordova.plugins.backgroundMode.overrideBackButton();
+
+    // cordova.plugins.backgroundMode.on('activate', function() {
+    //     cordova.plugins.backgroundMode.disableWebViewOptimizations(); 
+    // });
+
+    cordova.plugins.notification.local.on('click', (notification) => {
+        notifications.push(notification);
+    });
+
     Promise.all([
         LoadStyles('/css/' + cssFile),
         LoadScript('/js/' + jsFile, null, 'body')
     ]).then(responses => {
+        
         App.InitializeApplication(
             'yerevan-parking',
             1,
@@ -116,11 +131,11 @@ function onDeviceReady() {
             true,
             false,
             'https://ypark.colibrilab.pro',
-            'en-US',
-            'en-US',
+            'hy-AM',
+            'hy-AM',
             {
-                code: 'USD',
-                symbol: '$'
+                code: 'AMD',
+                symbol: '֏'
             }
         );    
 

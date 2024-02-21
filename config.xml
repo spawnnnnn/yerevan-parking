@@ -26,12 +26,16 @@
     <platform name="android">
         <preference name="AndroidXEnabled" value="true" />
 
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="resources/android/ic_cdv_splashscreen.xml" />
+
+
         <icon background="resources/android/mipmap-ldpi/ic_launcher_background.png" density="ldpi" foreground="resources/android/mipmap-ldpi/ic_launcher.png" />
         <icon background="resources/android/mipmap-mdpi/ic_launcher_background.png" density="mdpi" foreground="resources/android/mipmap-mdpi/ic_launcher_foreground.png" />
         <icon background="resources/android/mipmap-hdpi/ic_launcher_background.png" density="hdpi" foreground="resources/android/mipmap-hdpi/ic_launcher_foreground.png" />
         <icon background="resources/android/mipmap-xhdpi/ic_launcher_background.png" density="xhdpi" foreground="resources/android/mipmap-xhdpi/ic_launcher_foreground.png" />
         <icon background="resources/android/mipmap-xxhdpi/ic_launcher_background.png" density="xxhdpi" foreground="resources/android/mipmap-xxhdpi/ic_launcher_foreground.png" />
         <icon background="resources/android/mipmap-xxxhdpi/ic_launcher_background.png" density="xxxhdpi" foreground="resources/android/mipmap-xxxhdpi/ic_launcher_foreground.png" />
+
 
     </platform>
 

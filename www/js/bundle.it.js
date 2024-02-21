@@ -35307,16 +35307,20 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         this._plugin = this._device.Plugin('plugins.notification');
     }
 
-    HasPermnission() {
+    HasPermission() {
         return new Promise((resolve, reject) => {
-            this._plugin.local.hasPermission((granted) => {
-                this._granted = granted;
-                if(granted) {
-                    resolve();
-                } else {
-                    reject();
-                }
-            });
+            if(this._granted) {
+                resolve();
+            } else {
+                this._plugin.local.hasPermission((granted) => {
+                    this._granted = granted;
+                    if(granted) {
+                        resolve();
+                    } else {
+                        reject();
+                    }
+                });
+            }
         });
     }
 
@@ -35325,7 +35329,7 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
             if(this._granted) {
                 resolve();
             } else {
-                this.HasPermnission().catch(() => {
+                this.HasPermission().catch(() => {
                     this._plugin.local.requestPermission(function (granted) {
                         this._granted = granted;
                         if(granted) {
@@ -35334,28 +35338,46 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
                             reject();
                         }
                     });    
-                });
+                }).then(() => resolve());
             }
         });
     }
 
-    Schedule(title, message, buttonKey, buttonText, trigger, isForeground = true, isLaunch = true, priority = 2) {
+    Schedule(event, title, message, actions = null, trigger = null, isForeground = true, isLaunch = true, priority = 2, id = null) {
         // trigger = { in: 1, unit: 'second' }, { in: 15, unit: 'minutes' }
         this.RequestPermission().then(() => {
-            this._plugin.local.schedule({
+            const params = {
                 title: title,
                 text: message,
-                trigger: trigger,
                 foreground: isForeground,
                 launch: isLaunch,
                 priority: priority,
-                actions: [{ id: buttonKey, title: buttonText }]
-            });    
+            }
+            if(id) {
+                params.id = id;
+            }
+            if(trigger) {
+                params.trigger = trigger;
+            }
+            if(actions && actions.length > 0) {
+                params.actions = actions;
+            }
+            params.event = event;
+            this._plugin.local.schedule(params);    
+        });
+    }
+
+    Cancel(id) {
+        this.RequestPermission().then(() => {
+            this._plugin.local.cancel(id);    
         });
     }
 
     On(event, callback, scope) {
-        this._device.local.un(event, callback, scope);
+        this._device.local.on(event, callback, scope);
+    }
+    Off(event, callback, scope) {
+        this._device.local.on(event, callback, scope);
     }
 
 }
@@ -43836,6 +43858,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
             console.log(settings);
 
+           
             if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0) {
                 if(App.Router.current !== '/timer') {
                     App.Router.Navigate('/main');
@@ -43847,6 +43870,24 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             } else {
                 App.Router.Navigate('/registration');
             }
+
+            Colibri.Common.Delay(100).then(() => {
+                try {
+                    if(notifications.length > 0) {
+                        for(const notification of notifications) {
+                            const event = notification.event;
+                            if(event?.uri) {
+                                App.Router.Navigate(event.uri.current, event.uri.options);
+                            } else if(event?.event) {
+                                const sender = this[event.event.sender];
+                                sender.Dispatch(event.event.name, {notification: notification});
+                            }
+                        }
+                    }
+                    // App.Device.Notifications.On('paynow', this.NotificationEventHandler);
+                } catch(e) {}
+            });
+            
         });
     }
 
@@ -43983,6 +44024,10 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return this._walletPage;
     }
 
+    NotificationEventHandler(notification, eopts) {
+        alert(JSON.stringify({notification, eopts}));
+    }
+
     _hideAll() {
         if(this._registrationPage) {
             this._registrationPage.Hide();
@@ -44007,24 +44052,37 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         }
     }
 
+    get ActivePage() {
+        return this._activePage;
+    }
+
     _swithInterface(layer) {
 
         this._hideAll();
 
         if(layer === 'main') {
             this.MainPage.Show();
+            this._activePage = this.MainPage;
         } else if(layer === 'vahiles') {
             this.VahilesPage.Show();
+            this._activePage = this.VahilesPage;
         } else if(layer === 'registration') {
             this.RegistrationPage.Show();
+            this._activePage = this.RegistrationPage;
         } else if(layer === 'payment') {
             this.PaymentPage.Show();
+            this._activePage = this.PaymentPage;
         } else if(layer === 'session') {
             this.SettingsPage.Show();
+            this._activePage = this.SettingsPage;
         } else if(layer === 'timer') {
             this.TimerPage.Show();
+            this._activePage = this.TimerPage;
         } else if(layer === 'wallet') {
             this.WalletPage.Show();
+            this._activePage = this.WalletPage;
+        } else {
+            this._activePage = null;
         }
 
 
@@ -44035,7 +44093,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             this.Call('Client', 'Register', {phone: phone}).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 if(response.result.session.verification) {
-                    App.Device.Sms.Send(response.result.session.phone, response.result.session.verification, '');
+                    try {
+                        App.Device.Sms.Send(response.result.session.phone, response.result.session.verification, '');
+                    } catch(e) {}
                 }
                 resolve(response.result);
             }).catch(error => console.log(error.result));
@@ -44132,6 +44192,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
                 if(parseFloat(settings.session.settings.wallet) < amount) {
                     App.Router.Navigate('/wallet', {zone: zone, amount: amount});
+                    reject();
                 } else {
 
                     this.Call('Client', 'AddHistory', {
@@ -44812,9 +44873,16 @@ App.Modules.YerevanParking.Components.Timer = class extends Colibri.UI.Pane {
 
     _showLimits() {
         const limits = this._limit.split(':');
-        this._seconds.value = limits[limits.length - 1];
-        this._minutes.value = limits[limits.length - 2];
-        this._hours.value = limits[limits.length - 3];
+        this._seconds.value = (limits[limits.length - 1] ?? '0').expand('0', 2);
+        this._minutes.value = (limits[limits.length - 2] ?? '0').expand('0', 2);
+        this._hours.value = (limits[limits.length - 3] ?? '0').expand('0', 2);
+        if(this._hours.value === '00') {
+            this._hours.shown = false;
+            this._splitter1.shown = false;
+        } else {
+            this._hours.shown = true;
+            this._splitter1.shown = true;
+        }
     }
 
     /**
@@ -44895,7 +44963,16 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
         this._zoneA.AddHandler('Clicked', (event, args) => this.__zoneAClicked(event, args));
         this._zoneB.AddHandler('Clicked', (event, args) => this.__zoneBClicked(event, args));
         
+        this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
         
+    }
+
+    __thisShown(event, args) {
+        const currentTimerState = App.Browser.Get('current-timer-state');
+        const currentTimerSettings = JSON.parse(App.Browser.Get('current-timer-settings')) ?? {};
+        if(currentTimerState === 'waiting' || currentTimerState === 'paid') {
+            App.Router.Navigate('/timer', {zone: currentTimerSettings.zone});
+        }
     }
 
     __zoneAClicked(event, args) {
@@ -44983,7 +45060,7 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Pa
             this._register.shown = false;
             this._login.shown = true;
             this._showCodeField();
-            this._form.value = {code: result.code};
+            this._form.value = {code: result?.code ?? ''};
             this._login.enabled = true;
             App.Loading.Hide();
         });
@@ -45280,8 +45357,9 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._chooseCancel = this.Children('choose/cancel');
         
         this._choosePayafter15minutes.AddHandler('Clicked', (event, args) => this.__choosePayafter15minutesClicked(event, args));   
-        this._choosePaynow.AddHandler('Clicked', (event, args) => this.__choosePaynowClicked(event, args)); 
-        this._timer15minutesPaynow.AddHandler('Clicked', (event, args) => this.__choosePaynowClicked(event, args)); 
+        this._choosePaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args)); 
+        this._timer15minutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args)); 
+        this._timerMinutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args)); 
 
         this._timer15minutesTimer.AddHandler('TimerIsReadyToEnd', (event, args) => this.__timer15minutesTimerTimerIsReadyToEnd(event, args));
         this._timer15minutesTimer.AddHandler('TimerEnds', (event, args) => this.__timer15minutesTimerTimerEnds(event, args));
@@ -45295,14 +45373,19 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
         
-        try {
-            App.Device.Notifications.On('PayNowClicked', (notification, eopts) => {
-                alert(1);
-                this.__choosePaynowClicked(null, null);
-            });
-        } catch(e) {}
+        this._payAfter15minutesId = 1;
+        this._payAfterTime = 2;
 
+        this.AddHandler('PayNowClicked', (event, args) => this.__choosepaynow(event, args));
         
+    }
+
+    /**
+     * Register events
+     */
+    _registerEvents() {
+        super._registerEvents();
+        this.RegisterEvent('PayNowClicked', false, 'When paynow event raised');
     }
 
     _showFields() {
@@ -45396,12 +45479,12 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
             App.Device.Dialogs.Beep(1);
             App.Device.Notifications.Schedule(
+                {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
                 '',
                 '',
-                'PayNowClicked', 
-                '',
+                null,
                 { in: 1, unit: 'second' },
-                true, false
+                true, true, 1, 1
             );
         } catch(e) {}
     }
@@ -45412,47 +45495,87 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
             App.Device.Dialogs.Beep(1);
             App.Device.Notifications.Schedule(
+                {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
                 '',
                 '',
-                'PayNowClicked', 
+                'paynow', 
                 '',
                 { in: 1, unit: 'second' },
-                true, false
+                true, true, 1, 1
             );
         } catch(e) {}
     }
 
-    __choosePaynowClicked(event, args) {
-
-        this._timer15minutesTimer.StopTimer();
+    __choosepaynow(event, args) {
 
         const value = this._chooseForm.value;
-        YerevanParking.Pay(value.vahile, value.paytime).then(() => {
+        value.zone = App.Router.options?.zone ?? null;
 
-            App.Browser.Set('current-timer-state', 'paid');
-            App.Browser.Set('current-timer-value', Date.Now().toDbDate());
-            App.Browser.Set('current-timer-settings', JSON.stringify(value));
+        YerevanParking.Pay(value.vahile, value.paytime).then(() => {
 
             this._timer15minutes.shown = false;
             this._timerMinutes.shown = true;
             this._choose.shown = false;
 
-            this._timerMinutesTimer.RemoveClass('-urgent');
-            this._timerMinutesTimer.limit = (value.paytime * 60 * 60).toTimeString(':');
-            this._timerMinutesTimer.beforeReady = '05:00';
-            this._timerMinutesTimer.StartTimer();
+            if(App.Browser.Get('current-timer-state') === 'paid') {
 
-            try {
-                App.Device.Notifications.Schedule(
-                    '',
-                    '',
-                    'PayNowClicked', 
-                    '',
-                    { in: value.paytime, unit: 'hour' },
-                    true, false
-                );
+                value.paytime = parseFloat(value.paytime) + 1;
+                this._chooseForm.value = value;
+
+                App.Browser.Set('current-timer-settings', JSON.stringify(value));
+                
+                const seconds = value.paytime * 60 * 60 - App.Browser.Get('current-timer-value').toDate().Diff(new Date());
+                const limit = seconds.toTimeString(':', false);
     
-            } catch(e) {}  
+                this._timerMinutesTimer.RemoveClass('-urgent');
+                this._timerMinutesTimer.limit = limit;
+                this._timerMinutesTimer.beforeReady = '05:00';
+                this._timerMinutesTimer.StartTimer();
+
+                try {
+                    App.Device.Notifications.Cancel(this._payAfterTime);
+                    App.Device.Notifications.Schedule(
+                        {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
+                        '',
+                        '',
+                        null,
+                        { in: seconds - 15 * 60, unit: 'second' },
+                        true, true, 1, this._payAfterTime
+                    );
+        
+                } catch(e) {} 
+
+            } else {
+
+                this._timer15minutesTimer.StopTimer();
+
+                App.Browser.Set('current-timer-state', 'paid');
+                App.Browser.Set('current-timer-value', Date.Now().toDbDate());
+                App.Browser.Set('current-timer-settings', JSON.stringify(value));
+    
+                this._timerMinutesTimer.RemoveClass('-urgent');
+                this._timerMinutesTimer.limit = (value.paytime * 60 * 60).toTimeString(':');
+                this._timerMinutesTimer.beforeReady = '05:00';
+                this._timerMinutesTimer.StartTimer();
+
+                try {
+                    App.Device.Notifications.Cancel(this._payAfter15minutesId);
+                    App.Device.Notifications.Schedule(
+                        {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
+                        '',
+                        '',
+                        null,
+                        { in: value.paytime * 60 - 15, unit: 'minute' },
+                        true, true, 1, this._payAfterTime
+                    );
+        
+                } catch(e) {}  
+
+            }
+
+            
+
+            
 
         });
 
@@ -45461,6 +45584,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
     __chooseCancelClicked(event, args) {
         this._timer15minutesTimer.StopTimer();
+        this._timerMinutesTimer.StopTimer();
         App.Browser.Delete('current-timer-state');
         App.Browser.Delete('current-timer-value');
         App.Browser.Delete('current-timer-settings');
@@ -45479,6 +45603,8 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
     __choosePayafter15minutesClicked(event, args) {
         const value = this._chooseForm.value;
+        value.zone = App.Router.options?.zone ?? null;
+
         App.Browser.Set('current-timer-state', 'waiting');
         App.Browser.Set('current-timer-value', Date.Now().toDbDate());
         App.Browser.Set('current-timer-settings', JSON.stringify(value));
@@ -45491,23 +45617,14 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._timer15minutesTimer.beforeReady = '05:00';
         this._timer15minutesTimer.StartTimer();
         
-        App.Device.Notifications.Schedule(
-            '',
-            '',
-            'PayNowClicked', 
-            '',
-            { in: 1, unit: 'second' },
-            true, false
-        );
-
         try {
             App.Device.Notifications.Schedule(
+                {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
                 '',
                 '',
-                'PayNowClicked', 
-                '',
+                null,
                 { in: 10, unit: 'minute' },
-                true, false
+                true, false, this._payAfter15minutesId
             );
 
         } catch(e) {}    
