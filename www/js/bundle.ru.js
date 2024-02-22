@@ -19616,6 +19616,8 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
             this._hiddenElement.value = '';
         } else if(typeof value == 'string') {
             this._hiddenElement.value = value;
+        } else if(value instanceof Date) {
+            this._hiddenElement.value = value.toShortDateString();
         } else {
             this._hiddenElement.value = value && value?.date ? value?.date?.toDate()?.toShortDateString() : '';
         }
@@ -45476,7 +45478,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     __timerMinutesTimerTimerEnds(event, args) {
         try {
             this._timerMinutesTimer.StopTimer();
-
+            alert('1 second');
             App.Device.Dialogs.Beep(1);
             App.Device.Notifications.Schedule(
                 {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
@@ -45484,24 +45486,25 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 'Время парковки закончилось, вам необходимо уехать, либо оплатить следующий час ',
                 null,
                 { in: 1, unit: 'second' },
-                true, true, 1, 1
+                true, true, 1, this._payAfterTime
             );
         } catch(e) {}
     }
 
     __timer15minutesTimerTimerEnds(event, args) {
+        this._timer15minutesTimer.StopTimer();
+        
         try {
-            this._timer15minutesTimer.StopTimer();
 
+            alert('1 second');
             App.Device.Dialogs.Beep(1);
             App.Device.Notifications.Schedule(
                 {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
                 'Бесплатная парковка',
                 'Время бесплатной парковки завершилось',
-                'paynow', 
-                'Оплатить сейчас',
+                null,
                 { in: 1, unit: 'second' },
-                true, true, 1, 1
+                true, true, 1, this._payAfter15minutesId
             );
         } catch(e) {}
     }
@@ -45510,6 +45513,9 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
         const value = this._chooseForm.value;
         value.zone = App.Router.options?.zone ?? null;
+        
+        App.Device.Notifications.Cancel(this._payAfter15minutesId);
+        App.Device.Notifications.Cancel(this._payAfterTime);
 
         YerevanParking.Pay(value.vahile, value.paytime).then(() => {
 
@@ -45533,13 +45539,14 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 this._timerMinutesTimer.StartTimer();
 
                 try {
+                    alert((parseFloat(value.paytime) * 60 - 15) + ' minute');
                     App.Device.Notifications.Cancel(this._payAfterTime);
                     App.Device.Notifications.Schedule(
                         {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
-                        'Бесплатная парковка',
-                        'До окончания беплатной парковки осталось 5 минут',
+                        'Парковка',
+                        'До окончания парковки осталось 15 минут',
                         null,
-                        { in: seconds - 15 * 60, unit: 'second' },
+                        { in: value.paytime * 60 - 15, unit: 'minute' },
                         true, true, 1, this._payAfterTime
                     );
         
@@ -45554,16 +45561,17 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 App.Browser.Set('current-timer-settings', JSON.stringify(value));
     
                 this._timerMinutesTimer.RemoveClass('-urgent');
-                this._timerMinutesTimer.limit = (value.paytime * 60 * 60).toTimeString(':');
+                this._timerMinutesTimer.limit = (parseFloat(value.paytime) * 60 * 60).toTimeString(':');
                 this._timerMinutesTimer.beforeReady = '05:00';
                 this._timerMinutesTimer.StartTimer();
 
                 try {
+                    alert((parseFloat(value.paytime) * 60 - 15) + ' minute');
                     App.Device.Notifications.Cancel(this._payAfter15minutesId);
                     App.Device.Notifications.Schedule(
                         {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
-                        'Бесплатная парковка',
-                        'До окончания беплатной парковки осталось 5 минут',
+                        'Парковка',
+                        'До окончания парковки осталось 15 минут',
                         null,
                         { in: value.paytime * 60 - 15, unit: 'minute' },
                         true, true, 1, this._payAfterTime
@@ -45572,10 +45580,6 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 } catch(e) {}  
 
             }
-
-            
-
-            
 
         });
 
@@ -45589,6 +45593,8 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         App.Browser.Delete('current-timer-value');
         App.Browser.Delete('current-timer-settings');
         App.Router.Navigate('/main');
+        App.Device.Notifications.Cancel(this._payAfter15minutesId);
+        App.Device.Notifications.Cancel(this._payAfterTime);
     }
 
     __timerMinutesTimerTimerIsReadyToEnd(event, args) {
@@ -45618,16 +45624,19 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._timer15minutesTimer.StartTimer();
         
         try {
+            alert('10 minute');
             App.Device.Notifications.Schedule(
                 {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
                 'Бесплатная парковка',
                 'До окончания беплатной парковки осталось 5 минут',
                 null,
                 { in: 10, unit: 'minute' },
-                true, false, this._payAfter15minutesId
+                true, true, this._payAfter15minutesId
             );
 
-        } catch(e) {}    
+        } catch(e) {
+            alert(e);
+        }    
 
     }
 

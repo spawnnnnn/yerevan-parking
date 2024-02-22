@@ -106,13 +106,13 @@ function onDeviceReady() {
     const cssFile = 'bundle.' + lang + '.css';
     const jsFile = 'bundle.' + lang + '.js';
 
-    // cordova.plugins.backgroundMode.enable();
-    // cordova.plugins.backgroundMode.setDefaults({ silent: true });
-    // // cordova.plugins.backgroundMode.overrideBackButton();
+    cordova.plugins.backgroundMode.enable();
+    cordova.plugins.backgroundMode.setDefaults({ silent: true });
+    // cordova.plugins.backgroundMode.overrideBackButton();
 
-    // cordova.plugins.backgroundMode.on('activate', function() {
-    //     cordova.plugins.backgroundMode.disableWebViewOptimizations(); 
-    // });
+    cordova.plugins.backgroundMode.on('activate', function() {
+        cordova.plugins.backgroundMode.disableWebViewOptimizations(); 
+    });
 
     cordova.plugins.notification.local.on('click', (notification) => {
         notifications.push(notification);
