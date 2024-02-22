@@ -35419,11 +35419,13 @@ Colibri.Devices.Sms = class extends Destructable {
                 this._permited = true;
                 resolve();
             }).catch((response) => {
+                alert(response.error)
                 if(response.error === 'Not set') {
                     this._plugin.requestPermission(() => {
                         this._permited = true;
                         resolve();
                     }, (error) => {
+                        alert(error);
                         this._permited = false;
                         reject({error: error});
                     });
@@ -35434,17 +35436,22 @@ Colibri.Devices.Sms = class extends Destructable {
 
     Send(number, message, intent = 'INTENT') {
         return new Promise((resolve, reject) => {
-            this._plugin.send(number, message, {
-                replaceLineBreaks: true, // true to replace \n by a new line, false by default
-                android: {
-                    intent: intent
-                    //intent: '' // send SMS without opening any other app, require : android.permission.SEND_SMS and android.permission.READ_PHONE_STATE
-                }
-            }, () => {
-                resolve();
-            }, () => {
-                reject();
-            });    
+            this.RequestPermission().then(() => {
+                alert(this._permited);
+                this._plugin.send(number, message, {
+                    replaceLineBreaks: true, // true to replace \n by a new line, false by default
+                    android: {
+                        intent: intent
+                        //intent: '' // send SMS without opening any other app, require : android.permission.SEND_SMS and android.permission.READ_PHONE_STATE
+                    }
+                }, () => {
+                    resolve();
+                }, () => {
+                    reject();
+                });        
+            }).catch(e => {
+                alert(this._permited);
+            });
         });
     }
 
@@ -44097,7 +44104,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 if(response.result.session.verification) {
                     try {
                         App.Device.Sms.Send(response.result.session.phone, response.result.session.verification, '');
-                    } catch(e) {}
+                    } catch(e) {
+                        alert(e)
+                    }
                 }
                 resolve(response.result);
             }).catch(error => console.log(error.result));
@@ -44937,15 +44946,19 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.MainPage',
 '    <Layouts.Header shown="true" name="header" />' + 
 '' + 
 '    <FlexBox shown="true" name="zone-a">' + 
-'        <Strong shown="true">ZONE</Strong> ' + 
-'        <Strong shown="true">A</Strong>' + 
-'        <TextSpan shown="true">300 AMD per hour</TextSpan>' + 
+'        <FlexBox shown="true" name="content">' + 
+'            <Strong shown="true" name="zone">A</Strong>' + 
+'            <Strong shown="true">ZONE</Strong> ' + 
+'            <TextSpan shown="true">300 AMD per hour</TextSpan>' + 
+'        </FlexBox>' + 
 '    </FlexBox>' + 
 '' + 
 '    <FlexBox shown="true" name="zone-b">' + 
-'        <Strong shown="true">ZONE</Strong> ' + 
-'        <Strong shown="true">B</Strong>' + 
-'        <TextSpan shown="true">200 AMD per hour</TextSpan>' + 
+'        <FlexBox shown="true" name="content">' + 
+'            <Strong shown="true" name="zone">B</Strong>' + 
+'            <Strong shown="true">ZONE</Strong> ' + 
+'            <TextSpan shown="true">200 AMD per hour</TextSpan>' + 
+'        </FlexBox>' + 
 '    </FlexBox>' + 
 '    ' + 
 '' + 
@@ -44998,9 +45011,11 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.RegistrationPage',
 '    <SuccessButton shown="true" name="register" enabled="false"  value="Send code" />' + 
 '    <SuccessButton shown="false" name="login" enabled="false"  value="Sign in" />' + 
 '' + 
+'    <SimpleButton shown="false" name="cancel" value="Enter another number" />' + 
+'' + 
 '</div>' + 
 '');
-App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Pane {
+App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.FlexBox {
     
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
@@ -45011,6 +45026,8 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Pa
         this._form = this.Children('form');
         this._register = this.Children('register');
         this._login = this.Children('login');
+        this._cancel = this.Children('cancel');
+        
         
         this._register.AddHandler('Clicked', (event, args) => this.__registerClicked(event, args));
         this._login.AddHandler('Clicked', (event, args) => this.__loginClicked(event, args));
@@ -45024,7 +45041,7 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Pa
             }
         });
 
-        
+        this._cancel.AddHandler('Clicked', (event, args) => this.__cancelClicked(event, args));        
 
     }
 
@@ -45046,6 +45063,13 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Pa
         };
     }
 
+    __cancelClicked(event, args) {
+        this._showPhoneFields();
+        this._register.shown = true;
+        this._login.shown = false;
+        this._cancel.shown = false;
+    }
+
     __formChanged(event, args) {
         if((this._form.value.phone + '').length === 11) {
             this._register.enabled = true;
@@ -45061,6 +45085,7 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Pa
         YerevanParking.SendMessage(this._phone).then((result) => {
             this._register.shown = false;
             this._login.shown = true;
+            this._cancel.shown = true;
             this._showCodeField();
             this._form.value = {code: result?.code ?? ''};
             this._login.enabled = true;
@@ -45700,11 +45725,12 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header',
 '    <!-- yerevanparking-layouts-header -->' + 
 '    ' + 
 '    <FlexBox shown="true" name="row1">' + 
-'        <Icon shown="true" name="logo" iconSVG="App.Modules.YerevanParking.Icons.Logo" width="300" height="300" />' + 
+'        <Icon shown="true" name="logo" iconSVG="App.Modules.YerevanParking.Icons.Logo" width="250" height="250" />' + 
 '        <FlexBox shown="true" name="right">' + 
 '            <Wallet shown="false" name="wallet" />' + 
 '            <Icon shown="true" name="settings" iconSVG="App.Modules.YerevanParking.Icons.SettingIcon"  />' + 
 '            <Lang.LangChangeIcon shown="true" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]"  iconSVG="App.Modules.Lang.Icons.LangSettingsIcon"  binding="app.yerevan-parking.langs" />' + 
+'            <Icon shown="true" name="logout" iconSVG="Colibri.UI.LogoutIcon"  />' + 
 '        </FlexBox>' + 
 '    </FlexBox>' + 
 '' + 
@@ -45726,10 +45752,16 @@ App.Modules.YerevanParking.Layouts.Header = class extends Colibri.UI.FlexBox {
         this._row1Langs = this.Children('row1/langs');
         this._row1RightSettings = this.Children('row1/right/settings');
         this._row1RightWallet = this.Children('row1/right/wallet');
+        this._row1RightLogout = this.Children('row1/right/logout');
         
         
+        this._row1RightLogout.AddHandler('Clicked', (event, args) => this.__row1RightLogoutClicked(event, args));
         this._row1RightWallet.AddHandler('Clicked', (event, args) => this.__row1RightWalletClicked(event, args));
         this._row1RightSettings.AddHandler('Clicked', (event, args) => this.__row1RightSettingsClicked(event, args));
+    }
+
+    __row1RightLogoutClicked(event, args) {
+        YerevanParking.Logout();
     }
 
     __row1RightWalletClicked(event, args) {

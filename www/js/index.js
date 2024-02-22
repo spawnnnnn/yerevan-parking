@@ -34,7 +34,7 @@ function onDeviceReadyForNetwork() {
 
 function LoadScript(url, id = null, parentTag = 'head') {
 
-    if(document.getElementById(id)) {
+    if (document.getElementById(id)) {
         return Promise.resolve(id);
     }
 
@@ -57,7 +57,7 @@ function LoadScript(url, id = null, parentTag = 'head') {
 
 function LoadStyles(url, id = null) {
 
-    if(document.getElementById(id)) {
+    if (document.getElementById(id)) {
         return new Promise((resolve, reject) => {
             resolve(id);
         });
@@ -82,12 +82,12 @@ function LoadStyles(url, id = null) {
 }
 
 function Cookie(c_name) {
-    var i,x,y,ARRcookies=document.cookie.split(";");
-    for( i=0; i < ARRcookies.length; i++) {
+    var i, x, y, ARRcookies = document.cookie.split(";");
+    for (i = 0; i < ARRcookies.length; i++) {
         x = ARRcookies[i].substring(0, ARRcookies[i].indexOf("="));
         y = ARRcookies[i].substring(ARRcookies[i].indexOf("=") + 1);
-        x = x.replace(/^\s+|\s+$/g,"");
-        if(x == c_name)
+        x = x.replace(/^\s+|\s+$/g, "");
+        if (x == c_name)
             return decodeURIComponent(y);
     }
     return null;
@@ -100,7 +100,7 @@ function onDeviceReady() {
     console.log('ready');
 
     let lang = Cookie('lang');
-    if(!lang) {
+    if (!lang) {
         lang = 'hy';
     }
     const cssFile = 'bundle.' + lang + '.css';
@@ -110,19 +110,57 @@ function onDeviceReady() {
     cordova.plugins.backgroundMode.setDefaults({ silent: true });
     // cordova.plugins.backgroundMode.overrideBackButton();
 
-    cordova.plugins.backgroundMode.on('activate', function() {
-        cordova.plugins.backgroundMode.disableWebViewOptimizations(); 
+    cordova.plugins.backgroundMode.on('activate', function () {
+        cordova.plugins.backgroundMode.disableWebViewOptimizations();
     });
 
     cordova.plugins.notification.local.on('click', (notification) => {
         notifications.push(notification);
     });
 
+    // cordova.plugins.permissions.checkPermission(cordova.plugins.permissions.SEND_SMS, (status) => {
+    //     if (!status.hasPermission) {
+    //         cordova.plugins.permissions.requestPermissions(
+    //             cordova.plugins.permissions.SEND_SMS,
+    //             (status) => {
+    //                 if (!status.hasPermission) {
+    //                     alert('Error requesting SMS permission');
+    //                 }
+    //             },
+    //             () => {
+    //                 alert('Error requesting SMS permission');
+    //             }
+    //         );
+    //     } else {
+    //         alert('Permission for SMS is granted');
+    //     }
+    // }, () => {
+    //     alert('Error requesting SMS permission');
+    // });
+
+    // cordova.plugins.permissions.checkPermission(cordova.plugins.permissions.POST_NOTIFICATIONS, (status) => {
+    //     if (!status.hasPermission) {
+    //         cordova.plugins.permissions.requestPermissions(
+    //             cordova.plugins.permissions.POST_NOTIFICATIONS,
+    //             (status) => {
+    //                 if (!status.hasPermission) {
+    //                     alert('Error requesting SMS permission');
+    //                 }
+    //             },
+    //             () => {
+    //                 alert('Error requesting SMS permission');
+    //             }
+    //         );
+    //     }
+    // }, () => {
+    //     alert('Error requesting SMS permission');
+    // });
+
     Promise.all([
         LoadStyles('/css/' + cssFile),
         LoadScript('/js/' + jsFile, null, 'body')
     ]).then(responses => {
-        
+
         App.InitializeApplication(
             'yerevan-parking',
             1,
@@ -137,7 +175,7 @@ function onDeviceReady() {
                 code: 'AMD',
                 symbol: '֏'
             }
-        );    
+        );
 
     });
 

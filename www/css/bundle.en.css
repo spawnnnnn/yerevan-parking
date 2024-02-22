@@ -5929,6 +5929,19 @@ input, textarea, select {
   line-height: 100%;
   font-family: Inter;
 }
+.app-simple-button-component {
+  background: #ffffff;
+  width: 100%;
+  padding: 30px 0px;
+  border-radius: 6px;
+}
+.app-simple-button-component .app-component-textspan {
+  color: #000000;
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 100%;
+  font-family: Inter;
+}
 .app-modules-yerevanparking-components-form-phonefield {
   flex-direction: column;
   justify-content: center;
@@ -6184,18 +6197,49 @@ input, textarea, select {
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] {
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   width: 100%;
   height: 200px;
   border-radius: 10px;
   gap: 10px;
   line-height: 130%;
+  padding: 10px;
+  background: #2C79C0;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] [data-object-name="content"] {
+  border-radius: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  border: 5px solid #ffffff;
   background: #2C79C0;
   color: #ffffff;
 }
-.app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] .app-component-textspan, .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] .app-component-textspan {
+.app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] .app-component-textspan, .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] [data-object-name="content"] .app-component-textspan {
+  margin-top: 10px;
   color: #65A9E8;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] [data-object-name="zone"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] [data-object-name="content"] [data-object-name="zone"] {
+  font-size: 48px;
+  font-weight: bold;
+  line-height: 100%;
+  font-family: Inter;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] {
+  background: #ED2225;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] {
+  background: #ED2225;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] .app-component-textspan {
+  color: #ffffff;
+}
+.app-modules-yerevanparking-layers-registrationpage {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 10px;
 }
 .app-modules-yerevanparking-layers-registrationpage .app-modules-yerevanparking-form-component {
   padding: 50px 0px;
@@ -6369,8 +6413,8 @@ input, textarea, select {
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="logo"] {
   position: absolute;
-  left: -120px;
-  top: -100px;
+  left: -100px;
+  top: -80px;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row2"] {
   flex-wrap: nowrap;

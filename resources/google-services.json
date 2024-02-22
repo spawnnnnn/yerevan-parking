@@ -1,0 +1,29 @@
+{
+    "project_info": {
+      "project_number": "621763428175",
+      "project_id": "yerevan-parking-18f10",
+      "storage_bucket": "yerevan-parking-18f10.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:621763428175:android:56282dc84d7d43d7c2cf3a",
+          "android_client_info": {
+            "package_name": "com.colibri.yerevanparking"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyB8a85_XA7M6OY_SFp4S5GmKgl07unSqjI"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

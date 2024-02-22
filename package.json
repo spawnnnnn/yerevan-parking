@@ -17,6 +17,7 @@
     "cordova-ios": "^7.0.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-advanced-http": "^3.3.1",
+    "cordova-plugin-android-permissions": "^1.1.5",
     "cordova-plugin-auto-theme": "^1.0.3",
     "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-badge-fix": "^0.8.10",
@@ -51,7 +52,8 @@
       "cordova-plugin-dialogs": {},
       "cordova-plugin-push-notifications": {},
       "cordova-plugin-local-notification-12": {},
-      "cordova-plugin-background-mode": {}
+      "cordova-plugin-background-mode": {},
+      "cordova-plugin-android-permissions": {}
     }
   }
 }
