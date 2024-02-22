@@ -5914,13 +5914,13 @@ input, textarea, select {
   border-radius: 10px;
 }
 .app-success-button-component {
-  background: #2C79C0;
+  background: #233B79;
   width: 100%;
   padding: 30px 0px;
   border-radius: 6px;
 }
 .app-success-button-component:hover {
-  background: rgba(44, 121, 192, 0.9);
+  background: rgba(35, 59, 121, 0.9);
 }
 .app-success-button-component .app-component-textspan {
   color: #ffffff;
@@ -6205,7 +6205,7 @@ input, textarea, select {
   gap: 10px;
   line-height: 130%;
   padding: 10px;
-  background: #2C79C0;
+  background: #233B79;
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] [data-object-name="content"] {
   border-radius: 10px;
@@ -6214,12 +6214,12 @@ input, textarea, select {
   justify-content: center;
   height: 100%;
   border: 5px solid #ffffff;
-  background: #2C79C0;
+  background: #233B79;
   color: #ffffff;
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] .app-component-textspan, .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] [data-object-name="content"] .app-component-textspan {
   margin-top: 10px;
-  color: #65A9E8;
+  color: #7594e5;
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] [data-object-name="zone"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] [data-object-name="content"] [data-object-name="zone"] {
   font-size: 48px;
@@ -6425,7 +6425,7 @@ input, textarea, select {
 .app-modules-yerevanparking-layouts-header [data-object-name="row2"] [data-object-name="title"] {
   width: 70%;
   text-align: right;
-  color: #2C79C0;
+  color: #233B79;
   font-size: 48px;
   font-weight: bold;
   line-height: 100%;
@@ -6444,7 +6444,7 @@ input, textarea, select {
   border-radius: 5px;
   padding: 5px 10px;
   margin-right: 5px;
-  background: #65A9E8;
+  background: #7594e5;
 }
 .app-modules-yerevanparking-layouts-wallet [data-object-name="amount"] {
   font-size: 20px;

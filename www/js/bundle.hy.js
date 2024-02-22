@@ -45003,7 +45003,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.RegistrationPage',
 '<div namespace="App.Modules.YerevanParking.Layers.RegistrationPage">' + 
 '    <!-- yerevanparking-layers-registrationpage -->' + 
 '    ' + 
-'    <Layouts.Header shown="true" name="header" settings="false" />' + 
+'    <Layouts.Header shown="true" name="header" settings="false" logout="false" />' + 
 '' + 
 '    <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component" />' + 
 '' + 
@@ -45209,7 +45209,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '                    desc: \'\',' + 
 '                    values: [' + 
 '                        {value: \'sms\', title: \'SMS ուղարկելով կարճ համարին\', icon: \'App.Modules.YerevanParking.Icons.SmsIcon\'},' + 
-'                        {value: \'card\', title: \'Վճարել իմ դեբետային կամ կրեդիտ քարտով\', icon: \'App.Modules.YerevanParking.Icons.CardIcon\'},' + 
+'                        /* {value: \'card\', title: \'Վճարել իմ դեբետային կամ կրեդիտ քարտով\', icon: \'App.Modules.YerevanParking.Icons.CardIcon\'}, */' + 
 '                        {value: \'wallet\', title: \'Օգտագործել ներքին դրամապանակ\', icon: \'App.Modules.YerevanParking.Icons.WalletIcon\'},' + 
 '                    ],' + 
 '                    params: {' + 
@@ -45788,6 +45788,22 @@ App.Modules.YerevanParking.Layouts.Header = class extends Colibri.UI.FlexBox {
     set settings(value) {
         value = this._convertProperty('Boolean', value);
         this._row1RightSettings.shown = value;
+    }
+
+    /**
+     * Show/hide logout button
+     * @type {Boolean}
+     */
+    get logout() {
+        return this._row1RightLogout.shown;
+    }
+    /**
+     * Show/hide logout button
+     * @type {Boolean}
+     */
+    set logout(value) {
+        value = this._convertProperty('Boolean', value);
+        this._row1RightLogout.shown = value;
     }
 
 }
