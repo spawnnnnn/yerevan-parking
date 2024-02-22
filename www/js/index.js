@@ -118,44 +118,6 @@ function onDeviceReady() {
         notifications.push(notification);
     });
 
-    // cordova.plugins.permissions.checkPermission(cordova.plugins.permissions.SEND_SMS, (status) => {
-    //     if (!status.hasPermission) {
-    //         cordova.plugins.permissions.requestPermissions(
-    //             cordova.plugins.permissions.SEND_SMS,
-    //             (status) => {
-    //                 if (!status.hasPermission) {
-    //                     alert('Error requesting SMS permission');
-    //                 }
-    //             },
-    //             () => {
-    //                 alert('Error requesting SMS permission');
-    //             }
-    //         );
-    //     } else {
-    //         alert('Permission for SMS is granted');
-    //     }
-    // }, () => {
-    //     alert('Error requesting SMS permission');
-    // });
-
-    // cordova.plugins.permissions.checkPermission(cordova.plugins.permissions.POST_NOTIFICATIONS, (status) => {
-    //     if (!status.hasPermission) {
-    //         cordova.plugins.permissions.requestPermissions(
-    //             cordova.plugins.permissions.POST_NOTIFICATIONS,
-    //             (status) => {
-    //                 if (!status.hasPermission) {
-    //                     alert('Error requesting SMS permission');
-    //                 }
-    //             },
-    //             () => {
-    //                 alert('Error requesting SMS permission');
-    //             }
-    //         );
-    //     }
-    // }, () => {
-    //     alert('Error requesting SMS permission');
-    // });
-
     Promise.all([
         LoadStyles('/css/' + cssFile),
         LoadScript('/js/' + jsFile, null, 'body')
