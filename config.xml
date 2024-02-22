@@ -28,8 +28,6 @@
 
         <preference name="AndroidWindowSplashScreenAnimatedIcon" value="resources/android/ic_cdv_splashscreen.xml" />
 
-
-
         <icon background="resources/android/mipmap-ldpi/ic_launcher_background.png" density="ldpi" foreground="resources/android/mipmap-ldpi/ic_launcher.png" />
         <icon background="resources/android/mipmap-mdpi/ic_launcher_background.png" density="mdpi" foreground="resources/android/mipmap-mdpi/ic_launcher_foreground.png" />
         <icon background="resources/android/mipmap-hdpi/ic_launcher_background.png" density="hdpi" foreground="resources/android/mipmap-hdpi/ic_launcher_foreground.png" />
