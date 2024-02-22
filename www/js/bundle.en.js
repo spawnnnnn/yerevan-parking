@@ -35388,45 +35388,44 @@ Colibri.Devices.Sms = class extends Destructable {
     
     _device = null;
     _plugin = null;
-    _permited = false;
+    _permitedSend = false;
 
     constructor(device) {
         super();
         this._device = device;
-        this._plugin = this._device.Plugin('sms');
-        this.CheckPermission();
+        this._pluginSend = this._device.Plugin('sms');
+        // this._pluginRead = this._device.Plugin('SMSRetriever');
+        this.CheckPermissionForSend();
     }
 
-    CheckPermission() {
+    CheckPermissionForSend() {
         return new Promise((resolve, reject) => {
-            this._plugin.hasPermission((hasPermission) => {
-                this._permited = hasPermission;
-                if(this._permited) {
+            this._pluginSend.hasPermission((hasPermission) => {
+                this._permitedSend = hasPermission;
+                if(this._permitedSend) {
                     resolve();
                 } else {
                     reject({error: 'Not set'});
                 }
             }, (e) => { 
-                this._permited = false; 
+                this._permitedSend = false; 
                 reject({error: e});
             });    
         });
     }
 
-    RequestPermission() {
+    RequestPermissionForSend() {
         return new Promise((resolve, reject) => {
-            this.CheckPermission().then(() => {
-                this._permited = true;
+            this.CheckPermissionForSend().then(() => {
+                this._permitedSend = true;
                 resolve();
             }).catch((response) => {
-                alert(response.error)
                 if(response.error === 'Not set') {
-                    this._plugin.requestPermission(() => {
-                        this._permited = true;
+                    this._pluginSend.requestPermission(() => {
+                        this._permitedSend = true;
                         resolve();
                     }, (error) => {
-                        alert(error);
-                        this._permited = false;
+                        this._permitedSend = false;
                         reject({error: error});
                     });
                 }
@@ -35436,9 +35435,8 @@ Colibri.Devices.Sms = class extends Destructable {
 
     Send(number, message, intent = 'INTENT') {
         return new Promise((resolve, reject) => {
-            this.RequestPermission().then(() => {
-                alert(this._permited);
-                this._plugin.send(number, message, {
+            this.RequestPermissionForSend().then(() => {
+                this._pluginSend.send(number, message, {
                     replaceLineBreaks: true, // true to replace \n by a new line, false by default
                     android: {
                         intent: intent
@@ -35450,7 +35448,52 @@ Colibri.Devices.Sms = class extends Destructable {
                     reject();
                 });        
             }).catch(e => {
-                alert(this._permited);
+                // do nothing
+            });
+        });
+    }
+
+    _smsReceiverCallback(message) {
+        this._arriveCallback(message);
+    }
+
+    RegisterArriveListener(listener) {
+        this._arriveCallback = listener;
+    }
+
+    StartWatch() {
+        document.addEventListener('onSMSArrive', this._smsReceiverCallback);
+        return new Promise((resolve, reject) => {
+            this._pluginRead.startWatch((strSuccess) => {
+                if(strSuccess === 'SMS_WATCHING_STARTED' || strSuccess === 'SMS_WATCHING_ALREADY_STARTED') {
+                    resolve();
+                } else {
+                    reject(strSuccess);
+                }
+            }, (strError) => {
+                reject(strError);
+            });    
+        });
+    }
+
+    StopWatch() {
+        return new Promise((resolve, reject) => {
+            this._pluginRead.stopWatch((strSuccess) => {
+                resolve();
+            }, (strError) => {
+                reject(strError);
+            });
+        });
+    }
+
+    GetHash() {
+        return new Promise((resolve, reject) => {
+            this._pluginRead.getHashString((strHash) => {
+                alert(strHash)
+                resolve(strHash);
+            }, (error) => {
+                alert(error);
+                reject(error);
             });
         });
     }
@@ -44101,13 +44144,6 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return new Promise((resolve, reject) => {
             this.Call('Client', 'Register', {phone: phone}).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
-                if(response.result.session.verification) {
-                    try {
-                        App.Device.Sms.Send(response.result.session.phone, response.result.session.verification, '');
-                    } catch(e) {
-                        alert(e)
-                    }
-                }
                 resolve(response.result);
             }).catch(error => console.log(error.result));
         });
@@ -44119,7 +44155,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
                 resolve(response.result);
-            }).catch(error => console.log(error.result));
+            }).catch(error => reject(error.result));
         });
     }
 
@@ -44129,7 +44165,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
                 resolve(response.result);
-            }).catch(error => console.log(error.result));
+            }).catch(error => reject(error.result));
         });
     }
     
@@ -45081,22 +45117,36 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
 
     __registerClicked(event, args) {
         this._phone = this._form.value.phone;
-        App.Loading.Show();
+
+        this._register.shown = false;
+        this._login.shown = true;
+        this._cancel.shown = true;
+        this._showCodeField();
+
         YerevanParking.SendMessage(this._phone).then((result) => {
-            this._register.shown = false;
-            this._login.shown = true;
-            this._cancel.shown = true;
-            this._showCodeField();
-            this._form.value = {code: result?.code ?? ''};
-            this._login.enabled = true;
-            App.Loading.Hide();
+            try {
+                App.Device.Sms.Send(result.session.phone, result.session.verification, '');
+            } catch(e) {
+                App.Notices.Add(new Colibri.UI.Notice('We were unable to send you a confirmation SMS, please try another number'));  
+            }
+        }).catch((error) => {
+            App.Notices.Add(new Colibri.UI.Notice('We were unable to send you a confirmation SMS, please try another number'));
+
+            this._showPhoneFields();
+            this._register.shown = true;
+            this._login.shown = false;
+            this._cancel.shown = false;
         });
     }
 
     __loginClicked(event, args) {
+
         App.Loading.Show();
         YerevanParking.Login(this._phone, this._form.value.code).then(() => {
             this._phone = '';
+        }).catch(error => {
+            App.Notices.Add(new Colibri.UI.Notice('You may have entered an incorrect code'));
+        }).finally(() => {
             App.Loading.Hide();
         });
     }
@@ -45220,7 +45270,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '        </fields>' + 
 '    </Forms.Form>' + 
 '' + 
-'    <Pane shown="true" name="span-sms" className="-placeholder" value="You choose to pay with sending SMS to appropriate phone number. It means that the payment will grabbed from your phone wallet" />' + 
+'    <Pane shown="true" name="span-sms" className="-placeholder" value="You have chosen to pay for parking by sending an SMS message to the operator’s number. Attention! To make a successful payment, you must have the appropriate amount on your mobile phone account. Payment for SMS is charged in accordance with the operator’s tariffs" />' + 
 '    <Pane shown="false" name="span-card" className="-placeholder" value="You choosed to pay with your credit or debet card. It means that you must register your card in service before you park the car" />' + 
 '    <Pane shown="false" name="span-wallet" className="-placeholder" value="You choosed the internal wallet payments. It means that you must fill it up before you park your car " />' + 
 '' + 
@@ -45300,6 +45350,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.SettingsPage',
 '        <List.Group shown="true" name="group"></List.Group>' + 
 '    </List>' + 
 '' + 
+'    <SuccessButton shown="true" name="return" value="Back" />' + 
 '' + 
 '</div>' + 
 '');
@@ -45313,6 +45364,8 @@ App.Modules.YerevanParking.Layers.SettingsPage = class extends Colibri.UI.FlexBo
 
         this._list = this.Children('list');
         this._listGroup = this.Children('list/group');
+        this._return = this.Children('return');
+        
         
         this._listGroup.value = [
             {value: 'vahiles', title: 'My vahiles', icon: 'App.Modules.YerevanParking.Icons.VahilesIcon'},
@@ -45320,7 +45373,12 @@ App.Modules.YerevanParking.Layers.SettingsPage = class extends Colibri.UI.FlexBo
         ];
 
         this._list.AddHandler('ItemClicked', (event, args) => this.__listItemClicked(event, args));
+        this._return.AddHandler('Clicked', (event, args) => this.__returnClicked(event, args));
 
+    }
+
+    __returnClicked(event, args) {
+        App.Router.Navigate('/main');
     }
 
     __listItemClicked(event, args) {
