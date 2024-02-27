@@ -6565,9 +6565,9 @@ input::placeholder, textarea::placeholder, select::placeholder {
   flex-wrap: nowrap;
   align-items: flex-start;
   justify-content: space-between;
+  padding-top: 10px;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] {
-  margin-top: 20px;
   align-items: center;
   width: auto;
   gap: 15px;
@@ -6575,9 +6575,6 @@ input::placeholder, textarea::placeholder, select::placeholder {
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] [data-object-name="settings"] {
   width: 28px;
   height: 28px;
-}
-.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="logo"] {
-  padding-top: 20px;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row2"] {
   flex-wrap: nowrap;
