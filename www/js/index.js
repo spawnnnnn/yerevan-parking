@@ -118,6 +118,16 @@ function onDeviceReady() {
         notifications.push(notification);
     });
 
+    // ios
+    // window.plugins.safearea.get((result) => {
+    //     alert(JSON.stringify(result));
+    // }, (e) => {
+    //     alert(e);
+    // });
+    // android
+    // cutout.has().then(result => alert(JSON.stringify(result)));
+
+
     Promise.all([
         LoadStyles('/css/' + cssFile),
         LoadScript('/js/' + jsFile, null, 'body')

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.colibri.yerevanparking" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>YerevanParking</name>
-    <description>Yerevan Parking Application</description>
+    <name>Parking In Yerevan</name>
+    <description>Application for parking in Yerevan</description>
     <author email="vahan.grigoryan@gmail.com" href="https://colibrilab.pro">
         ColibriLab
     </author>
@@ -34,6 +34,8 @@
         <icon background="resources/android/mipmap-xhdpi/ic_launcher_background.png" density="xhdpi" foreground="resources/android/mipmap-xhdpi/ic_launcher_foreground.png" />
         <icon background="resources/android/mipmap-xxhdpi/ic_launcher_background.png" density="xxhdpi" foreground="resources/android/mipmap-xxhdpi/ic_launcher_foreground.png" />
         <icon background="resources/android/mipmap-xxxhdpi/ic_launcher_background.png" density="xxxhdpi" foreground="resources/android/mipmap-xxxhdpi/ic_launcher_foreground.png" />
+        
+        <preference name="Fullscreen" value="true" />
 
         <resource-file src="resources/google-services.json" target="app/google-services.json" />
         <config-file target="AndroidManifest.xml" parent="/manifest">

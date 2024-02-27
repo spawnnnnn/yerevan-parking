@@ -5118,7 +5118,7 @@ body {
   display: block;
   overflow: hidden;
 }
-[lang="hy"] body, [lang="hy"] html, [lang="hy"] td, [lang="hy"] button {
+[lang="hy"] body, [lang="hy"] html, [lang="hy"] td, [lang="hy"] button, [lang="hy"] .app-ui-component {
   font-family: "Mardoto";
 }
 @font-face {
@@ -5422,6 +5422,43 @@ body {
 .app-modules-sites-ui-datagridrowtemplatecomponent > .app-component-link svg path {
   stroke: #4298FF;
 }
+.app-modules-sites-ui-pager {
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: auto;
+}
+.app-modules-sites-ui-pager [data-object-name="current-page"] {
+  flex: 0 0 30px;
+  padding: 0px;
+  border: 0px;
+}
+.app-modules-sites-ui-pager [data-object-name="current-page"] input {
+  text-align: center;
+}
+.app-modules-sites-ui-pager [data-object-name="max-pages"] {
+  line-height: 21px;
+}
+.app-modules-sites-ui-pager [data-object-name="left"], .app-modules-sites-ui-pager [data-object-name="right"], .app-modules-sites-ui-pager [data-object-name="reload"] {
+  width: 32px;
+  height: 32px;
+  border-radius: 3px;
+  border: 1px solid #c0c0c0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.app-modules-sites-ui-pager [data-object-name="left"].app-component-shown, .app-modules-sites-ui-pager [data-object-name="right"].app-component-shown, .app-modules-sites-ui-pager [data-object-name="reload"].app-component-shown {
+  display: flex;
+}
+.app-modules-sites-ui-pager [data-object-name="left"] svg, .app-modules-sites-ui-pager [data-object-name="right"] svg, .app-modules-sites-ui-pager [data-object-name="reload"] svg {
+  width: 20px;
+  height: 20px;
+}
+.app-modules-sites-ui-pager [data-object-name="left"].ui-disabled svg, .app-modules-sites-ui-pager [data-object-name="right"].ui-disabled svg, .app-modules-sites-ui-pager [data-object-name="reload"].ui-disabled svg {
+  opacity: 0.3;
+}
 .app-modules-sites-widgets-storageswidget [data-object-name="storages"] {
   height: 300px;
 }
@@ -5503,6 +5540,7 @@ body {
   padding: 0px 20px;
   margin-top: 10px;
   height: 30px;
+  white-space: nowrap;
 }
 .app-data-page-component [data-object-name="split"] [data-object-name="search-pane"] {
   flex-wrap: nowrap;
@@ -5870,9 +5908,31 @@ html, body {
 }
 body, td {
   color: #000000;
+  font-family: "Inter";
+}
+.app-ui-component {
+  font-family: "Inter";
 }
 input, textarea, select {
+  font-family: "Inter";
   background: #ffffff;
+}
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder, select::-webkit-input-placeholder {
+  /* Edge */
+  color: #D9D9D9;
+  font-family: "Inter";
+  font-size: "inherit";
+}
+input:-ms-input-placeholder, textarea:-ms-input-placeholder, select:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #D9D9D9;
+  font-family: "Inter";
+  font-size: "inherit";
+}
+input::placeholder, textarea::placeholder, select::placeholder {
+  color: #D9D9D9;
+  font-family: "Inter";
+  font-size: "inherit";
 }
 .app-loading-container-component > div .app-progress-bar-container-component {
   width: 100%;
@@ -5892,25 +5952,26 @@ input, textarea, select {
 .app-modules-yerevanparking-form-component.app-component-shown {
   display: flex;
 }
+.app-modules-yerevanparking-form-component .app-component-field {
+  margin-bottom: 0px;
+}
 .app-modules-yerevanparking-form-component .app-component-field > span {
   color: #000000;
   font-size: 32px;
   font-weight: bold;
   line-height: 110%;
-  font-family: "Inter";
   text-align: center;
   margin-bottom: 10px;
 }
-.app-modules-yerevanparking-form-component .app-component-field.app-component-number-field input {
+.app-modules-yerevanparking-form-component .app-component-field.app-component-number-field input, .app-modules-yerevanparking-form-component .app-component-field.app-component-text-field input {
   font-size: 22px;
   font-weight: bold;
   line-height: 100%;
-  font-family: Inter;
   color: #000000;
   padding: 15px 20px;
   text-align: center;
 }
-.app-modules-yerevanparking-form-component .app-component-field.app-component-number-field [data-object-name$="-container"] {
+.app-modules-yerevanparking-form-component .app-component-field.app-component-number-field [data-object-name$="-container"], .app-modules-yerevanparking-form-component .app-component-field.app-component-text-field [data-object-name$="-container"] {
   border-radius: 10px;
 }
 .app-success-button-component {
@@ -5927,7 +5988,6 @@ input, textarea, select {
   font-size: 22px;
   font-weight: bold;
   line-height: 100%;
-  font-family: Inter;
 }
 .app-simple-button-component {
   background: #ffffff;
@@ -5940,7 +6000,6 @@ input, textarea, select {
   font-size: 22px;
   font-weight: bold;
   line-height: 100%;
-  font-family: Inter;
 }
 .app-modules-yerevanparking-components-form-phonefield {
   flex-direction: column;
@@ -5952,7 +6011,7 @@ input, textarea, select {
   display: flex;
 }
 .app-modules-yerevanparking-components-form-phonefield > [data-object-name$="-content"] {
-  width: 360px !important;
+  width: 300px !important;
 }
 .app-modules-yerevanparking-components-form-phonefield > [data-object-name$="-content"] > [data-object-name$="-container"] {
   padding: 10px;
@@ -5971,7 +6030,7 @@ input, textarea, select {
   height: 30px;
 }
 .app-modules-yerevanparking-components-form-phonefield > [data-object-name$="-content"] > [data-object-name$="-container"] .app-component-textspan {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: bold;
   line-height: 100%;
   letter-spacing: 3px;
@@ -5982,10 +6041,11 @@ input, textarea, select {
   padding: 0px;
 }
 .app-modules-yerevanparking-components-form-phonefield > [data-object-name$="-content"] > [data-object-name$="-container"] .app-input-component input {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: bold;
   line-height: 100%;
   letter-spacing: 3px;
+  text-align: left;
   padding: 0px;
 }
 .app-modules-yerevanparking-components-form-codefield {
@@ -6017,13 +6077,13 @@ input, textarea, select {
   border-radius: 6px;
 }
 .app-modules-yerevanparking-components-form-codefield > [data-object-name$="-content"] > [data-object-name$="-container"] .app-input-component input {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: bold;
   line-height: 100%;
   letter-spacing: 3px;
   padding: 0px;
   background: transparent;
-  text-align: left;
+  text-align: center;
   padding: 0px 15px;
 }
 .app-modules-yerevanparking-components-form-codefield.app-component-shown {
@@ -6046,7 +6106,7 @@ input, textarea, select {
   height: 30px;
 }
 .app-modules-yerevanparking-components-form-codefield [data-object-name$="-container"] .app-component-textspan {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: bold;
   line-height: 100%;
   letter-spacing: 3px;
@@ -6057,7 +6117,7 @@ input, textarea, select {
   padding: 0px;
 }
 .app-modules-yerevanparking-components-form-codefield [data-object-name$="-container"] .app-input-component input {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: bold;
   line-height: 100%;
   letter-spacing: 3px;
@@ -6071,7 +6131,7 @@ input, textarea, select {
   display: flex;
 }
 .app-modules-yerevanparking-components-form-vahilefield > [data-object-name$="-content"] {
-  width: auto;
+  width: 320px;
   flex-direction: row;
   justify-content: center;
 }
@@ -6079,13 +6139,13 @@ input, textarea, select {
   display: flex;
 }
 .app-modules-yerevanparking-components-form-vahilefield > [data-object-name$="-content"] > [data-object-name$="-container"] {
-  width: 250px;
+  width: 320px;
   padding: 10px;
   border: 1px solid #B9B9B9;
   border-radius: 6px;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 2px;
 }
 .app-modules-yerevanparking-components-form-vahilefield > [data-object-name$="-content"] > [data-object-name$="-container"].app-component-shown {
@@ -6103,11 +6163,12 @@ input, textarea, select {
 }
 .app-modules-yerevanparking-components-form-vahilefield > [data-object-name$="-content"] > [data-object-name$="-container"] .app-input-component input {
   width: 100%;
-  font-size: 32px;
+  font-size: 22px;
   font-weight: bold;
   line-height: 100%;
   letter-spacing: 3px;
   padding: 0px;
+  text-align: left;
 }
 .app-modules-yerevanparking-components-form-vahilefield > [data-object-name$="-content"] > [data-object-name$="-container"] .app-input-component:first-of-type {
   flex: 0 0 45px;
@@ -6129,8 +6190,8 @@ input, textarea, select {
   margin-left: auto;
   cursor: pointer;
 }
-.app-modules-yerevanparking-components-listitems-vahileitem .app-text-viewer-component {
-  font-size: 32px;
+.app-modules-yerevanparking-components-listitems-vahileitem [data-object-name="info"] [data-object-name="number"] {
+  font-size: 22px;
   font-weight: bold;
   line-height: 100%;
   letter-spacing: 3px;
@@ -6142,12 +6203,11 @@ input, textarea, select {
   gap: 20px;
 }
 .app-modules-yerevanparking-components-listitems-paymenttype [data-object-name="icon"] {
-  width: 96px;
+  width: 60px;
 }
 .app-modules-yerevanparking-components-listitems-paymenttype [data-object-name="span"] {
   font-size: 20px;
   font-weight: bold;
-  font-family: Inter;
   line-height: 100%;
 }
 .app-modules-yerevanparking-components-listitems-paymenttype [data-object-name="check"] {
@@ -6166,46 +6226,52 @@ input, textarea, select {
   gap: 20px;
 }
 .app-modules-yerevanparking-components-listitems-menu [data-object-name="icon"] {
-  width: 96px;
+  width: 60px;
 }
 .app-modules-yerevanparking-components-listitems-menu [data-object-name="span"] {
   font-size: 20px;
   font-weight: bold;
-  font-family: Inter;
   line-height: 100%;
 }
 .app-modules-yerevanparking-components-timer {
   text-align: center;
 }
-.app-modules-yerevanparking-components-timer .app-component-strong, .app-modules-yerevanparking-components-timer app-component-textspan {
+.app-modules-yerevanparking-components-timer .app-component-strong {
   color: #000000;
   font-size: 72px;
   font-weight: bold;
   line-height: 100%;
-  font-family: Inter;
 }
-.app-modules-yerevanparking-components-timer .app-component-strong.app-component-shown, .app-modules-yerevanparking-components-timer app-component-textspan.app-component-shown {
+.app-modules-yerevanparking-components-timer .app-component-strong.app-component-shown {
   display: inline;
 }
-.app-modules-yerevanparking-components-timer.-urgent .app-component-strong, .app-modules-yerevanparking-components-timer.-urgent app-component-textspan {
-  color: #EE0000;
+.app-modules-yerevanparking-components-timer.-urgent .app-component-strong {
+  color: #9E0507;
 }
 .app-modules-yerevanparking-layers-mainpage {
   flex-direction: column;
   gap: 20px;
   flex-wrap: nowrap;
 }
+.app-modules-yerevanparking-layers-mainpage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] {
   flex-direction: column;
   align-items: stretch;
   justify-content: stretch;
   width: 100%;
-  height: 200px;
   border-radius: 10px;
   gap: 10px;
   line-height: 130%;
-  padding: 10px;
+  padding: 30px 10px;
   background: #233B79;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] [data-object-name="content"] {
   border-radius: 10px;
@@ -6213,7 +6279,6 @@ input, textarea, select {
   align-items: center;
   justify-content: center;
   height: 100%;
-  border: 5px solid #ffffff;
   background: #233B79;
   color: #ffffff;
 }
@@ -6225,13 +6290,12 @@ input, textarea, select {
   font-size: 48px;
   font-weight: bold;
   line-height: 100%;
-  font-family: Inter;
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] {
-  background: #ED2225;
+  background: #9E0507;
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] {
-  background: #ED2225;
+  background: #9E0507;
 }
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"] [data-object-name="content"] .app-component-textspan {
   color: #ffffff;
@@ -6244,30 +6308,75 @@ input, textarea, select {
 .app-modules-yerevanparking-layers-registrationpage .app-modules-yerevanparking-form-component {
   padding: 50px 0px;
 }
+.app-modules-yerevanparking-layers-registrationpage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.app-modules-yerevanparking-layers-registrationpage [data-object-name="container"] [data-object-name="content"] {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
+}
 .app-modules-yerevanparking-layers-vahilespage {
   flex-direction: column;
   gap: 20px;
   flex-wrap: nowrap;
+}
+.app-modules-yerevanparking-layers-vahilespage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.app-modules-yerevanparking-layers-vahilespage [data-object-name="container"] [data-object-name="content"] {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
 }
 .app-modules-yerevanparking-layers-vahilespage [data-object-name="h2"] {
   color: #000000;
   font-size: 32px;
   font-weight: bold;
   line-height: 110%;
-  font-family: "Inter";
   text-align: center;
 }
 .app-modules-yerevanparking-layers-vahilespage [data-object-name="flex"] {
   flex-wrap: nowrap;
+  flex-direction: column;
   align-items: flex-end;
+  justify-content: flex-start;
   gap: 10px;
 }
 .app-modules-yerevanparking-layers-vahilespage [data-object-name="flex"] .app-modules-yerevanparking-form-component {
   padding: 0px;
+  width: 100%;
+}
+.app-modules-yerevanparking-layers-vahilespage [data-object-name="flex"] .app-modules-yerevanparking-form-component .app-component-text-field {
+  width: 100%;
+}
+.app-modules-yerevanparking-layers-vahilespage [data-object-name="flex"] .app-modules-yerevanparking-form-component .app-component-text-field input {
+  text-align: left;
 }
 .app-modules-yerevanparking-layers-vahilespage [data-object-name="flex"] .app-success-button-component {
   margin-bottom: 16px;
-  padding: 18px 0px;
+  padding: 14px 0px;
+  width: 100px;
 }
 .app-modules-yerevanparking-layers-vahilespage [data-object-name="list-flex"] {
   border: 1px solid #B9B9B9;
@@ -6289,7 +6398,6 @@ input, textarea, select {
   color: #6A6A6A;
   font-size: 20px;
   font-weight: bold;
-  font-family: Inter;
   line-height: 100%;
   text-align: left;
 }
@@ -6298,13 +6406,33 @@ input, textarea, select {
   gap: 20px;
   flex-wrap: nowrap;
 }
+.app-modules-yerevanparking-layers-paymentpage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.app-modules-yerevanparking-layers-paymentpage [data-object-name="container"] [data-object-name="content"] {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
+}
 .app-modules-yerevanparking-layers-paymentpage [data-object-name="h2"] {
   color: #000000;
   font-size: 32px;
   font-weight: bold;
   line-height: 110%;
-  font-family: "Inter";
   text-align: center;
+}
+.app-modules-yerevanparking-layers-paymentpage [data-object-name="form"] {
+  width: 100%;
 }
 .app-modules-yerevanparking-layers-paymentpage [data-object-name="form"] [data-object-name="payment_type"] > [data-object-name$="-content"] > [data-object-name$="-container"] {
   border: 0px;
@@ -6326,7 +6454,6 @@ input, textarea, select {
 .app-modules-yerevanparking-layers-paymentpage .-placeholder {
   font-size: 18px;
   font-weight: bold;
-  font-family: Inter;
   line-height: 100%;
   color: #D9D9D9;
   text-align: center;
@@ -6335,6 +6462,24 @@ input, textarea, select {
   flex-direction: column;
   gap: 20px;
   flex-wrap: nowrap;
+}
+.app-modules-yerevanparking-layers-settingspage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.app-modules-yerevanparking-layers-settingspage [data-object-name="container"] [data-object-name="content"] {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
 }
 .app-modules-yerevanparking-layers-settingspage [data-object-name="list"] {
   border: 0px;
@@ -6354,6 +6499,14 @@ input, textarea, select {
   flex-direction: column;
   gap: 20px;
   flex-wrap: nowrap;
+}
+.app-modules-yerevanparking-layers-timerpage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 .app-modules-yerevanparking-layers-timerpage [data-object-name="timer-15minutes"], .app-modules-yerevanparking-layers-timerpage [data-object-name="timer-minutes"] {
   justify-content: center;
@@ -6389,10 +6542,21 @@ input, textarea, select {
 .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] label span {
   padding-bottom: 0px;
 }
+.app-modules-yerevanparking-layers-timerpage [data-object-name="paynow"].-urgent {
+  background: #9E0507;
+}
 .app-modules-yerevanparking-layers-walletpage {
   flex-direction: column;
   gap: 20px;
   flex-wrap: nowrap;
+}
+.app-modules-yerevanparking-layers-walletpage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 .app-modules-yerevanparking-layouts-header {
   gap: 10px;
@@ -6400,21 +6564,17 @@ input, textarea, select {
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] {
   flex-wrap: nowrap;
   align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] {
+  margin-top: 20px;
   align-items: center;
   width: auto;
-  gap: 10px;
+  gap: 15px;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] [data-object-name="settings"] {
   width: 28px;
   height: 28px;
-}
-.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="logo"] {
-  position: absolute;
-  left: -100px;
-  top: -80px;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row2"] {
   flex-wrap: nowrap;
@@ -6429,13 +6589,11 @@ input, textarea, select {
   font-size: 48px;
   font-weight: bold;
   line-height: 100%;
-  font-family: Inter;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row2"] [data-object-name="span"] {
   width: 70%;
   text-align: right;
   color: #6A6A6A;
-  font-family: Inter;
   font-size: 16px;
   font-weight: normal;
   line-height: 130%;
@@ -6449,7 +6607,6 @@ input, textarea, select {
 .app-modules-yerevanparking-layouts-wallet [data-object-name="amount"] {
   font-size: 20px;
   font-weight: bold;
-  font-family: Inter;
   line-height: 100%;
   color: #ffffff;
 }

@@ -2826,8 +2826,8 @@ Colibri.Common.Validation = class {
         } else {
             var checkDigit = function (inn, coefficients) {
                 var n = 0;
-                for (var i in coefficients) {
-                    n += coefficients[i] * inn[i];
+                for (let i = 0; i<coefficients.length; i++) {
+                    n += coefficients[i] * parseInt(inn[i]);
                 }
                 return parseInt(n % 11 % 10);
             };
@@ -5223,6 +5223,7 @@ Colibri.UI.MinusIcon =                        '<svg width="24" height="24" viewB
 Colibri.UI.AltCheckMarkIcon =                 '<svg width="24" height="24" viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"> <path d="M9 22l-10-10.598 2.798-2.859 7.149 7.473 13.144-14.016 2.909 2.806z"/> </svg>'
 Colibri.UI.AltRadioMarkIcon =                 '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 14C20 17.3137 17.3137 20 14 20C10.6863 20 8 17.3137 8 14C8 10.6863 10.6863 8 14 8C17.3137 8 20 10.6863 20 14Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 14C3 7.928 7.928 3 14 3C20.072 3 25 7.928 25 14C25 20.072 20.072 25 14 25C7.928 25 3 20.072 3 14ZM14 22.8C9.149 22.8 5.2 18.851 5.2 14C5.2 9.149 9.149 5.2 14 5.2C18.851 5.2 22.8 9.149 22.8 14C22.8 18.851 18.851 22.8 14 22.8Z" fill="black"/></svg>'
 Colibri.UI.SendMessageIcon =                  '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.4247 12L12.4143 18.0104L11.0001 16.5962L15.5963 12L11.0001 7.40378L12.4143 5.98956L18.4247 12Z" fill="#ffffff"/><path d="M13.0001 12L6.98965 18.0104L5.57544 16.5962L10.1716 12L5.57544 7.40378L6.98966 5.98956L13.0001 12Z" fill="#ffffff"/></svg>';
+Colibri.UI.ReloadIcon =                       '<svg fill="#000000" height="24" width="24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 489.533 489.533" xml:space="preserve"><g><path d="M268.175,488.161c98.2-11,176.9-89.5,188.1-187.7c14.7-128.4-85.1-237.7-210.2-239.1v-57.6c0-3.2-4-4.9-6.7-2.9 l-118.6,87.1c-2,1.5-2,4.4,0,5.9l118.6,87.1c2.7,2,6.7,0.2,6.7-2.9v-57.5c87.9,1.4,158.3,76.2,152.3,165.6 c-5.1,76.9-67.8,139.3-144.7,144.2c-81.5,5.2-150.8-53-163.2-130c-2.3-14.3-14.8-24.7-29.2-24.7c-17.9,0-31.9,15.9-29.1,33.6 C49.575,418.961,150.875,501.261,268.175,488.161z"/></g></svg>';
 
 Colibri.UI.Dashboard =                        '<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21"><g fill-rule="evenodd"><path fill-rule="nonzero" d="M10.5 16.154A5.66 5.66 0 0 1 4.846 10.5 5.66 5.66 0 0 1 10.5 4.846a5.66 5.66 0 0 1 5.654 5.654 5.66 5.66 0 0 1-5.654 5.654zm0-9.692A4.044 4.044 0 0 0 6.462 10.5a4.043 4.043 0 0 0 4.038 4.038 4.042 4.042 0 0 0 4.038-4.038A4.043 4.043 0 0 0 10.5 6.462z"/><circle cx="10.5" cy="10.5" r="5.5"/><path fill-rule="nonzero" d="M10.5 3.23a.808.808 0 0 1-.808-.807V.808a.808.808 0 0 1 1.616 0v1.615a.808.808 0 0 1-.808.808zM10.5 21a.808.808 0 0 1-.808-.808v-1.615a.808.808 0 0 1 1.616 0v1.615A.808.808 0 0 1 10.5 21zM2.423 11.308H.808a.808.808 0 0 1 0-1.616h1.615a.808.808 0 0 1 0 1.616zM20.192 11.308h-1.615a.808.808 0 0 1 0-1.616h1.615a.808.808 0 0 1 0 1.616zM4.788 5.596a.811.811 0 0 1-.572-.236L3.074 4.216a.808.808 0 0 1 1.142-1.142l1.142 1.142a.808.808 0 0 1-.57 1.38zM17.354 18.162a.811.811 0 0 1-.572-.236l-1.142-1.142a.808.808 0 0 1 1.142-1.142l1.142 1.142a.808.808 0 0 1-.57 1.378zM3.646 18.162a.808.808 0 0 1-.572-1.378l1.142-1.142a.808.808 0 0 1 1.142 1.142l-1.142 1.142a.805.805 0 0 1-.57.236zM16.212 5.596a.808.808 0 0 1-.572-1.378l1.142-1.142a.808.808 0 0 1 1.142 1.142l-1.14 1.14a.806.806 0 0 1-.572.238z"/></g></svg>';
 
@@ -14359,7 +14360,7 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         let selected = null;
         this.ForEach((name, group) => {
             group.ForEach((n, item) => {
-                if((item.value['id'] ?? item.value) == (value['id'] ?? value)) {
+                if((item.value?.id ?? item.value) == (value?.id ?? value)) {
                     selected = item;
                     return false;
                 }
@@ -16496,9 +16497,9 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
 
             if(this.readonly) {
                 this.Children('clear').shown = false;
-            } else if(this._hasClearIcon) {
-                this.Children('clear').shown = this._input.value.length > 0;
-            }
+            } else {
+                this.Children('clear').shown = this._hasClearIcon && this._input.value.length > 0;
+            } 
 
             this.Dispatch('KeyUp', { value: this.value, domEvent: e });
 
@@ -16594,6 +16595,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {Boolean} 
      */
     set loading(value) {
+        value = this._convertProperty('Boolean', value);
         if(this.hasIcon) {
             this.Children('icon').shown = !value;
         }
@@ -16617,6 +16619,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {Number} 
      */
     set maxlength(value) {
+        value = this._convertProperty('Number', value);
         this._input.attr('maxlength', value);
     }
 
@@ -16630,6 +16633,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {String} 
      */
     set type(value) {
+        value = this._convertProperty('String', value);
         this._input.attr('type', value);
     }
 
@@ -16648,6 +16652,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {String} 
      */
     set placeholder(value) {
+        value = this._convertProperty('String', value);
         this._input.attr('placeholder', value ? (value[Lang.Current] ?? value) : '');
     }
 
@@ -16661,6 +16666,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {String} 
      */
     set icon(value) {
+        value = this._convertProperty('String', value);
         if(value === null) {
             this.Children('icon').html = '';
             this.Children('icon').shown = false;
@@ -16681,9 +16687,10 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {String} 
      */
     set value(value) { 
+        value = this._convertProperty('String', value);
         this._input.value = value;
-        if(this._hasClearIcon && this.Children('clear')) {
-            this.Children('clear').shown = this._input.value.length > 0;
+        if(this.Children('clear')) {
+            this.Children('clear').shown = this._hasClearIcon && this._input.value.length > 0;
         }
     }
 
@@ -16697,6 +16704,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {Boolean} 
      */
     set readonly(value) {
+        value = this._convertProperty('Boolean', value);
         if(value === true || value === 'true') {
             this._input.attr('readonly', 'readonly').attr('tabindex', '-1');
         }
@@ -16710,6 +16718,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {Boolean} 
      */
     set hasIcon(value) {
+        value = this._convertProperty('Boolean', value);
         this.Children('icon').shown = value;
     }
     /** 
@@ -16723,6 +16732,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {Boolean} 
      */
     set hasClearIcon(value) {
+        value = this._convertProperty('Boolean', value);
         this._hasClearIcon = value;
         this.Children('clear').shown = value;
     }
@@ -16739,6 +16749,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
     /** @type {Boolean} */
     set enabled(val) {
+        val = this._convertProperty('Boolean', val);
         super.enabled = val;
         this._input.attr('disabled', val === true || val === 'true' ? null : 'disabled');
     }
@@ -16755,6 +16766,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {number}
      */
     set tabIndex(value) {
+        value = this._convertProperty('Number', value);
         this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 
@@ -16767,6 +16779,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
     /** @type {string} */
     set mask(value) {
+        value = this._convertProperty('String', value);
         this._masker = new Colibri.UI.Utilities.Mask([this._input]);
         this._masker.maskPattern(value);
     }
@@ -16783,6 +16796,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {Array}
      */
     set suggestions(value) {
+        value = this._convertProperty('Array', value);
         this._suggestions = value;
     }
 
@@ -16821,6 +16835,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      * @type {Number}
      */
     set fillTimeout(value) {
+        value = this._convertProperty('Number', value);
         this._fillTimeoutValue = value;
     }
 
@@ -25867,7 +25882,6 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
         }
 
         promise.then((values) => {
-
             contentContainer.container.html('');
             let selectedValue = null;
             Object.values(values).forEach((value) => {
@@ -25885,8 +25899,10 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
             if(selectedValue) {
                 this._value = selectedValue;
             }
-    
-        })
+            
+            this._showValue();
+
+        });
 
 
 
@@ -35296,6 +35312,26 @@ Colibri.Devices.Notification = class extends Destructable {
 
 }
 
+Colibri.Devices.LocalNotificationsEmulator = class extends Destructable {
+    hasPermission(success, fail) {
+        success(true);
+    }
+    requestPermission(success, fail) {
+        success(true);
+    }
+    schedule(params) {
+        //
+    }
+    cancel(id) {
+        // 
+    }
+    on(event, callback, scope) {
+        // 
+    }
+    un(event, callback, scope) {
+        // 
+    }
+}
 
 Colibri.Devices.LocalNotifications = class extends Destructable {
     
@@ -35306,7 +35342,11 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
     constructor(device) {
         super();
         this._device = device;
-        this._plugin = this._device.Plugin('plugins.notification');
+        if(this._device.isWeb) {
+            this._plugin = {local: new Colibri.Devices.LocalNotificationsEmulator()};
+        } else {
+            this._plugin = this._device.Plugin('plugins.notification');
+        }
     }
 
     HasPermission() {
@@ -35379,7 +35419,7 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         this._device.local.on(event, callback, scope);
     }
     Off(event, callback, scope) {
-        this._device.local.on(event, callback, scope);
+        this._device.local.un(event, callback, scope);
     }
 
 }
@@ -35492,7 +35532,6 @@ Colibri.Devices.Sms = class extends Destructable {
                 alert(strHash)
                 resolve(strHash);
             }, (error) => {
-                alert(error);
                 reject(error);
             });
         });
@@ -37827,24 +37866,25 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
     }
 
     LoadData(storage, term = null, filters = null, sortField = null, sortOrder = null, page = 1, pagesize = 20, returnPromise = false) {
-
+        App.Loading.Show();
         const promise = this.Call('Data', 'List', {storage: storage.name, term: term, filters: filters, sortfield: sortField, sortorder: sortOrder, page: page, pagesize: pagesize});
         if(returnPromise) {
             return promise;
         }
 
         promise.then((response) => {
-            if(page == 1) {
-                this._store.Set('sites.data', response.result);
-            }
-            else if(Array.isArray(response.result)) {
-                let data = this._store.Query('sites.data');
-                if(!data || !Array.isArray(data)) {
-                    data = [];
-                }
-                data = data.concat(response.result);
-                this._store.Set('sites.data', data);
-            }
+            this._store.Set('sites.data', response.result);
+            App.Loading.Hide();
+            // if(page == 1) {
+            // }
+            // else if(Array.isArray(response.result)) {
+            //     let data = this._store.Query('sites.data');
+            //     if(!data || !Array.isArray(data)) {
+            //         data = [];
+            //     }
+            //     data = data.concat(response.result);
+            //     this._store.Set('sites.data', data);
+            // }
         })
         .catch(error => {
             App.Notices.Add(new Colibri.UI.Notice(error.result));
@@ -38148,6 +38188,227 @@ App.Modules.Sites.UI.DataGridRowTemplateComponent = class extends Colibri.UI.Fie
     
 
 }
+Colibri.UI.AddTemplate('App.Modules.Sites.UI.Pager', 
+'<div namespace="App.Modules.Sites.UI.Pager">' + 
+'    <!-- sites-ui-pager -->' + 
+'    <Icon shown="true" name="left" iconSVG="Colibri.UI.LeftArrowIcon"  />' + 
+'    <Input shown="true" name="current-page" value="1" type="number" hasClearIcon="false" hasIcon="false"    />' + 
+'    <TextSpan shown="true" name="max-pages" />' + 
+'    <Icon shown="true" name="right" iconSVG="Colibri.UI.RightArrowIcon"  />' + 
+'    <Icon shown="true" name="reload" iconSVG="Colibri.UI.ReloadIcon"  />' + 
+'</div>' + 
+'');
+App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
+    
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container, Colibri.UI.Templates['App.Modules.Sites.UI.Pager']);
+        this.AddClass('app-modules-sites-ui-pager');
+
+        this._left = this.Children('left');
+        this._right = this.Children('right');
+        this._maxPagesO = this.Children('max-pages');
+        this._currentPage = this.Children('current-page');
+        this._reload = this.Children('reload');
+        
+        
+        this.maxPages = 1;
+        this._affected = 1;
+        this._pageSize = 20;
+
+        this._left.AddHandler('Clicked', (event, args) => this.__leftClicked(event, args));
+        this._right.AddHandler('Clicked', (event, args) => this.__rightClicked(event, args)); 
+        this._currentPage.AddHandler(['Filled', 'Cleared'], (event, args) => this.__currentPageChanged(event, args));   
+        this._reload.AddHandler('Clicked', (event, args) => this.__reloadClicked(event, args));
+
+    }
+
+    __reloadClicked(event, args) {
+        if(!this.enabled) {
+            return;
+        }
+        this.Dispatch('Changed', {value: this.value});
+    }
+
+    /**
+     * Register events
+     */
+    _registerEvents() {
+        super._registerEvents();
+        this.RegisterEvent('Changed', false, 'When page changed');
+    }
+
+    __leftClicked(event, args) {
+        if(!this._left.enabled) {
+            return;
+        }
+        this.value = this.value - 1;
+        this.Dispatch('Changed', {value: this.value});
+    }
+    __rightClicked(event, args) {
+        if(!this._right.enabled) {
+            return;
+        }
+        this.value = this.value + 1;
+        this.Dispatch('Changed', {value: this.value});
+    }
+
+    __currentPageChanged(event, args) {
+        if(!this.hasMaxPages || (this._currentPage.value >= 1 && this._currentPage.value <= this._maxPages)) {
+            this.value = this._currentPage.value;
+        } else {
+            this.value = 1;
+        }
+        this.Dispatch('Changed', {value: this.value});
+    }
+
+    _enableButtons() {
+
+        if(!super.enabled) {
+            this._left.enabled = false;
+            this._right.enabled = false;
+            return;
+        }
+
+        if(this._value <= 1) {
+            this._left.enabled = false;
+        } else {
+            this._left.enabled = true;
+        }
+
+        if(this.hasMaxPages) {
+            if(this._value >= this._maxPages) {
+                this._right.enabled = false;
+            } else {
+                this._right.enabled = true;
+            }
+        }
+    }
+
+    /**
+     * Current page value
+     * @type {Number}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Current page value
+     * @type {Number}
+     */
+    set value(value) {
+        value = this._convertProperty('Number', value);
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        this._currentPage.value = this._value;
+        this._enableButtons();
+    }
+
+    /**
+     * Maximum pages
+     * @type {Number}
+     */
+    get maxPages() {
+        return this._maxPages;
+    }
+    /**
+     * Maximum pages
+     * @type {Number}
+     */
+    set maxPages(value) {
+        value = this._convertProperty('Number', value);
+        this._maxPages = value;
+        this._showMaxPages();
+    }
+    _showMaxPages() {
+        this._maxPagesO.value = '' + this._maxPages;
+        this.value = 1;
+    }
+
+    /**
+     * Has max pages
+     * @type {Boolean}
+     */
+    get hasMaxPages() {
+        return this._maxPagesO.shown;
+    }
+    /**
+     * Has max pages
+     * @type {Boolean}
+     */
+    set hasMaxPages(value) {
+        value = this._convertProperty('Boolean', value);
+        this._maxPagesO.shown = value;
+        this._right.enabled = true;
+    }
+
+    /**
+     * 
+     * @type {Number}
+     */
+    get affected() {
+        return this._affected;
+    }
+    /**
+     * 
+     * @type {Number}
+     */
+    set affected(value) {
+        value = this._convertProperty('Number', value);
+        this._affected = value;
+        this._showAffected();
+    }
+    _showAffected() {
+        this.maxPages = Math.ceil(this._affected / this._pageSize);
+    }
+
+    /**
+     * 
+     * @type {Number}
+     */
+    get pageSize() {
+        return this._pageSize;
+    }
+    /**
+     * 
+     * @type {Number}
+     */
+    set pageSize(value) {
+        value = this._convertProperty('Number', value);
+        this._pageSize = value;
+        this._showPageSize();
+    }
+    _showPageSize() {
+        this.maxPages = Math.ceil(this._affected / this._pageSize);
+    }
+
+    /**
+     * 
+     * @type {Boolean}
+     */
+    get enabled() {
+        return super.enabled;
+    }
+    /**
+     * 
+     * @type {Boolean}
+     */
+    set enabled(value) {
+        value = this._convertProperty('Boolean', value);
+        super.enabled = value;
+        
+        this._currentPage.enabled = value;
+        this._left.enabled = value;
+        this._right.enabled = value;
+        if(value) {
+            this._enableButtons();
+        }
+        
+    }
+
+}
 Colibri.UI.AddTemplate('App.Modules.Sites.Widgets.StoragesWidget', 
 '<div namespace="App.Modules.Sites.Widgets.StoragesWidget">' + 
 '    <!-- sites-widgets-storageswidget -->' + 
@@ -38372,7 +38633,15 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
 
     constructor(name, container) {
         super(name, container);
-        this.AddClass('app-manager-datagrid-component')
+        this.AddClass('app-manager-datagrid-component');
+
+        this.AddHandler('ColumnClicked', (event, args) => this.__clickOnDataColumn(event, args));        
+        this._sortData = {name: '', order: ''};
+    }
+
+    __clickOnDataColumn(event, args) {
+        this._sortChanged = JSON.stringify(this._sortData) != JSON.stringify({name: this.sortColumn?.name, order: this.sortOrder});
+        this._sortData = {name: this.sortColumn?.name, order: this.sortOrder};
     }
 
     set storage(value) {
@@ -38397,6 +38666,22 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
     get value() {
         return super.value;
     }
+
+    /**
+     * Clear on every change of rows
+     * @type {Boolean}
+     */
+    get clearOnChange() {
+        return this._clearOnChange;
+    }
+    /**
+     * Clear on every change of rows
+     * @type {Boolean}
+     */
+    set clearOnChange(value) {
+        value = this._convertProperty('Boolean', value);
+        this._clearOnChange = value;
+    }
     
     __renderBoundedValues(data) {
 
@@ -38412,7 +38697,14 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
             this.ClearAll();
         }
 
-        this.ClearAllRows();
+        if(this._sortChanged) {
+            this.ClearAllRows();
+            this._sortChanged = false;
+        }
+
+        if(this._clearOnChange) {
+            this.ClearAllRows();
+        }
 
         if(this._storage && this._storage?.fields && this._storageChanged) {
                 
@@ -39424,13 +39716,14 @@ Colibri.UI.AddTemplate('App.Modules.Sites.DataPage',
 '                <Input name="search-input" shown="true" placeholder="" enabled="false" />' + 
 '                <Icon shown="true" name="filters" iconSVG="Colibri.UI.Filters"  enabled="false" />' + 
 '            </FlexBox>' + 
-'            <DataGrid name="data" shown="true" enabled="false" binding="app.sites.data" selectionMode="fullrow" showCheckboxes="true" hasContextMenu="true" emptyMessage="" />' + 
+'            <DataGrid name="data" shown="true" enabled="false" binding="app.sites.data" selectionMode="fullrow" showCheckboxes="true" hasContextMenu="true" emptyMessage="" clearOnChange="true" />' + 
 '            <FlexBox name="buttons-pane" shown="true">' + 
 '                <SuccessButton name="add-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuAddIcon"></SuccessButton>' + 
 '                <SuccessButton name="dubl-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuDublicateIcon"></SuccessButton>' + 
 '                <SuccessButton name="edit-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuEditIcon"></SuccessButton>' + 
 '                <SuccessButton name="delete-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuRemoveIcon"></SuccessButton>' + 
 '                <SuccessButton name="export-data" shown="true" enabled="false"></SuccessButton>' + 
+'                <UI.Pager shown="true" name="pager" hasMaxPages="false" enabled="false" />' + 
 '            </FlexBox>' + 
 '        </Pane>' + 
 '    </Split>    ' + 
@@ -39455,10 +39748,13 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._editData = this.Children('split/data-pane/buttons-pane/edit-data');
         this._deleteData = this.Children('split/data-pane/buttons-pane/delete-data');
         this._exportData = this.Children('split/data-pane/buttons-pane/export-data');
+        this._pagerData = this.Children('split/data-pane/buttons-pane/pager');
+        
 
         this._storages.AddHandler('SelectionChanged', (event, args) => this.__storagesSelectionChanged(event, args));
 
-        this._data.AddHandler('ScrolledToBottom', (event, args) => this.__dataScrolledToBottom(event, args));
+        // this._data.AddHandler('ScrolledToBottom', (event, args) => this.__dataScrolledToBottom(event, args));
+        this._pagerData.AddHandler('Changed', (event, args) => this.__pagerDataChanged(event, args));   
         this._data.AddHandler('SelectionChanged', (event, args) => this.__dataSelectionChanged(event, args));
         this._data.AddHandler('CheckChanged', (event, args) => this.__checkChangedOnData(event, args));
         this._data.AddHandler('DoubleClicked', (event, args) => this.__doubleClickedOnData(event, args));
@@ -39486,7 +39782,6 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         Manage.FilterWindow.Show(' «' + (storage.desc[Lang.Current] ?? storage.desc ?? '') + '»', 800, 'app.manage.storages(' + storage.name + ')', this._filterData)
             .then((data) => {
                 this._filterData = data;
-                console.log(this._filterData);
                 if(Object.countKeys(this._filterData) > 0) {
                     this._searchFilter.AddClass('-selected');
                 } else {
@@ -39504,7 +39799,7 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
 
     
     _loadDataPage(storage, searchTerm, searchFilters, sortField, sortOrder, page) {
-        this._dataCurrentPage = page;
+        this._pagerData.value = page;
         Sites.LoadData(storage, searchTerm, searchFilters, sortField, sortOrder, page, 20);
     }
 
@@ -39535,16 +39830,21 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._editData.enabled = false;
         this._dublData.enabled = false;
         this._deleteData.enabled = false;
+        this._pagerData.enabled = selection != null && selection.tag !== 'module' && selection.tag !== 'group';
 
         this.__searchInputFilled(event, args);
         
     }
 
-    
-    __dataScrolledToBottom(event, args) {
+    __pagerDataChanged(event, args) {
         const selected = this._storages.selected;
-        this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, this._dataCurrentPage + 1);
+        this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, this._pagerData.value);        
     }
+    
+    // __dataScrolledToBottom(event, args) {
+    //     const selected = this._storages.selected;
+    //     this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, this._dataCurrentPage + 1);
+    // }
 
     __dataSelectionChanged(event, args) {
         const checked = this._data.checked;
@@ -40137,7 +40437,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         };
     }
 
-    _fieldFields(showGroup = true) {
+    _fieldFields(showGroup = true, moduleNode) {
         const fields = {
             name: 'Field',
             desc: 'Свойство',
@@ -40661,10 +40961,14 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                                         readonly: false,
                                         searchable: false,
                                     },
-                                    lookup: () => {
+                                    lookup: (term, dependsValue, dependsField, obj) => {
                                         return new Promise((rs, rj) => {
+                                            console.log(moduleNode);
                                             Manage.Store.AsyncQuery('manage.storages').then((storages) => {
-                                                rs({ result: Object.values(storages).filter((s => s.params.visible)) });
+                                                rs({ 
+                                                    result: Object.values(storages)
+                                                        .filter((s => s.params.visible && s.module === moduleNode.name)) 
+                                                });
                                             });
                                         });
                                     },
@@ -41303,7 +41607,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             const moduleNode = node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data);
-
+            
             App.Notices.Add(new Colibri.UI.Notice('', Colibri.UI.Notice.Success, 5000));
             this._copiedField = null;
         }
@@ -41311,7 +41615,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             const moduleNode = node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) { // node.tag.type === 'fields'
-                Manage.FormWindow.Show('', 1024, this._fieldFields(), {})
+                Manage.FormWindow.Show('', 1024, this._fieldFields(true, moduleNode.tag.entry), {})
                     .then((data) => {
                         Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data);
                     })
@@ -41351,7 +41655,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                 }
 
                 // node.parentNode.tag.type === 'fields'
-                Manage.FormWindow.Show('', 1024, fieldData.virtual ? this._fieldVirtualFields() : this._fieldFields(), fieldData)
+                Manage.FormWindow.Show('', 1024, fieldData.virtual ? this._fieldVirtualFields(moduleNode.tag.entry) : this._fieldFields(true, moduleNode.tag.entry), fieldData)
                     .then((data) => {
                         Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node), data);
                     })
@@ -43892,7 +44196,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
         if(App.name === 'yerevan-parking') {
             App.Loader.icon = App.Modules.YerevanParking.Icons.Logo;
-            App.Loader.progressColor = '#2C79C0';
+            App.Loader.progressColor = '#8C8C8C';
             App.Loader.StartProgress(300, 1.2);
             App.Loader.Show();
         }
@@ -43910,14 +44214,13 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
             console.log(settings);
 
-           
-            if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0) {
-                if(App.Router.current !== '/timer') {
+            if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
+                if(App.Router.current === '' || App.Router.current === '/' || App.Router.current === '/payment' || App.Router.current === '/vahiles') {
                     App.Router.Navigate('/main');
                 }
             } else if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length == 0) {
                 App.Router.Navigate('/vahiles');
-            } else if(!!settings.session && !!settings.session.phone && settings.session.verified && Object.countKeys(settings.session.settings) == 0) {
+            } else if(!!settings.session && !!settings.session.phone && settings.session.verified && (Object.countKeys(settings.session.settings) == 0 || settings.session.settings?.payment_type === undefined)) {
                 App.Router.Navigate('/payment');
             } else {
                 App.Router.Navigate('/registration');
@@ -44198,7 +44501,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             if(paymenttype === 'sms') {
                 const zoneSettings = settings.sms;
                 try {
-                    App.Device.Sms.Send(zoneSettings[zone], value.vahile, '').then(() => {
+                    App.Device.Sms.Send(zoneSettings[zone], vahile, '').then(() => {
                         this.Call('Client', 'AddHistory', {
                             vahile: vahile,
                             paytime: paytime,
@@ -44222,18 +44525,18 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                         resolve();
                     }).catch((response) => reject(response));
                 }
-            } else if(paymenttype === 'card') {
+            // } else if(paymenttype === 'card') {
     
-                this.Call('Client', 'AddHistory', {
-                    vahile: vahile,
-                    paytime: paytime,
-                    payment_type: paymenttype,
-                    zone: zone,
-                    amount: amount,
-                    dateclient: Date.Now().toDbDate()
-                }).then((response) => {
-                    resolve();
-                }).catch((response) => reject(response));
+            //     this.Call('Client', 'AddHistory', {
+            //         vahile: vahile,
+            //         paytime: paytime,
+            //         payment_type: paymenttype,
+            //         zone: zone,
+            //         amount: amount,
+            //         dateclient: Date.Now().toDbDate()
+            //     }).then((response) => {
+            //         resolve();
+            //     }).catch((response) => reject(response));
 
             } else if(paymenttype === 'wallet') {
 
@@ -44704,7 +45007,10 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Components.ListItems.VahileIt
 '<div namespace="App.Modules.YerevanParking.Components.ListItems.VahileItem">' + 
 '    <!-- yerevanparking-components-listitems-vahileitem -->' + 
 '    <Icon shown="true" name="icon" iconSVG="App.Modules.YerevanParking.Icons.Vahile"  />' + 
-'    <TextViewer shown="true" name="number" />' + 
+'    <Pane shown="true" name="info">' + 
+'        <TextViewer shown="true" name="number" />' + 
+'        <TextViewer shown="true" name="name" />' + 
+'    </Pane>' + 
 '    <Icon shown="true" name="delete" iconSVG="Colibri.UI.RemoveIcon"  />' + 
 '</div>' + 
 '');
@@ -44715,7 +45021,9 @@ App.Modules.YerevanParking.Components.ListItems.VahileItem = class extends Colib
         super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Components.ListItems.VahileItem']);
         this.AddClass('app-modules-yerevanparking-components-listitems-vahileitem');
 
-        this._number = this.Children('number');
+        this._number = this.Children('info/number');
+        this._nameO = this.Children('info/name');
+        
         this._delete = this.Children('delete');
         
         this._delete.AddHandler('Clicked', (event, args) => this.__deleteClicked(event, args));
@@ -44750,7 +45058,8 @@ App.Modules.YerevanParking.Components.ListItems.VahileItem = class extends Colib
         this._showValue();
     }
     _showValue() {
-        this._number.value = this._value?.number ?? this._value;
+        this._number.value = this._value?.number ?? this._value?.vahile ?? this._value;
+        this._nameO.value = this._value?.name ?? '';
     }
 
 }
@@ -44844,11 +45153,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Components.Timer',
 '<div namespace="App.Modules.YerevanParking.Components.Timer">' + 
 '    <!-- yerevanparking-components-timer -->' + 
 '' + 
-'    <Strong shown="true" name="hours"></Strong>' + 
-'    <Strong shown="true" name="splitter1">:</Strong>' + 
-'    <Strong shown="true" name="minutes"></Strong>' + 
-'    <Strong shown="true" name="splitter2">:</Strong>' + 
-'    <Strong shown="true" name="seconds"></Strong>' + 
+'    <Strong shown="true" name="timer-value"></Strong>' + 
 '    ' + 
 '</div>' + 
 '');
@@ -44859,95 +45164,31 @@ App.Modules.YerevanParking.Components.Timer = class extends Colibri.UI.Pane {
         super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Components.Timer']);
         this.AddClass('app-modules-yerevanparking-components-timer');
 
-        this._hours = this.Children('hours');
-        this._minutes = this.Children('minutes');
-        this._seconds = this.Children('seconds');
-        
-        this._splitter1 = this.Children('splitter1');
-        this._splitter2 = this.Children('splitter2');
+        this._timerValue = this.Children('timer-value');
         
 
     }
 
-    StartTimer() {
-        Colibri.Common.StartTimer('timer-' + this.name, 1000, () => this._timerTick());
-    }
-
-    StopTimer() {
-        Colibri.Common.StopTimer('timer-' + this.name);
-    }
-
     /**
-     * Register events
+     * Seconds in timer
+     * @type {Number}
      */
-    _registerEvents() {
-        super._registerEvents();
-        this.RegisterEvent('TimerTick', false, 'When timer ticked, every seconds');
-        this.RegisterEvent('TimerIsReadyToEnd', false, 'When timer is ready for ending');
-        this.RegisterEvent('TimerEnds', false, 'When timer is ends');
-    }
-
-    _timerTick() {
-        let secondsLeft = this._convertLimitToSeconds(this._limit);
-        secondsLeft--;
-        let before = this._convertLimitToSeconds(this._beforeReady ?? '05:00');
-        this._limit = this._convertSecondsToLimits(secondsLeft);
-        this._showLimits();
-        if(secondsLeft < before && !this._informationSent) {
-            this._informationSent = true;
-            this.Dispatch('TimerIsReadyToEnd', {limits: this._limit, seconds: secondsLeft})
-        }
-        if(secondsLeft <= 0) {
-            this.Dispatch('TimerEnds');
-        } else {
-            this.Dispatch('TimerTick', {limits: this._limit, seconds: secondsLeft});
-        }
-    }
-
-    _convertSecondsToLimits(seconds) {
-        return seconds.toTimeString(':', false);
-    }
-
-    _convertLimitToSeconds(limit) {
-        const limits = limit.split(':');
-        if(limits.length > 2) {
-            // есть часы
-            return parseFloat(limits[0]) * 60 * 60 + parseFloat(limits[1]) * 60 + parseInt(limits[2]);
-        } else {
-            return parseFloat(limits[0]) * 60 + parseFloat(limits[1]);
-        }
-    }
-
-    _showLimits() {
-        const limits = this._limit.split(':');
-        this._seconds.value = (limits[limits.length - 1] ?? '0').expand('0', 2);
-        this._minutes.value = (limits[limits.length - 2] ?? '0').expand('0', 2);
-        this._hours.value = (limits[limits.length - 3] ?? '0').expand('0', 2);
-        if(this._hours.value === '00') {
-            this._hours.shown = false;
-            this._splitter1.shown = false;
-        } else {
-            this._hours.shown = true;
-            this._splitter1.shown = true;
-        }
-    }
-
-    /**
-     * Minutes and seconds as string 00:00
-     * @type {String}
-     */
-    get limit() {
-        return this._limit;
+    get value() {
+        return this._value;
     }
     /**
-     * Minutes and seconds as string 00:00
-     * @type {String}
+     * Seconds in timer
+     * @type {Number}
      */
-    set limit(value) {
-        this._limit = value;
-        this._showLimits();
-        this._showInterface();
+    set value(value) {
+        this._value = value;
+        this._showValue();
     }
+    _showValue() {
+        const string = this._value.toTimeString();
+        this._timerValue.value = string;
+    }
+
 
     _showInterface() {
         if(this._limit.split(':').length > 2) {
@@ -44959,21 +45200,6 @@ App.Modules.YerevanParking.Components.Timer = class extends Colibri.UI.Pane {
         }
     }
 
-    /**
-     * When send event before ready
-     * @type {String}
-     */
-    get beforeReady() {
-        return this._beforeReady;
-    }
-    /**
-     * When send event before ready
-     * @type {String}
-     */
-    set beforeReady(value) {
-        this._beforeReady = value;
-    }
-
 }
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.MainPage', 
 '<div namespace="App.Modules.YerevanParking.Layers.MainPage">' + 
@@ -44981,21 +45207,26 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.MainPage',
 '' + 
 '    <Layouts.Header shown="true" name="header" />' + 
 '' + 
-'    <FlexBox shown="true" name="zone-a">' + 
-'        <FlexBox shown="true" name="content">' + 
-'            <Strong shown="true" name="zone">A</Strong>' + 
-'            <Strong shown="true"></Strong> ' + 
-'            <TextSpan shown="true">300 </TextSpan>' + 
+'    <FlexBox shown="true" name="container">' + 
+'' + 
+'        <FlexBox shown="true" name="zone-a">' + 
+'            <FlexBox shown="true" name="content">' + 
+'                <Strong shown="true"></Strong> ' + 
+'                <Strong shown="true" name="zone">A</Strong>' + 
+'                <TextSpan shown="true">300 </TextSpan>' + 
+'            </FlexBox>' + 
 '        </FlexBox>' + 
+'    ' + 
+'        <FlexBox shown="true" name="zone-b">' + 
+'            <FlexBox shown="true" name="content">' + 
+'                <Strong shown="true"></Strong> ' + 
+'                <Strong shown="true" name="zone">B</Strong>' + 
+'                <TextSpan shown="true">200 </TextSpan>' + 
+'            </FlexBox>' + 
+'        </FlexBox>' + 
+'' + 
 '    </FlexBox>' + 
 '' + 
-'    <FlexBox shown="true" name="zone-b">' + 
-'        <FlexBox shown="true" name="content">' + 
-'            <Strong shown="true" name="zone">B</Strong>' + 
-'            <Strong shown="true"></Strong> ' + 
-'            <TextSpan shown="true">200 </TextSpan>' + 
-'        </FlexBox>' + 
-'    </FlexBox>' + 
 '    ' + 
 '' + 
 '</div>' + 
@@ -45008,8 +45239,8 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
         this.AddClass('app-modules-yerevanparking-layers-mainpage');
         this.AddClass('app-layer-component');
 
-        this._zoneA = this.Children('zone-a');
-        this._zoneB = this.Children('zone-b');
+        this._zoneA = this.Children('container/zone-a');
+        this._zoneB = this.Children('container/zone-b');
         
         this._zoneA.AddHandler('Clicked', (event, args) => this.__zoneAClicked(event, args));
         this._zoneB.AddHandler('Clicked', (event, args) => this.__zoneBClicked(event, args));
@@ -45041,13 +45272,17 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.RegistrationPage',
 '    ' + 
 '    <Layouts.Header shown="true" name="header" settings="false" logout="false" />' + 
 '' + 
-'    <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component" />' + 
-'' + 
-'' + 
-'    <SuccessButton shown="true" name="register" enabled="false"  value="" />' + 
-'    <SuccessButton shown="false" name="login" enabled="false"  value="" />' + 
-'' + 
-'    <SimpleButton shown="false" name="cancel" value="" />' + 
+'    <FlexBox shown="true" name="container">' + 
+'        <FlexBox shown="true" name="content">' + 
+'            <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component" />' + 
+'    ' + 
+'            <SuccessButton shown="true" name="register" enabled="false"  value="" />' + 
+'            <SuccessButton shown="false" name="login" enabled="false"  value="" />' + 
+'        ' + 
+'            <SimpleButton shown="false" name="cancel" value="" />' + 
+'        </FlexBox>' + 
+'    ' + 
+'    </FlexBox>' + 
 '' + 
 '</div>' + 
 '');
@@ -45059,10 +45294,11 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
         this.AddClass('app-modules-yerevanparking-layers-registrationpage');
         this.AddClass('app-layer-component');
 
-        this._form = this.Children('form');
-        this._register = this.Children('register');
-        this._login = this.Children('login');
-        this._cancel = this.Children('cancel');
+        this._phone = '';
+        this._form = this.Children('container/content/form');
+        this._register = this.Children('container/content/register');
+        this._login = this.Children('container/content/login');
+        this._cancel = this.Children('container/content/cancel');
         
         
         this._register.AddHandler('Clicked', (event, args) => this.__registerClicked(event, args));
@@ -45100,6 +45336,7 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
     }
 
     __cancelClicked(event, args) {
+        this._phone = '';
         this._showPhoneFields();
         this._register.shown = true;
         this._login.shown = false;
@@ -45107,11 +45344,10 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
     }
 
     __formChanged(event, args) {
-        if((this._form.value.phone + '').length === 11) {
-            this._register.enabled = true;
-        }
-        if((this._form.value.phone + '').length === 11 && (this._form.value.code + '').length === 4) {
+        if((this._phone + '').length === 11 && (this._form.value?.code + '').length === 4) {
             this._login.enabled = true;
+        } else if((this._form.value?.phone + '').length === 11) {
+            this._register.enabled = true;
         }
     }
 
@@ -45158,30 +45394,40 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.VahilesPage',
 '    ' + 
 '    <Layouts.Header shown="true" name="header" />' + 
 '' + 
-'    <H2 shown="true" name="h2" value="" />' + 
-'    <FlexBox shown="true" name="flex">' + 
-'        <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
-'            <fields>' + 
-'                {' + 
-'                    vahile: {' + 
-'                        component: \'App.Modules.YerevanParking.Components.Form.VahileField\',' + 
-'                        desc: \'\',' + 
-'                    }' + 
-'                }' + 
-'            </fields>' + 
-'        </Forms.Form>' + 
-'        <SuccessButton shown="true" name="add" class="-small" enabled="false"  value="" />' + 
+'    <FlexBox shown="true" name="container">' + 
+'        <FlexBox shown="true" name="content">' + 
+'            <H2 shown="true" name="h2" value="" />' + 
+'            <FlexBox shown="true" name="flex">' + 
+'                <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
+'                    <fields>' + 
+'                        {' + 
+'                            vahile: {' + 
+'                                component: \'App.Modules.YerevanParking.Components.Form.VahileField\',' + 
+'                                desc: \'\',' + 
+'                            },' + 
+'                            name: {' + 
+'                                component: \'Text\',' + 
+'                                desc: \'\',' + 
+'                                placeholder: \'\'' + 
+'                            }' + 
+'                        }' + 
+'                    </fields>' + 
+'                </Forms.Form>' + 
+'                <SuccessButton shown="true" name="add" class="-small" enabled="false"  value="" />' + 
+'            </FlexBox>' + 
+'' + 
+'            <FlexBox shown="true" name="list-flex">' + 
+'                <H3 shown="true" name="h3" value="" />' + 
+'                <List shown="true" name="list" canSelect="false" rendererComponent="App.Modules.YerevanParking.Components.ListItems.VahileItem">' + 
+'                    <List.Group shown="true" name="group"></List.Group>' + 
+'                </List>' + 
+'            </FlexBox>' + 
+'' + 
+'            <SuccessButton shown="true" name="save" enabled="false"  value="" />' + 
+'' + 
+'        </FlexBox>' + 
 '    </FlexBox>' + 
-'' + 
-'    <FlexBox shown="true" name="list-flex">' + 
-'        <H3 shown="true" name="h3" value="" />' + 
-'        <List shown="true" name="list" canSelect="false" rendererComponent="App.Modules.YerevanParking.Components.ListItems.VahileItem">' + 
-'            <List.Group shown="true" name="group"></List.Group>' + 
-'        </List>' + 
-'    </FlexBox>' + 
-'' + 
-'    <SuccessButton shown="true" name="save" enabled="false"  value="" />' + 
-'' + 
+'    ' + 
 '</div>' + 
 '');
 App.Modules.YerevanParking.Layers.VahilesPage = class extends Colibri.UI.FlexBox {
@@ -45192,11 +45438,11 @@ App.Modules.YerevanParking.Layers.VahilesPage = class extends Colibri.UI.FlexBox
         this.AddClass('app-modules-yerevanparking-layers-vahilespage');
         this.AddClass('app-layer-component');
 
-        this._flexAdd = this.Children('flex/add');
-        this._flexForm = this.Children('flex/form');
-        this._listFlex = this.Children('list-flex');
-        this._listFlexListGroup = this.Children('list-flex/list/group');
-        this._save = this.Children('save');
+        this._flexAdd = this.Children('container/flex/add');
+        this._flexForm = this.Children('container/flex/form');
+        this._listFlex = this.Children('container/list-flex');
+        this._listFlexListGroup = this.Children('container/list-flex/list/group');
+        this._save = this.Children('container/save');
     
         this._flexAdd.AddHandler('Clicked', (event, args) => this.__flexAddClicked(event, args));   
         this._flexForm.AddHandler('Changed', (event, args) => this.__flexFormChanged(event, args));
@@ -45232,7 +45478,7 @@ App.Modules.YerevanParking.Layers.VahilesPage = class extends Colibri.UI.FlexBox
 
     __flexAddClicked(event, args) {
         const vahiles = this._listFlexListGroup.value;
-        vahiles.push(this._flexForm.value.vahile);
+        vahiles.push(this._flexForm.value);
         this._listFlexListGroup.value = vahiles;
         this._flexForm.value = {vahile: ''};
         this._save.enabled = true;
@@ -45249,32 +45495,37 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '' + 
 '    <Layouts.Header shown="true" name="header" />' + 
 '' + 
-'    <H2 shown="true" name="h2" value="" />' + 
+'    <FlexBox shown="true" name="container">' + 
+'        <FlexBox shown="true" name="content">' + 
 '' + 
-'    <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
-'        <fields>' + 
-'            {' + 
-'                payment_type: {' + 
-'                    component: \'List\',' + 
-'                    desc: \'\',' + 
-'                    values: [' + 
-'                        {value: \'sms\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.SmsIcon\'},' + 
-'                        /* {value: \'card\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.CardIcon\'}, */' + 
-'                        {value: \'wallet\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.WalletIcon\'},' + 
-'                    ],' + 
-'                    params: {' + 
-'                        rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\'' + 
+'            <H2 shown="true" name="h2" value="" />' + 
+'' + 
+'            <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
+'                <fields>' + 
+'                    {' + 
+'                        payment_type: {' + 
+'                            component: \'List\',' + 
+'                            desc: \'\',' + 
+'                            values: [' + 
+'                                {value: \'sms\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.SmsIcon\'},' + 
+'                                /* {value: \'card\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.CardIcon\'}, */' + 
+'                                {value: \'wallet\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.WalletIcon\'},' + 
+'                            ],' + 
+'                            params: {' + 
+'                                rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\'' + 
+'                            }' + 
+'                        }' + 
 '                    }' + 
-'                }' + 
-'            }' + 
-'        </fields>' + 
-'    </Forms.Form>' + 
+'                </fields>' + 
+'            </Forms.Form>' + 
 '' + 
-'    <Pane shown="true" name="span-sms" className="-placeholder" value="" />' + 
-'    <Pane shown="false" name="span-card" className="-placeholder" value="" />' + 
-'    <Pane shown="false" name="span-wallet" className="-placeholder" value="" />' + 
+'            <Pane shown="true" name="span-sms" className="-placeholder" value="" />' + 
+'            <Pane shown="false" name="span-card" className="-placeholder" value="" />' + 
+'            <Pane shown="false" name="span-wallet" className="-placeholder" value="" />' + 
 '' + 
-'    <SuccessButton shown="true" name="save" enabled="false"  value="" />' + 
+'            <SuccessButton shown="true" name="save" enabled="false"  value="" />' + 
+'        </FlexBox>' + 
+'    </FlexBox>' + 
 '' + 
 '' + 
 '</div>' + 
@@ -45287,12 +45538,11 @@ App.Modules.YerevanParking.Layers.PaymentPage = class extends Colibri.UI.FlexBox
         this.AddClass('app-modules-yerevanparking-layers-paymentpage');
         this.AddClass('app-layer-component');
 
-        this._form = this.Children('form');
-        this._spanCard = this.Children('span-card');
-        this._spanSms = this.Children('span-sms');
-        this._spanWallet = this.Children('span-wallet');
-
-        this._save = this.Children('save');
+        this._form = this.Children('container/content/form');
+        this._spanCard = this.Children('container/content/span-card');
+        this._spanSms = this.Children('container/content/span-sms');
+        this._spanWallet = this.Children('container/content/span-wallet');
+        this._save = this.Children('container/content/save');
         
         this._save.AddHandler('Clicked', (event, args) => this.__saveClicked(event, args));
         this._form.AddHandler('Changed', (event, args) => this.__formChanged(event, args));
@@ -45345,13 +45595,20 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.SettingsPage',
 '    <!-- yerevanparking-layers-settingspage -->' + 
 '    ' + 
 '    <Layouts.Header shown="true" name="header" />' + 
+'    <FlexBox shown="true" name="container">' + 
 '' + 
-'    <List shown="true" name="list" rendererComponent="App.Modules.YerevanParking.Components.ListItems.Menu" canSelect="false" >' + 
-'        <List.Group shown="true" name="group"></List.Group>' + 
-'    </List>' + 
+'        <FlexBox shown="true" name="content">' + 
 '' + 
-'    <SuccessButton shown="true" name="return" value="" />' + 
+'            <List shown="true" name="list" rendererComponent="App.Modules.YerevanParking.Components.ListItems.Menu" canSelect="false" >' + 
+'                <List.Group shown="true" name="group"></List.Group>' + 
+'            </List>' + 
+'    ' + 
+'            <SuccessButton shown="true" name="return" value="" />' + 
 '' + 
+'        </FlexBox>' + 
+'' + 
+'        ' + 
+'    </FlexBox>' + 
 '</div>' + 
 '');
 App.Modules.YerevanParking.Layers.SettingsPage = class extends Colibri.UI.FlexBox {
@@ -45362,9 +45619,9 @@ App.Modules.YerevanParking.Layers.SettingsPage = class extends Colibri.UI.FlexBo
         this.AddClass('app-modules-yerevanparking-layers-settingspage');
         this.AddClass('app-layer-component');
 
-        this._list = this.Children('list');
-        this._listGroup = this.Children('list/group');
-        this._return = this.Children('return');
+        this._list = this.Children('container/content/list');
+        this._listGroup = this.Children('container/content/list/group');
+        this._return = this.Children('container/content/return');
         
         
         this._listGroup.value = [
@@ -45392,59 +45649,59 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.TimerPage',
 '    ' + 
 '    <Layouts.Header shown="true" name="header" />' + 
 '' + 
-'    <FlexBox shown="true" name="choose">' + 
-'        <Forms.Form shown="true" name="form" />' + 
-'        <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
-'        <SuccessButton shown="true" className="small" name="payafter15minutes" value="" />' + 
-'        <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
-'    </FlexBox>' + 
-'' + 
-'    <FlexBox shown="true" name="timer-15minutes">' + 
-'' + 
-'        <Components.Timer shown="true" name="timer" beforeReady="05:00"  />' + 
-'        <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
-'        <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
-'' + 
-'    </FlexBox>' + 
-'' + 
-'    <FlexBox shown="true" name="timer-minutes">' + 
-'' + 
-'        <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
-'        <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
-'        <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
-'' + 
+'    <FlexBox shown="true" name="container">' + 
+'        <FlexBox shown="true" name="choose">' + 
+'            <Forms.Form shown="true" name="form" />' + 
+'            <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
+'            <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
+'        </FlexBox>' + 
+'    ' + 
+'        <FlexBox shown="true" name="timer-15minutes">' + 
+'    ' + 
+'            <Components.Timer shown="true" name="timer" beforeReady="05:00"  />' + 
+'            <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
+'            <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
+'    ' + 
+'        </FlexBox>' + 
+'    ' + 
+'        <FlexBox shown="true" name="timer-minutes">' + 
+'    ' + 
+'            <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
+'            <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
+'            <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
+'    ' + 
+'        </FlexBox>' + 
+'    ' + 
 '    </FlexBox>' + 
 '' + 
 '</div>' + 
 '');
 App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
-    
+
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.TimerPage']);
         this.AddClass('app-modules-yerevanparking-layers-timerpage');
         this.AddClass('app-layer-component');
 
-        this._timer15minutes = this.Children('timer-15minutes');
-        this._timer15minutesTimer = this.Children('timer-15minutes/timer');
-        this._timer15minutesPaynow = this.Children('timer-15minutes/paynow');
-        this._timer15minutesCancel = this.Children('timer-15minutes/cancel');
+        this._timer15minutes = this.Children('container/timer-15minutes');
+        this._timer15minutesTimer = this.Children('container/timer-15minutes/timer');
+        this._timer15minutesPaynow = this.Children('container/timer-15minutes/paynow');
+        this._timer15minutesCancel = this.Children('container/timer-15minutes/cancel');
 
-        this._timerMinutes = this.Children('timer-minutes');
-        this._timerMinutesTimer = this.Children('timer-minutes/timer');
-        this._timerMinutesPaynow = this.Children('timer-minutes/paynow');
-        this._timerMinutesCancel = this.Children('timer-minutes/cancel');        
-        
-        this._choose = this.Children('choose');
-        this._chooseForm = this.Children('choose/form');
-        this._choosePayafter15minutes = this.Children('choose/payafter15minutes');
-        this._choosePaynow = this.Children('choose/paynow');
-        this._chooseCancel = this.Children('choose/cancel');
-        
-        this._choosePayafter15minutes.AddHandler('Clicked', (event, args) => this.__choosePayafter15minutesClicked(event, args));   
-        this._choosePaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args)); 
-        this._timer15minutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args)); 
-        this._timerMinutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args)); 
+        this._timerMinutes = this.Children('container/timer-minutes');
+        this._timerMinutesTimer = this.Children('container/timer-minutes/timer');
+        this._timerMinutesPaynow = this.Children('container/timer-minutes/paynow');
+        this._timerMinutesCancel = this.Children('container/timer-minutes/cancel');
+
+        this._choose = this.Children('container/choose');
+        this._chooseForm = this.Children('container/choose/form');
+        this._choosePaynow = this.Children('container/choose/paynow');
+        this._chooseCancel = this.Children('container/choose/cancel');
+
+        this._choosePaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args));
+        this._timer15minutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args));
+        this._timerMinutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args));
 
         this._timer15minutesTimer.AddHandler('TimerIsReadyToEnd', (event, args) => this.__timer15minutesTimerTimerIsReadyToEnd(event, args));
         this._timer15minutesTimer.AddHandler('TimerEnds', (event, args) => this.__timer15minutesTimerTimerEnds(event, args));
@@ -45457,12 +45714,13 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._timerMinutesCancel.AddHandler('Clicked', (event, args) => this.__chooseCancelClicked(event, args));
 
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
-        
+
         this._payAfter15minutesId = 1;
         this._payAfterTime = 2;
 
+
         this.AddHandler('PayNowClicked', (event, args) => this.__choosepaynow(event, args));
-        
+
     }
 
     /**
@@ -45482,7 +45740,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                     YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then((settings) => {
                         let selected = 0;
                         resolve(settings.vahiles.map(v => {
-                            return {value: v, title: v, __selected: selected++ === 0};
+                            return { value: v.number, title: v.name + ' (' + v.number + ')', __selected: selected++ === 0 };
                         }));
                     });
                 })
@@ -45493,223 +45751,274 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 values: () => new Promise((resolve, reject) => {
                     YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
                         const paymenttype = settings.session.settings.payment_type ?? null;
-                        if(paymenttype === 'sms') {
+                        if (paymenttype === 'sms') {
                             resolve([
-                                {value: '1', 'title': '', __selected: true}
+                                { value: '1', 'title': '', __selected: true }
                             ]);
                         } else {
                             resolve([
-                                {value: '1', 'title': '', __selected: true},
-                                {value: '2', 'title': ''},
-                                {value: '3', 'title': ''},
+                                { value: '1', 'title': '', __selected: true },
+                                { value: '2', 'title': '' },
+                                { value: '3', 'title': '' },
+                                { value: '4', 'title': '' },
                                 // {value: '24', 'title': ''},
                                 // {value: '48', 'title': ''},
                             ])
                         }
                     });
 
-            
+
                 })
             }
         };
     }
 
+    __currentTimerTimerStarts(event, args) {
+        if(args.secondsLeft < 0) {
+            this.__chooseCancelClicked(null, null);
+            return;
+        } else {
+            if (this._currentTimer.name === 'wating') {
+                this._timer15minutesTimer.value = args.secondsLeft;
+            } else if (this._currentTimer.name === 'paid') {
+                this._timerMinutesTimer.value = args.secondsLeft;
+            }
+            this._timer15minutesPaynow.RemoveClass('-urgent');
+            this._timerMinutesPaynow.RemoveClass('-urgent');
+        }
+    }
+
+    __currentTimerTimerTick(event, args) {
+        if (this._currentTimer.name === 'wating') {
+            this._timer15minutesTimer.value = args.secondsLeft;
+        } else if (this._currentTimer.name === 'paid') {
+            this._timerMinutesTimer.value = args.secondsLeft;
+        }
+    }
+
+    __currentTimerTimerBeforeEnd(event, args) {
+        if (this._currentTimer.name === 'wating') {
+            this._timer15minutesTimer.AddClass('-urgent');
+            this._timer15minutesPaynow.AddClass('-urgent');
+            try {
+                App.Device.Dialogs.Beep(1);
+            } catch (e) { }
+        } else if (this._currentTimer.name === 'paid') {
+            this._timerMinutesTimer.AddClass('-urgent');
+            this._timerMinutesPaynow.AddClass('-urgent');
+            try {
+                App.Device.Dialogs.Beep(1);
+            } catch (e) { }
+        }
+
+    }
+
+    __currentTimerTimerEnds(event, args) {
+        if (this._currentTimer.name === 'wating') {
+
+            try {
+                this._timer15minutesTimer.value = 0;
+                App.Device.Dialogs.Beep(1);
+                App.Device.Notifications.Schedule(
+                    { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
+                    '',
+                    '',
+                    null,
+                    { in: 1, unit: 'second' },
+                    true, true, 1, this._payAfter15minutesId
+                );
+            } catch (e) { }
+
+        } else if (this._currentTimer.name === 'paid') {
+            try {
+                this._timerMinutesTimer.value = 0;
+                App.Device.Dialogs.Beep(1);
+                App.Device.Notifications.Schedule(
+                    { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
+                    '',
+                    '',
+                    null,
+                    { in: 1, unit: 'second' },
+                    true, true, 1, this._payAfterTime
+                );
+            } catch (e) { }
+        }
+
+    }
+
+    _createTimer(name, seconds = 0, beforeEndSeconds = 0) {
+        this._disposeTimer();
+        this._currentTimer = new App.Modules.YerevanParking.Timer(name);
+        this._currentTimer.AddHandler('TimerTick', (event, args) => this.__currentTimerTimerTick(event, args));
+        this._currentTimer.AddHandler('TimerStarts', (event, args) => this.__currentTimerTimerStarts(event, args));
+        this._currentTimer.AddHandler('TimerEnds', (event, args) => this.__currentTimerTimerEnds(event, args));
+        this._currentTimer.AddHandler('TimerBeforeEnd', (event, args) => this.__currentTimerTimerBeforeEnd(event, args));
+        if (!this._currentTimer.started) {
+            this._currentTimer.Start(seconds, beforeEndSeconds);
+        }
+        return this._currentTimer;
+    }
+
+    _disposeTimer() {
+        if (this._currentTimer) {
+            this._currentTimer.Stop();
+            this._currentTimer.Dispose();
+            this._currentTimer = null;
+        }
+    }
+
+
     __thisShown(event, args) {
         this._currentTimerState = App.Browser.Get('current-timer-state');
-        this._currentTimerValue = App.Browser.Get('current-timer-value');
 
         this._showFields();
 
         const savedInfo = JSON.parse(App.Browser.Get('current-timer-settings')) ?? null;
-        if(savedInfo) {
+        if (savedInfo) {
             this._chooseForm.value = savedInfo;
         }
 
-        if(this._currentTimerState === 'waiting') {
-            const seconds = 15 * 60 - this._currentTimerValue.toDate().Diff(new Date());
-            const limit = seconds.toTimeString(':', false);
-            
+        if (this._currentTimerState === 'waiting') {
+
             this._timer15minutes.shown = true;
             this._timerMinutes.shown = false;
             this._choose.shown = false;
 
-            this._timer15minutesTimer.limit = limit;
-            this._timer15minutesTimer.beforeReady = '05:00';
-            this._timer15minutesTimer.StartTimer();
-        } else if(this._currentTimerState === 'paid') {
+            this._createTimer('wating');
 
-            const seconds = savedInfo.paytime * 60 * 60 - this._currentTimerValue.toDate().Diff(new Date());
-            const limit = seconds.toTimeString(':', false);
-            
+
+        } else if (this._currentTimerState === 'paid') {
+
             this._timer15minutes.shown = false;
             this._timerMinutes.shown = true;
             this._choose.shown = false;
 
-            this._timerMinutesTimer.limit = limit;
-            this._timerMinutesTimer.beforeReady = '05:00';
-            this._timerMinutesTimer.StartTimer();
+            this._createTimer('paid');
+
 
         } else {
             this._timer15minutes.shown = false;
             this._timerMinutes.shown = false;
             this._choose.shown = true;
-            this._timer15minutesTimer.StopTimer();
+
+            this._disposeTimer();
         }
 
     }
 
-    __timerMinutesTimerTimerEnds(event, args) {
-        try {
-            this._timerMinutesTimer.StopTimer();
-            alert('1 second');
-            App.Device.Dialogs.Beep(1);
-            App.Device.Notifications.Schedule(
-                {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
-                '',
-                '',
-                null,
-                { in: 1, unit: 'second' },
-                true, true, 1, this._payAfterTime
-            );
-        } catch(e) {}
-    }
-
-    __timer15minutesTimerTimerEnds(event, args) {
-        this._timer15minutesTimer.StopTimer();
-        
-        try {
-
-            alert('1 second');
-            App.Device.Dialogs.Beep(1);
-            App.Device.Notifications.Schedule(
-                {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
-                '',
-                '',
-                null,
-                { in: 1, unit: 'second' },
-                true, true, 1, this._payAfter15minutesId
-            );
-        } catch(e) {}
-    }
-
     __choosepaynow(event, args) {
+        if(!App.Browser.Get('current-timer-state')) {
+            App.Confirm.Show(
+                '',
+                '',
+                '',
+                ''
+            ).then(() => {
+                this.StartWaiting();
+            }).catch(() => {
+                this.StartPaymentPeriod();
+            })
+        } else {
+            this.StartPaymentPeriod();
+        }
+    }
 
+    __chooseCancelClicked(event, args) {
+        this._disposeTimer();
+
+        App.Browser.Delete('current-timer-state');
+        App.Browser.Delete('current-timer-settings');
+        App.Router.Navigate('/main');
+
+        try {
+            App.Device.Notifications.Cancel(this._payAfter15minutesId);
+            App.Device.Notifications.Cancel(this._payAfterTime);
+        } catch (e) { }
+
+    }
+
+    StartPaymentPeriod() {
         const value = this._chooseForm.value;
         value.zone = App.Router.options?.zone ?? null;
-        
-        App.Device.Notifications.Cancel(this._payAfter15minutesId);
-        App.Device.Notifications.Cancel(this._payAfterTime);
+
+        try {
+            App.Device.Notifications.Cancel(this._payAfter15minutesId);
+            App.Device.Notifications.Cancel(this._payAfterTime);
+        } catch (e) { }
 
         YerevanParking.Pay(value.vahile, value.paytime).then(() => {
-
+            
             this._timer15minutes.shown = false;
             this._timerMinutes.shown = true;
             this._choose.shown = false;
 
-            if(App.Browser.Get('current-timer-state') === 'paid') {
+            if (App.Browser.Get('current-timer-state') === 'paid') {
 
                 value.paytime = parseFloat(value.paytime) + 1;
                 this._chooseForm.value = value;
-
                 App.Browser.Set('current-timer-settings', JSON.stringify(value));
-                
-                const seconds = value.paytime * 60 * 60 - App.Browser.Get('current-timer-value').toDate().Diff(new Date());
-                const limit = seconds.toTimeString(':', false);
-    
-                this._timerMinutesTimer.RemoveClass('-urgent');
-                this._timerMinutesTimer.limit = limit;
-                this._timerMinutesTimer.beforeReady = '05:00';
-                this._timerMinutesTimer.StartTimer();
+
+                const currentTimerSecondsLeft = this._currentTimer.secondsLeft;
+
+                this._createTimer(
+                    'paid', 
+                    currentTimerSecondsLeft + (parseInt(value.paytime) - 1) * 60 * 60, 
+                    10 * 60
+                );
 
                 try {
-                    alert((parseFloat(value.paytime) * 60 - 15) + ' minute');
                     App.Device.Notifications.Cancel(this._payAfterTime);
                     App.Device.Notifications.Schedule(
-                        {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
+                        { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
                         '',
                         '',
                         null,
                         { in: value.paytime * 60 - 15, unit: 'minute' },
                         true, true, 1, this._payAfterTime
                     );
-        
-                } catch(e) {} 
+
+                } catch (e) { }
 
             } else {
 
-                this._timer15minutesTimer.StopTimer();
-
                 App.Browser.Set('current-timer-state', 'paid');
-                App.Browser.Set('current-timer-value', Date.Now().toDbDate());
                 App.Browser.Set('current-timer-settings', JSON.stringify(value));
-    
-                this._timerMinutesTimer.RemoveClass('-urgent');
-                this._timerMinutesTimer.limit = (parseFloat(value.paytime) * 60 * 60).toTimeString(':');
-                this._timerMinutesTimer.beforeReady = '05:00';
-                this._timerMinutesTimer.StartTimer();
+
+                this._createTimer('paid', parseInt(value.paytime) * 60 * 60, 10 * 60);
 
                 try {
-                    alert((parseFloat(value.paytime) * 60 - 15) + ' minute');
                     App.Device.Notifications.Cancel(this._payAfter15minutesId);
                     App.Device.Notifications.Schedule(
-                        {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
+                        { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
                         '',
                         '',
                         null,
                         { in: value.paytime * 60 - 15, unit: 'minute' },
                         true, true, 1, this._payAfterTime
                     );
-        
-                } catch(e) {}  
+
+                } catch (e) { }
 
             }
 
         });
-
-
     }
 
-    __chooseCancelClicked(event, args) {
-        this._timer15minutesTimer.StopTimer();
-        this._timerMinutesTimer.StopTimer();
-        App.Browser.Delete('current-timer-state');
-        App.Browser.Delete('current-timer-value');
-        App.Browser.Delete('current-timer-settings');
-        App.Router.Navigate('/main');
-        App.Device.Notifications.Cancel(this._payAfter15minutesId);
-        App.Device.Notifications.Cancel(this._payAfterTime);
-    }
-
-    __timerMinutesTimerTimerIsReadyToEnd(event, args) {
-        this._timerMinutesTimer.AddClass('-urgent');
-        App.Device.Dialogs.Beep(1);
-    }
-
-    __timer15minutesTimerTimerIsReadyToEnd(event, args) {
-        this._timer15minutesTimer.AddClass('-urgent');
-        App.Device.Dialogs.Beep(1);
-    }
-
-    __choosePayafter15minutesClicked(event, args) {
+    StartWaiting() {
         const value = this._chooseForm.value;
         value.zone = App.Router.options?.zone ?? null;
 
         App.Browser.Set('current-timer-state', 'waiting');
-        App.Browser.Set('current-timer-value', Date.Now().toDbDate());
         App.Browser.Set('current-timer-settings', JSON.stringify(value));
+
+        this._createTimer('wating', 15 * 60, 5 * 60);
 
         this._timer15minutes.shown = true;
         this._choose.shown = false;
-        
-        this._timer15minutesTimer.RemoveClass('-urgent');
-        this._timer15minutesTimer.limit = '15:00';
-        this._timer15minutesTimer.beforeReady = '05:00';
-        this._timer15minutesTimer.StartTimer();
-        
+
         try {
-            alert('10 minute');
             App.Device.Notifications.Schedule(
-                {event: {sender: 'ActivePage', name: 'PayNowClicked'}},
+                { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
                 '',
                 '',
                 null,
@@ -45717,10 +46026,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 true, true, this._payAfter15minutesId
             );
 
-        } catch(e) {
-            alert(e);
-        }    
-
+        } catch (e) { }
     }
 
 }
@@ -45729,29 +46035,31 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage',
 '    <!-- yerevanparking-layers-walletpage -->' + 
 '    ' + 
 '    <Layouts.Header shown="true" name="header" />' + 
+'    <FlexBox shown="true" name="container">' + 
 '' + 
-'    <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
-'        <fields>' + 
-'            {' + 
-'                type: {' + 
-'                    component: \'List\',' + 
-'                    desc: \'\',' + 
-'                    values: [' + 
-'                        {value: \'arca\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.Arca\'},' + 
-'                        {value: \'telcell\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.TellCell\'},' + 
-'                        {value: \'easy\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.Easy\'}' + 
-'                    ],' + 
-'                    params: {' + 
-'                        rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\'' + 
+'        <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
+'            <fields>' + 
+'                {' + 
+'                    type: {' + 
+'                        component: \'List\',' + 
+'                        desc: \'\',' + 
+'                        values: [' + 
+'                            {value: \'arca\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.Arca\'},' + 
+'                            {value: \'telcell\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.TellCell\'},' + 
+'                            {value: \'easy\', title: \'\', icon: \'App.Modules.YerevanParking.Icons.Easy\'}' + 
+'                        ],' + 
+'                        params: {' + 
+'                            rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\'' + 
+'                        }' + 
+'                    },' + 
+'                    amount: {' + 
+'                        component: \'Number\',' + 
+'                        desc: \'\'' + 
 '                    }' + 
-'                },' + 
-'                amount: {' + 
-'                    component: \'Number\',' + 
-'                    desc: \'\'' + 
 '                }' + 
-'            }' + 
-'        </fields>' + 
-'    </Forms.Form>' + 
+'            </fields>' + 
+'        </Forms.Form>' + 
+'    </FlexBox>' + 
 '' + 
 '    <SuccessButton shown="true" name="pay" value="" />' + 
 '' + 
@@ -45767,8 +46075,8 @@ App.Modules.YerevanParking.Layers.WalletPage = class extends Colibri.UI.FlexBox 
         this.AddClass('app-modules-yerevanparking-layers-walletpage');
         this.AddClass('app-layer-component');
 
-        this._form = this.Children('form');
-        this._pay = this.Children('pay');
+        this._form = this.Children('container/form');
+        this._pay = this.Children('container/pay');
         
 
         if(App.Router.options.amount) {
@@ -45783,19 +46091,18 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header',
 '    <!-- yerevanparking-layouts-header -->' + 
 '    ' + 
 '    <FlexBox shown="true" name="row1">' + 
-'        <Icon shown="true" name="logo" iconSVG="App.Modules.YerevanParking.Icons.Logo" width="250" height="250" />' + 
+'        <Icon shown="true" name="logo" iconSVG="App.Modules.YerevanParking.Icons.HeaderLogo" width="120" height="120" />' + 
 '        <FlexBox shown="true" name="right">' + 
 '            <Wallet shown="false" name="wallet" />' + 
 '            <Icon shown="true" name="settings" iconSVG="App.Modules.YerevanParking.Icons.SettingIcon"  />' + 
-'            <Lang.LangChangeIcon shown="true" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]"  iconSVG="App.Modules.Lang.Icons.LangSettingsIcon"  binding="app.yerevan-parking.langs" />' + 
-'            <Icon shown="true" name="logout" iconSVG="Colibri.UI.LogoutIcon"  />' + 
+'            <Lang.LangChangeIcon shown="true" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]" iconSVG="App.Modules.YerevanParking.Icons.Langs"  binding="app.yerevan-parking.langs" />' + 
+'            <Icon shown="true" name="logout" iconSVG="App.Modules.YerevanParking.Icons.Logout"  />' + 
 '        </FlexBox>' + 
 '    </FlexBox>' + 
-'' + 
-'    <FlexBox shown="true" name="row2">' + 
+'    <!-- <FlexBox shown="true" name="row2">' + 
 '        <H1 shown="true" name="title" value="" />' + 
 '        <TextSpan shown="true" name="span" value="" />' + 
-'    </FlexBox>' + 
+'    </FlexBox> -->' + 
 '' + 
 '' + 
 '</div>' + 
@@ -45811,11 +46118,17 @@ App.Modules.YerevanParking.Layouts.Header = class extends Colibri.UI.FlexBox {
         this._row1RightSettings = this.Children('row1/right/settings');
         this._row1RightWallet = this.Children('row1/right/wallet');
         this._row1RightLogout = this.Children('row1/right/logout');
+        this._row1Logo = this.Children('row1/logo');
         
         
+        this._row1Logo.AddHandler('Clicked', (event, args) => this.__row1LogoClicked(event, args));
         this._row1RightLogout.AddHandler('Clicked', (event, args) => this.__row1RightLogoutClicked(event, args));
         this._row1RightWallet.AddHandler('Clicked', (event, args) => this.__row1RightWalletClicked(event, args));
         this._row1RightSettings.AddHandler('Clicked', (event, args) => this.__row1RightSettingsClicked(event, args));
+    }
+
+    __row1LogoClicked(event, args) {
+        App.Router.Navigate('/main');
     }
 
     __row1RightLogoutClicked(event, args) {
@@ -45932,16 +46245,156 @@ App.Modules.YerevanParking.Layouts.Wallet = class extends Colibri.UI.Pane {
 App.Modules.YerevanParking.Icons = {};
 
 
-App.Modules.YerevanParking.Icons.Logo = '<svg style="max-width: 300px; max-height: 300px;" width="1177" height="1048" viewBox="0 0 1177 1048" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.2" fill-rule="evenodd" clip-rule="evenodd" d="M672.831 193.139C667.236 198.312 664.691 205.611 665.409 212.683C616.419 266.695 565.1 318.21 513.236 369.547C512.658 339.908 471.947 279.229 466.469 308.43C460.195 342.941 474.861 381.322 479.822 402.773C464.679 417.959 449.523 433.133 434.38 448.319C422.632 447.231 411.213 453.864 406.545 465.123L399.625 481.51C378.637 500.402 356.839 518.114 337.543 538.68C300.053 578.359 310.569 584.764 305.766 610.703C305.469 612.879 304.985 615.124 304.492 617.392C301.284 620.063 298.059 624.536 295.701 631.763C289.545 652.065 292.455 670.222 298.672 684.994C299.692 695.984 302.073 707.42 306.325 720.45C316.316 750.047 422.25 851.458 452.461 860.067C463.455 863.307 473.396 865.266 482.961 866.037C496.379 871.049 512.02 873.173 529.72 868.455C537.254 866.387 542.006 863.211 544.775 859.621C550.31 858.521 555.933 857.156 562.026 855.802C579.012 851.891 587.745 855.1 602.801 846.266C605.739 850.482 609.933 854.064 614.97 856.14C629.006 861.974 645.128 855.321 650.924 841.267L686.405 756.439C693.686 747.296 701.235 738.266 709.226 729.689C727.24 710.203 745.165 690.536 762.993 670.676C785.289 675.442 821.524 686.311 853.489 678.992C880.746 672.599 826.192 638.18 795.267 635.084C846.935 578.215 898.767 521.727 953.285 467.982C960.497 469.448 968.416 467.219 974.011 461.582L1037.47 396.553C1042.24 391.554 1044.31 385.147 1044.05 378.98C1054.2 366.449 1060.04 355.303 1061.94 342.909C1086.04 309.472 1115.34 272.378 1040.47 195.809C1004.6 159.131 981.272 136.849 943.014 102.67C863.27 30.904 827.533 62.0966 795.143 87.6132C771.538 92.2453 752.71 112.366 721.978 148.321L672.831 193.139Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M876.319 471.19L812.867 536.219C803.965 545.241 804.294 559.917 813.317 568.855C822.335 577.773 836.997 577.456 845.719 568.522L909.355 503.405C918.077 494.471 917.929 479.707 908.902 470.773C899.971 462.032 885.221 462.172 876.319 471.19Z" fill="#4C4C4C"/><path fill-rule="evenodd" clip-rule="evenodd" d="M278.222 572.096L236.366 672.603C230.548 686.649 237.294 702.979 251.346 708.805C265.38 714.64 281.507 707.986 287.3 693.933L329.157 593.425C334.974 579.379 328.315 563.23 314.272 557.42C300.237 551.585 284.127 558.231 278.222 572.096Z" fill="#4C4C4C"/><path fill-rule="evenodd" clip-rule="evenodd" d="M611.598 238.949L544.579 300.291C535.231 308.842 534.568 323.335 543.142 332.709C551.691 342.076 566.256 342.93 575.624 334.371L642.616 273.021C651.968 264.47 652.714 249.694 644.165 240.328C635.616 230.962 620.95 230.398 611.598 238.949Z" fill="#4C4C4C"/><path fill-rule="evenodd" clip-rule="evenodd" d="M912.153 302.737C987.296 379.416 957.808 416.578 933.915 449.937C929.749 476.238 907.096 497.298 865.924 535.833C764.868 630.021 674.693 735.162 581.047 836.814C554.027 866.054 531.663 899.337 504.101 927.914C466.172 967.139 459.437 956.876 433.746 962.759C392.33 972.383 365.452 979.053 324.247 967.208C294.047 958.615 188.103 857.188 178.205 827.322C164.469 786.703 170.017 759.519 177.647 717.579C182.254 691.732 171.754 685.32 209.244 645.64C236.626 616.69 268.82 593.06 296.906 564.651C394.046 466.505 494.93 371.497 584.378 266.263C620.818 223.493 640.979 199.594 667.023 194.447C699.237 169.017 735.059 138.004 814.894 209.504C852.956 243.777 876.275 266.043 912.153 302.737Z" fill="#C02C2C"/><path fill-rule="evenodd" clip-rule="evenodd" d="M334.658 952.937C367.711 964.658 405.285 964.305 434.448 949.793C477.916 928.143 540.035 849.599 574.364 815.027C580.621 787.482 580.665 772.621 587.103 744.987C503.326 657.859 478.675 634.205 387.913 554.484C360.741 561.965 346.064 562.752 318.8 570.497C285.904 606.17 210.208 671.917 190.506 716.302C177.424 746.015 178.712 783.635 192.016 816.36C203.377 844.636 305.929 942.73 334.658 952.937Z" fill="#D94B4A"/><path fill-rule="evenodd" clip-rule="evenodd" d="M572.221 597.179L551.795 582.748L536.323 562.768L531.719 568.586L428.468 495.576L319.064 570.61C287.869 593.979 289.521 644.934 303.437 678.47C324.459 728.621 416.286 816.593 467.34 835.372C501.472 847.916 552.526 847.129 574.332 815.019L644.157 702.144L566.702 602.054L572.221 597.179Z" fill="#0F738D"/><path fill-rule="evenodd" clip-rule="evenodd" d="M303.354 629.772C307.935 607.579 373.801 568.586 406.248 577.846C408.014 578.299 417.832 601.789 418.963 603.054C433.794 602.13 457.009 645.998 450.611 662.838C449.64 665.115 423.804 690.487 421.592 691.813C419.397 714.668 370.194 777.568 323.947 702.61C319.766 695.519 284.142 636.686 303.354 629.772Z" fill="#4CB0A4"/><path opacity="0.1" fill-rule="evenodd" clip-rule="evenodd" d="M303.354 629.772C307.935 607.579 373.801 568.586 406.248 577.846C408.014 578.299 417.832 601.789 418.963 603.054C433.794 602.13 457.009 645.998 450.611 662.838C449.64 665.115 423.804 690.487 421.592 691.813C419.397 714.668 370.194 777.568 323.947 702.61C319.766 695.519 284.142 636.686 303.354 629.772Z" fill="black"/><path d="M317.227 624.985C313.097 628.784 313.929 636.425 318.6 646.114C322.452 654.109 328.777 664.023 336.892 673.86C338.746 676.085 340.379 677.887 341.816 679.791C349.121 687.946 356.219 694.635 362.327 698.683C369.77 703.919 376.219 705.473 380.335 702.18L380.546 702.08C384.567 698.59 383.845 690.636 379.174 680.947C375.322 672.953 368.785 663.139 360.882 653.201C359.028 650.981 357.395 649.174 356.059 647.487C348.653 639.115 341.342 632.53 335.446 628.378C328.004 623.142 321.554 621.588 317.439 624.881L317.227 624.985ZM323.683 632.506C323.997 632.615 326.266 634.112 329.775 636.562C335.16 640.196 341.74 646.351 348.527 653.976C350.176 655.771 351.614 657.67 353.247 659.477C360.843 668.781 366.767 677.863 370.313 685.223C372.853 690.491 374.363 694.166 374.042 694.583C373.516 694.575 371.247 693.073 367.738 690.624C362.564 686.89 355.984 680.734 349.198 673.113C347.549 671.314 345.916 669.507 344.478 667.608C336.882 658.305 330.958 649.222 327.411 641.866C324.888 636.586 323.481 633.125 323.683 632.506Z" fill="#545454"/><path fill-rule="evenodd" clip-rule="evenodd" d="M451.711 588.607C459.786 600.532 479.453 619.513 472.437 650.643C467.769 671.571 462.134 692.865 427.272 700.594C419.521 702.264 406.059 701.738 394.052 702.61C374.411 704.3 367.29 683.613 383.925 680.513C400.034 677.406 416.876 675.775 425.807 678.727C435.223 669.78 443.836 644.657 432.257 654.542C415.572 668.785 389.04 657.638 369.683 595.987C364.532 579.592 341.093 601.938 342.683 630.603C341.554 610.101 327.062 642.806 325.857 624.186C325.514 618.641 327.634 597.713 330.077 586.663C335.198 563.969 398.246 550.826 408.628 555.163C412.16 556.576 425.473 557.331 440.709 579.817L451.711 588.607Z" fill="#4CB0A4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M446.943 552.938C456.238 544.815 445.839 519.495 423.539 523.759C421.448 524.245 416.531 525.329 415.006 522.165C414.609 534.801 422.752 535.034 426.605 543.029C430.671 550.919 441.404 553.28 446.943 552.938Z" fill="#663300"/><path fill-rule="evenodd" clip-rule="evenodd" d="M429.969 550.67C457.835 535.922 487.693 596.248 440.42 609.964C439.064 610.358 434.356 610.297 433.131 609.338C429.92 607.511 426.625 611.956 425.261 611.831C423.282 611.478 423.27 605.531 418.377 603.467C406.637 599.018 397.486 566.081 429.969 550.67Z" fill="#E7B1A1"/><path fill-rule="evenodd" clip-rule="evenodd" d="M448.464 556.612C450.499 552.252 447.97 547 442.897 544.518C437.916 542.258 432.16 543.727 430.109 548.096C428.074 552.457 430.707 557.921 435.676 560.186C440.761 562.66 446.413 560.977 448.464 556.612Z" fill="#FF99CC"/><path fill-rule="evenodd" clip-rule="evenodd" d="M422.319 575.115C425.425 588.43 434.444 599.645 445.558 603.371C459.995 608.085 475.917 600.885 469.688 576.127C467.203 566.691 456.086 547.787 446.537 547.008C439.457 546.442 439.907 544.253 431.293 548.409C426.987 550.224 426.822 551.67 418.213 555.303C407.288 560.05 405.542 576.372 408.632 574.039C424.41 562.162 422.218 574.902 422.319 575.115Z" fill="#663300"/><path fill-rule="evenodd" clip-rule="evenodd" d="M400.886 748.477C390.079 713.604 355.5 608.209 391.167 509.517C395.037 498.804 423.796 492.492 417.358 502.048C354.586 595.441 404.325 720.964 414.809 754.789C418.193 765.763 404.261 759.394 400.886 748.477Z" fill="#606060"/><path fill-rule="evenodd" clip-rule="evenodd" d="M301.542 601.251C311.561 665.356 452.072 795.685 505.04 820.857C554.645 844.335 582.014 806.402 548.44 859.372C531.061 886.712 455.929 865.034 430.711 845.334C397.643 819.207 384.551 819.371 347.109 780.756C318.778 751.842 240.183 649.346 278.746 614.517C281.377 612.104 300.038 592.465 301.542 601.251Z" fill="#777777"/><path fill-rule="evenodd" clip-rule="evenodd" d="M460.818 656.357C456.15 677.289 461.773 692.206 426.922 699.952C419.172 701.618 405.71 701.096 393.702 701.963C374.061 703.658 366.939 682.967 383.574 679.867C399.683 676.763 416.523 675.133 425.453 678.08C434.857 669.142 467.834 625.226 460.818 656.357Z" fill="#4CB0A4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M301.754 629.816C325.731 663.565 353.48 640.208 356.949 669.937C360.389 699.397 391.223 732.757 390.69 733.275C380.592 746.188 346.889 722.498 338.476 704.501C329.851 686.609 300.782 646.166 304.524 631.896C304.524 631.896 302.222 638.031 302.638 638.356L301.754 629.816Z" fill="#777777"/><path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M470.013 556.135C465.871 562.306 467.079 567.297 464.338 576.103C442.993 644.749 424.683 767.714 435.419 839.139C439.521 866.399 465.558 843.532 474.946 862.384C450.458 813.252 491.346 645.853 504.671 598.159L470.013 556.135Z" fill="#71B3D3"/><path fill-rule="evenodd" clip-rule="evenodd" d="M378.879 672.286C377.01 671.117 375.172 668.889 373.495 669.696C372.859 670.005 373.772 671.896 375.107 673.583C379.93 679.301 374.078 679.53 368.898 677.361C366.411 676.49 365.192 673.964 363.002 673.209C359.675 672.222 358.872 677.012 363.353 685.223C365.491 689.118 365.717 695.503 373.524 696.663C376.018 697.008 378.777 694.651 383.381 693.455C386.526 692.985 387.853 687.159 386.445 683.151C385.548 680.75 380.952 673.88 378.879 672.286Z" fill="#FFCC99"/><path fill-rule="evenodd" clip-rule="evenodd" d="M346.126 632.835C346.826 634.831 348.57 637.365 347.199 638.81C346.666 639.328 345.237 637.947 343.799 636.048C339.807 629.932 338.064 635.437 338.408 640.983C338.677 643.705 340.743 645.825 340.918 647.813C341.087 651.37 335.963 650.985 329.382 644.291C326.304 641.111 320.175 639.14 321.32 631.31C321.662 628.812 324.829 626.764 326.966 622.616C328.469 619.822 334.526 620.014 337.823 622.564C339.778 623.954 345.221 630.418 346.126 632.835Z" fill="#FFCC99"/><path fill-rule="evenodd" clip-rule="evenodd" d="M604.711 274.911C579.445 301.715 553.814 328.254 528.11 354.606L542.13 367.867C578.173 333.148 613.417 299.058 644.844 265.461C671.867 236.222 690.093 214.844 693.794 201.578C665.67 225.7 635.749 241.924 604.711 274.911ZM519.377 363.523C467.408 416.939 414.432 469.717 362.465 523.137C382.895 512.376 404.707 498.936 427.942 481.879C461.488 446.135 497.358 411.057 533.047 376.511L519.377 363.523Z" fill="#0F738D"/><path fill-rule="evenodd" clip-rule="evenodd" d="M856.307 515.921C830.604 542.274 805.322 569.084 780.236 595.802L766.301 582.72C799.321 544.976 831.888 508.119 864.106 475.246C891.84 447.03 912.562 427.584 925.563 423.32C902.705 452.824 887.995 483.325 856.307 515.921ZM771.691 605.11C720.698 659.626 670.411 714.704 619.417 769.22C629.303 748.248 641.934 725.967 657.659 701.738C691.992 666.717 725.374 629.262 758.209 592.052L771.691 605.11Z" fill="#0F738D"/><path opacity="0.2" fill-rule="evenodd" clip-rule="evenodd" d="M856.307 515.921C830.604 542.274 805.322 569.084 780.236 595.802L766.301 582.72C799.321 544.976 831.888 508.119 864.106 475.246C891.84 447.03 912.562 427.584 925.563 423.32C902.705 452.824 887.995 483.325 856.307 515.921ZM771.691 605.11C720.698 659.626 670.411 714.704 619.417 769.22C629.303 748.248 641.934 725.967 657.659 701.738C691.992 666.717 725.374 629.262 758.209 592.052L771.691 605.11Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M714.28 190.98L710.118 216.832C733.959 208.024 763.074 222.326 781.043 239.532C815.259 272.282 849.648 304.971 883.861 337.722C901.814 354.936 917.355 383.427 909.58 407.865L935.187 402.267C946.975 374.527 920.044 339.608 897.784 318.622L799.71 224.656C777.559 203.436 741.525 178.076 714.28 190.98Z" fill="#0F738D"/><path opacity="0.2" fill-rule="evenodd" clip-rule="evenodd" d="M714.28 190.98L710.118 216.832C733.959 208.024 763.074 222.326 781.043 239.532C815.259 272.282 849.648 304.971 883.861 337.722C901.814 354.936 917.355 383.427 909.58 407.865L935.187 402.267C946.975 374.527 920.044 339.608 897.784 318.622L799.71 224.656C777.559 203.436 741.525 178.076 714.28 190.98Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M714.276 190.981L710.114 216.834C733.955 208.026 763.074 222.328 781.043 239.534L880.281 334.505L883.684 305.2L799.719 224.674C777.559 203.438 741.525 178.078 714.276 190.981Z" fill="#0F738D"/><path fill-rule="evenodd" clip-rule="evenodd" d="M614.946 777.214C623.021 768.814 678.671 796.633 725.157 785.908C758.944 778.158 668.05 727.533 650.579 745.851C622.552 775.335 651.398 751.749 621.018 762.362C616.23 764.008 616.154 775.97 614.946 777.214Z" fill="#D94B4A"/><path fill-rule="evenodd" clip-rule="evenodd" d="M351.835 525.345C359.912 516.945 329.631 462.493 338.245 415.594C344.512 381.531 399.033 469.946 381.587 488.276C353.559 517.76 375.792 487.914 366.587 518.672C365.167 523.639 353.213 523.996 351.835 525.345Z" fill="#D94B4A"/><path fill-rule="evenodd" clip-rule="evenodd" d="M201.769 831.931C196.522 824.796 200.475 794.761 197.597 774.335C193.372 745.995 191.684 724.333 188.206 720.823C185.853 720.149 173.376 720.337 167.409 738.736C149.956 795.287 204.257 835.678 201.769 831.931Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M309.773 937.265C316.764 942.903 346.935 940.269 367.164 943.999C395.252 949.127 417.025 951.893 420.312 955.475C420.814 957.928 420.107 970.412 401.39 975.399C344.431 990.513 306.274 934.671 309.773 937.265Z" fill="white"/><path opacity="0.2" fill-rule="evenodd" clip-rule="evenodd" d="M543.7 613.879C539.337 621.613 535.504 630.438 532.734 640.983C513.072 713.897 502.467 779.993 502.042 842.5C529.901 844.363 559.048 837.276 574.38 815.023L644.206 702.148L574.938 612.502L543.7 613.879Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M497.254 639.665C468.668 612.06 441.331 579.126 427.292 541.587C419.264 520.27 421.034 497.362 442.7 475.21C519.734 396.872 592.526 330.717 670.27 252.941C697.715 225.53 727.039 213.192 753.574 231.876C803.242 266.863 859.506 320.702 896.496 368.54C916.323 394.301 905.41 424.312 879.205 452.917C805.125 534.091 738.578 606.242 663.696 686.677C642.564 709.476 619.811 712.126 598.261 705.196C560.224 692.965 525.923 666.99 497.254 639.665Z" fill="#D94B4A"/><path d="M690.962 579.703L556.5 456.241L605.21 403.191C614.574 392.993 624.499 386.093 634.986 382.491C645.429 378.85 655.815 378.301 666.143 380.847C676.467 383.309 686.094 388.639 695.023 396.837C703.953 405.036 710.063 414.196 713.354 424.317C716.646 434.439 716.84 444.903 713.936 455.709C711.073 466.471 704.899 477.017 695.414 487.347L664.367 521.16L641.585 500.241L668.411 471.024C673.435 465.553 676.634 460.18 678.007 454.907C679.377 449.549 679.18 444.448 677.417 439.603C675.651 434.673 672.557 430.179 668.137 426.12C663.672 422.02 658.953 419.341 653.978 418.081C649 416.737 643.944 417.016 638.811 418.917C633.633 420.778 628.512 424.466 623.448 429.981L605.845 449.153L717.066 551.274L690.962 579.703Z" fill="white"/></svg>';
+App.Modules.YerevanParking.Icons.Logo = '<svg width="176" height="235" viewBox="0 0 176 235" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M89.5733 141.063H62.4963V105.758H46.7539V141.063V206.472C46.7539 215.824 46.7539 227.907 46.7539 235C41.8108 235 30.172 235 23.4552 235C16.4236 235 10.7563 232.636 6.45341 227.907C2.15048 223.074 -0.000976562 216.034 -0.000976562 206.787V28.6854C-0.000976562 18.3881 2.36038 11.0329 7.0831 6.61972C11.8058 2.20657 19.3097 0 29.5947 0H89.5733C107.31 0 120.953 1.36597 130.504 4.09792C139.949 6.72479 148.083 11.0854 154.904 17.1797C161.831 23.2741 167.078 30.7344 170.647 39.5607C174.215 48.387 175.999 58.3166 175.999 69.3494C175.999 92.8862 168.758 110.749 154.275 122.938C139.792 135.021 118.224 141.063 89.5733 141.063ZM78.2387 35.1476H46.7539V105.758H62.4963H78.2387C89.2584 105.758 98.4415 104.602 105.788 102.29C113.239 99.9788 118.907 96.1961 122.79 90.9423C126.673 85.6886 128.614 78.8062 128.614 70.2951C128.614 60.1028 125.623 51.8019 119.641 45.3924C112.924 38.5625 99.1237 35.1476 78.2387 35.1476Z" fill="#4D4D4D"/></svg>';
+App.Modules.YerevanParking.Icons.HeaderLogo = '<svg width="272" height="245" viewBox="0 0 272 245" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M89.5733 141.063H62.4963V105.758H46.7539V141.063V206.472C46.7539 215.824 46.7539 227.907 46.7539 235C41.8108 235 30.172 235 23.4552 235C16.4236 235 10.7563 232.636 6.45341 227.907C2.15048 223.074 -0.000976562 216.034 -0.000976562 206.787V28.6854C-0.000976562 18.3881 2.36038 11.0329 7.0831 6.61972C11.8058 2.20657 19.3097 0 29.5947 0H89.5733C107.31 0 120.953 1.36597 130.504 4.09792C139.949 6.72479 148.083 11.0854 154.904 17.1797C161.831 23.2741 167.078 30.7344 170.647 39.5607C174.215 48.387 175.999 58.3166 175.999 69.3494C175.999 92.8862 168.758 110.749 154.275 122.938C139.792 135.021 118.224 141.063 89.5733 141.063ZM78.2387 35.1476H46.7539V105.758H62.4963H78.2387C89.2584 105.758 98.4415 104.602 105.788 102.29C113.239 99.9788 118.907 96.1961 122.79 90.9423C126.673 85.6886 128.614 78.8062 128.614 70.2951C128.614 60.1028 125.623 51.8019 119.641 45.3924C112.924 38.5625 99.1237 35.1476 78.2387 35.1476Z" fill="#4D4D4D"/><path d="M72.8083 185.422C71.3815 185.422 70.1099 185.175 68.9937 184.68C67.8775 184.175 66.9942 183.432 66.3438 182.452C65.7032 181.462 65.3829 180.229 65.3829 178.754C65.3829 177.511 65.611 176.468 66.0672 175.624C66.5234 174.779 67.1446 174.1 67.9308 173.585C68.7171 173.071 69.6101 172.683 70.6098 172.42C71.6193 172.158 72.6773 171.974 73.7838 171.867C75.0845 171.731 76.1328 171.605 76.9287 171.489C77.7246 171.362 78.3022 171.178 78.6613 170.935C79.0204 170.693 79.2 170.334 79.2 169.858V169.771C79.2 168.848 78.9088 168.135 78.3264 167.63C77.7538 167.126 76.9384 166.873 75.8804 166.873C74.7642 166.873 73.876 167.121 73.216 167.616C72.556 168.101 72.1192 168.713 71.9056 169.45L66.1691 168.984C66.4603 167.625 67.033 166.451 67.8872 165.461C68.7413 164.461 69.843 163.694 71.1922 163.161C72.5511 162.617 74.1236 162.345 75.9095 162.345C77.152 162.345 78.341 162.491 79.4767 162.782C80.622 163.073 81.6363 163.525 82.5196 164.136C83.4126 164.748 84.1163 165.534 84.6308 166.495C85.1452 167.446 85.4024 168.586 85.4024 169.916V185H79.5203V181.899H79.3456C78.9865 182.598 78.506 183.214 77.9042 183.748C77.3024 184.272 76.5793 184.685 75.7348 184.985C74.8904 185.277 73.9149 185.422 72.8083 185.422ZM74.5846 181.142C75.497 181.142 76.3026 180.962 77.0015 180.603C77.7004 180.234 78.2488 179.739 78.6468 179.118C79.0447 178.497 79.2437 177.793 79.2437 177.007V174.634C79.0496 174.76 78.7826 174.876 78.4429 174.983C78.1129 175.08 77.7392 175.172 77.3218 175.26C76.9044 175.337 76.4871 175.41 76.0697 175.478C75.6523 175.536 75.2738 175.59 74.934 175.638C74.2061 175.745 73.5703 175.915 73.0267 176.148C72.4832 176.381 72.0609 176.696 71.76 177.094C71.4591 177.482 71.3087 177.968 71.3087 178.55C71.3087 179.395 71.6144 180.04 72.2259 180.487C72.8472 180.923 73.6334 181.142 74.5846 181.142ZM90.2144 185V162.636H96.2275V166.538H96.4605C96.8682 165.15 97.5525 164.102 98.5134 163.393C99.4743 162.675 100.581 162.316 101.833 162.316C102.144 162.316 102.478 162.335 102.838 162.374C103.197 162.413 103.512 162.467 103.784 162.534V168.038C103.493 167.951 103.09 167.873 102.576 167.805C102.061 167.737 101.59 167.703 101.163 167.703C100.251 167.703 99.4355 167.902 98.7172 168.3C98.0087 168.688 97.4457 169.232 97.0283 169.931C96.6207 170.63 96.4168 171.435 96.4168 172.348V185H90.2144ZM112.611 178.565L112.625 171.125H113.528L120.691 162.636H127.811L118.187 173.876H116.717L112.611 178.565ZM106.991 185V155.182H113.193V185H106.991ZM120.968 185L114.387 175.26L118.522 170.877L128.233 185H120.968ZM130.854 185V162.636H137.056V185H130.854ZM133.97 159.754C133.048 159.754 132.257 159.448 131.597 158.836C130.946 158.215 130.621 157.473 130.621 156.609C130.621 155.754 130.946 155.022 131.597 154.41C132.257 153.789 133.048 153.478 133.97 153.478C134.892 153.478 135.678 153.789 136.328 154.41C136.989 155.022 137.319 155.754 137.319 156.609C137.319 157.473 136.989 158.215 136.328 158.836C135.678 159.448 134.892 159.754 133.97 159.754ZM148.227 172.071V185H142.025V162.636H147.936V166.582H148.198C148.693 165.281 149.523 164.252 150.688 163.495C151.853 162.729 153.265 162.345 154.925 162.345C156.478 162.345 157.832 162.685 158.987 163.364C160.142 164.044 161.04 165.014 161.68 166.276C162.321 167.528 162.641 169.023 162.641 170.761V185H156.439V171.867C156.449 170.499 156.099 169.431 155.391 168.664C154.682 167.888 153.707 167.499 152.464 167.499C151.629 167.499 150.892 167.679 150.251 168.038C149.62 168.397 149.125 168.921 148.766 169.61C148.417 170.29 148.237 171.11 148.227 172.071ZM177.605 193.852C175.596 193.852 173.873 193.576 172.436 193.022C171.01 192.479 169.874 191.736 169.029 190.795C168.185 189.853 167.637 188.795 167.384 187.621L173.121 186.849C173.295 187.296 173.572 187.713 173.951 188.101C174.329 188.489 174.829 188.8 175.45 189.033C176.081 189.276 176.848 189.397 177.751 189.397C179.1 189.397 180.211 189.067 181.085 188.407C181.968 187.757 182.41 186.665 182.41 185.131V181.04H182.148C181.876 181.661 181.468 182.248 180.925 182.801C180.381 183.355 179.682 183.806 178.828 184.156C177.974 184.505 176.955 184.68 175.771 184.68C174.091 184.68 172.563 184.291 171.184 183.515C169.816 182.729 168.724 181.53 167.908 179.919C167.103 178.298 166.7 176.25 166.7 173.775C166.7 171.241 167.112 169.125 167.938 167.426C168.763 165.728 169.859 164.456 171.228 163.612C172.606 162.767 174.116 162.345 175.756 162.345C177.008 162.345 178.056 162.559 178.901 162.986C179.745 163.403 180.425 163.927 180.939 164.558C181.463 165.179 181.866 165.791 182.148 166.393H182.381V162.636H188.539V185.218C188.539 187.121 188.074 188.713 187.142 189.994C186.21 191.275 184.919 192.236 183.269 192.877C181.628 193.527 179.741 193.852 177.605 193.852ZM177.736 180.021C178.736 180.021 179.58 179.773 180.27 179.278C180.968 178.773 181.502 178.055 181.871 177.123C182.25 176.182 182.439 175.056 182.439 173.745C182.439 172.435 182.254 171.299 181.886 170.338C181.517 169.368 180.983 168.616 180.284 168.082C179.585 167.548 178.736 167.281 177.736 167.281C176.717 167.281 175.858 167.558 175.159 168.111C174.46 168.654 173.931 169.411 173.572 170.382C173.213 171.353 173.033 172.474 173.033 173.745C173.033 175.036 173.213 176.153 173.572 177.094C173.941 178.026 174.47 178.749 175.159 179.263C175.858 179.768 176.717 180.021 177.736 180.021Z" fill="#8C8C8C"/><path d="M72.5327 205.182V235H66.2283V205.182H72.5327ZM83.8055 222.071V235H77.6031V212.636H83.5143V216.582H83.7764C84.2714 215.281 85.1013 214.252 86.2661 213.495C87.4308 212.729 88.8431 212.345 90.5029 212.345C92.056 212.345 93.41 212.685 94.5651 213.364C95.7201 214.044 96.618 215.014 97.2586 216.276C97.8992 217.528 98.2195 219.023 98.2195 220.761V235H92.0171V221.867C92.0268 220.499 91.6774 219.431 90.9688 218.664C90.2603 217.888 89.2848 217.499 88.0423 217.499C87.2076 217.499 86.4699 217.679 85.8293 218.038C85.1984 218.397 84.7033 218.921 84.3442 219.61C83.9948 220.29 83.8152 221.11 83.8055 222.071ZM110.967 205.182H118.028L124.827 218.023H125.119L131.918 205.182H138.979L128.103 224.459V235H121.843V224.459L110.967 205.182ZM147.813 235.437C145.513 235.437 143.533 234.971 141.873 234.039C140.223 233.098 138.951 231.768 138.058 230.05C137.165 228.322 136.719 226.279 136.719 223.92C136.719 221.62 137.165 219.601 138.058 217.863C138.951 216.126 140.208 214.772 141.829 213.801C143.46 212.83 145.372 212.345 147.566 212.345C149.041 212.345 150.415 212.583 151.686 213.059C152.968 213.525 154.084 214.228 155.035 215.17C155.996 216.111 156.743 217.295 157.277 218.722C157.811 220.139 158.078 221.799 158.078 223.702V225.405H139.194V221.561H152.24C152.24 220.668 152.045 219.877 151.657 219.188C151.269 218.499 150.73 217.96 150.041 217.572C149.362 217.174 148.57 216.975 147.668 216.975C146.726 216.975 145.892 217.194 145.164 217.63C144.445 218.057 143.882 218.635 143.475 219.363C143.067 220.081 142.858 220.882 142.849 221.765V225.42C142.849 226.526 143.052 227.482 143.46 228.288C143.877 229.094 144.465 229.715 145.222 230.152C145.979 230.588 146.877 230.807 147.915 230.807C148.604 230.807 149.235 230.71 149.808 230.516C150.381 230.321 150.871 230.03 151.279 229.642C151.686 229.254 151.997 228.778 152.21 228.215L157.947 228.594C157.656 229.972 157.059 231.176 156.156 232.205C155.263 233.224 154.108 234.02 152.691 234.592C151.283 235.155 149.658 235.437 147.813 235.437ZM162.126 235V212.636H168.139V216.538H168.372C168.779 215.15 169.464 214.102 170.425 213.393C171.385 212.675 172.492 212.316 173.744 212.316C174.055 212.316 174.39 212.335 174.749 212.374C175.108 212.413 175.423 212.467 175.695 212.534V218.038C175.404 217.951 175.001 217.873 174.487 217.805C173.972 217.737 173.501 217.703 173.074 217.703C172.162 217.703 171.347 217.902 170.628 218.3C169.92 218.688 169.357 219.232 168.939 219.931C168.532 220.63 168.328 221.435 168.328 222.348V235H162.126ZM188.053 235.437C185.752 235.437 183.772 234.971 182.112 234.039C180.462 233.098 179.191 231.768 178.298 230.05C177.405 228.322 176.958 226.279 176.958 223.92C176.958 221.62 177.405 219.601 178.298 217.863C179.191 216.126 180.448 214.772 182.069 213.801C183.699 212.83 185.611 212.345 187.805 212.345C189.281 212.345 190.654 212.583 191.926 213.059C193.207 213.525 194.323 214.228 195.274 215.17C196.235 216.111 196.983 217.295 197.516 218.722C198.05 220.139 198.317 221.799 198.317 223.702V225.405H179.433V221.561H192.479C192.479 220.668 192.285 219.877 191.896 219.188C191.508 218.499 190.969 217.96 190.28 217.572C189.601 217.174 188.81 216.975 187.907 216.975C186.966 216.975 186.131 217.194 185.403 217.63C184.685 218.057 184.122 218.635 183.714 219.363C183.306 220.081 183.098 220.882 183.088 221.765V225.42C183.088 226.526 183.292 227.482 183.699 228.288C184.117 229.094 184.704 229.715 185.461 230.152C186.218 230.588 187.116 230.807 188.155 230.807C188.844 230.807 189.475 230.71 190.047 230.516C190.62 230.321 191.11 230.03 191.518 229.642C191.926 229.254 192.236 228.778 192.45 228.215L198.186 228.594C197.895 229.972 197.298 231.176 196.395 232.205C195.502 233.224 194.347 234.02 192.93 234.592C191.523 235.155 189.897 235.437 188.053 235.437ZM222.614 212.636L214.795 235H207.806L199.988 212.636H206.54L211.184 228.637H211.417L216.047 212.636H222.614ZM231.564 235.422C230.137 235.422 228.866 235.175 227.75 234.68C226.633 234.175 225.75 233.432 225.1 232.452C224.459 231.462 224.139 230.229 224.139 228.754C224.139 227.511 224.367 226.468 224.823 225.624C225.279 224.779 225.9 224.1 226.687 223.585C227.473 223.071 228.366 222.683 229.366 222.42C230.375 222.158 231.433 221.974 232.54 221.867C233.84 221.731 234.889 221.605 235.685 221.489C236.48 221.362 237.058 221.178 237.417 220.935C237.776 220.693 237.956 220.334 237.956 219.858V219.771C237.956 218.848 237.665 218.135 237.082 217.63C236.51 217.126 235.694 216.873 234.636 216.873C233.52 216.873 232.632 217.121 231.972 217.616C231.312 218.101 230.875 218.713 230.661 219.45L224.925 218.984C225.216 217.625 225.789 216.451 226.643 215.461C227.497 214.461 228.599 213.694 229.948 213.161C231.307 212.617 232.879 212.345 234.665 212.345C235.908 212.345 237.097 212.491 238.233 212.782C239.378 213.073 240.392 213.525 241.275 214.136C242.168 214.748 242.872 215.534 243.387 216.495C243.901 217.446 244.158 218.586 244.158 219.916V235H238.276V231.899H238.101C237.742 232.598 237.262 233.214 236.66 233.748C236.058 234.272 235.335 234.685 234.491 234.985C233.646 235.277 232.671 235.422 231.564 235.422ZM233.34 231.142C234.253 231.142 235.059 230.962 235.757 230.603C236.456 230.234 237.005 229.739 237.403 229.118C237.801 228.497 238 227.793 238 227.007V224.634C237.805 224.76 237.539 224.876 237.199 224.983C236.869 225.08 236.495 225.172 236.078 225.26C235.66 225.337 235.243 225.41 234.826 225.478C234.408 225.536 234.03 225.59 233.69 225.638C232.962 225.745 232.326 225.915 231.783 226.148C231.239 226.381 230.817 226.696 230.516 227.094C230.215 227.482 230.065 227.968 230.065 228.55C230.065 229.395 230.37 230.04 230.982 230.487C231.603 230.923 232.389 231.142 233.34 231.142ZM255.173 222.071V235H248.97V212.636H254.881V216.582H255.144C255.639 215.281 256.468 214.252 257.633 213.495C258.798 212.729 260.21 212.345 261.87 212.345C263.423 212.345 264.777 212.685 265.932 213.364C267.087 214.044 267.985 215.014 268.626 216.276C269.266 217.528 269.587 219.023 269.587 220.761V235H263.384V221.867C263.394 220.499 263.045 219.431 262.336 218.664C261.627 217.888 260.652 217.499 259.41 217.499C258.575 217.499 257.837 217.679 257.196 218.038C256.566 218.397 256.071 218.921 255.711 219.61C255.362 220.29 255.182 221.11 255.173 222.071Z" fill="#8C8C8C"/></svg>';
 App.Modules.YerevanParking.Icons.Flag = '<svg width="98" height="74" viewBox="0 0 98 74" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_148_1796)"><path d="M0.00012207 -5.72205e-06H98.0001V74H0.00012207V-5.72205e-06Z" fill="#F2A800"/><path d="M0.00012207 -5.72205e-06H98.0001V49.3333H0.00012207V-5.72205e-06Z" fill="#0033A0"/><path d="M0.00012207 -5.72205e-06H98.0001V24.6667H0.00012207V-5.72205e-06Z" fill="#D90012"/></g><defs><clipPath id="clip0_148_1796"><rect width="98" height="74" fill="white"/></clipPath></defs></svg>';
 App.Modules.YerevanParking.Icons.Vahile = '<svg width="106" height="112" viewBox="0 0 106 112" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><rect y="-2.95639e-05" width="106" height="112" fill="url(#pattern0)"/><defs><pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1"><use xlink:href="#image0_6_88" transform="scale(0.00943396 0.00892857)"/></pattern><image id="image0_6_88" width="106" height="112" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGoAAABwCAYAAAD2bOVqAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAEajSURBVHhezZ159GxVded3zdNvfDOP4fGYQWYQjahojCumjcs4D6uDtplsYyfpwaz8kRjbzupeyQrL2Enapd0d25ikHYKzqIAICAJRUEAekwKPmTf+hvrVdG9V9fdzbu3fO6+oX6F/pM3+vfPuuWfYZ589nX3OvVWVW1lZGs7MzlraT22QMyvkCzbsD62Qy1supwIVDodDG5IdDNSub91y0frDQSinT5FkQ8vZIKR6vmTNZtO63a4tLCxYPp+3vvp1Oh0rFotWKpWs1WpZvT4Tyur1emhbKBTCGLThvlwuh36kSqViAHkAHECv11vvAyRJEuiu1+p26PAhm5mZCeODr6pxkjSx5tBCG1JBdSVNriDKj8DA+pqPZmh5paLqmF9efAlQyNrCE2HK8vAo5ALLAuRyhSwzzGeXrMM65L2DIKeb3OgeusAXQ67Taw9hUCfpiTEiRw2KubIIFMvFgGHGF8sXs6kwVk9JVRIWyCRU0QHbChIeHVZ6batWq8JTtGa7GZgHLoD8li1bNNeCrTRXgpBK+YodPHzQNi9uDmUwFwGsra2t90EQ8/Pz1m63bW5mzpJ+EmiFdq5pmgaBlItlW2s1Q3/aB4VoNER7zlabq0Hgw0I54M2LIUWEpGkUII/paG4tTaY/TAPevLhXgieqKDDfgQSS6QQcVZsjzEdV6TOSi4BRM2Fl7dYrAgT8QhkMIicl1xVhhftRvUPhA//5Ax/og0Qpl4PdJf2N7vt5yw8kMqlIP5XERHwqplV7fSulXaskXV0TK4vRvUSDloq2f2nFrrr6aiuUK7a4eZstidnfufV79tiTT9vScsv2Pv6UtbsDq9Tn7JbbbrfG7KLyDavWGvbkvoP2wI8etkJlxn5w1x675dbvW65Ys6dVXp6Zl9lW7fqbbpZC1W12cdH2H1y2J57aZyXhemTvE7ay1rXG/II9vPdx+9rV37TtO46zSmNOjCtJyzUPCTHVvGbEiJLmU+rJwkV/fiChDHqaZ6o5DiT8nFXFi0IqS0Vl81JgrENpwHWIcmQpL2VEMtSHfFDxEf9UT8qrHsskFRCIcohMeiXciCETSCYwSJDIEdpIYIDaypqaayKoIM3JWxFLwQ2OLAC68iK8JLMpqGOFzuWh9fo9yVT5UsG6TLKYacvjTz5pt99wq+394Y+s1s9ZrVu0x/Y8ZFurC3by9uOtmuTs7ltus+Unnra7vnOrXfelq6wq/tRF6zeu/KJ95+rrLNfs2IFHHjfsYOfcvJ2waZttr85aVwLbc8v37KarrraGyBssrdlT9z9kAwms/cwBSw4uSYlkXYebtue2O+zWa6+3TeWSNYQ7Obxqc+LKjMxhiJuQCeXKYrx0My0Nra98v1q0QVlzkvuHYTCKJaCoJHYHBiMULDdLEkRgpsqlzAO55YEUIBcEQ4/YoWb84TrQ+DhWrJMUrCiTldpnPYJlRknK1A+mX5ZEcqkkrka4k4J6DiT9vmwzySXWL0h4+AcJZyjhFGe0ZlRKlpe7RF5VCTPf0/qwumqnHb/LyvLnyWoraOys8J1y3LF2zOKCVaSxNbVfrFVsx8K87bnjdku1nkH3/T+4y6zdsU21qs2LwTvkurY06nbKscfapvmGNDyxnZsWhXfVHrvvxwFvsroScM7INW+q1+S3WqKja694yaXWWjok3B0btmVpBWm75DNQvfyDmCzGam5dpbbm2RETOsp3VA5jWAuxBLyJqgOIPeqp3pobaSAmj/R5ZAHiW0H+iH5BWJkAghAigRTyA1mf8Cv5uk6SpCWh0VojGDm6kKQY0phyNQysnmFgUgpBYn4qyfUkiY4ihjWN0sxrDZLbS9SvIzfIhIKGqsfjDz1o+57Yay++7GKrzxXsznu/a4Nix1a7++2hR++xa67/kt15z62247jNtmXHvNVmy3bcidtt/+GnbN9Tj9qFLzjbzrngLMuVUuukq/bgw/fY/T/eYyutA8LfleJ07ezzzrALLjnH9jx4l/340futPisXVZPWlRJZedMeUJ8HHr7XLn7h+daYq9gD6l9oiIFVocj1wjUn79DXXOQTrKXUlH6vaNKryq9J6IHFcuUwlalJbshYM1SxmFZQf/iGcFzjaYswEA73wOgiQDBqE4Qhhdd6SnLeZfyD/Zk9Oe4Y8hBN6kGG1tgENysBBSEJuYw5RHqYcUE+uJyrWLXYkKtUsFCoBb+fl2X1ZXU/fGiP3f3gHstVBvbIEz+2W++42Zq9FTt297G2ZecWW9i6YLX5mp113pmyTDFq2LZXvOpl9uhTj9jffur/2O7Tdtkxu7bbcvuw1Reqtvv0XXahGD63ReuMLDoVoxMJ68IXXWyLxyzaDbfdYN1Cz4ZyxQMJt690oLnfHt/3qD114Ak71Dxg373zNkV6a7J8KZzGg5681p+8XGBOEy4WFMwUZK1aZ4v8qWEQUMJ6JaGK+TBcl0y7gwcT09VI/AyAdcLXjOEIS2o+lHdRkl9RkjDwTlrjk0ESPFbmOjOBeJoEXpdnLSoQ2sqdrSFluYCuiEiFdID05UZycke4snJXC3BH16ZMdiW1YkvCXBVBEuL+/Qe1mLds6zE7ZaEzdurpZ9vWLcfabbfeYYcPNW3T4na75PmX2jE7TrCbb77FHn54ry0p8Ni6dbt97Wtfs337FBQo5O4rmjt06FAI29tyWUR5Tz31lK2sNEVwwQ4fPmzLy8t28SXPDx7g61//ergnqrrvgQdtz33328UXX2w7duywY+UyH3nkUbv33vs1ZVmRfFelLPe4ogBiZaB5mDXaOZvrFmxeaa6bt7lE3Be/U/EC9YYPfbReCgs/CAigkZRZUyYcTAlBENhn+xUl1neVs8YTNLhg8JbDdcEgbWEVroEnyeSIVWYWW3j/+9//AUxZt9bqtgPCgnw10UlZiMuYuZCWitLCgFSDEqpDgfKJRs2rDczty12ccdrZtvukU2znzuOtoYirXG7oOm+nnXZWiNYUGlpL0dnu3aeqf9HOPvt8O3josJ19znl2+ulnyXqHNje/KEYN7cCBJYXZfQnxoMLqesCXas3Ytm27VSuzihRnFboP7dJLLxP1xYB3bm6TnSOcxx67y44/fnfAc8opp2sPRcjf13Zg1vptzRYtVTRHsIBFFHVf1JVp4RZbUhS2GIoHNV8YpnVEgiiqjrgpMF687stCWMQQWKItDuUIGbfW15rDvi3kNa+0j3fCso6sc5k8sBoQZoiJ+kalQQcQaU7SC6WYtXRG+xMNojVoGJAnYdBEAy5u2hKYlNdi2VZvNZPCMFF5TGlOHwI62rs0qkFj2EAXtICvySKwis2bNjFMIGx5uSmGzshKVmxxYU4b02VbWJwParCsQGFBG/C1VtceeOB+K1dqgQYsZNvWRYX4q7Y4PxtcEUpJX/ZL3W5Ga0lj1uvZZljRdbDAmRkJtVLUPipj/uGuwnK5H/Z5aC9uLCcLkFPRnOQxVN7UOAsaJ9Xc4R/t+mlPQpKSatJoOcxljxdcmVJX4X5F25LA3JHFDMUzeJuF7tn8qQoC0rgOQSgCDGYoXj5rDVTUF0K9RBqBP0bD0qSTuSFZlpoqKmQZxaylEcLX75dDdNQTIq1cCqPLVoPNGjeMHwhhIj6h7IpmsXHty/8HdysgpAUgLHQUIOhRdh3EpwChmVqAL7htMcjBx1KrsOHlZAOgL/3Q4ILoBlUPK9DKnM+26oocaSlha/2CshUFL2yGCS5m5AXYagykcIMa0bHGZV2WYBirIHfaV/0QFwcaDaDtZxhHW31hz3iTJH3RVNDqjiKrgDhAxKFgzB+L5mQIngeQkjgbRoLKay8Edk4lhFSLb1Gh4+DAM7Zv70MieGibNi9IcBo2p0VdCPuy/55WViyrpE1dLSemqF2iSfRkWZwuIBSIgJlcYR4azb0f/aAQQXhYsoQGwT25YMpItEUA9Pf6sqLUVVkedY1GQy7yQBiPUwfWtv6wF/C6glAOk+gT3JmixFTzK8pj1AcVKyVat2RlWMQTco+DuQXb/rxTrSRuaznW/qtiZcJfKZh0VBGmPIusAdwFCXF5paU1+pA277NanzkuQMlxodozaY7st7AS6K9qCzHQHjQVrpq2IaliAE50Ns01gitFBgg5gATFGCEalJYNqUjky1Um2UuqnWXLHzpg91z1JfvmJ/9OAcOK7dyyoIBCpi1hrcnCWNgJZPvBc4YDlgy37qtiMAMgDBhcq9WCduMmKJc3UDtwqFcQYi+cxcHcubk5W1pZDXVeTwquRxOlrCglwZ0iSITAuSL4aceYM5VGoAXB0G9WTGBs2jGGVaUMUox80rXZflVBUjWM/0hv1X4gQf/Ke95t/+rf/Vurzi9of1Wx2qBmBW2k81JCFnubET3afzI+CnDttTfa9dffZDUpDdxWyCVlwQdJWEM4ozIxXbO2Sr0qwa7KohKbn52RVbbsuG1b7RWXvdjOPvM0RXdSFM0POdAefgESVF+Ckq8VE5gURyGNjvz26pLd84m/tRv+6i9tZumA7Zbfry1JI8X4BhLXuFzy8u1oTy8ITCIT8amY2WPzq7FgLC6npAWAfLerBVnBSEwE/5MVn6XxZYXGWBvCzFxgUWPQ19u3u1lojHWlYl5Nm+dOR/usUXsIox6gL+2YW2GER05B+zQJXVeOeovDhmge2kMK/b8nxu96y5vtLR/+c+tv3WyHhCcna6r2tfbBPpHAGoUHKGjd60mA//B/r7TPffErtmX7Dq2pFVmEeBCEo3GFnz5EjgxYpE+bHdzA6nKfB/c9accfu8Pe+qbX2wsuOj+IJz+aJ20A5h0ExckgGtbXZDjFLfe0p5Dg7v7r/2V3X3GF7V57yk5V2D67Jh87KIXdPOdiwY6kQT25kZ7ugVKJY6hC0H6IhmM9aT+DBSFK0Cz43IdISowL65VwEsBQ3lU5kWgMLiSYzgJNPwCFqMudYBHUUd5HSVSH5RWwZLk1yUULvaJURYnQzLRHMmWFCsHEklza9xXGpm/81/bK//4h626q2eFCR9sTKa+CmqpowDpgfCrFRPA98fIzn7/KvnzNN23XSSdbSRbT0xyJKuXtRHdGJ0znpEessaLcXU1BB0HY3gcftK2Lc/bmN7zeLjr3nBCEleQyfX7r8wYBA+Mni0IE4b2SZtXQxk9WUJY/XZDLm0m1l9Kmtp1ra5mtWqJNYlqsazmWuDR6iUU4+GItkGL6QJNY67UV8re0N9PEVNZln6HyjkLankwyyYsphYHKe9aWFbUlKNmS8IkKmelQkUuciIT70uABeJRwH3C7q3HUSYwhmJalaJ0YlhSuy9paXY0kDVeYFwKFgcwWDzDgXpxqVRWZlsTRvFyh5leSLXSLNQVXFSlgMQRJc1KMmppolRV2lFpjBfpl3ZpXR5v34Yx6zhStrc13UpWQ6qK/IaHOShFn5crmtN7OyyUqkhjWxZC65lTUFqhWtJIUp4TgJQe23cgjU+RMSICGysy5qICgoN06IXeewCAIVBXSVEUNQYDsymF0mluToFqK/NaU5xCmq6gpsar8a1Emnu+l0j4zrdnrqaqJVlm/lOpiFpEP+lCUhlfEiKqEzbUiqZY0gbzchKarQfuyAOGVQIuaSR5lkvGWRWtRSlGWxpInFdS8IIFy5liRZopPwitmYMWcaUpo0FjQmDIpKY8CH+FUrKdxsqRdj4RctoEskfmWpcA14ciHDa4UAYuQ65NOij4pjfZJvY4UhXnrPlFAwnrYl+JxIi+1kAFoLhxcM5fgLXCZGktudkFrMmt4sCCRFVKQibBpbqSBEvxXpQx6IAEpFYYlLZwSiOSDANUl/BGGwyBOuvvSwK6YR0rl6nLSCJYoEDI7wtsha4DKSOyxGCivTTPBB49MctIWNplBATIfoVG40VWGckQIWT5LEq6altVvKAahiex7WIAJPynPKV+iXu2YdEYDJ+Acgam1lCEvRvUVUndKMwoW2CvNKJrivFPbDs0v11VnUOoyEIPDZlGWw8NSgoK8rjkJQ3YrhctZQ657U61hi2J4Q2M3ZIlVzYyDtjnVzWo8xYNKJZtRBLmppsBM615Jyjk/uyDXPSPXm0WKiRQgBpEfhKipirKCdKrcs145kdnLvIsrch9q0V/Twij/ruZDmCECOFEu9StWT0VUUrdqr67ZzKjFrJIG1MKcy+k6SvKhmucon8qwQ35ODo6kPspnSfU57lWvPvQjOY6j81rWc7oO5Zi4+v3oCl4TThL5gfr0h/WQoDEZsmFmhVWoPJD15LdYx7ZaR2sDO6OevEZFHGpIM4tS3KQkDmhtLhRZo6RFcoGadFAqLERezjYpSNimdWyrFGCLtgCLhZJtJmmPuUgq1dWuZrPVeZstz6ikbHOVWZuRssxW61IyGQLKG0Qj1NINBBSe/CrpH/qvAg2YHyrkHa6pgcxJ60Z+2NHEZbYiJNMuFkS5qkTDpGW5FzFe+5DCkCfCCo/lYUnaLUxNedpPSbRJtUaM91svGzF9o3QUPtEVJ+gbDjQvza3cb2kOTQllRVzoyhrhhvaEqdbVtK32CqxkDQRWYU1SLY/tMVdpeLhyWpFoeeBUBkubqzdsvjJjC7UZm6vOWFXhPZaDa24UeHzTsFqxqi2EFL3asKrcLCckQE648QDZ+SEugcR9EFRwSrqTy9BiXFLgYEnLcr0V+XvtbdSoqmgKVKwPnHVV7LCmfFhTOqyywxLsIWnAQfn8AwoODqrhgampX5iecsJBGu+3Xq4201KMa6D2caKsKEWsaj84ay1bHLZsZnhI8zsk+1KZ3PmsNvyDvvaSsi9NObjOnCLCVk77La2BWFJgorJEgdhmTppckHOSWMTDvITPulnSvQISCaimvhXdF7W1sHaqdbpmdQmMZ4ADpSIBj/ARjaILAYI2ZILKpdrwEgkP+rKisDANgoZU5Evv+/D/tLv+9K/tbIWsOyWgYld7LS3Aw5IWT4HcvZYkrU8MIJFzKMMUSgO5wynQZ/ZTIA/CEYyHqRmII1NgwEo/BbR7CXjzYlw/0TqHZ5ArP6T15O6kY/VfeZW9/H/8mQ03i5FDwjRFeoWy7RfeWQUBM7ns6ChfLFu31bOvXnWt3XnXHjvppFM1f5XLkuEGCzeCZPtKeU/zWlNAU2vIKyiKrijqbK9JIeRiX/7SS+3UM0/W9kVroFwvEIx3NO9whMTzqI6sjfMvWFCUBs2p0bUfutKu+5P/bbvThm3K1dQglY4NbY2oRggQjNZ4aaoWb64gVznPXqZBRsbGEItkIjwXftE/DYopHoS3jziFK4c9Uk3ryZrWoAfTZ+zkXzrF3vXJD1q/wrpMuKDtgCLHNW1Hajm5OFkPQUmpVLGV5ZZde80Ndu/9P7ITTzxFSq71jP2IgGMihMxTYvZ4CJYz1WpF24JWMxwU52TBZY178fPPt1POOAlvKh3I9pOZoGStrFWKzoJJrahiTRXy1LZNreuayN9e8Q37mz/8tM0nO+WrdyrSylsTAuSvwYegYDsxXZaDyfz9MwtK400DKJoGAx4cSjDh/RAFCQoTlDg+7diT9qD98lufZ3/yD/9GuxKF1tTJTeaTVQ2rCEuBVyclIJLL0/q1vNyxa67+lj300F7bdcLJttpcs5nqnJUqRGPiiyyk1+FphEKa2RkJS2ugLGlpWUsF65vWw7y2HhdedJ6dddYZCt1RenF2ZAhAEJQfyq4Nu9ZSAJGwBin6qkmSH7ridvvTP/i6XMNZ6nSKUkN7J45IpDFyecEtSaAEGfAmL1PnDDAncU+DIdHJFCCwcVg3fcZah2zx3Qg2smjHNago6KmyiCvS7RLKa23urklYS9bK323v/NVd9hcfvwzmWIOtS15WpL0jj+d5QaQzUDSpIcpylcsrmaD2PvK4nXDCSbZ0eNmqivxqDQU1siBeCOo0WxJWSxaoTbH2YhXtIxFSqSyV0i5ekXkQ1Cmnnaw1Sq4vx7Y64xHCYu55mIYGlrU+zSgCmkuXbH7QJKC1MutPoa4gYVH7jR0K24+zYfVY7cI323B2qw3mt9lgboviWKXqZqVtlqtsURR+7NQ0LB0zNcVt+9XjQorL0sr2qWkSTpKV5RVKO3Vd1Fxq2opoLVF4bFXRXzlGTN0urzOvOWsroKiwKBfEPo0XUhUnBsYpDJBeq3QIMxG+GKuqkqyE9yJLvBvJEsLmWGsPJw9ziw2bnW9YuRJcmATGsZlEIf7mlac9zwFReJ6NBYUaKRtC4l5KIy8IDf0lReQybzajEkw6M2d/81/usvd/4FtaZM/SJvh8IZ7VHkOhqCbAAWM4x9ImmSOfvKwo7LqV51DWB5kEmV5vDJN7/eSgaY1yk6EipSyJ3sFQLi2vCFAEsV/C0a3kvmuX/2rD/vLjrxU/1qxQrlsPgcm6cknJOpWW8tmWhifEqytrduO3vm2PPvq4nX7a88KcieJSWQpC5HSfM85wyiDecCJRqRat2VRULWH1em3rKJ137tl21plnoRaagPgrT5V5ABlSZlFhTAUF2srJ53aKebk/TigURcpftvLajKbSMhHVVYe0V7JcR7vytqIjmXOjx34kCcLC33NGlmoQUqJFdDxRPuiXpqa+2k1Lk/DGKXjiKakpu+iGvQsb6AV5jAUpYNnW5OKaWoPyBY6DtBwprGY8+oTNpBY1Am5JIhxWhC3LQOt1vxdcXE0CmJutWVVW1Khrn6l71h8OqbgWOBoTbvpifRWtYzwfq8kN4xbD+s6GdQIoqJaQlFIRTgialLRXkBbISG2tXrOW3NlwuMPS8qzcBSd0VRE7IwdQ0/+KmJRElg0Lc6rXpJWwyI2S5RbUThvTaakg1zQlTcIbp35BY0xJ+coJcnnHW7u40w7nd9qh/DG2mjtGfDhGrm+7dVmHgzIXwhUvgT4PtE6V5KLYlEo6wWLQ/rB0lMVkWWqvq3Arl0gocodKshklYmkJSFsbzi0RGusTbhKXiZB4lrYOUmYg9khhS5UVEwRIQPmqreZXtLnry/3JZ5YHWvzyilRUK7GWZXFdacKqQss1DdTSzlsGLouqCA/hJqj035TEu+3TEpRMS5Nwxim89jXlL3vZX3g4PKysSDkSayui62n/w4PBXqkggaayfq01Wq+LHN5q8V+zVeto7SIsz160xDJ4YJkLDzyJsXjZhRi4IJeE1VQrskFJrFLWRkBhebmizbAsrVZVtCkhsb754xnwkQfCPYHZSFj5cMAoekuJJJuWrCb3NcgvyYP3FWIq2kmelrnts0q7ZbV2ovyK5Xva9afL1hq0rDvQ5k+7+6J28sX+AbmC/VZM1qamQtKcmvK8hzclFXpqNyUV0+mpSuKZULIkt71POJetLv9WkcCssCzLYEPLcRlHSSuK9vrW7vFGraJjwudgYTIXzj4lMF4/qMiF8fytMSNvU69bvabIj0PauiLo0RNuLIc1i4ejXCvBoqScWsNcMG42cbSbCZGX3QaKYrrE7vjQ1JYr+0XkcfbRj1xn//U/fsmsc4Y18qfJV9fkKpbUaSAt1GZXWsiOvqoNXkFxUT/HG7Syr+A3jgYfGBgQjEwDniVMgeCvp8BQrmUaDIeLmktFK8eqXPVhKd9mm7VNmkPTlu06e8vlZ9pf/81btAmWhawu20xu3tqwaWZNXokDWywqez2AB5af/8IXbKZWD29KIYzgGgUeWoczUiWshfAbQfHKAJbZTXra/Lbs5N0n2a5duwKfvG0MuYFCFHby/Y6wc17FSXp1SczcbH/3V5+0r378Zts6PM3mclstVdi6WliyTk2apz65QVXaWbWG+pUHbRGlSIeggp3kFMDnT4fp/XkcMA0KCkimQVvzSOTmkopC4pK2Ie0tVu/XZD1D29e+x45/cdf+05+/KzyCyK11rSzBBJKqcodS5KKCDFc8mPzlL385WM0xxyjElwBDQCCBwnDA27qgsCbe+eDK62jN1ZadtHuX7d69O7QlucsDwn066EpJitbvavYKzQvaBKa1w9rXFe3rH7/CVn5wn12ofdJi67B1Cy1F44esIlfAR3KwpkJOwQVRUlm7bxGn3eQolNwYOIGfDtP7P5dFDfDlU6AiK+BBRY9PcSiAyifbZU012ddm29s6ZHu35e2X//07rbbpDBtIgYepgiUWIO1Mewoa6sOiYgmCAtng6qpdddVVQVAnnHBCsCiY75YEk9c3rZpXmqYh0uPFGyyKe95vPOmkk+zkk3cH+lywwLrgFO9n/JWfzSXaDyHJaltqe8i+/N/+wMoPfdvOWWjZTg6PFIYOiUi0GZM8bdiWvxZP8sTyeCt1ZYgNDgb+v8FzqUFfrrXI8zUsUxd58vCYP1Vg9GB/q61ecoGd+/Z3W2PHeQTWVtDanQ4aiuIqwq2JK+DBOhAEr6d98YtftMXFxWARLiDAr0FII1cG01mveLMYgVHH624Imf4Ocd9w1Y54yLsObNJYQwd8nBDl6Xfsyg/+B6s8doMdO7zfzt2m7aA8Cl6rI5cXojy5PcW5WhMU54TXTIl3iGCmHyH9s8NzWLTlDmqKHAspGFCQMNSc8whKi/r96aItnfMq2/Way+24ky9WwDTQNkSTlgdJZV3FKnPNojSYjqC+8pWv2ObNm8MaA4OxEmcwgJBwid6HPFbkgkJouM3jjz9+1CMTKOB9pBYq0D/cyWDY1eKmqwSSr1Rt08KxttjYbsdvO9FKw5rlZGiFTtlq6ZzSjIKImiJFEd1t22DtkCXNfZY2n1Za+dmmteWpKWlrw6vgqSXjaLUHlqwpOGorENImvqNNfL40J0taVJRXtrZ2jVrExTJ5FHilPIxzRgII4sgJRCYIT9TFQgNYp7zO+3Lv7Rw/916WS9PesMDbOab9hELRtLPF8lV17CR244evsOQHX7YXHrdss0t7jOhRG3VLEk6ctUmTNQWfgR/khQqsG/qPzOFfJKQ87+EkJl+XkilYUKjOEpSUze5MZ61zwW/ayW97n9WO2W5tzWXTsC2L09bCthAga3rZK8gAQcE3vvGN8MmRnTt3hvtJTAco8zxWRzuAgGTTpk3rFuV9fAysNB/WJP3r51ZsUD5ghbl9VlaoXVSyYSKLlwilZf2adut17SN4C6lRtV6tqKgpZ4lcQaprqknyGAbXqLX2Z5oI+qalYb4mxZzVWjWvNBPeOOJkaKjN6LBYs95gTXtIDsu1gCkw6ecUlhdbliP4kI05OOOdqTDeLcXzcfJyLM8tEByU+5oEUOaCBkIb9voMnwx61h50RcaqwmutMdWeoqKWdbTpaw8VCcrkeZuoql12LiyovIfek4aprtxXsJezflUCqxczwf0LTokEk0gSfY6KFEAMihKU5iV/L14oUKjJXRXY9MrSUFjOzhXZDofLasY2ZLQJVXJBBWaK4TB/XEBxog1tiQ697bigHMALBNyhQGEabwWl6XbrJDPWlsYlZa1JjZpZrWwzC4sKwbWRk5fjALahYKGm9YwtY0XIqooEi9qXlKSdxf6s2hKy/+xSJT89FeUpKoOmVbW9rUgR+SxYiP4IAtKOpdqq5BKF4f265thQ4DRvabJZlsZbTPOBec7EmJkurHHhkGIB0s7LSPRxPA7xPfnwmEM70KA7bVlMb5jaAs9pkhX7yp/9iT1zw+ftnFltyOQaq7IsPjMFhA8hE13JNeC3w+lHwI0Tz3zrzwp4dXgalDQF3iziASgv+/NkgJcQ2iL7h+2apRe/2i577x/a/HaF53KVHLM1e7wEKmXVlOsj/DCcDx5cffXVIbQ+7rjjwsuXgFsOwNXzWA6MJ0TnSnsiQCyMvRRAeRDOqF/Iaxct9mYv7/eJB3gbpi7LkRv84sf+wh658SqrLz1jOxocmfD5ISEXUhaD8BxKiYdhPItiTQNSnoqOCJsMzyXI6Yz2SXgeOHq8I/i9HvA2vJHb0t6vW0qtmOuI8by8WbC13sD2r3as9kvvsNdd/ptW37xL+0Q+UqROnXY4EUm0WJS1joGLxMdSr7322sDkE088MRwNAVgMwPgkBOeW4+E7bciDA8HRP3aB8dzCJw51kWlrH9XPEDZ7HVuYLdtje75v6YEnrN5ra4OIzmkQEXu4tFXCkcnKlIhc2T0hJI77gRKb5xFTJsN0QWSHk0cz+ScBxsz6TMff0hx6GmKgdaeYR1A9q2kPyLOnZqdva+UZO+eSl2i/1LCe7uvsm8QDPlTO0/iC3CcAo2EyFnXaaaeFqI3Q24VwhJ4jFsZ9LEzagwMX6IKiHUBb8iGp4TCf42EekmcAWYQa80mIVJteQgf+mSzOKrxV6tqqKyIWHSO0ShmDxt+JiAfOYDojw5PjETy775GyGI5u9xyKEGjlkbnaa51VeLFexoFFq71qMzObNH8FSNJ43lPp8x55QfVqJpsKDIXRHAVxhHT22WeHTavT6RbkENOMcGjnFra0tBTyvmGmreMhT8owBRw0yCqL6sS54jCv6CjPO9GKjGq8O1FSvCdNGf3ROYxPhnMoLEEpp3UrThJ9SEfKssE3SnltCTx5n0llcTp6jMl4Pa3PV3Pk3T58fZ+HnzxX49OFIyGxDvONNUFveBKouYv9GY4RuDCwCMrdksYTAPNJtHFBkveAAqCtCymGrBYQo7O3d9RIasVHH8PHRCnhXuV8UqPa56Mn2R/rVUjkpZWpwkI+csl7FMN+lsiHzc1RZcI7SkM5fk+hTIHIUX2jNKncy7w8y0/AGyU5cg6QRLVuR0ks1H8Ssu5SZTMGZwxL+ei/1t2EqYE/YqQLwSM47rm6MDI8RwQLuMCAjdoAcZkoz4DCIFUso6CO4Q9noGuI4nCPXMpar0SU1ic+jJwl8toXmJLyNB9qsQ5v1ZIXIi/LgkLKs0TEOWSPQqJMykK7rP/RycsDrlEK+NbxZvfgjFM8HokvJSgrgCAsR1wKk3CEQUiYGZ9ZDqzgTSHhI8DiXJCXLlnRJ2q8OhC5OeMBFwjuzPPxvbeJweUQC5A2TO1ZgB8eKIrjuQriCi8Fqpyjfj5pxwZZd6M/MZjnUCRpZBiWwdUuKKTykD0UcQGx7kN+VB4S7UZ1JJE4NcX9Qx9oGpWR4vykJBmpD6fcvJgCDlmeMCdSNt4d4XFaoFltmVFQYHXlFGegLQoQygSxELAkz5OomwQuAMDbcXWI8w758ULu+xAht5d96YeQDPjYCedbvJwh4RHCy/KyAVmzRinkIUTMiBI4jr5X/6D64Nc4YV3zMhIThHgxUuN6Coqg5Pjiq+ezlOHK8D478QnEvpRuqH2RFmS1zZSlQOTKp1gwI4QfeJnV97Xf4T0IrAxwTScwgNEe7ZF3a3DLcFfo7tHLSeAYl8EkwUlJMsn6NRQyKCqkIk07aBsTDM9tRkoCsiMIGTAjPPyFGWZ9YmFwpb/o071uI8ju6Qte6MiUgD6eDzSM8j6G4w77v/X7DN/4ZKEXUHyAhoYU5AwqJd5/KOS0EaVQiqilHmxZnxLWojyvLUR4wZkqMgQQFswHEAx7I39XIk4uNBemr2cA+Dwf+AmNtAslAh/cO7vgYqCMFBMK+H189eTg+Ul4xyFu47SM94vvycdjxRDT4so1Dt7X200Cp8FT3A5G+/rkTPc2JMaM21MftwXi+vGxgNDKEQJxJeDlcf1G4HUxjhi3g5eNl8cQ14MrbrsRDZPwxTicQRu187QRfoD+To+3owxBcR8Lyts5cE8dbbAot664ndMXp1DOf44UmNQI8Pr46vlx8LpJaRwmjTPezu+93XifOD8Ojm8S3nEYbzOO1+u4umXShnsYDvh65ALz/LTkgh0Hnydp3fV5w0nEed2kNo7op4EYZwyTxnLwOpKPNz72pD4OtHPX53jGIS4fn5Pfe/2k/gCM96BhPMWW5v0pGxeU5+O264JyGCfQO1HuycuASfm47Ths1HdSW4dJdT9te8aKx/tJYByP33N1XFzHBTApAfSLcTiMtwH8HiC/LqjxBjEih42Qj+djoI8nh/h+vD3giy913tbbAz5enIDxtuP9XHu9zPs5xG1jmNaOOnB6HvBxx5PX+dXzMcQ4HMiHEeJO3jAmjnycxiHuD0xrC8RtAW/neEheNn512Aj3OIDLBe+uz8tj8HG9HmCMSeN4X7+Ot3FccQJoN259Dt4mhrjvUWvUJAQOXkZH8n4CzMRcowBH7mkazkntyDs+r4vznpzpnrwccDwkx0sC7zitlE8CL4/x+H2Mw/OsTbSBlo3AccVtvB/lgG+gAcq9LoziRPw04Ei8rw8U49oI73jfcXBcDnH7mElxmSfuHbzeAbwxbq/zdqQYP+DlDuM4AFcUIG7r4Dji5DCJprje4WiqIvAOjigmhLwjm9TGgftY2+P68bYOPu44TMIxDl4f4xjHF/ffCFeMx2FSW+q9bWwlPmasPOMJ8L6TcDt43YaCimEaohjGB/V8XM41Fp6D530S4xPya9zHAXyTcALj9+CM203q4+B1cdsYvM7HHgevn5Z8CYnn7UC5w1GCihE4eD6+OhM9D8QuIx50ozQJ4jE8Ad7HNdS11MHrPQHeFxjHE7fzawzjZZNo8TaUu6C4wnjO/iYlX3/GExCPOWmsde565UYQI3KI+4zXb9Se5IPHKQa/Hy8HptE5CZe336hfXO9pI4jp8rz3geEIYjw9l5Coo/843UA8zrqgJjWMwTtNmsi0yU2CmACHGMdG9UyM608ynveP8TxXXx+XNp6Pyz3vODw/zvzxcfze67yMewRIPsYL+HgO6485psFP0gagXdzW78f7Q5Anv98IYhyx25uUgGm4fMxJfT2NQ1zu15jhgOMFvP14H29DX78nP47Lwcu8Xfa62AiZgzeiAXG+53lZkFedZmf5Bv/sx7cwXU6BKQ+/JiAN4Suuac8bOtu3bw/vWQOMEwbVlXbxJMDl2uVjUs9L9wcPZl8yRR0JYfFCvtfzzIe+lNMXWijzb36mnDLGoI8nPjKzf//+8Jlb8n4mB718PTfgNNEfXPGcKecL8L/1rW/ZOeecE97to53PDVoYG+Ae8Dn4i5rkeQuJev+QADyKIdArpENHBtDRBUQ+LgMggjquMAMkjz/+uD3yyCMhzwSYKG9/Iqht27aFxAe1YBzgjHXiAcfpeJkIv9fx6KOPBkZSThm0wlTGAC+TA4/TCjAO9fRx4cBAxuCe/rzhCo1PPvlkKOezSt6PK69ubd26NbQHGJsxmB95FxQ4ENRZZ50V3sujrysjeEkOlFEHXQibuVDGe31cedM25rkDdeuCooICri4owO8BH4j2zjQ+MgIzb7/99qCdlAFoCZNGy/ho/yte8YowOZiExYGXRPsYPxNgbPA/+OCDdscdd4R24IPZfASTMfmE35lnnmkvfvGLQ994UQYfY8EQ8IOPeurIg+fHP/5xUK6HHnooCA2aoB+BoRgXXXSRnXLKKeFn/ugHHnAgOGhzAaKMCOqMM84IwnVBQQtjOT8A8FBOPcnrETbAR3eod/A8/Y4SlAP5uIyGAMhds9B62nz/+98PE/7sZz9rn/vc5wKhDkz+53/+5+23fuu37Od+7ueCwJgsTAQnjCQP48AF4ZRRh0D/6Z/+yf7+7/8+/KLNE088EXBSByNf//rX22/8xm8E1wqD3ILoRz3toBVgDGinjIS7uv766+0LX/iCXXfddcEjwHhn4Pve9z677LLLgrWefPLJob/jgE7HBSAocJx++unrb7o6j2gziY8A7RiTMiwKQFA+hvdxOCLuCRA39jxXz0MQawQawTqCkBiEBAH8mOTevXvDh7R++MMfhns01vtDFOATAxAWedrhelgrsCYA5aAOPLgs+mMR9HHw/o7P837PWCgLAobJKAC0uvUB5BmLuSEgyhmLdk5zzHRwezltEUDMB09eFtfRl/G8P+C0xhAoiyfiSON8TIibPAO5C0IYd955Zyh3bXZ8uJUHHnggMMSZRF/quQLxmIBrN2UIn35ejusDcLX87hSWRDmTJSFg2tPfGQJQBz4s7umnn7b7778/uGzoQLgk/yla+vo6ytUVgbbOC65Ot5d58nYkwNt53ttwhR8kxgKcN4D3Ix1lUTGycfDOEA1juH/sscfCpJkwFgV41ANDwcMnvnmJHsuILc4FBoDP8xBPf9o6HV4Hk+lHOdaAcuBO77nnniAcyp1OgLzj8HL6sRZ997vfXQ+AqCPhGXx8pxGgzNs5Pq4xbu/nyujM93Iv8/LxRDsHx+sA/qMEFYMPDnhHH5RJUIZv3bNnT4jOnJmUx3kmj9tDW2ES9+CGYOrB6e4KoBzA5biri4UGI2gPHaw1MB3roj3ltEXwtKeN4wXI4wVwnQQTKBdltMMyfa2M3R0JmnzOXD3vOB3Ie3twkhwHecq9jjJv73kHcMf4SYGjTgDgHb3MEcAgGMBAMASXhtXALLTT+9AO9+PEUIZA77vvvqD5WAU4aUO9TxqcXOM8OBgTxjkgPGgAwPmP//iP4SMvCIA+tKcfYzAW+L099VgRwQN0A9DBeLQDNzTR14VGYnzng0N8T97H9Dn7HFwwMdAGcB75OIDj4OpjhPqQE4xXxK4EhEyIQWEEk2Bzy2Rxfbg3Zwb1LMK0gVgSmvvtb397XTjgdeLAT18nziGmB4jzAMxDAVgf6Usoz7jgdAahSM4o2mNJ4MFl4rYB2tKfNj6HnxacTzGeOLlAvE0MPi9w+NXzDrRZF1QMVMSNYTYAY5z5/EAkbo8JexlCcuajnTAHIrG+H/3oR2GdQrgwDEXwcejrDB4ncryMPG3pD2Ad7LUIVsKEVAdwJUEHNJCnHUqD28NlOlBH342Y6FfA6fEyp437cSFBY5xHeUkeIJHIU+84SD5GXDZRUIC7EBLAFYsAAW4G5j7zzDMhomMwZwbuBoBBtAHoA4EwFSZ5e2cM9RADjDMrBieaNowFfqz5hhtuCPWMAaAg1PkYTgduDwtEqE4vtDA+eWdODE7XcwHjuFDA7fk4xcKKE+2fa5wNBeUTIUEEiQ0s7oUojwkyiG9EPWwGmDBWRD1MAwg4YCguE8YhdJQBcAGQnFlx2Tg4Y+mPoMDNNgELx1qddr8yHvTwo5W0Ye8FDsqZF2Nwpa3jj5OD58fpIh8Lxy2JMpLzL+43fg8tPp6Xex1lzxKUN2YAro7AEXMPs9lwYiFEct4e4RE9cUAJUyDYAVdz7733BgGRd/zg5EoCxpnlQJ46L4cR0ALghjkhcbwAls2ezvETeKA07gEoow6clKNUzBFwBjnQFvByvwc878IAaBcnr4M2kisI4HQ4xP1i2NCicF0AHUDmTKGcUPvmm28OUZzXIRSE9Ou//uvh++t+7/d+L7SHAQiHK4mDx7vuuisI2yfgRHF1RsNAF1pMtPfBmhgTYRBIEP2xp8LiAcakH26atoTwCAlrcitnLOqYg9MxacwYJpVTFs8DcAEClDOW0849tPtc477jOBzPuqDiBo4ArQVA5MJgomgrCNBSJ4Lry172MnvRi14U9k2c7XGizMRhHjgIRm655ZbgLtFqF4YT5PcxxJPjyli0dTfjCgRNJGji6tZMW/ryQejPfvazwU1SBy7G4got4EFo3G8EziOnB3C6PMX35D3FwD2008bvHZwXpBiOenDoHXzyEA44M0GMyyOIYCAshHK0F8DaOMTEBSFQTrbBQTmaz7ENB6xYlQvE8QI+OYCrl3tb6KI9dX50BA0ALphPp3uwgjC87ZVXXhkeiWBdAP2gGbrIg5+rK8E4OE1ex28V0x7AOunnythstsI4KAvrZau5Zp1WO0vtNWu3mqEt9NIGPnIIwBVgDP4AxvV0tPpGAAMY2Inj6gJECLgvACQMzKT5TlUEhSXx/XWXXnrpusvzibHv4rAVd+WbTmeECyQG6mKBkaCF8lgrWf/YH3HizcQRBAykDWP63om+lLsFehvwQKPTMhX4YLraxQnlyCw5UxLylPVSheCJQnJSL1XK+MGY1MM77qEDGkjCuE5HEJxS+GioF8aApsAUr0M7QI6wsCrWKBC4NZ177rnhqJ/w9/nPf7698IUvDIPyNJg+aBCMgDBOMnCP8bjO8JieccExnl+ZGHhdASgjjzVjuWg1kR4BD/R88pOfDBEieznwu8DjcSnz9cvHimkcB+qggX7ggT98NBU66E95yBc0lhKfWswVso/lMI6P7/NwmgCucTqKE96Izp6PCSUshxFoC0AdbRmAZ0LPe97zgvZSTn/Wg9e97nWhnjImwvrEV3tigRDo4OPEZQD3XnaU1qk9wQNlTJL7u+++OzwTY1wAZrDJ5eEfgQ/gzHO3B27agdNd5kbAGCTGdKA/c6WcH0bxPOD58GXAA9xXwcIn60c8A8jTzu+97ziEWhp6CoXqBAIIciazxvjjDNYBZxDMp559DOsAT13BgwXSlweHMSGYORbJk1/clZu9C8PpCBMcEe10xWW0j/dk4OfUAUWAFoRFP9zgZz7zmUAn4J4BZePK+AiH/u4dngugwWkC4FWGE7cmnB0JvMtP6mWnEJlL5CSia6murhCM3e22Qzk4fG4O3KtY15GgHGJGQAhMcIljSWx4cR88emZiEEc9j615JwK3RqAAEGXxtTP0RaNp526FdjCZkBlwIcaaCtDHUwzgpIx+znDKUBwmj8C+973vhZOI8847zz796U8HN4ggaOvjOV6fC7i8bhIwhieAtn1+lSBftA4CSvjFAVmWrIdvamZ9yoTA5tePk7Lgh3vqXFFog9sEp4+hFTlYIh/6f5agIB6EzjR3BezoERx1aCVtYQxw6qmnhjUK5PSnD2vTJZdcElwhj6ipcyWAkUR/4ELjcUMxOAMdn9PiOFCGd73rXfZHf/RHIXhhspyMUEd4zvMvBEPwQH/2TwCRIoxAYd72trfZ7//+79v5558f8JIAp9GvXh4DUR9fHwckmkO5VLZOV0JA+/PaxojhXbk7fgS6y1cvGEJT4NBtiVYCmMyqUAx+7JnEHBkz+5qGzGAgge/65UcyJwrKXZoDZbgUmMDi7OBtcItsgnnk7m6IPjAEBr7mNa8JEaG3h8CbbroplD388MOBSNrHgiHv7tCZBpDnRZJf+7Vfs5e85CX2zne+M/TBSunHlYgUWsDx+c9/PpRBEwpGW9zza1/7Wrv88suDxbkWI8h4rI2Atq48/CZhrlCSRfFzgrKUId8Dw9dgDazT7+peSi8u8xPvLQmK6A9FRlAIiHwQkoQJXiDcS9CZPJizrItKCrwReTqj5SDjCoMRACE1LgVwf06kh1YzWX8vDQZzj6uEEVgU7Sl3KyQK5Jjp1ltvDVYVCxdCyaMAlNMP+ijjHhzQhZWzseaePtRBP8rE3olH9bwcA6Aw9GdM1k3GwTWCh35AzAe/ApRnIOZJ4/nWNX6txoHvueh1B7balNs9sGKH9yviPChP1Ktaspaz1pLC9aZE0alat1WxbluusiXL62IQCjDCFxlxzQTG70rx27vB56GrSkdteMkzARLE4z4o4y0b1hvuCQQoQ4hcOYngRRHcGfsiruyzyJNgDBaEhjNh8JJY64jICKNhIAB+lALGg9uthH6eaEs9QkT4rHVYB0Ad/XgZhujvox/9aFhbGQ8aqEcJeduHvZwL1/v6WIBfAXBm3wiTBUV8IT9fXAIjWUcGidyb/F4qYbWbXTt8QJvaliwuqSiwKNnqioS4ov1aT3zNNYKAkl5edbI8Jb7oeihLDF9Wydf9+Nh8iVj4QTXR6ZOHSBLE4PPJ484A1hkSzAVcw+lLO56wsm6QR1AwD0EiKIROhIegYSx9fE362Mc+Fr7i0ze+WCDW5VYHc2mfMepI5Mg4CJFNNbRzAuJuEtyeRwnAST/64NqwcNqwhvK2LfjdO2B1PgblJIeQD9++JquSS0u05gRBaahSoWyVYiUwOemIh8aPQtfVTmvioGHl3IJVC5uUn7W0U5Zg1LZf11XeqivaetpepJojJxJBWIyI0pHRld+coihoySjBECZFAmAE2sdBq7u9mGm33XZbCNlxizzGuOaaa8KGlvYs6jfeeGN4h47TbRhHPwSB5RDu4y6pw11RFz8ucYE5XX5FkQD2UQgJXOQB8jAVulESBEofEsrzpje9KbxYiZDZTnD+SFtw05f8syFbL1xwBdGFo+LLsTyoCN/ApsUIofE9a+HbQfva1A7k8vvlIIx2K5VldaSMWp8kUNwlP+zPt19nXxk0DrhA6JEnirUGQpkME0RQaCa7fLSezSTCYMIO1PPk9nd/93ft7W9/u73jHe+w9773vfae97zH3v3ud9tv//Zvh/TBD34w9Pe+WAqAUBAkrhLmgw9thw7Gd6HRDwZS5vS6O4XZWMQv/MIvrNPNlXngEWiPVXEFD2PQh3EQImPhcqkHp1sjbY/MNVNKvoUsXIJgcc8od/YdSc02Z3z8IjbuVF5PgcJaa1lr0YrCdkV7SVOR4aq1O7rvr0mmCseLmbVIoiOBYBgo2pEImQ0y+XVBcYVoEppMYtJYDGVsImnjE8HXw0iYRDvcCsDa4dqNltKeeiZNHbicATCKt1VhLExFGCTa0If+Tl8MlNEHqyD0Jph56UtfGsoA+no/cOBOARQJeog2WTuxcJ8DV+iK+zqd3GdfmsW93FtP9awpWI7w8cOTHLimw0SeS0IsS6nyiugGq9YbLCuvzX+5bYV6z4ozia7ay1V7KtNeaqB+fV7MwTIJJDIFCV/MxXhIXUnzOOJWmCjM9ECBMrSMYILQHIBoEoKjnQuJPExg8jDGJ4lAYQS4sRoEQRnCpA1RH3uw73znO+FUnnZOE+24Oi7PMyZ4WNuIOi+88MIwPud41NMfRSMcZz605f6Vr3xlCHyg34VKHXOEbuinvwsKyObL+JmQ0PByqaG8LElGMNAep93TxlVCKjdEu6LBle6yJQXxsCa3Vl6ztcF+W+kfsF5+WW6kY810vzWT/dYZLKmv2va1fUDuzI+5y7FmSa5TyfiBZwhx5qHJAMQyMRh+8cUXh7M59iaU0xbGE17Th0nCJAAGAuOT9Ta0pxxG+joDcCTFWuHHO7glxndBxUB/tJ/+CArm0hea3vjGN4YggTpwMKavUfSBds4jwU0/cPnVcZP8hICEgLw+CAqhiXEIDNJK5WwTrV2wqoe20jxsa2lLe6i20pqEIZdnq9r4rthK76AdaO6zloTTTZuyH35zq2/FkhSrLElpHFwngDUxFt+4yRcHBkE5UUwOZjMxrmg7R0HkaedaiE/HIjh5wBp4rEFkh3azUBMFsq5xYsHmkkQ9QueoCYbBTGfApz71qXUlASiHmZSRnEbooBz6oBXmU4cbgw7cJ+2o9/bUk9785jeHqJXxsSrGp52P5XPOeJEJckSN6kjktejrmgyEtyihST49mVVfQuIryA9qPVrSetQd9KyXS2xloP2U9WxF1rY0aJtqLF8XPXV5nqHWMJV1hl1b6azaWlfrJTLxccUjxpOoVCiPkJVmVgADIRYiSbyLQKjtms3kEBbtiJ5e/epXh0lSRj/HA3Nxh7SnL7hoB3P5hMaHP/zhgJu2MIaokIAE7WcPRJBAPwThykFb+jtO7gkSABhPX8bwSA5lcmHR9q1vfWs4/Wc+3o95gBP6oJn+XAHGwErpCw6fI220nYeg8DWnnCCkvb48TFO0r4byntYpftFOyCRYjpaGEq6cpfSSVFWfbjLUPkrrVi+xUlXjdsUnCSV8dSp9+W5fKRHjA9j2utZ5ohKCCZ2/+tWvhmdHEAhQjtWwLyJsZ1/iiZdacC2sGVzR8he84AXh0Jb2aDOWhXuCiYALmHEJ0Tn1ps6VhTx1tCNRBoOhA1cJcA9TseSXv/zlYUxoZDOOVf/iL/5iEDAegM1uPCYC8XsfF3wO5J0G6gLjwvfKilfK8iP9eZRX7rDTl/AKsvJC3bRiWSstWkt7qa7VrJ+blRus2ao2u6uJtg3DmqX5qtarnLUkRb4ZWn4j48voVML3UaTALQYn0QgNQzvZ2xBVscB7+AqgWTy5hQGsATAdDcXtIDgSrohytJs8TGShZ9JYGv3B4zgZ95vf/GbYCoCTcuphLgJxZnGNmQzjuJKgAQUh+vvjP/5j+8hHPmJXXHFFSL/zO78T1kEsD6AfeJlzTAPjgZ862kCLjw3QnvA5USjdy8myVZwoSutoI5wURJ+UuV/SmlWZk1BKcmd5rUeyxJyCnKo2vOUtEs68XOWMpQgzX7eDy7g+eYiyBCdHJ1lnEE4ljiTRkBEBweR98uxtmJw/hGMCEIoGwnRCXLQWgSAIEswl4bKItsgjGNogMKyS/qxZvp44fOITnwiM4pGIKwb3JPIwzGl0BqNQfs84hOlYDQrCWLQhOmW9fMMb3hDWVcqYC1cEgjC4cs/cAWh0GsDjc0dIwFAan6YKjBQO8IMmfDFwv9uRocnSVN5srtnqslzhoRVbPqh162DTmkttazd71lnpWXM/v0esJWOgPWNb7q6j+SjkL2rRkx/RCJlFZ8dUI0UK/wtgBARDFBOCWASFhcEMiIbhuBOYjNuBCbQjOSNdI50RAGW0QaNxgVgqR070yRiQWRqCJUzmGIqoEkGAByHTDjpoC8BI8DjTSbRBKBwCu/tlPFw4x0WMQTvwkAguEAS0MDa4KK/VKutrJUAZcwE/h6Va1cIxKjvHkhaVhhiaLh22Q488bE/eu8faex+z9MmnrXBQUenBZRs+ud96e5+y7iOPW0cpeeoZ6zzxjD2950fW3XfQ5ooVq/EDl8ikJz6OhANAL8Ja/2goRPqkYQLHRTAKi/LwmitrDBOA6UR7tEcTmSgTyRC7m8gE4fcufKJJHm94cIC7xAoRCO838FifsfhgAScauDW2CggP4dAOi+X4iL6MDSNdAOQRAONzDzA3txiAoIL3PjjGYm5+xsga1myuaG5n2wUXXCCl5HEJCpiEMDqbkxQ7Jawuh73U7XfcZTffdKs16vPW7soLtLRdwTo0Hj9VTh9ff5gXwQNK01xZtl7SttNO3W0XXnSenaJrAA5i+RNydlVZUZoqIjwyAdcqNIrTbRKMYDDqYCLCQkNJMTNiITnANPrBBMaB2axFHD0587FUhIZLjR9CQgMnDygNAkWYWAFtXvWqV62fgDjN0MIYKAT9GROaSDGN1HFl/XVaoIMxwHX++edqK3FJcMNhLyOXx4/K9JLs6IvvSg84lS3xeyW91PY/c0BbmeOs01ZkXMk+10Vf2ojFYjfHV3xiP1PeSlV4xS7eSqrP4LU0D/0hIOJcrjnhCGuUhL7+PRO4MiwI7XXrgCmEumgwTGIyEO8uBIYgCGcKCeCeCXOFQeTRJPIe8uLeYBR7Lzau4GHdAxAggqMtrhAaGJ8y2oIHS2I8aAY/bbkHD4DAGCdjWCYcEoBAsCIUA2XgUQhjI3h3h7h3gL4+F35Rgb485gB/V9ZTLLA5z54GSE9CexQmbLIEug3A0NnoEhQ/zKIK5kE5h7KZkjFGtkYFulkDERi0qwBY78gV14fAfNIwCEBQ1CMoOtPek0MsIL8PhAu8LZMFB8BY1DPeeD8STPM+PjbAPUKi3oVPfTbhTEgkgHLA72OgjnLGQnh+Hkk5V8bz8cNPX6gcQXEgSxkCKZezxzc+DuOPsvA5g3VBZUUcPeXDrzFkNAS8o7m7oII1ISgcoCY7ZKJYFFqP9fhhJY3d/5N3gQHcwxQSA2SaAAFHhAJ4X+5hCPdYImPBFGcEwMRp40KBLvAhEI8ioZMy7hnTxwOc4T4WaRJAAwn8AOP53BAWNMEDyrEy8EEva1VYBobZesgxkiuTz40rtJOiWC0AvyAUYEQn4HOnn+f9mlkUAh5ZFDdM2AcBiTMNhkA8iy8TI/mkRl0D4nXkozL6Atx7YgwSjODeJ4mroz+uyNtyj0C5IhAYxz2W50oBY8jTBrw+hk+aq9MRA/2YE0ynD/fMCVyMwRXanFZwZfzIXB51lJHoy5XytJ/xjHsH8DsNLicVWD8cQWR8Cmlkb5q9ctn8jhKUBhWuDBlEcvU1yifOFUIo4z5mYBhEKQbaAOME+zjUM0ESjOeets482jAG7X2cGBdAHQyjjjx9ETr9KXe6xmlzYEynExz0ISEwhAIeH9PbISjGcnA6uRIRBnqV74f2R7cLVy+SyzuCEz5nVxLlBQUoAIJSqXJSOgQVKkcTjokj71eAeh80Bh90o3Yb9QOYKEwBwOMEA/QDxu8RMH24J/m4gONwmIRrfE4A5Z6nHn44UJ7hGa0dI3BclIXHFAGgKbtmkPEGWKdqNFZ4xqU/rIhaz7tFHQGz/wfsc2fhtiC7LQAAAABJRU5ErkJggg=="/></defs></svg>'
 App.Modules.YerevanParking.Icons.SmsIcon = '<svg width="230" height="180" viewBox="0 0 230 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M163.686 178.799H43.2098C33.6313 178.799 25.7556 170.923 25.7556 161.345V41.0811C25.7556 31.5026 33.6313 23.627 43.2098 23.627H212.004C221.583 23.627 229.459 31.5026 229.459 41.0811V112.175C229.459 115.794 226.479 118.773 222.86 118.773C219.241 118.773 216.262 115.794 216.262 112.175V41.0811C216.262 38.9526 214.346 37.0369 212.217 37.0369H43.4226C41.2941 37.0369 39.3784 38.9526 39.3784 41.0811V161.345C39.3784 163.473 41.2941 165.389 43.4226 165.389H163.899C167.518 165.389 170.498 168.369 170.498 171.987C170.498 175.606 167.305 178.799 163.686 178.799Z" fill="black"/><path d="M5.32139 154.108C2.12856 153.469 2.94547e-07 150.489 0 147.296V38.7397C0 17.2413 17.4542 -3.05176e-05 38.7397 -3.05176e-05H195.827C199.02 -3.05176e-05 202 2.12853 202.639 5.32137C203.49 9.57848 200.297 13.197 196.04 13.197H38.7397C24.6913 13.197 13.1971 24.6912 13.1971 38.7397V147.509C13.1971 151.766 9.57851 154.959 5.32139 154.108Z" fill="black"/><path d="M126.649 126.862C122.179 126.862 117.709 125.159 114.303 121.753L32.3539 39.804C29.7997 37.2497 29.7997 32.9926 32.3539 30.4383C34.9082 27.8841 39.1653 27.8841 41.7196 30.4383L123.669 112.388C125.159 113.878 127.926 113.878 129.416 112.388L211.578 30.2255C214.133 27.6712 218.39 27.6712 220.944 30.2255C223.498 32.7798 223.498 37.0369 220.944 39.5911L138.782 121.753C135.589 125.159 131.119 126.862 126.649 126.862Z" fill="black"/><path d="M184.972 172.413C184.972 173.364 185.159 174.305 185.523 175.183C185.886 176.061 186.419 176.858 187.091 177.531C187.763 178.203 188.561 178.736 189.439 179.099C190.317 179.463 191.258 179.65 192.209 179.65C193.159 179.65 194.1 179.463 194.978 179.099C195.856 178.736 196.654 178.203 197.326 177.531C197.998 176.858 198.531 176.061 198.895 175.183C199.259 174.305 199.446 173.364 199.446 172.413C199.446 171.463 199.259 170.522 198.895 169.644C198.531 168.766 197.998 167.968 197.326 167.296C196.654 166.624 195.856 166.091 194.978 165.727C194.1 165.363 193.159 165.176 192.209 165.176C191.258 165.176 190.317 165.363 189.439 165.727C188.561 166.091 187.763 166.624 187.091 167.296C186.419 167.968 185.886 168.766 185.523 169.644C185.159 170.522 184.972 171.463 184.972 172.413Z" fill="black"/><path d="M214.133 172.413C214.133 173.364 214.32 174.305 214.684 175.183C215.047 176.061 215.58 176.859 216.252 177.531C216.924 178.204 217.722 178.737 218.6 179.101C219.478 179.464 220.42 179.652 221.37 179.652C222.321 179.652 223.262 179.464 224.14 179.101C225.018 178.737 225.816 178.204 226.488 177.531C227.16 176.859 227.693 176.061 228.057 175.183C228.42 174.305 228.607 173.364 228.607 172.413C228.607 171.463 228.42 170.521 228.057 169.643C227.693 168.765 227.16 167.967 226.488 167.295C225.816 166.623 225.018 166.089 224.14 165.726C223.262 165.362 222.321 165.175 221.37 165.175C220.42 165.175 219.478 165.362 218.6 165.726C217.722 166.089 216.924 166.623 216.252 167.295C215.58 167.967 215.047 168.765 214.684 169.643C214.32 170.521 214.133 171.463 214.133 172.413Z" fill="black"/><path d="M214.984 142.613C214.984 143.564 215.171 144.505 215.535 145.383C215.898 146.261 216.432 147.059 217.104 147.732C217.776 148.404 218.573 148.937 219.452 149.301C220.33 149.665 221.271 149.852 222.221 149.852C223.172 149.852 224.113 149.665 224.991 149.301C225.869 148.937 226.667 148.404 227.339 147.732C228.011 147.059 228.544 146.261 228.908 145.383C229.272 144.505 229.459 143.564 229.459 142.613C229.459 141.663 229.272 140.722 228.908 139.843C228.544 138.965 228.011 138.167 227.339 137.495C226.667 136.823 225.869 136.29 224.991 135.926C224.113 135.562 223.172 135.375 222.221 135.375C221.271 135.375 220.33 135.562 219.452 135.926C218.573 136.29 217.776 136.823 217.104 137.495C216.432 138.167 215.898 138.965 215.535 139.843C215.171 140.722 214.984 141.663 214.984 142.613Z" fill="black"/></svg>';
 App.Modules.YerevanParking.Icons.CardIcon = '<svg width="236" height="178" viewBox="0 0 236 178" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M195.74 29.8239V14.8862C195.74 10.3334 191.987 6.57741 187.401 6.57741H14.9376C10.3504 6.57741 6.59818 10.316 6.59818 14.8862V29.8239H195.74ZM63.8669 143.84C62.9381 143.84 62.0473 143.472 61.3905 142.818C60.7337 142.164 60.3647 141.276 60.3647 140.35C60.3647 139.425 60.7337 138.537 61.3905 137.883C62.0473 137.229 62.9381 136.861 63.8669 136.861H117.044C117.973 136.861 118.864 137.229 119.52 137.883C120.177 138.537 120.546 139.425 120.546 140.35C120.546 141.276 120.177 142.164 119.52 142.818C118.864 143.472 117.973 143.84 117.044 143.84H63.8669ZM165.701 116.213C170.927 116.213 175.565 118.725 178.465 122.603C181.365 118.725 186.002 116.213 191.229 116.213C200.014 116.213 207.137 123.31 207.137 132.064C207.137 140.818 200.014 147.915 191.229 147.915C186.002 147.915 181.365 145.403 178.465 141.526C175.565 145.403 170.927 147.915 165.701 147.915C156.915 147.915 149.793 140.818 149.793 132.064C149.793 123.31 156.915 116.213 165.701 116.213ZM68.7206 71.0536H95.424C98.8294 71.0536 101.615 73.8296 101.615 77.2226V78.5705H62.5287V77.2226C62.5287 73.8296 65.3153 71.0536 68.7206 71.0536ZM101.615 80.693V93.8456H89.4899V80.693H101.615ZM87.3597 93.8456H76.7712V80.693H87.3597V93.8456ZM74.6405 93.8456H62.5287V80.693H74.6405V93.8456ZM101.615 95.9686V97.337C101.615 100.73 98.8289 103.506 95.424 103.506H68.7206C65.3157 103.506 62.5287 100.73 62.5287 97.337V95.9686H101.615ZM63.8669 127.268C62.9451 127.258 62.0645 126.886 61.4164 126.232C60.7682 125.579 60.4047 124.698 60.4047 123.779C60.4047 122.86 60.7682 121.979 61.4164 121.326C62.0645 120.672 62.9451 120.3 63.8669 120.29H134.389C134.852 120.284 135.312 120.371 135.741 120.544C136.171 120.717 136.561 120.973 136.891 121.298C137.22 121.622 137.482 122.009 137.66 122.434C137.839 122.86 137.931 123.317 137.931 123.779C137.931 124.241 137.839 124.698 137.66 125.124C137.482 125.55 137.22 125.936 136.891 126.261C136.561 126.585 136.171 126.841 135.741 127.014C135.312 127.187 134.852 127.274 134.389 127.268H63.8669ZM6.59818 65.2658V122.146C6.59818 126.716 10.3678 130.456 14.9376 130.456H34.6645V65.2658H6.59818ZM201.338 41.9669H221.063C224.887 41.9669 228.363 43.5316 230.885 46.0435L230.907 46.0653C233.431 48.5822 235 52.0512 235 55.8532V163.114C235 166.905 233.429 170.372 230.904 172.897L230.869 172.931C228.336 175.439 224.862 177 221.063 177H48.6016C44.7854 177 41.3038 175.437 38.7777 172.922L38.7563 172.9C36.2353 170.387 34.6645 166.923 34.6645 163.114V136.033H14.9376C11.1223 136.033 7.63929 134.47 5.11328 131.954L5.09134 131.932C2.57036 129.42 1 125.956 1 122.146V14.8867C1 11.062 2.56716 7.58789 5.08952 5.07467C5.22068 4.94443 5.35596 4.82239 5.49627 4.70718C7.99166 2.4089 11.3134 0.999969 14.9376 0.999969H187.401C191.224 0.999969 194.701 2.56464 197.222 5.07649L197.233 5.08742L197.244 5.07649C199.77 7.59336 201.338 11.0697 201.338 14.8867V41.9669ZM48.6016 47.5444H221.063C225.65 47.5444 229.402 51.3008 229.402 55.8536V163.113C229.402 167.666 225.633 171.423 221.063 171.423H48.6016C44.0322 171.423 40.2626 167.683 40.2626 163.113V55.8536C40.2626 51.2835 44.0149 47.5444 48.6016 47.5444Z" fill="black" stroke="black" stroke-miterlimit="22.926"/></svg>';
 App.Modules.YerevanParking.Icons.WalletIcon = '<svg width="236" height="178" viewBox="0 0 236 178" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M212.4 0.500061H23.6C10.5651 0.500061 0 11.0652 0 24.1001V153.9C0 166.935 10.5651 177.5 23.6 177.5H212.4C225.435 177.5 236 166.935 236 153.9V24.1001C236 11.0652 225.435 0.500061 212.4 0.500061ZM224.2 106.7H165.2C158.694 106.7 153.4 101.406 153.4 94.9001V83.1001C153.4 76.5944 158.694 71.3001 165.2 71.3001H224.2V106.7ZM224.2 59.5001H165.2C152.165 59.5001 141.6 70.0652 141.6 83.1001V94.9001C141.6 107.935 152.165 118.5 165.2 118.5H224.2V153.9C224.2 160.406 218.906 165.7 212.4 165.7H23.6C17.0943 165.7 11.8 160.406 11.8 153.9V24.1001C11.8 17.5944 17.0943 12.3001 23.6 12.3001H212.4C218.906 12.3001 224.2 17.5944 224.2 24.1001V59.5001Z" fill="black"/></svg>';
-App.Modules.YerevanParking.Icons.SettingIcon = '<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_251_2067)"><path d="M47.2603 20.0585H44.6099C44.1172 18.1378 43.3483 16.3389 42.3455 14.6934L44.251 12.7836C44.7654 12.2692 45.0482 11.5829 45.0482 10.8542C45.0482 10.1266 44.7632 9.43924 44.251 8.92589L41.0752 5.75338C40.0452 4.72234 38.2453 4.72342 37.2197 5.75229L35.2337 7.72627C33.6067 6.77789 31.8622 6.04703 29.9404 5.57719V2.74074C29.9404 1.2366 28.7386 0 27.2345 0H22.7449C21.2407 0 20.0574 1.2366 20.0574 2.74074V5.5761C18.1367 6.04485 16.3814 6.7768 14.7521 7.72627L12.7673 5.75229C11.7384 4.72125 9.93735 4.72234 8.90523 5.7512L5.73162 8.92372C5.22263 9.43162 4.93224 10.1342 4.93224 10.852C4.93224 11.5796 5.21393 12.2648 5.72945 12.7792L7.63492 14.6934C6.63324 16.3389 5.86322 18.1378 5.37163 20.0585H2.72007C1.21484 20.0585 0 21.2679 0 22.7688V27.2551C0 28.7604 1.21484 29.9426 2.72007 29.9426H5.37163C5.86322 31.8633 6.63215 33.673 7.63274 35.3186L5.72727 37.236C5.21175 37.7504 4.92898 38.4389 4.92898 39.1676C4.92898 39.8962 5.21284 40.5847 5.72727 41.0991L8.90305 44.2738C9.41857 44.7882 10.1027 45.071 10.8303 45.071C11.5579 45.071 12.2431 44.7872 12.7586 44.2738L14.7521 42.2987C16.3814 43.2482 18.1367 43.9791 20.0574 44.45V47.2821C20.0574 48.7862 21.2407 49.9989 22.7449 49.9989H27.2345C28.7386 49.9989 29.9404 48.7862 29.9404 47.2821V44.4489C31.8622 43.9791 33.6067 43.2482 35.2359 42.2987L37.2121 44.2695C37.7276 44.7861 38.4128 45.0688 39.1425 45.0688C39.8712 45.0688 40.5575 44.785 41.0719 44.2716L44.2477 41.0991C44.7621 40.5858 45.0438 39.8995 45.046 39.1719C45.046 38.4432 44.7611 37.7591 44.2477 37.2436L42.3444 35.3186C43.345 33.6719 44.1139 31.8611 44.6066 29.9426H47.2582C48.7623 29.9426 49.9989 28.7604 49.9989 27.2551V22.7688C50 21.2679 48.7645 20.0585 47.2603 20.0585ZM24.9886 33.5523C20.2271 33.5523 16.3661 29.7272 16.3661 25.0125C16.3661 20.2945 20.2271 16.4749 24.9886 16.4749C29.7512 16.4749 33.6143 20.2945 33.6143 25.0125C33.6132 29.7283 29.7512 33.5523 24.9886 33.5523Z" fill="#C0C0C0"/></g><defs><clipPath id="clip0_251_2067"><rect width="50" height="50" fill="white"/></clipPath></defs></svg>';
 App.Modules.YerevanParking.Icons.VahilesIcon = '<svg width="220" height="170" viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M201.579 55.2393L204.998 51.82C207.91 48.9074 207.91 44.1852 204.998 41.2733C202.084 38.3615 197.364 38.3615 194.451 41.2733L190.947 44.7778L184.218 17.86C181.802 8.20148 172.112 0.635559 162.157 0.635559H57.8422C47.8874 0.635559 38.197 8.20148 35.7815 17.8607L29.0526 44.7778L25.5489 41.2733C22.6355 38.3615 17.9148 38.3615 15.0022 41.2733C12.0896 44.1859 12.0896 48.9082 15.0022 51.82L18.4207 55.2393C7.52295 60.5815 -1.52588e-05 71.7874 -1.52588e-05 84.72V110.915C-1.52588e-05 121.487 5.03035 130.9 12.817 136.905V149.975C12.817 160.667 21.5148 169.364 32.2074 169.364H46.797C57.4889 169.364 66.1867 160.667 66.1867 149.975V143.729H153.813V149.975C153.813 160.667 162.51 169.364 173.202 169.364H187.792C198.484 169.364 207.182 160.667 207.182 149.975V136.907C214.969 130.901 220 121.488 220 110.915V84.72C220 71.7874 212.477 60.5815 201.579 55.2393ZM43.2215 49.5963L50.2511 21.4785C51.0126 18.4311 54.7022 15.5504 57.8422 15.5504H162.156C165.296 15.5504 168.986 18.4311 169.747 21.4785L176.778 49.597C176.972 50.377 176.933 51.0407 176.673 51.3741C176.412 51.7074 175.777 51.9067 174.974 51.9067H45.0244C44.2215 51.9067 43.5867 51.7074 43.3252 51.3741C43.0659 51.0407 43.0274 50.377 43.2215 49.5963ZM14.9155 84.72C14.9155 74.8519 22.9452 66.8222 32.8133 66.8222H187.187C197.055 66.8222 205.084 74.8519 205.084 84.72V110.915C205.084 120.784 197.055 128.813 187.187 128.813H32.8133C22.9452 128.813 14.9155 120.784 14.9155 110.915V84.72ZM51.2711 149.975C51.2711 152.399 49.2215 154.449 46.797 154.449H32.2067C29.7815 154.449 27.7318 152.399 27.7318 149.975V143.334C29.3889 143.593 31.0844 143.729 32.8126 143.729H51.2704V149.975H51.2711ZM192.267 149.975C192.267 152.399 190.217 154.449 187.792 154.449H173.202C170.778 154.449 168.728 152.399 168.728 149.975V143.729H187.187C188.915 143.729 190.61 143.592 192.267 143.334V149.975H192.267Z" fill="black"/></svg>';
 App.Modules.YerevanParking.Icons.PaymentIcon = '<svg width="102" height="98" viewBox="0 0 102 98" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M97.9645 54.1908C98.8837 53.009 99.3301 51.4858 98.9231 49.9321L86.8558 4.19305C86.1555 1.54933 83.4373 -0.0349904 80.7981 0.665253L3.68971 20.9961C1.05918 21.692 -0.529606 24.419 0.161912 27.0582L12.2292 72.7928C12.9207 75.432 15.6519 77.0166 18.2913 76.3251L45.5377 69.1382V84.453C45.5377 93.0187 59.7321 97.5008 73.7646 97.5008C87.7883 97.5008 102 93.0187 102 84.4532V61.2289C102 58.4407 100.472 56.0947 97.9645 54.1908ZM89.2325 38.425L90.4929 43.1872L75.1649 47.2358L73.9131 42.465L89.2325 38.425ZM80.3385 8.29428L82.7326 17.3634L58.7864 23.6836L56.3922 14.6145L80.3385 8.29428ZM69.5932 43.6029L70.8188 48.2599C65.1507 48.5138 59.6358 49.5029 55.2062 51.1924L54.2696 47.6558L69.5932 43.6029ZM16.2296 62.7739L14.9778 58.0205L30.3014 53.9674L31.5619 58.7469L16.2296 62.7739ZM34.6216 52.8339L49.9364 48.7852L51.0963 53.149C50.7241 53.3767 50.3741 53.6129 50.0326 53.8537L35.8733 57.5916L34.6216 52.8339ZM96.8879 84.0764C96.8879 89.0705 86.5409 93.1149 73.7646 93.1149C61.0015 93.1149 50.6456 89.0662 50.6456 84.0764V78.4522C50.6456 78.2639 50.755 78.0932 50.7856 77.9138C51.5165 82.6498 61.4697 86.405 73.7646 86.405C86.0638 86.405 96.0212 82.6496 96.7479 77.9138C96.7785 78.0932 96.8879 78.2641 96.8879 78.4522V84.0764ZM96.8879 73.0115C96.8879 78.0013 86.5409 82.0455 73.7646 82.0455C61.0015 82.0455 50.6456 78.0013 50.6456 73.0115V67.3873C50.6456 67.2034 50.755 67.0283 50.7856 66.8489C51.5165 71.5804 61.4697 75.3446 73.7646 75.3446C86.0638 75.3446 96.0212 71.5804 96.7479 66.8489C96.7785 67.0283 96.8879 67.2034 96.8879 67.3873V73.0115ZM73.7644 70.2584C61.0013 70.2584 50.6454 66.2142 50.6454 61.2287C50.6454 56.2434 61.0011 52.1992 73.7644 52.1992C86.5407 52.1992 96.8877 56.2434 96.8877 61.2287C96.8879 66.2142 86.5407 70.2584 73.7644 70.2584Z" fill="#010002"/></svg>';
 App.Modules.YerevanParking.Icons.TellCell = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="#FF5C39"/><path d="M61 55H137V88V185.5H102V88H61V55Z" fill="white"/><rect x="147" y="55" width="34" height="34" fill="white"/></svg>';
 App.Modules.YerevanParking.Icons.Arca = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M58.1039 120.138C58.1039 118.381 61.1953 102.647 62.741 95H72.2593L74.4558 97.1965C75.5948 112.979 77.9215 144.739 78.1167 145.52C78.2666 146.12 79.4805 146.853 80.4782 147.456C80.7803 147.639 81.0626 147.809 81.2895 147.961H60.0564L58.1039 146.496V136.978H54.6871L56.3955 127.948H59.3242C58.9174 126.077 58.1039 121.895 58.1039 120.138ZM109.356 106.959H90.8078C90.9998 107.17 91.2372 107.377 91.4878 107.595C92.2988 108.301 93.2484 109.128 93.2484 110.62C93.2484 111.678 89.0881 129.01 86.1793 141.129L86.1767 141.139L86.1685 141.174C85.7271 143.013 85.3147 144.731 84.9504 146.252C84.9504 146.496 84.9992 146.838 85.1944 147.229C85.5312 147.902 86.008 147.961 86.1707 147.961H105.939L103.499 145.764V144.544L103.743 143.08C105.289 136.246 108.429 122.383 108.624 121.602C108.735 121.159 108.795 120.917 108.897 120.694C109.019 120.425 109.2 120.183 109.6 119.65C110.186 118.869 111.146 118.674 111.553 118.674L119.607 118.43C119.825 118.357 120.14 118.349 120.465 118.341C120.869 118.331 121.289 118.321 121.559 118.186C122.047 117.942 122.291 117.453 122.535 116.721C122.779 115.989 125.22 106.471 125.22 106.471H117.41C117.085 106.633 116.19 107.203 115.214 108.179C114.237 109.155 112.854 111.515 112.285 112.572H110.088L110.821 110.864V108.179C110.821 107.935 110.088 106.959 109.356 106.959ZM171.103 95H143.036C141.979 95 139.034 95.781 135.715 98.9049C132.395 102.029 131.077 105.576 130.833 106.959L125.22 131.609C125.139 132.016 124.927 133.122 124.732 134.293C124.488 135.758 124.244 137.954 124.732 140.151C125.22 142.347 125.952 143.812 126.684 144.544C126.75 144.609 126.827 144.69 126.915 144.783L126.916 144.784C127.821 145.734 129.94 147.961 133.274 147.961H158.656C159.226 147.961 160.609 147.619 161.585 146.252C162.561 144.886 164.269 137.71 165.002 134.293C164.758 134.7 164.123 135.611 163.537 136.002C162.952 136.392 161.829 136.653 161.341 136.734H148.894C148.243 136.571 146.844 136.099 146.453 135.514L144.989 133.317C144.907 133.317 144.794 133.024 144.989 131.853C145.184 130.681 148.65 116.559 150.358 109.644C150.602 109.155 151.334 108.033 152.311 107.447L154.751 105.983H166.466C167.035 105.739 168.272 105.006 168.663 104.03C169.053 103.054 170.29 98.5795 170.859 96.4644L171.103 95ZM48.0975 95.2441C48.911 95.5695 50.5381 96.6596 50.5381 98.4168C50.5381 100.174 34.9183 130.226 27.1085 145.032C27.1085 145.046 27.1017 145.068 27.0915 145.102C27.0407 145.272 26.9051 145.724 27.1085 146.74C27.499 147.717 28.0847 147.961 28.3288 147.961H45.4129C44.7621 147.473 43.4604 146.301 43.4604 145.52V144.3L47.3654 136.734H50.5381L52.4906 127.948H49.8059L54.199 120.138L59.3242 95.2441H48.0975ZM179.401 122.335H192.336L191.36 127.704C190.953 127.785 189.944 128.094 189.163 128.68C188.382 129.266 187.536 130.877 187.211 131.609C186.967 132.91 186.479 135.709 186.479 136.49C186.479 137.466 187.211 138.198 187.699 138.687C188.09 139.077 188.838 139.175 189.163 139.175V142.103C188.919 142.754 188.187 144.349 187.211 145.52C186.235 146.692 184.364 147.473 183.55 147.717H174.032C172.567 147.717 171.591 146.985 170.615 146.252C169.834 145.667 169.151 143.73 168.907 142.836V137.954C168.907 136.978 169.72 134.131 170.127 132.829C170.94 130.958 172.909 126.728 174.276 124.775C175.643 122.823 178.262 122.335 179.401 122.335ZM182.574 106.959L180.865 113.304C180.784 113.63 180.621 114.329 180.621 114.525C180.621 114.769 180.865 115.989 181.11 115.989C181.191 115.989 181.272 116.016 181.381 116.052C181.598 116.125 181.923 116.233 182.574 116.233H194.777C195.184 116.314 196.046 116.624 196.241 117.209C196.436 117.795 196.485 119.406 196.485 120.138L191.36 144.788C191.279 145.113 191.116 145.911 191.116 146.496C191.116 147.229 191.848 147.961 192.336 147.961H210.641C209.908 147.554 208.444 146.399 208.444 145.032C208.444 143.665 213 125.426 215.278 116.477V111.108C215.196 110.701 214.741 109.644 213.569 108.667C212.398 107.691 211.129 107.122 210.641 106.959H182.574Z" fill="#0F57AB"/></svg>';
 App.Modules.YerevanParking.Icons.Easy = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M43.9488 116.39L66.2566 103.546C69.5014 101.653 69.5014 98.5433 66.2566 96.7857L43.9488 83.8066C40.704 81.9138 38 83.4686 38 87.2542V113.01C38 116.728 40.704 118.215 43.9488 116.39Z" fill="#A5CD39"/><path fill-rule="evenodd" clip-rule="evenodd" d="M67.0002 105.371L43.8812 119.364C40.6364 121.324 38 125.989 38 129.707V154.651C38 158.437 40.6364 159.924 43.8812 157.963L67.0002 143.97C70.245 142.01 72.8814 137.345 72.8814 133.628V108.683C72.8138 104.898 70.1774 103.478 67.0002 105.371ZM43.8812 141.131C42.5292 141.942 41.4476 141.537 41.4476 140.185C41.4476 138.833 42.5292 137.075 43.8812 136.264C45.2332 135.453 46.3148 135.858 46.3148 137.21C46.3148 138.562 45.2332 140.32 43.8812 141.131Z" fill="#A5CD39"/><path fill-rule="evenodd" clip-rule="evenodd" d="M88.2941 124.028C88.4969 128.287 90.9305 130.991 95.1893 130.991C97.6229 130.991 99.9889 129.909 100.935 127.611H110.332C108.439 134.641 101.949 137.751 95.0541 137.751C85.0494 137.751 78.2218 131.667 78.2218 121.392C78.2218 111.996 85.7254 105.168 94.8513 105.168C105.87 105.168 111.413 113.415 110.94 123.893L88.2941 124.028ZM100.8 118.35C100.597 114.835 98.1637 112.063 94.7837 112.063C91.2009 112.063 88.9025 114.564 88.2265 118.35H100.8Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M112.562 115.714C112.765 111.658 114.59 109.021 117.362 107.534C120.134 105.979 123.581 105.371 127.096 105.371C134.33 105.371 141.428 106.993 141.428 115.646V129.098C141.428 131.735 141.428 134.574 142.644 136.94H132.504C132.099 135.993 132.099 135.047 131.896 134.033C129.26 136.805 125.474 137.819 121.756 137.819C115.807 137.819 111.278 134.844 111.278 128.558C111.278 118.62 122.162 119.364 129.192 117.877C130.95 117.471 131.896 116.93 131.896 115.038C131.896 112.739 129.124 111.793 127.029 111.793C124.122 111.793 122.432 113.077 121.959 115.646L112.562 115.714ZM125.542 131.6C130.341 131.6 131.964 128.896 131.761 122.541C130.341 123.42 127.705 123.555 125.542 124.231C123.243 124.772 121.35 125.718 121.35 128.152C121.35 130.586 123.243 131.6 125.542 131.6Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M152.919 126.8C152.919 128.422 153.595 129.504 154.609 130.248C155.556 130.991 156.908 131.329 158.395 131.329C160.288 131.329 163.127 130.45 163.127 128.084C163.127 125.651 159.882 125.313 158.192 124.84C151.838 123.217 143.929 123.082 143.929 114.767C143.929 107.466 151.905 105.371 157.989 105.371C164.682 105.371 171.847 107.331 172.185 115.308H162.924C162.924 114.024 162.519 113.145 161.64 112.604C160.896 112.063 159.815 111.86 158.395 111.86C156.705 111.86 154.069 112.063 154.069 114.159C154.069 116.998 160.761 117.674 165.425 118.62C171.644 119.905 173.199 124.366 173.199 126.868C173.199 135.047 165.425 137.819 158.463 137.819C151.162 137.819 143.726 135.385 143.388 126.8H152.919Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M191.857 139.644C189.491 146.336 185.705 147.215 179.013 147.215H174.281V139.103H177.796C180.094 139.103 181.852 137.819 181.852 135.655C181.852 133.965 179.892 129.233 179.283 127.611L171.374 106.25H181.987L187.801 126.259H187.936L193.749 106.25H204.025L191.857 139.644Z" fill="#58595B"/></svg>';
+App.Modules.YerevanParking.Icons.Logout = '<svg width="24" height="24" viewBox="0 0 46 61" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M33.75 45.75V53.375H7.5V7.625H33.75V15.25H41.25V4C41.25 4 41 2 40 1C39 0 37 0 37 0H4.5C4.5 0 2 0 1 1C0 2 0 4.5 0 4.5V57C0 57 0 59 1 60C2 61 4 61 4 61H37C37 61 38.75 61.25 40 60C41.25 58.75 41.25 57 41.25 57V45.75H33.75ZM15 36.0057V24.5057H31V18.5L46 30.5L31 42.5V36.0057H15Z" fill="#2D2D2D"/></svg>';
+App.Modules.YerevanParking.Icons.Langs = '<svg width="48" height="30" viewBox="0 0 118 71" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M35.5774 63.0332C37.8793 63.0332 40.1813 62.7489 42.4832 62.1734C42.199 61.598 41.6235 61.3137 40.7568 61.598C41.6165 57.5695 42.192 55.5588 43.9185 53.8323C45.0695 52.9726 45.6449 51.5304 44.7782 50.3794C44.2028 49.5196 43.0518 48.9441 42.192 49.2284C40.4656 49.5127 41.6165 47.2177 40.1813 46.9265C38.746 46.6422 36.7283 43.7647 34.7176 42.898C33.5666 42.3226 32.4156 40.8873 30.6892 40.8873C29.2539 40.8873 26.952 42.3226 26.952 41.1716C26.952 37.7187 26.6677 35.4167 26.6677 34.2657C26.6677 33.406 26.0922 33.9814 28.3942 33.9814C29.5451 33.9814 28.9697 31.6795 30.1206 31.6795C31.2716 31.6795 33.8578 32.8305 34.4333 32.255C35.0088 31.9707 39.0372 42.6138 39.0372 33.9814C39.0372 32.8305 38.4617 31.104 39.0372 30.2442C40.4725 27.9423 41.9147 25.3561 43.0657 22.7629C41.9147 22.4786 40.4794 22.4786 39.3284 22.7629C38.753 23.0472 39.6127 23.9139 38.753 23.9139C35.8755 24.4894 33.2893 23.0541 34.149 21.6119C35.0088 20.1767 38.4617 21.0364 38.753 18.159C39.0372 16.4325 39.0372 14.7061 39.0372 13.2708C42.7744 13.8463 42.4902 8.95811 37.602 7.80713H36.1667C22.9305 7.80713 11.7119 17.0149 9.11877 29.96C10.2698 31.1109 12.2805 31.1109 13.1472 29.6757C12.8629 29.3914 12.8629 29.3914 13.1472 29.1002C14.2982 29.96 16.0246 29.96 16.0246 31.4021C16.0246 36.2903 16.3089 41.4697 20.6285 41.4697C22.355 42.0452 23.506 43.4805 24.0815 45.2069C24.3657 46.3579 26.0922 45.2069 27.5344 45.2069C28.3942 45.2069 27.5344 46.6422 27.5344 49.5196C27.5344 52.3971 34.149 57.2853 34.149 57.2853C34.149 59.0117 34.149 60.447 34.4333 62.1734C33.5736 62.1734 32.4226 62.1734 31.5559 62.4577C32.9911 63.0332 34.1421 63.0332 35.5774 63.0332ZM61.4743 26.202C61.4743 26.202 61.1901 26.202 61.1901 25.9177C59.4636 21.3138 55.1509 24.7667 56.5862 28.5039C48.5293 34.5431 50.8313 38.8627 53.4244 41.1646C54.8597 42.5999 56.0107 44.0421 56.8774 45.7686C56.0176 48.0705 59.4636 47.495 61.7656 44.0421C62.9165 41.1647 63.2008 38.0029 63.2008 34.8343V32.248C63.2008 31.6726 63.2008 31.0971 62.9165 30.8128C62.6253 29.6549 62.0498 27.9284 61.4743 26.202Z" fill="#2D2D2D"/><path d="M35.8686 65.6265C19.1794 65.6265 5.65894 52.106 5.65894 35.4168C5.65894 18.7276 19.1794 5.2002 35.8686 5.2002C52.5578 5.2002 66.0783 18.7207 66.0783 35.4099C66.0783 52.099 52.5578 65.6265 35.8686 65.6265ZM35.8686 8.07764C20.9059 8.07764 8.53638 20.4472 8.53638 35.4099C8.53638 50.3726 20.9059 62.749 35.8686 62.749C50.8313 62.749 63.2008 50.3795 63.2008 35.4168C63.2008 20.4541 50.8313 8.07764 35.8686 8.07764Z" fill="#2D2D2D"/><path d="M87.7811 23.2275L105.35 40.851L99.9578 46.243L82.3891 28.6195L87.7811 23.2275Z" fill="#212121"/><path d="M117.85 28.3773L100.144 46.3826L94.7521 40.9906L112.458 22.9853L117.85 28.3773Z" fill="#212121"/></svg>';
+App.Modules.YerevanParking.Icons.SettingIcon = '<svg width="22" height="22" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M57.1687 24.5232H53.9626C53.3666 22.1998 52.4365 20.0237 51.2235 18.0332L53.5285 15.723C54.1507 15.1008 54.4928 14.2706 54.4928 13.3891C54.4928 12.509 54.1481 11.6775 53.5285 11.0565L49.6869 7.21889C48.4409 5.97168 46.2637 5.97299 45.023 7.21757L42.6207 9.60541C40.6526 8.45819 38.5423 7.5741 36.2176 7.00576V3.57463C36.2176 1.75514 34.7638 0.259277 32.9444 0.259277H27.5135C25.6939 0.259277 24.2626 1.75514 24.2626 3.57463V7.00444C21.9392 7.57147 19.8159 8.45688 17.845 9.60541L15.444 7.21757C14.1994 5.97037 12.0208 5.97169 10.7723 7.21625L6.93329 11.0539C6.31759 11.6683 5.96631 12.5182 5.96631 13.3865C5.96631 14.2666 6.30706 15.0955 6.93066 15.7177L9.23563 18.0332C8.02394 20.0237 7.09248 22.1998 6.49783 24.5232H3.29035C1.46954 24.5232 0 25.9861 0 27.8017V33.2286C0 35.0495 1.46954 36.4795 3.29035 36.4795H6.49783C7.09248 38.8029 8.02262 40.992 9.23299 42.9826L6.92803 45.302C6.30443 45.9243 5.96237 46.7571 5.96237 47.6386C5.96237 48.52 6.30574 49.3528 6.92803 49.9751L10.7696 53.8154C11.3932 54.4376 12.2208 54.7797 13.1009 54.7797C13.9811 54.7797 14.8099 54.4364 15.4335 53.8154L17.845 51.4262C19.8159 52.5747 21.9392 53.4589 24.2626 54.0285V57.4544C24.2626 59.2738 25.6939 60.7408 27.5135 60.7408H32.9444C34.7638 60.7408 36.2176 59.2738 36.2176 57.4544V54.0272C38.5423 53.4589 40.6526 52.5747 42.6233 51.4262L45.0138 53.8101C45.6374 54.4351 46.4663 54.777 47.349 54.777C48.2304 54.777 49.0606 54.4337 49.6829 53.8127L53.5245 49.9751C54.1467 49.3541 54.4875 48.524 54.4902 47.6438C54.4902 46.7623 54.1455 45.9348 53.5245 45.3112L51.2222 42.9826C52.4325 40.9907 53.3627 38.8003 53.9586 36.4795H57.1662C58.9856 36.4795 60.4815 35.0495 60.4815 33.2286V27.8017C60.4828 25.9861 58.9883 24.5232 57.1687 24.5232ZM30.2276 40.846C24.4678 40.846 19.7974 36.219 19.7974 30.5158C19.7974 24.8086 24.4678 20.1882 30.2276 20.1882C35.9887 20.1882 40.6617 24.8086 40.6617 30.5158C40.6604 36.2203 35.9887 40.846 30.2276 40.846Z" fill="#2D2D2D"/></svg>';
+
+
+App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
+
+
+    /** @constructor */
+    constructor(name) {
+        super();
+        
+        this._registerEvents();
+        this._name = name;
+        this._restoreData();
+        
+    }
+
+    destructor() {
+
+    }
+
+    /**
+     * Register events
+     */
+    _registerEvents() {
+        this.RegisterEvent('TimerTick', false, 'When timer ticked');
+        this.RegisterEvent('TimerStarts', false, 'When timer starts');
+        this.RegisterEvent('TimerEnds', false, 'When timer ends');
+        this.RegisterEvent('TimerBeforeEnd', false, 'When timer before end');
+    }
+
+    Start(seconds, beforeEndSeconds) {
+
+        this._seconds = seconds;
+        this._beforeEndSeconds = beforeEndSeconds;
+        this._startDate = new Date();
+        this._endDate = new Date();
+        this._endDate .setTime(this._startDate.getTime() + seconds * 1000);
+        this._saveData();
+
+        this._start();
+
+    }
+
+    get started() {
+        return this._started ?? false;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+
+    Stop() {
+        Colibri.Common.StopTimer(this._name);
+        this._clearData();
+    }
+
+    _start() {
+        this._started = true;
+        const secondsLeft = this._calculateTimesLeft();
+        this.Dispatch('TimerStarts', {
+            seconds: this._seconds,
+            beforeEndSeconds: this._beforeEndSeconds,
+            timerStarts: this._startDate,
+            timerEnds: this._endDate,
+            secondsLeft: secondsLeft
+        });
+
+        Colibri.Common.StartTimer(this._name, 1000, () => {
+
+            const secondsLeft = this._calculateTimesLeft();
+            this.Dispatch('TimerTick', {
+                seconds: this._seconds,
+                beforeEndSeconds: this._beforeEndSeconds,
+                timerStarts: this._startDate,
+                timerEnds: this._endDate,
+                secondsLeft: secondsLeft
+            });
+
+            if(secondsLeft < 0) {
+                this.Stop();
+                this.Dispatch('TimerEnds', {
+                    seconds: this._seconds,
+                    beforeEndSeconds: this._beforeEndSeconds,
+                    timerStarts: this._startDate,
+                    timerEnds: this._endDate
+                });
+            } else if(secondsLeft < this._beforeEndSeconds && !this._beforeEndEventSent) {
+                this.Dispatch('TimerBeforeEnd', {
+                    seconds: this._seconds,
+                    beforeEndSeconds: this._beforeEndSeconds,
+                    timerStarts: this._startDate,
+                    timerEnds: this._endDate,
+                    secondsLeft: secondsLeft
+                });
+                this._beforeEndEventSent = true;
+            }
+
+        });
+    }
+
+    _restoreData() {
+        let values = App.Browser.Get(this._name + '.values');
+        if(values) {
+            values = JSON.parse(values);
+            this._seconds = values.seconds;
+            this._beforeEndSeconds = values.beforeEndSeconds;
+            this._startDate = values.timerStarts.toDate();
+            this._endDate = values.timerEnds.toDate();
+            this._start();
+        }
+    }
+
+    _saveData() {
+        App.Browser.Set(this._name + '.values', JSON.stringify({
+            seconds: this._seconds,
+            beforeEndSeconds: this._beforeEndSeconds,
+            timerStarts: this._startDate.toDbDate(),
+            timerEnds: this._endDate.toDbDate()
+        }));
+    }
+
+    _clearData() {
+        App.Browser.Delete(this._name + '.values');
+    }
+
+    _calculateTimesLeft() {
+        const currentDate = new Date();
+        return parseInt(this._seconds) - parseInt(this._startDate.Diff(currentDate));
+    }
+
+    get secondsLeft() {
+        return this._calculateTimesLeft();
+    }
+
+
+}
+
 
