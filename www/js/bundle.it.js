@@ -44330,6 +44330,22 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return this._store;
     }
 
+    get Alert() {
+        if(!this._alert) {
+            this._alert = new App.Modules.YerevanParking.Components.Windows.AlertDialog('yerevan-parking-alert-dialog', document.body, 780);
+            // this._alert.closable = false;
+        }
+        return this._alert;
+    }
+
+    get Confirm() {
+        if(!this._confirm) {
+            this._confirm = new App.Modules.YerevanParking.Components.Windows.ConfirmDialog('yerevan-parking-confirm-dialog', document.body, 780);
+            // this._confirm.closable = false;
+        }
+        return this._confirm;
+    }
+
     get MainPage() {
         if(!this._mainPage) {
             this._mainPage = new App.Modules.YerevanParking.Layers.MainPage('main-page', document.body);
@@ -44581,6 +44597,8 @@ App.Modules.YerevanParking.Components = class {};
 App.Modules.YerevanParking.Components.Form = class {};
 
 App.Modules.YerevanParking.Components.ListItems = class {};
+
+App.Modules.YerevanParking.Components.Windows = class {};
 
 App.Modules.YerevanParking.Layers = class {};
 
@@ -45146,6 +45164,120 @@ App.Modules.YerevanParking.Components.ListItems.Menu = class extends Colibri.UI.
     _showValue() {
         this._icon.iconSVG = this._value.icon;
         this._span.value = this._value.title;
+    }
+
+}
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Components.Windows.AlertDialog', 
+'<div namespace="App.Modules.YerevanParking.Components.Windows.AlertDialog">' + 
+'' + 
+'    <component-container>' + 
+'        <Icon shown="false" name="icon" />' + 
+'        <H3 name="title" shown="true" />' + 
+'        <TextSpan name="message" shown="true" />' + 
+'    </component-container>' + 
+'' + 
+'    <component-footer>' + 
+'        <SuccessButton name="btn-cancel" className="-small btn-cancel" shown="true" value="" />' + 
+'    </component-footer>' + 
+'    ' + 
+'</div>' + 
+'');
+App.Modules.YerevanParking.Components.Windows.AlertDialog = class extends Colibri.UI.Window {
+
+    constructor(name, container, width) {
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Components.Windows.AlertDialog'], '', width);
+        this.AddClass('app-modules-yerevanparking-components-windows-alertdialog-component')
+        this.namespace = 'App.Modules.YerevanParking';
+        this._callback = null;
+    }
+
+    /**
+     * Показывает диалог
+     * @param {Function(dialogResult)} callback
+     */
+    Show(title, message, button, icon = null) {
+        return new Promise((resolve, reject) => {
+            this.Children('title').value = title;
+            this.Children('message').value = message;
+            this.Children('btn-cancel').value = button || '';
+            if(icon) {
+                this.Children('icon').value = icon;
+                this.Children('icon').shown = true;
+            }
+            else {
+                this.Children('icon').shown = false;
+            }
+
+            super.Show();
+
+            this.Children('btn-cancel').ClearHandlers();
+            this.Children('btn-cancel').AddHandler('Clicked', (event, args) => {
+                this.Hide();
+                resolve();
+            });
+        });
+    }
+
+}
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Components.Windows.ConfirmDialog', 
+'<div namespace="App.Modules.YerevanParking.Components.Windows.ConfirmDialog">' + 
+'' + 
+'    <component-container>' + 
+'        <Icon shown="false" name="icon" />' + 
+'        <H3 name="title" shown="true" />' + 
+'        <TextSpan name="message" shown="true" />' + 
+'    </component-container>' + 
+'' + 
+'    <component-footer>' + 
+'        <SuccessButton name="btn-save" className="-small btn-save" shown="true" value="Salva" />' + 
+'        <SimpleButton name="btn-cancel" className="-small btn-cancel" shown="true" value="Annulla" />' + 
+'    </component-footer>' + 
+'' + 
+'</div>' + 
+'');
+App.Modules.YerevanParking.Components.Windows.ConfirmDialog = class extends Colibri.UI.Window {
+
+    constructor(name, container, width) {
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Components.Windows.ConfirmDialog'], '', width);
+        this.AddClass('app-modules-yerevanparking-components-windows-confirmdialog-component');
+        this.namespace = 'App.Modules.YerevanParking';
+        this._callback = null;
+    }
+
+    /**
+     * Показывает диалог
+     * @param {Function(dialogResult)} callback
+     */
+    Show(title, message, okButton, cancelButton, icon = null) {
+        return new Promise((resolve, reject) => {
+            this.Children('title').value = title;
+            this.Children('message').value = message;
+            this.Children('btn-save').value = okButton || 'Salva';
+            this.Children('btn-cancel').value = cancelButton || 'Annulla';
+            if(icon) {
+                this.Children('icon').value = icon;
+                this.Children('icon').shown = true;
+            }
+            else {
+                this.Children('icon').shown = false;
+            }
+            super.Show();
+
+            this.Children('btn-cancel').ClearHandlers();
+            this.Children('btn-cancel').AddHandler('Clicked', (event, args) => {
+                this.Hide();
+                reject();
+            });
+            this.Children('btn-save').ClearHandlers();
+            this.Children('btn-save').AddHandler('Clicked', (event, args) => {
+                this.Hide();
+                resolve();
+            });
+        });
+    }
+
+    get contentObject() {
+        return this._contentObject;
     }
 
 }
@@ -45908,7 +46040,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
     __choosepaynow(event, args) {
         if(!App.Browser.Get('current-timer-state')) {
-            App.Confirm.Show(
+            YerevanParking.Confirm.Show(
                 '',
                 '',
                 '',
