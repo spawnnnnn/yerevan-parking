@@ -6576,6 +6576,9 @@ input::placeholder, textarea::placeholder, select::placeholder {
   width: 28px;
   height: 28px;
 }
+.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="logo"] {
+  padding-top: 20px;
+}
 .app-modules-yerevanparking-layouts-header [data-object-name="row2"] {
   flex-wrap: nowrap;
   align-items: flex-end;
