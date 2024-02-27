@@ -44215,7 +44215,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             console.log(settings);
 
             if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
-                if(App.Router.current === '' || App.Router.current === '/' || App.Router.current === '/payment' || App.Router.current === '/vahiles') {
+                if(['', '/', '/payment', '/vahiles', '/registration'].indexOf(App.Router.current) !== -1) {
                     App.Router.Navigate('/main');
                 }
             } else if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length == 0) {
