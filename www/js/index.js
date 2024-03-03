@@ -82,15 +82,19 @@ function LoadStyles(url, id = null) {
 }
 
 function Cookie(c_name) {
-    var i, x, y, ARRcookies = document.cookie.split(";");
-    for (i = 0; i < ARRcookies.length; i++) {
-        x = ARRcookies[i].substring(0, ARRcookies[i].indexOf("="));
-        y = ARRcookies[i].substring(ARRcookies[i].indexOf("=") + 1);
-        x = x.replace(/^\s+|\s+$/g, "");
-        if (x == c_name)
-            return decodeURIComponent(y);
+    if(App.Device.isIOs) {
+        return WKWebViewCookies[c_name];
+    } else {
+        var i, x, y, ARRcookies = document.cookie.split(";");
+        for (i = 0; i < ARRcookies.length; i++) {
+            x = ARRcookies[i].substring(0, ARRcookies[i].indexOf("="));
+            y = ARRcookies[i].substring(ARRcookies[i].indexOf("=") + 1);
+            x = x.replace(/^\s+|\s+$/g, "");
+            if (x == c_name)
+                return decodeURIComponent(y);
+        }
+        return null;
     }
-    return null;
 }
 
 const notifications = [];
