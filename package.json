@@ -39,7 +39,10 @@
     "es6-promise-plugin": "^4.2.2"
   },
   "cordova": {
-    "platforms": [],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "plugins": {
       "cordova-plugin-advanced-http": {
         "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
