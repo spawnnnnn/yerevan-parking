@@ -82,7 +82,7 @@ function LoadStyles(url, id = null) {
 }
 
 function Cookie(c_name) {
-    if(App.Device.isIOs) {
+    if(WKWebViewCookies) {
         return WKWebViewCookies[c_name];
     } else {
         var i, x, y, ARRcookies = document.cookie.split(";");
