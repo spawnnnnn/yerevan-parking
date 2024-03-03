@@ -94,6 +94,7 @@ function Cookie(c_name) {
 }
 
 const notifications = [];
+window.safearea = {top: 0, bottom: 0};
 
 function onDeviceReady() {
 
@@ -118,14 +119,9 @@ function onDeviceReady() {
         notifications.push(notification);
     });
 
-    // ios
-    // window.plugins.safearea.get((result) => {
-    //     alert(JSON.stringify(result));
-    // }, (e) => {
-    //     alert(e);
-    // });
-    // android
-    // cutout.has().then(result => alert(JSON.stringify(result)));
+    window.plugins.safearea.get((result) => {
+        window.safearea = result;
+    }, (e) => { });
 
 
     Promise.all([

@@ -6664,6 +6664,8 @@ input::placeholder, textarea::placeholder, select::placeholder {
   align-items: flex-start;
   justify-content: space-between;
   padding-top: 10px;
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] {
   align-items: center;
