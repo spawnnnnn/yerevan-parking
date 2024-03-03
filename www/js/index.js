@@ -104,7 +104,7 @@ function onDeviceReady() {
 
     console.log('ready');
 
-    let lang = Cookie('lang');
+    let lang = window.localStorage.getItem('lang');
     if (!lang) {
         lang = 'hy';
     }

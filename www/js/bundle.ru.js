@@ -2668,40 +2668,27 @@ Colibri.Common.BrowserStorage = class {
 Colibri.Common.Cookie = class {
     
     static Set(c_name, value, exdays, path, domain, secure, samesite) {
-
-        if(App.Device.isIOs && WKWebViewCookies) {
-            WKWebViewCookies.setCookie({
-                name: c_name,
-                value: value,
-                domain: domain
-            });
-        } else {
-            var exdate = new Date();
-            exdate.setDate(exdate.getDate() + exdays);
-            var c_value = encodeURIComponent(value) + 
-                ((exdays==null) ? "" : "; expires=" + exdate.toUTCString()) + 
-                (path == null ? '; path=/' : '; path=' + path) + 
-                (domain ? '; domain=' + domain : '') + 
-                (secure !== undefined && secure ? '; secure' : '') + 
-                (samesite !== undefined ? '; SameSite=' + samesite : '');
-            document.cookie = c_name + "=" + c_value;    
-        }
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var c_value = encodeURIComponent(value) + 
+            ((exdays==null) ? "" : "; expires=" + exdate.toUTCString()) + 
+            (path == null ? '; path=/' : '; path=' + path) + 
+            (domain ? '; domain=' + domain : '') + 
+            (secure !== undefined && secure ? '; secure' : '') + 
+            (samesite !== undefined ? '; SameSite=' + samesite : '');
+        document.cookie = c_name + "=" + c_value;
     }
 
     static Get (c_name) {
-        if(App.Device.isIOs && WKWebViewCookies) {
-            return WKWebViewCookies[c_name];
-        } else {
-            var i,x,y,ARRcookies=document.cookie.split(";");
-            for( i=0; i < ARRcookies.length; i++) {
-                x = ARRcookies[i].substring(0, ARRcookies[i].indexOf("="));
-                y = ARRcookies[i].substring(ARRcookies[i].indexOf("=") + 1);
-                x = x.replace(/^\s+|\s+$/g,"");
-                if(x == c_name)
-                    return decodeURIComponent(y);
-            }
-            return null;    
+        var i,x,y,ARRcookies=document.cookie.split(";");
+        for( i=0; i < ARRcookies.length; i++) {
+            x = ARRcookies[i].substring(0, ARRcookies[i].indexOf("="));
+            y = ARRcookies[i].substring(ARRcookies[i].indexOf("=") + 1);
+            x = x.replace(/^\s+|\s+$/g,"");
+            if(x == c_name)
+                return decodeURIComponent(y);
         }
+        return null;
     }
 
     static Delete(c_name, path, domain) {
@@ -36872,7 +36859,8 @@ App.Modules.Lang.LangChangeIcon = class extends Colibri.UI.Icon {
         super(name, container);
 
         this.AddHandler('ContextMenuItemClicked', (event, args) => this.__contextMenuItemClicked(event, args));
-        
+        this._savePlace = 'cookie';
+
         this._iconContextMenu = [];
         this.AddHandler('Clicked', (event, args) => {
             const contextMenuObject = new Colibri.UI.ContextMenu(this.name + '_contextmenu', document.body, this._contextMenuPosition ?? [Colibri.UI.ContextMenu.LB, Colibri.UI.ContextMenu.RB]);
@@ -36904,7 +36892,11 @@ App.Modules.Lang.LangChangeIcon = class extends Colibri.UI.Icon {
 
     __contextMenuItemClicked(event, args) {
         if(args.menuData) {
-            Colibri.Common.Cookie.Set('lang', args.menuData.name, 365, '/', location.hostname, true);
+            if(this._savePlace === 'cookie') {
+                Colibri.Common.Cookie.Set('lang', args.menuData.name, 365, '/', location.hostname, true);
+            } else if(this._savePlace === 'storage') {
+                App.Browser.Set('lang', args.menuData.name);
+            }
             location.reload();
         }
     }
@@ -36923,6 +36915,21 @@ App.Modules.Lang.LangChangeIcon = class extends Colibri.UI.Icon {
     set contextMenuPosition(value) {
         value = this._convertProperty('Array', value);
         this._contextMenuPosition = value;
+    }
+
+    /**
+     * Where to save lang indicator
+     * @type {cookie,storage}
+     */
+    get savePlace() {
+        return this._savePlace;
+    }
+    /**
+     * Where to save lang indicator
+     * @type {cookie,storage}
+     */
+    set savePlace(value) {
+        this._savePlace = value;
     }
 
 }
@@ -46454,7 +46461,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header',
 '        <FlexBox shown="true" name="right">' + 
 '            <Wallet shown="false" name="wallet" />' + 
 '            <Icon shown="true" name="settings" iconSVG="App.Modules.YerevanParking.Icons.SettingIcon"  />' + 
-'            <Lang.LangChangeIcon shown="true" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]" iconSVG="App.Modules.YerevanParking.Icons.Langs"  binding="app.yerevan-parking.langs" />' + 
+'            <Lang.LangChangeIcon shown="true" savePlace="storage" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]" iconSVG="App.Modules.YerevanParking.Icons.Langs"  binding="app.yerevan-parking.langs" />' + 
 '            <Icon shown="true" name="logout" iconSVG="App.Modules.YerevanParking.Icons.Logout"  />' + 
 '        </FlexBox>' + 
 '    </FlexBox>' + 
