@@ -128,11 +128,11 @@ function onDeviceReady() {
     // cutout.has().then(result => alert(JSON.stringify(result)));
 
 
-    Promise.all([
-        LoadStyles('/css/' + cssFile),
-        LoadScript('/js/' + jsFile, null, 'body')
-    ]).then(responses => {
-
+    // Promise.all([
+    //     LoadStyles('./../css/' + cssFile),
+    //     LoadScript('./../js/' + jsFile, null, 'body')
+    // ]).then(responses => {
+alert(App);
         App.InitializeApplication(
             'yerevan-parking',
             1,
@@ -149,7 +149,7 @@ function onDeviceReady() {
             }
         );
 
-    });
+   // });
 
 
 }
