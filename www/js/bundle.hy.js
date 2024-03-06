@@ -46753,7 +46753,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
 
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
-        if(args.secondsLeft % 30 == 0) {
+        if(args.secondsLeft % 10 == 0) {
             App.Device.Notifications.Schedule(
                 'Անվճար ավտոկայանատեղի',
                 'Մնացել է',
@@ -46784,6 +46784,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         this._containerPaynow.AddClass('-urgent');
         try {
             App.Device.Dialogs.Beep(1);
+            App.Device.WakeUp();
         } catch (e) { }
     }
 
