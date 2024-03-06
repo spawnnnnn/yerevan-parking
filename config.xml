@@ -37,11 +37,13 @@
         <icon background="resources/android/mipmap-xxxhdpi/ic_launcher_background.png" density="xxxhdpi" foreground="resources/android/mipmap-xxxhdpi/ic_launcher_foreground.png" />
         
         <preference name="Fullscreen" value="true" />
+        <preference name="AndroidLaunchMode" value="singleInstance"/>
 
         <resource-file src="resources/google-services.json" target="app/google-services.json" />
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.SEND_SMS"/>
             <uses-permission android:name="android.permission.RECEIVE_SMS" />
+            <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
         </config-file>
     </platform>
     <platform name="ios">
