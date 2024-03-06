@@ -19680,6 +19680,7 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
     }
 
     set value(value) {
+        const oldValue = this._hiddenElement.value;
         if(!value) {
             this._hiddenElement.value = '';
         } else if(typeof value == 'string') {
@@ -19690,7 +19691,9 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
             this._hiddenElement.value = value && value?.date ? value?.date?.toDate()?.toShortDateString() : '';
         }
         this._showValue();
-        this.Dispatch('Changed');
+        if(oldValue != this._hiddenElement.value) {
+            this.Dispatch('Changed');
+        }
     }
 
     get value() {
@@ -28390,7 +28393,9 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
             const component = Colibri.UI.Forms.Field.Create(name, this._tabs.container, field, this, this.root);
             component.message = false;
             component.shown = true;
-            component.AddHandler('Changed', (event, args) => this.Dispatch('Changed', {component: this}))
+            component.AddHandler('Changed', (event, args) => {
+                this.Dispatch('Changed', {component: this});
+            });
 
             const tabButton = new Colibri.UI.Button(component.name + '-button', this._tabs.header);
             tabButton.value = tabTitle;
@@ -44600,9 +44605,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     InitParkingApp() {
-        debugger;
         this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
-            console.log(settings);
 
             if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
                 if(['', '/', '/payment', '/vahiles', '/registration'].indexOf(App.Router.current) !== -1) {
@@ -44617,41 +44620,28 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             }
 
             const watingTimerData = App.Modules.YerevanParking.Timer.IsTimerStarted('wating');
-            console.log(watingTimerData);
-            if(watingTimerData) {
+            if(watingTimerData && (App.Router.current != 'wait' && App.Router.current != '/wait')) {
                 App.Router.Navigate('/wait', watingTimerData.tag);
             }
 
             const parkingTimerData = App.Modules.YerevanParking.Timer.IsTimerStarted('parking');
-            if(parkingTimerData) {
+            if(parkingTimerData && (App.Router.current != 'parking' && App.Router.current != '/parking')) {
                 App.Router.Navigate('/parking', parkingTimerData.tag);
             }
 
-            Colibri.Common.Delay(100).then(() => {
-                try {
-                    // if(notifications.length > 0) {
-                    //     for(const notification of notifications) {
-                    //         const event = notification.event;
-                    //         if(event?.uri) {
-                    //             App.Router.Navigate(event.uri.current, event.uri.options);
-                    //         } else if(event?.event) {
-                    //             const sender = this[event.event.sender];
-                    //             sender.Dispatch(event.event.name, {notification: notification});
-                    //         }
-                    //     }
-                    // }
-                    App.Device.Notifications.AddActions('paynow-cancel', [
-                        {id: 'paynow', title: 'Pay now!'},
-                        {id: 'cancel', title: 'Cancel'}
-                    ]);
-                    App.Device.Notifications.On('click', this.PayNowEventHandler);
-                    App.Device.Notifications.On('paynow', this.PayNowEventHandler);
-                    App.Device.Notifications.On('cancel', this.CancelEventHandler);
-                } catch(e) {
-                    console.log(e)
-                }
-                
-            });
+            try {
+                App.Device.Notifications.AddActions('paynow-cancel', [
+                    {id: 'paynow', title: 'Pay now!'},
+                    {id: 'cancel', title: 'Cancel'}
+                ]);
+                App.Device.Notifications.On('click', this.PayNowEventHandler);
+                App.Device.Notifications.On('paynow', this.PayNowEventHandler);
+                App.Device.Notifications.On('cancel', this.CancelEventHandler);
+
+            } catch(e) {
+                alert(e)
+            }
+            
 
             
         });
@@ -44809,37 +44799,37 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     PayNowEventHandler(notification, eopts) {
-        App.Router.Navigate('/parking?')
         alert(JSON.stringify({notification, eopts}));
     }
 
     CancelEventHandler(notification, eopts) {
-        alert(JSON.stringify({notification, eopts}));
+        // this.DisposeTimer();
+        // App.Router.Navigate('/main');
     }
 
-    _hideAll() {
-        if(this._registrationPage) {
+    _hideAll(except = '') {
+        if(this._registrationPage && except != 'registration') {
             this._registrationPage.Hide();
         }
-        if(this._mainPage) {
+        if(this._mainPage && except != 'main') {
             this._mainPage.Hide();
         }
-        if(this._vahilesPage) {
+        if(this._vahilesPage && except != 'vahiles') {
             this._vahilesPage.Hide();
         }
-        if(this._paymentPage) {
+        if(this._paymentPage && except != 'payment') {
             this._paymentPage.Hide();
         }
-        if(this._settingsPage) {
+        if(this._settingsPage && except != 'settings') {
             this._settingsPage.Hide();
         }
-        if(this._timerPage) {
+        if(this._timerPage && except != 'parking') {
             this._timerPage.Hide();
         }
-        if(this._walletPage) {
+        if(this._walletPage && except != 'wallet') {
             this._walletPage.Hide();
         }
-        if(this._waitPage) {
+        if(this._waitPage && except != 'wait') {
             this._waitPage.Hide();
         }
     }
@@ -44850,7 +44840,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     _swithInterface(layer) {
 
-        this._hideAll();
+        this._hideAll(layer);
 
         if(layer === 'main') {
             this.MainPage.Show();
@@ -45982,7 +45972,6 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
             this._zoneB.shown = true;
             this._containerChoose.shown = false;
         }
-
     }
 
     __zoneAClicked(event, args) {
@@ -46680,10 +46669,19 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     }
 
     __thisShown(event, args) {
+        
+        if(this._showing) {
+            return;
+        }
+
+        this._containerPaynow.RemoveClass('-urgent');
+        this._containerPaynow.RemoveClass('-urgent');
+
         this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
         try {
             
             const secondsLeft = this._currentTimer.secondsLeft - 5 * 60;
+            alert(secondsLeft);
 
             App.Device.Notifications.Cancel(1);
             App.Device.Notifications.Schedule(
@@ -46730,6 +46728,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         } else {
             this._containerTimer.value = args.secondsLeft;
             this._containerPaynow.RemoveClass('-urgent');
+            this._containerPaynow.RemoveClass('-urgent');
         }
     }
 
@@ -46743,7 +46742,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
 
     __currentTimerTimerEnds(event, args) {
         try {
-            this._timer15minutesTimer.value = 0;
+            this._containerTimer.value = 0;
             App.Device.Dialogs.Beep(1);
             App.Device.Notifications.Schedule(
                 null,
