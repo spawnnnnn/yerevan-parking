@@ -46740,20 +46740,18 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
 
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
-        if(args.secondsLeft % 10 == 0) {
-            App.Device.Notifications.Schedule(
-                '',
-                ' ' + args.secondsLeft.toTimeString(':'),
-                'paynow-cancel',
-                null,
-                true, 
-                true, 
-                1, 
-                1, {
-                    value: parseInt(args.secondsLeft * 100 / 600)
-                }
-            );
-        }
+        App.Device.Notifications.Schedule(
+            '',
+            ' ' + args.secondsLeft.toTimeString(':'),
+            'paynow-cancel',
+            null,
+            true, 
+            true, 
+            1, 
+            1, {
+                value: parseInt(args.secondsLeft * 100 / 600)
+            }
+        );
     }
 
     __currentTimerTimerStarts(event, args) {
@@ -46773,7 +46771,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
                     true, 
                     1, 
                     1, {
-                        value: parseInt(this._currentTimer.secondsLeft * 100 / 600)
+                        value: parseInt(args.secondsLeft * 100 / 600)
                     }
                 );    
             } catch(e) {
