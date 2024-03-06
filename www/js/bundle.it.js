@@ -46743,14 +46743,14 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         if(args.secondsLeft % 10 == 0) {
             App.Device.Notifications.Schedule(
                 '',
-                '',
+                ' ' + args.secondsLeft.toTimeString(':'),
                 'paynow-cancel',
                 null,
                 true, 
                 true, 
                 1, 
                 1, {
-                    value: 100 - parseInt(args.secondsLeft * 100 / 600)
+                    value: parseInt(args.secondsLeft * 100 / 600)
                 }
             );
         }
@@ -46763,6 +46763,22 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
             this._containerTimer.value = args.secondsLeft;
             this._containerPaynow.RemoveClass('-urgent');
             this._containerPaynow.RemoveClass('-urgent');
+            try {
+                App.Device.Notifications.Schedule(
+                    '',
+                    ' ' + args.secondsLeft.toTimeString(':'),
+                    'paynow-cancel',
+                    null,
+                    true, 
+                    true, 
+                    1, 
+                    1, {
+                        value: parseInt(this._currentTimer.secondsLeft * 100 / 600)
+                    }
+                );    
+            } catch(e) {
+
+            }
         }
     }
 
