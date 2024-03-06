@@ -97,9 +97,6 @@ function Cookie(c_name) {
     }
 }
 
-const notifications = [];
-window.safearea = {top: 0, bottom: 0};
-
 function onDeviceReady() {
 
     console.log('ready');
@@ -111,22 +108,7 @@ function onDeviceReady() {
     const cssFile = 'bundle.' + lang + '.css';
     const jsFile = 'bundle.' + lang + '.js';
 
-    cordova.plugins.backgroundMode.enable();
-    cordova.plugins.backgroundMode.setDefaults({ silent: true });
-    // cordova.plugins.backgroundMode.overrideBackButton();
-
-    cordova.plugins.backgroundMode.on('activate', function () {
-        cordova.plugins.backgroundMode.disableWebViewOptimizations();
-    });
-
-    cordova.plugins.notification.local.on('click', (notification) => {
-        notifications.push(notification);
-    });
-
-    window.plugins.safearea.get((result) => {
-        window.safearea = result;
-    }, (e) => { });
-
+    window.skipLocalNotificationReady = true;
 
     Promise.all([
         LoadStyles('./../css/' + cssFile),
@@ -147,7 +129,17 @@ function onDeviceReady() {
                 code: 'AMD',
                 symbol: '֏'
             }
-        );
+        ).finally(() => {
+            App.Device.backgroundMode = true;
+            // App.Device.SafeArea().then((result) => {
+            //     window['safearea'] = result;
+            // });
+            // App.Device.Notifications.On('click', (notification) => {
+            //     alert(JSON.stringify(notification));
+            //     notifications.push(notification);
+            // });
+            // alert(JSON.stringify(notifications));
+        });
 
    });
 

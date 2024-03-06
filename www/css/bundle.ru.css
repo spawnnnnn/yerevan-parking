@@ -5592,6 +5592,15 @@ body {
 .app-sites-storages-page-component [data-object-name="storages-pane"].app-component-shown {
   display: grid;
 }
+.app-sites-storages-page-component [data-object-name="storages-cannotchange"] {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.app-sites-storages-page-component [data-object-name="storages-cannotchange"].app-component-shown {
+  display: flex;
+}
 .app-data-window-component .app-component-window-container {
   width: 95%;
   height: calc(95% - 120px);
@@ -5694,6 +5703,15 @@ body {
   height: 100%;
   padding-right: 20px;
   overflow: auto;
+}
+.app-tools-settings-manager-page-component [data-object-name="settings-canchange"] {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.app-tools-settings-manager-page-component [data-object-name="settings-canchange"].app-component-shown {
+  display: flex;
 }
 .app-tools-settings-data-page-component {
   height: 100%;
@@ -6359,6 +6377,36 @@ input::placeholder, textarea::placeholder, select::placeholder {
   justify-content: center;
   gap: 20px;
 }
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] {
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] {
+  width: 100%;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"], .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] {
+  width: 100%;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name$="-title"], .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name$="-title"] {
+  text-align: center;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"], .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"], .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"], .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] {
+  flex-direction: column;
+  gap: 5px;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"].app-component-shown, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"].app-component-shown, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"].app-component-shown, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"].app-component-shown {
+  display: flex;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"] label, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"] label, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"] label, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] label {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #c0c0c0;
+  border-radius: 5px;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"] label span, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] label span {
+  padding-bottom: 0px;
+}
 .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-a"], .app-modules-yerevanparking-layers-mainpage [data-object-name="zone-b"] {
   flex-direction: column;
   align-items: stretch;
@@ -6606,40 +6654,6 @@ input::placeholder, textarea::placeholder, select::placeholder {
   justify-content: center;
   gap: 20px;
 }
-.app-modules-yerevanparking-layers-timerpage [data-object-name="timer-15minutes"], .app-modules-yerevanparking-layers-timerpage [data-object-name="timer-minutes"] {
-  justify-content: center;
-  gap: 20px;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] {
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] {
-  width: 100%;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"], .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] {
-  width: 100%;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name$="-title"], .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name$="-title"] {
-  text-align: center;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"], .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"], .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"], .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] {
-  flex-direction: column;
-  gap: 5px;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"].app-component-shown, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"].app-component-shown, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"].app-component-shown, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"].app-component-shown {
-  display: flex;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"] label, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"] label, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"] label, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] label {
-  padding: 10px;
-  width: 100%;
-  border: 1px solid #c0c0c0;
-  border-radius: 5px;
-}
-.app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="paytime"] [data-object-name="vahile-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="paytime-container"] label span, .app-modules-yerevanparking-layers-timerpage [data-object-name="choose"] [data-object-name="form"] [data-object-name="vahile"] [data-object-name="vahile-container"] label span {
-  padding-bottom: 0px;
-}
 .app-modules-yerevanparking-layers-timerpage [data-object-name="paynow"].-urgent {
   background: #9E0507;
 }
@@ -6649,6 +6663,19 @@ input::placeholder, textarea::placeholder, select::placeholder {
   flex-wrap: nowrap;
 }
 .app-modules-yerevanparking-layers-walletpage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.app-modules-yerevanparking-layers-waitpage {
+  flex-direction: column;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
+.app-modules-yerevanparking-layers-waitpage [data-object-name="container"] {
   height: 100%;
   flex-direction: column;
   flex-wrap: nowrap;

@@ -557,6 +557,7 @@ Object.map = function (obj, func) {
     return newObject;
 };
 
+
 RegExp.prototype.all = function(str) {
     let ret = [];
     const matches = str.match(this);
@@ -874,6 +875,12 @@ String.prototype.hexToString = function () {
     }
     return string;
 };
+
+String.prototype.replaceLastPart = function(splitter, newPart) {
+    let parts = this.split(splitter);
+    parts.splice(-1);
+    return parts.join(splitter) + splitter + newPart;
+}
 
 String.fromObject = function (object, delimiters, callback) {
     let ret = [];
@@ -1439,13 +1446,16 @@ Date.prototype.addMonths = function (months, setDay = true) {
 Date.prototype.isWorkingDay = function(holidays) {
     return !([0, 6].indexOf(this.getDay()) !== -1 || holidays.indexOf(this.toShortDateString()) !== -1);
 }
-Date.prototype.addWorkingDays = function (days, holidays) { 
+Date.prototype.isHoliday = function(holidays) {
+    return !(holidays.indexOf(this.toShortDateString()) !== -1);
+}
+Date.prototype.addWorkingDays = function (days, holidays, holidaysOnly = false) { 
     let addFactor = days < 0 ? -1 : 1;
 
     while(true) {
 
         this.addDays(addFactor);
-        if(this.isWorkingDay(holidays)) {
+        if(holidaysOnly ? this.isHoliday(holidays) : this.isWorkingDay(holidays)) {
             days -= addFactor;
         }
         if(days === 0) {
@@ -1455,8 +1465,8 @@ Date.prototype.addWorkingDays = function (days, holidays) {
 
     return this; 
 }
-Date.prototype.nextWorkingDay = function (addFactor = 1, holidays = []) {
-    while([0, 6].indexOf(this.getDay()) !== -1 || holidays.indexOf(this.toShortDateString()) !== -1) {
+Date.prototype.nextWorkingDay = function (addFactor = 1, holidays = [], holidaysOnly = false) {
+    while(!(holidaysOnly ? this.isHoliday(holidays) : this.isWorkingDay(holidays))) {
         this.addDays(1 * addFactor);
     } 
     return this; 
@@ -19178,12 +19188,15 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         if(!this._searchable) {
             this._input.readonly = true;
         } else if(this._readonly) {
-            this.AddClass('app-component-readonly');
             this._input.readonly = true;
         }
         else {
-            this.RemoveClass('app-component-readonly');
             this._input.readonly = false;
+        }
+        if(this._readonly) {
+            this.AddClass('app-component-readonly');
+        } else {
+            this.RemoveClass('app-component-readonly');
         }
     }
 
@@ -19667,6 +19680,7 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
     }
 
     set value(value) {
+        const oldValue = this._hiddenElement.value;
         if(!value) {
             this._hiddenElement.value = '';
         } else if(typeof value == 'string') {
@@ -19677,7 +19691,9 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
             this._hiddenElement.value = value && value?.date ? value?.date?.toDate()?.toShortDateString() : '';
         }
         this._showValue();
-        this.Dispatch('Changed');
+        if(oldValue != this._hiddenElement.value) {
+            this.Dispatch('Changed');
+        }
     }
 
     get value() {
@@ -24166,6 +24182,11 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input.readonly = value;
+        if(this._input.readonly) {
+            this.AddClass('app-component-readonly');
+        } else {
+            this.RemoveClass('app-component-readonly');
+        }
     }
 
     /**
@@ -28372,7 +28393,9 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
             const component = Colibri.UI.Forms.Field.Create(name, this._tabs.container, field, this, this.root);
             component.message = false;
             component.shown = true;
-            component.AddHandler('Changed', (event, args) => this.Dispatch('Changed', {component: this}))
+            component.AddHandler('Changed', (event, args) => {
+                this.Dispatch('Changed', {component: this});
+            });
 
             const tabButton = new Colibri.UI.Button(component.name + '-button', this._tabs.header);
             tabButton.value = tabTitle;
@@ -31323,11 +31346,11 @@ Colibri.UI.ArrayViewer = class extends Colibri.UI.Viewer {
 
     _showValue() {
         let ret = [];
-        this._value.forEach(v => {
-            Object.forEach(v, (name, value) => {
-                ret.push(value);
+        if(isIterable(this._value)) {
+            this._value.forEach(value => {
+                ret.push(Object.toQueryString(value, [',<br />', ': ']));
             });
-        });
+        }
         this._element.html(ret.join(', '));
     }
 
@@ -34641,6 +34664,7 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
     _registerEvents() {
         this.RegisterEvent('OrientationChanged', false, 'Когда ориентация была изменена');
         this.RegisterEvent('ThemeChanged', false, 'Когда тема изменена');
+        this.RegisterEvent('NotificationTapped', false, 'When push notification is tapped');
     }
 
     _detect() {
@@ -34671,9 +34695,11 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
                     console.log(token);
                 }, e => console.log(e));
                 this._pushNotifications.tapped((payload) => {
-                    console.log(payload);
+                    this.Dispatch('NotificationTapped', {payload: payload})
                 }, e => console.log(e));
-            }       
+            }    
+
+            this._localNotifications = new Colibri.Devices.LocalNotifications(this);
         }
 
     }
@@ -34697,6 +34723,7 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
             };
         }
         
+        
     }
 
     get platform() {
@@ -34717,6 +34744,58 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
 
     get isWeb() {
         return this._platform === Colibri.Devices.Device.Web;
+    }
+
+    get backgroundMode() {
+        return this._backgroundMode;
+    }
+
+    set backgroundMode(value) {
+        if(!cordova?.plugins?.backgroundMode) {
+            throw 'Please enable \'cordova-plugin-background-mode\' plugin';
+        }
+
+        this._backgroundMode = value;
+        cordova.plugins.backgroundMode.setEnabled(value);
+        if(value) {
+            cordova.plugins.backgroundMode.setDefaults({ silent: true });
+            // cordova.plugins.backgroundMode.overrideBackButton();
+            cordova.plugins.backgroundMode.on('activate', function () {
+                cordova.plugins.backgroundMode.disableWebViewOptimizations();
+            });
+        }
+    
+    }
+
+    WakeUp() {
+        if(!cordova?.plugins?.backgroundMode) {
+            throw 'Please enable \'cordova-plugin-background-mode\' plugin';
+        }
+        cordova.plugins.backgroundMode.wakeUp();
+    }
+
+    Unlock() {
+        if(!cordova?.plugins?.backgroundMode) {
+            throw 'Please enable \'cordova-plugin-background-mode\' plugin';
+        }
+        cordova.plugins.backgroundMode.unlock();
+    }
+
+    SafeArea() {
+        return new Promise((resolve, reject) => {
+            if(this.isIOs) {
+                if(!window?.plugins?.safearea) {
+                    reject('Can not fund \'cordova-plugin-safearea\' plugin');
+                }
+                window.plugins.safearea.get((result) => {
+                    resolve(result);
+                }, (e) => {
+                    reject(e);
+                });
+            } else {
+                resolve({top: 0, bottom: 0});
+            }
+        });
     }
 
     Plugin(query) {
@@ -34783,10 +34862,7 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
     }
 
     get Notifications() {
-        if(!this._notifications) {
-            this._notifications = new Colibri.Devices.LocalNotifications(this);
-        }
-        return this._notifications;
+        return this._localNotifications;
     }
 
     get Info() {
@@ -35401,6 +35477,9 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         } else {
             this._plugin = this._device.Plugin('plugins.notification');
         }
+        this._plugin.local.setDummyNotifications();
+        this._plugin.local.fireQueuedEvents();
+
     }
 
     HasPermission() {
@@ -35439,7 +35518,11 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         });
     }
 
-    Schedule(event, title, message, actions = null, trigger = null, isForeground = true, isLaunch = true, priority = 2, id = null) {
+    AddActions(groupName, actions) {
+        this._plugin.local.addActions(groupName, actions);
+    }
+
+    Schedule(title, message, actions = null, trigger = null, isForeground = true, isLaunch = true, priority = 2, id = null, progressBar = null) {
         // trigger = { in: 1, unit: 'second' }, { in: 15, unit: 'minutes' }
         this.RequestPermission().then(() => {
             const params = {
@@ -35458,8 +35541,18 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
             if(actions && actions.length > 0) {
                 params.actions = actions;
             }
-            params.event = event;
-            this._plugin.local.schedule(params);    
+            if(progressBar) {
+                params.progressBar = progressBar;
+                params.sticky = true;
+            }
+            if(params.id) {
+                this._plugin.local.isPresent(params.id, () => {
+                    params.sound = false;
+                    this._plugin.local.schedule(params);    
+                });
+            } else {
+                this._plugin.local.schedule(params);    
+            }
         });
     }
 
@@ -35470,10 +35563,10 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
     }
 
     On(event, callback, scope) {
-        this._device.local.on(event, callback, scope);
+        this._plugin.local.on(event, callback, scope);
     }
     Off(event, callback, scope) {
-        this._device.local.un(event, callback, scope);
+        this._plugin.local.un(event, callback, scope);
     }
 
 }
@@ -35668,6 +35761,30 @@ Colibri.Devices.Dialogs = class extends Destructable {
     }
 
 }
+
+Colibri.Devices.Dialogs = class extends Destructable {
+
+    _device = null;
+    _plugin = null;
+    _permited = false;
+
+    constructor(device) {
+        super();
+        this._device = device;
+        this._plugin = this._device.Plugin('geolocation');
+    }
+
+    Detect(options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }) {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition((position) => {
+                resolve(position);
+            }, (error) => {
+                reject(error);
+            });    
+        });
+    }
+
+}
 /**
  * Основной класс приложения
  * ! нужно исправить инициализацию модулей, они должны родиться после приложения!
@@ -35720,135 +35837,140 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         csrfToken = null
     ) {
 
-        if(this._initialized) {
-            return;
-        }
+        return new Promise((resolve, reject) => {
 
-        this._name = name;
-        this._version = version;
-
-        Colibri.IO.Request.type = requestType;
-        if(remoteDomain) {
-            this._remoteDomain = remoteDomain;
-        }
-        else {
-            this._remoteDomain = '';
-        }
-
-        this._actions = new Colibri.Common.HashActions(); 
-        this._store = new Colibri.Storages.Store('app', {});
-        this._request = new Colibri.Web.Request();
-        this._router = new Colibri.Web.Router(routerType);
-        this._device = new Colibri.Devices.Device();
-        this._browser = new Colibri.Common.BrowserStorage();
-        this._db = new Colibri.Web.IndexDB(this._name, this._version);
-        this._dateformat = dateformat;
-        this._numberformat = numberformat;
-        this._currency = currency;
-        this._csrfToken = csrfToken;
-
-        Colibri.Common.WaitForBody().then(() => {
-            this.InitializeModules();
-            if(showLoader) {
-                if(loadingIcon) {
-                    this.Loader.icon = loadingIcon
-                    this.Loader.showIcon = true;
-                }
-                this.Loader.Show();
-                this.Loader.StartProgress(200, 1.5);
+            if(this._initialized) {
+                resolve();
+                return;
             }
-            this._loadingBox = new Colibri.UI.Loading('app-loading-box', document.body, Element.create('div'), true);
-            this._confirmDialog = new Colibri.UI.ConfirmDialog('confirm', document.body, 600);
-            this._promptDialog = new Colibri.UI.PromptDialog('prompt', document.body, 600);
-            this._alertDialog = new Colibri.UI.AlertDialog('alert', document.body, 600);
-            this._customToolTip = new Colibri.UI.ToolTip('tooltip', document.body);
-            this._loadingBallun = new Colibri.UI.LoadingBallun('ballun', document.body);
-
-
-        });
+    
+            this._name = name;
+            this._version = version;
+    
+            Colibri.IO.Request.type = requestType;
+            if(remoteDomain) {
+                this._remoteDomain = remoteDomain;
+            }
+            else {
+                this._remoteDomain = '';
+            }
+    
+            this._actions = new Colibri.Common.HashActions(); 
+            this._store = new Colibri.Storages.Store('app', {});
+            this._request = new Colibri.Web.Request();
+            this._router = new Colibri.Web.Router(routerType);
+            this._device = new Colibri.Devices.Device();
+            this._browser = new Colibri.Common.BrowserStorage();
+            this._db = new Colibri.Web.IndexDB(this._name, this._version);
+            this._dateformat = dateformat;
+            this._numberformat = numberformat;
+            this._currency = currency;
+            this._csrfToken = csrfToken;
+    
+            Colibri.Common.WaitForBody().then(() => {
+                this.InitializeModules();
+                if(showLoader) {
+                    if(loadingIcon) {
+                        this.Loader.icon = loadingIcon
+                        this.Loader.showIcon = true;
+                    }
+                    this.Loader.Show();
+                    this.Loader.StartProgress(200, 1.5);
+                }
+                this._loadingBox = new Colibri.UI.Loading('app-loading-box', document.body, Element.create('div'), true);
+                this._confirmDialog = new Colibri.UI.ConfirmDialog('confirm', document.body, 600);
+                this._promptDialog = new Colibri.UI.PromptDialog('prompt', document.body, 600);
+                this._alertDialog = new Colibri.UI.AlertDialog('alert', document.body, 600);
+                this._customToolTip = new Colibri.UI.ToolTip('tooltip', document.body);
+                this._loadingBallun = new Colibri.UI.LoadingBallun('ballun', document.body);
+            });
+                
             
-        
-        // Делаем всякое после того, как DOM загрузился окончательно
-
-        Colibri.Common.WaitForDocumentReady().then(() => { 
-            this.Dispatch('DocumentReady');
-
-            const headers = {};
-            if(this._csrfToken) {
-                headers['X-CSRF-TOKEN'] = this._csrfToken;
-            }
-            Colibri.IO.Request.Post(this._remoteDomain + '/settings', {}, headers).then((response) => {
-                if(response.status != 200) {
-                    App.Notices.Add(new Colibri.UI.Notice('Невозможно получить настройки!'));
+            // Делаем всякое после того, как DOM загрузился окончательно
+            Colibri.Common.WaitForDocumentReady().then(() => { 
+                this.Dispatch('DocumentReady');
+    
+                const headers = {};
+                if(this._csrfToken) {
+                    headers['X-CSRF-TOKEN'] = this._csrfToken;
                 }
-                else {
-                    const settings = (typeof response.result === 'string' ? JSON.parse(response.result) : response.result);
-                    this._store.Set('app.settings', settings);
-
-                    if(initComet && settings.comet && settings.comet.host) {
-                        this._comet = new Colibri.Web.Comet(settings.comet);
-                        this._comet.AddHandler(['MessageReceived', 'MessagesMarkedAsRead', 'MessageRemoved'], (event, args) => {
-                            if(!document.hasFocus()) {
-                                this.StartFlashTitle();
-                            }
-                            else {
+                Colibri.IO.Request.Post(this._remoteDomain + '/settings', {}, headers).then((response) => {
+                    if(response.status != 200) {
+                        App.Notices.Add(new Colibri.UI.Notice('Невозможно получить настройки!'));
+                    }
+                    else {
+                        const settings = (typeof response.result === 'string' ? JSON.parse(response.result) : response.result);
+                        this._store.Set('app.settings', settings);
+    
+                        if(initComet && settings.comet && settings.comet.host) {
+                            this._comet = new Colibri.Web.Comet(settings.comet);
+                            this._comet.AddHandler(['MessageReceived', 'MessagesMarkedAsRead', 'MessageRemoved'], (event, args) => {
+                                if(!document.hasFocus()) {
+                                    this.StartFlashTitle();
+                                }
+                                else {
+                                    this.StopFlashTitle();
+                                }
+                            });
+                        } 
+                        document.addEventListener('visibilitychange', (e) => {
+                            
+                            if(initComet && settings.comet && settings.comet.host) {
                                 this.StopFlashTitle();
                             }
+    
+                            if(document.hidden) {
+                                this.Dispatch('DocumentHidden', {});
+                            }
+                            else {
+                                this.Dispatch('DocumentShown', {});
+                            }
                         });
-                    } 
-                    document.addEventListener('visibilitychange', (e) => {
-                        
-                        if(initComet && settings.comet && settings.comet.host) {
-                            this.StopFlashTitle();
-                        }
-
-                        if(document.hidden) {
-                            this.Dispatch('DocumentHidden', {});
-                        }
+    
+                        if(settings?.screen?.theme === 'follow-device') {
+                            this._device.AddHandler('ThemeChanged', (event, args) => {
+                                this.SetTheme(args.current);
+                            });
+                            this.SetTheme(this._device.Theme);
+                        }    
                         else {
-                            this.Dispatch('DocumentShown', {});
+                            this.SetTheme(settings?.screen?.theme ?? 'light');
                         }
-                    });
-
-                    if(settings?.screen?.theme === 'follow-device') {
-                        this._device.AddHandler('ThemeChanged', (event, args) => {
-                            this.SetTheme(args.current);
-                        });
-                        this.SetTheme(this._device.Theme);
-                    }    
-                    else {
-                        this.SetTheme(settings?.screen?.theme ?? 'light');
+    
                     }
-
-                }
-
-                // запускаем обработку экшенов в документе
-                this._actions.HandleDomReady();
-                this._router.HandleDomReady();
-
-                if(showLoader) {
-                    Colibri.Common.Delay(1500).then(() => {
-                        this.Loader.StopProgress();  
-                        this.Loader.Hide();
-                    });   
-                }
-                 
-                Colibri.UI.UpdateMaxZIndex();
-                this.Dispatch('ApplicationReady');
- 
-            }).catch(response => {
-                console.log(response);
-                App.Notices.Add(new Colibri.UI.Notice('Невозможно получить настройки!'));
+    
+                    // запускаем обработку экшенов в документе
+                    this._actions.HandleDomReady();
+                    this._router.HandleDomReady();
+    
+                    if(showLoader) {
+                        Colibri.Common.Delay(1500).then(() => {
+                            this.Loader.StopProgress();  
+                            this.Loader.Hide();
+                        });   
+                    }
+                     
+                    Colibri.UI.UpdateMaxZIndex();
+                    this.Dispatch('ApplicationReady');
+                    resolve();
+     
+                }).catch(response => {
+                    console.log(response);
+                    App.Notices.Add(new Colibri.UI.Notice('Невозможно получить настройки!'));
+                    reject();
+                });
+    
+    
+                this._notices = new Colibri.UI.Notices('notices', document.body);
+    
+                
+                
             });
-
-
-            this._notices = new Colibri.UI.Notices('notices', document.body);
-
-            
-            
+    
+            this._initialized = true;
         });
 
-        this._initialized = true;
+
 
     }
 
@@ -37997,16 +38119,49 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
             });
     }
 
-    SaveField(module, storage, path, data) {
-        this.Call('Storages', 'SaveField', {module: module?.name ?? module, storage: storage?.name ?? storage, path: path, data: data})
-            .then((response) => {
-                App.Notices.Add(new Colibri.UI.Notice('Свойство сохранено', Colibri.UI.Notice.Success, 3000));
-                Manage.Store.Reload('manage.storages', false);
-            })
-            .catch(error => {
-                App.Notices.Add(new Colibri.UI.Notice(error.result));
-                console.error(error);
-            });
+    _checkFieldExists(storage, pathTo) {
+        let fieldExistance = null;
+        const pathConverted = 'fieldExistance = storage.fields[\'' + pathTo.replaceAll('/', '\'].fields[\'') + '\'];';
+        try {
+            eval(pathConverted);
+        } catch(e) {
+            fieldExistance = null;
+        }
+
+        return !!fieldExistance;
+    }
+
+    SaveField(module, storage, pathTo, data, checkExistance = true) {
+        return new Promise((resolve, reject) => {
+            if(checkExistance && this._checkFieldExists(storage, pathTo)) {
+                App.Prompt.Show('Поле существует, пожалуйста, переименуйте', {
+                    name: {
+                        component: 'Text',
+                        default: data.name
+                    }
+                }, 'Сохранить').then((newData) => {
+                    data.name = newData.name;
+                    pathTo = pathTo.replaceLastPart('/', newData.name);
+                    return this.SaveField(module, storage, pathTo, data);
+                }).catch(() => {
+                    App.Notices.Add(new Colibri.UI.Notice('Поле существует'));
+                    console.error({message: 'Поле существует'});
+                    reject({message: 'Поле существует'});
+                });
+            } else {
+                this.Call('Storages', 'SaveField', {module: module?.name ?? module, storage: storage?.name ?? storage, path: pathTo, data: data})
+                    .then((response) => {
+                        App.Notices.Add(new Colibri.UI.Notice('Свойство сохранено', Colibri.UI.Notice.Success, 3000));
+                        Manage.Store.Reload('manage.storages', false);
+                        resolve(response);
+                    })
+                    .catch(error => {
+                        App.Notices.Add(new Colibri.UI.Notice(error.result));
+                        console.error(error);
+                        reject(response);
+                    });
+            }
+        });
     }
 
     DeleteField(module, storage, path) {
@@ -38585,7 +38740,7 @@ App.Modules.Sites.Widgets.StoragesWidget = class extends Colibri.UI.Widget {
     }
 }
 
-try{ MainFrame.RegisterWidget('storages-stats', App.Modules.Sites.Widgets.StoragesWidget); } catch(e) {}
+try{ MainFrame && MainFrame.RegisterWidget('storages-stats', App.Modules.Sites.Widgets.StoragesWidget); } catch(e) {}
 App.Modules.Sites.FoldersTree = class extends Colibri.UI.Tree {
     
     constructor(name, container) {
@@ -40085,7 +40240,11 @@ Colibri.UI.AddTemplate('App.Modules.Sites.StoragesPage',
 '' + 
 '    <Pane name="storages-pane" shown="true">' + 
 '        <H2 name="ttl" shown="true">Хранилища материалов</H2>' + 
-'        <StoragesManagerTree name="storages" shown="true" hasContextMenu="true" binding="app.manage.modules;app.manage.storages" expandOnClick="true"  />' + 
+'        <StoragesManagerTree name="storages" shown="true" hasContextMenu="true" expandOnClick="true"  />' + 
+'    </Pane>' + 
+'' + 
+'    <Pane shown="false" name="storages-cannotchange">' + 
+'        <H2 name="ttl" shown="true">Структура хранилищь может быть изменена только в локальном режиме, пожалуйста, обратитесь к администратору</H2>' + 
 '    </Pane>' + 
 '' + 
 '</div>' + 
@@ -40099,6 +40258,9 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         this._copiedField = null;
         this._storages = this.Children('storages-pane/storages');
+        this._storagesPane = this.Children('storages-pane');
+        this._storagesCannotchange = this.Children('storages-cannotchange');
+        
 
         this._storages.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderStoragesContextMenu(event, args))
         this._storages.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnStoragesContextMenu(event, args));
@@ -40108,6 +40270,17 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         this._dragManager.AddHandler('DragDropComplete', (event, args) => this.__dragDropComplete(event, args));
         this._dragManager.AddHandler('DragDropOver', (event, args) => this.__dragDropOver(event, args));
         this._storages.sorting = true;    
+
+        App.Store.AsyncQuery('app.settings').then((settings) => {
+            if(settings.mode != 'local') {
+                this._storagesPane.shown = false;
+                this._storagesCannotchange.shown = true;
+            } else {
+                this._storagesPane.shown = true;
+                this._storagesCannotchange.shown = false;
+                this._storages.binding = 'app.manage.modules;app.manage.storages';
+            }
+        });
 
     }
 
@@ -40641,6 +40814,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                             Object.forEach(Colibri.UI.Forms.Field.Components, (name, value) => {
                                 components.push({ value: value.className, title: name, icon: value.icon });
                             });
+                            components.push({value: 'Colibri.UI.Forms.Hidden', title: 'Hidden'});
                             rs({ result: components });
                         });
                     },
@@ -41686,10 +41860,10 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             const data = this._copiedField;
             const moduleNode = node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data);
-            
-            App.Notices.Add(new Colibri.UI.Notice('Поле успешно вставлено', Colibri.UI.Notice.Success, 5000));
-            this._copiedField = null;
+            Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data, true).then((response) => {
+                App.Notices.Add(new Colibri.UI.Notice('Поле успешно вставлено', Colibri.UI.Notice.Success, 5000));
+                this._copiedField = null;
+            });
         }
         else if (menuData.name == 'new-field') {
             const moduleNode = node.FindParent((node) => node.tag.type === 'module');
@@ -41697,7 +41871,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) { // node.tag.type === 'fields'
                 Manage.FormWindow.Show('Новое свойство', 1024, this._fieldFields(true, moduleNode.tag.entry), {})
                     .then((data) => {
-                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data);
+                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data, true);
                     })
                     .catch(() => { });
             }
@@ -41712,7 +41886,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                 Manage.FormWindow.Show('Новое виртуальное свойство', 1024, this._fieldVirtualFields(), {})
                     .then((data) => {
                         data.virtual = true;
-                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data);
+                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data, true);
                     })
                     .catch(() => { });
             }
@@ -41737,7 +41911,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                 // node.parentNode.tag.type === 'fields'
                 Manage.FormWindow.Show('Редактировать свойство', 1024, fieldData.virtual ? this._fieldVirtualFields(moduleNode.tag.entry) : this._fieldFields(true, moduleNode.tag.entry), fieldData)
                     .then((data) => {
-                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node), data);
+                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node), data, false);
                     })
                     .catch(() => { });
             }
@@ -42934,7 +43108,7 @@ Colibri.UI.AddTemplate('App.Modules.Tools.SettingsManagerPage',
 '    <Split name="split" shown="true" hasHandle="true">' + 
 '        <Pane name="settings-pane" shown="true">' + 
 '            <H2 name="ttl" shown="true">Настройки</H2>' + 
-'            <App.Modules.Tools.SettingsTree name="settings" shown="true" hasContextMenu="true" binding="app.tools.settings" />' + 
+'            <App.Modules.Tools.SettingsTree name="settings" shown="true" hasContextMenu="true" />' + 
 '        </Pane>' + 
 '        <Pane name="data-pane" shown="true">' + 
 '            <H2 name="ttl" shown="true">Редактор</H2>' + 
@@ -42946,7 +43120,9 @@ Colibri.UI.AddTemplate('App.Modules.Tools.SettingsManagerPage',
 '            </Pane>' + 
 '        </Pane>' + 
 '    </Split>     ' + 
-'' + 
+'    <Pane shown="false" name="settings-canchange">' + 
+'        <H2 name="ttl" shown="true">Список настроек может быть изменен только в локальном режиме, пожалуйста, обратитесь к администратору</H2>' + 
+'    </Pane>' + 
 '</div>' + 
 '');
 App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component 
@@ -42957,6 +43133,10 @@ App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component
 
         this.AddClass('app-tools-settings-manager-page-component');
 
+        this._split = this.Children('split');
+        this._settingsCanchange = this.Children('settings-canchange');
+        
+        
         this._settings = this.Children('split/settings-pane/settings');
         this._form = this.Children('split/data-pane/editor-pane/editor');
         this._save = this.Children('split/data-pane/buttons-pane/save');
@@ -42966,6 +43146,18 @@ App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component
         this._settings.AddHandler('SelectionChanged', (event, args) => this.__settingsSelectionChanged(event, args));      
         this._settings.AddHandler('NodeEditCompleted', (event, args) => this.__settingsNodeEditCompleted(event, args));
         this._save.AddHandler('Clicked', (event, args) => this.__saveClicked(event, args));
+
+        App.Store.AsyncQuery('app.settings').then((settings) => {
+            if(settings.mode != 'local') {
+                this._split.shown = false;
+                this._settingsCanchange.shown = true;
+            } else {
+                this._split.shown = true;
+                this._settingsCanchange.shown = false;
+                this._settings.binding = 'app.tools.settings';
+            }
+        });
+
     }
 
     __renderSettingsContextMenu(event, args) {
@@ -44446,7 +44638,8 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     InitParkingApp() {
         this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
-            console.log(settings);
+
+            this.ParkingZones();
 
             if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
                 if(['', '/', '/payment', '/vahiles', '/registration'].indexOf(App.Router.current) !== -1) {
@@ -44460,22 +44653,30 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 App.Router.Navigate('/registration');
             }
 
-            Colibri.Common.Delay(100).then(() => {
-                try {
-                    if(notifications.length > 0) {
-                        for(const notification of notifications) {
-                            const event = notification.event;
-                            if(event?.uri) {
-                                App.Router.Navigate(event.uri.current, event.uri.options);
-                            } else if(event?.event) {
-                                const sender = this[event.event.sender];
-                                sender.Dispatch(event.event.name, {notification: notification});
-                            }
-                        }
-                    }
-                    // App.Device.Notifications.On('paynow', this.NotificationEventHandler);
-                } catch(e) {}
-            });
+            const watingTimerData = App.Modules.YerevanParking.Timer.IsTimerStarted('wating');
+            if(watingTimerData && (App.Router.current != 'wait' && App.Router.current != '/wait')) {
+                App.Router.Navigate('/wait', watingTimerData.tag);
+            }
+
+            const parkingTimerData = App.Modules.YerevanParking.Timer.IsTimerStarted('parking');
+            if(parkingTimerData && (App.Router.current != 'parking' && App.Router.current != '/parking')) {
+                App.Router.Navigate('/parking', parkingTimerData.tag);
+            }
+
+            try {
+                App.Device.Notifications.AddActions('paynow-cancel', [
+                    {id: 'paynow', title: 'Оплатить сейчас'},
+                    {id: 'cancel', title: 'Отменить'}
+                ]);
+                App.Device.Notifications.On('click', this.PayNowEventHandler);
+                App.Device.Notifications.On('paynow', this.PayNowEventHandler);
+                App.Device.Notifications.On('cancel', this.CancelEventHandler);
+
+            } catch(e) {
+                
+            }
+            
+
             
         });
     }
@@ -44483,23 +44684,10 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     Render(domainSettings) {
         console.log('Rendering Module YerevanParking');    
 
-        // Render module content
-        // Generate routing points
-        // Sample: 
-        // App.Router.AddRoutePattern('/', (url, options, path) => {
-        //     if(path.length == 0) {
-        //         App.Router.Navigate('/{initial route point}', {}, false, true);
-        //     }
-        // });
-        // App.Router.AddRoutePattern('/{some route}', (url, options, path) => {
-        //    Some implementation 
-        // });
-
         App.Router.AddHandler('RouteChanged', (event, args) => {
             const layer = args.url.trimString('/');
             this._swithInterface(layer);
         });
-
 
         if(App.name === 'yerevan-parking') {
             App.Loader.StopProgress();
@@ -44572,6 +44760,14 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return this._alert;
     }
 
+    get Prompt() {
+        if(!this._prompt) {
+            this._prompt = new App.Modules.YerevanParking.Components.Windows.PromptDialog('yerevan-parking-prompt-dialog', document.body, 780);
+            // this._alert.closable = false;
+        }
+        return this._prompt;
+    }
+
     get Confirm() {
         if(!this._confirm) {
             this._confirm = new App.Modules.YerevanParking.Components.Windows.ConfirmDialog('yerevan-parking-confirm-dialog', document.body, 780);
@@ -44628,32 +44824,47 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         }
         return this._walletPage;
     }
+    
+    get WaitPage() {
+        if(!this._waitPage) {
+            this._waitPage = new App.Modules.YerevanParking.Layers.WaitPage('wait-page', document.body);
+        }
+        return this._waitPage;
+    }
 
-    NotificationEventHandler(notification, eopts) {
+    PayNowEventHandler(notification, eopts) {
         alert(JSON.stringify({notification, eopts}));
     }
 
-    _hideAll() {
-        if(this._registrationPage) {
+    CancelEventHandler(notification, eopts) {
+        // this.DisposeTimer();
+        // App.Router.Navigate('/main');
+    }
+
+    _hideAll(except = '') {
+        if(this._registrationPage && except != 'registration') {
             this._registrationPage.Hide();
         }
-        if(this._mainPage) {
+        if(this._mainPage && except != 'main') {
             this._mainPage.Hide();
         }
-        if(this._vahilesPage) {
+        if(this._vahilesPage && except != 'vahiles') {
             this._vahilesPage.Hide();
         }
-        if(this._paymentPage) {
+        if(this._paymentPage && except != 'payment') {
             this._paymentPage.Hide();
         }
-        if(this._settingsPage) {
+        if(this._settingsPage && except != 'settings') {
             this._settingsPage.Hide();
         }
-        if(this._timerPage) {
+        if(this._timerPage && except != 'parking') {
             this._timerPage.Hide();
         }
-        if(this._walletPage) {
+        if(this._walletPage && except != 'wallet') {
             this._walletPage.Hide();
+        }
+        if(this._waitPage && except != 'wait') {
+            this._waitPage.Hide();
         }
     }
 
@@ -44663,7 +44874,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     _swithInterface(layer) {
 
-        this._hideAll();
+        this._hideAll(layer);
 
         if(layer === 'main') {
             this.MainPage.Show();
@@ -44680,9 +44891,12 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         } else if(layer === 'session') {
             this.SettingsPage.Show();
             this._activePage = this.SettingsPage;
-        } else if(layer === 'timer') {
+        } else if(layer === 'parking') {
             this.TimerPage.Show();
             this._activePage = this.TimerPage;
+        } else if(layer === 'wait') {
+            this.WaitPage.Show();
+            this._activePage = this.WaitPage;
         } else if(layer === 'wallet') {
             this.WalletPage.Show();
             this._activePage = this.WalletPage;
@@ -44721,6 +44935,15 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             }).catch(error => reject(error.result));
         });
     }
+
+    ParkingZones(vahiles) {
+        return new Promise((resolve, reject) => {
+            this.Call('YerevanParking', 'ParkingZones', {vahiles: vahiles}).then(response => {
+                this._store.Set('yerevan-parking.parkingzones', response.result);
+                resolve(response.result);
+            }).catch(error => console.log(error.result));
+        });
+    }
     
     SaveVahiles(vahiles) {
         return new Promise((resolve, reject) => {
@@ -44742,12 +44965,11 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         });
     }
 
-    Pay(vahile, paytime) {
+    Pay(zone, vahile, paytime) {
         return new Promise((resolve, reject) => {
             const settings = YerevanParking.Store.Query('yerevan-parking.settings');
             const paymenttype = settings.session.settings.payment_type ?? null;
-            const zone = App.Router.options.zone.toLowerCase();
-            const amount = parseFloat(settings.zones[zone]);
+            const amount = parseFloat(settings.zones[zone.toLowerCase()]);
             if(paymenttype === 'sms') {
                 const zoneSettings = settings.sms;
                 try {
@@ -44756,7 +44978,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                             vahile: vahile,
                             paytime: paytime,
                             payment_type: paymenttype,
-                            zone: zone,
+                            zone: zone.toLowerCase(),
                             amount: amount,
                             dateclient: Date.Now().toDbDate()
                         }).then((response) => {
@@ -44768,7 +44990,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                         vahile: vahile,
                         paytime: paytime,
                         payment_type: paymenttype,
-                        zone: zone,
+                        zone: zone.toLowerCase(),
                         amount: amount,
                         dateclient: Date.Now().toDbDate()
                     }).then((response) => {
@@ -44811,6 +45033,29 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             }
         });
 
+    }
+
+    
+    CreateTimer(name, handlerObject, seconds = 0, beforeEndSeconds = 0, tag = null) {
+        this.DisposeTimer();
+        this._currentTimer = new App.Modules.YerevanParking.Timer(name);
+        this._currentTimer.AddHandler('TimerTick', (event, args) => handlerObject.__currentTimerTimerTick(event, args));
+        this._currentTimer.AddHandler('TimerStarts', (event, args) => handlerObject.__currentTimerTimerStarts(event, args));
+        this._currentTimer.AddHandler('TimerEnds', (event, args) => handlerObject.__currentTimerTimerEnds(event, args));
+        this._currentTimer.AddHandler('TimerBeforeEnd', (event, args) => handlerObject.__currentTimerTimerBeforeEnd(event, args));
+        this._currentTimer.tag = tag;
+        if (!this._currentTimer.started) {
+            this._currentTimer.Start(seconds, beforeEndSeconds);
+        }
+        return this._currentTimer;
+    }
+
+    DisposeTimer() {
+        if (this._currentTimer) {
+            this._currentTimer.Stop();
+            this._currentTimer.Dispose();
+            this._currentTimer = null;
+        }
     }
 
 
@@ -45515,6 +45760,93 @@ App.Modules.YerevanParking.Components.Windows.ConfirmDialog = class extends Coli
     }
 
 }
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Components.Windows.PromptDialog', 
+'<div namespace="App.Modules.YerevanParking.Components.Windows.PromptDialog">' + 
+'' + 
+'    <component-container>' + 
+'        <Forms.Form name="form" shown="true" />' + 
+'    </component-container>' + 
+'' + 
+'    <component-footer>' + 
+'        <SuccessButton name="btn-save" className="btn-save" shown="true" value="Подтвердить" />' + 
+'        <SimpleButton name="btn-cancel" className="btn-cancel" shown="true" value="Отменить" />' + 
+'    </component-footer>' + 
+'    ' + 
+'</div>' + 
+'');
+App.Modules.YerevanParking.Components.Windows.PromptDialog = class extends Colibri.UI.Window {
+
+    constructor(name, container, width) {
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Components.Windows.PromptDialog'], '', width);
+        this.AddClass('app-modules-yerevanparking-components-windows-dialog-component');
+
+        this._callback = null;
+
+        this.AddHandler('KeyDown', (event, args) => {
+            if(args.domEvent.code == 'Enter' || args.domEvent.code == 'NumpadEnter') {
+                this._save.Dispatch('Clicked');
+                args.domEvent.stopPropagation();
+                args.domEvent.preventDefault();
+                return false;
+            }
+            else if(args.domEvent.code == 'Escape') {
+                this._cancel.Dispatch('Clicked');
+                args.domEvent.stopPropagation();
+                args.domEvent.preventDefault();
+                return false;
+            }
+        })
+
+
+    }
+
+    /**
+     * Показывает диалог
+     * @param {Function(dialogResult)} callback результат диалога, true - да, false - нет 
+     */
+    Show(title, fields, button) {
+    
+    
+        return new Promise((resolve, reject) => {
+            this.title = title;
+
+            this._form = this.Children('form');
+            this._save = this.Children('btn-save');
+            this._cancel = this.Children('btn-cancel');
+            this._save.enabled = false;
+
+            if(!this._validator) {
+                this._validator = new Colibri.UI.FormValidator(this._form);
+            }
+            this._form.fields = fields;
+            this._form.value = {};
+
+
+            this._save.value = button || 'Подтвердить';
+            super.Show();
+
+            this._form.Children('firstChild').Focus();
+
+            this._validator.ClearHandlers();
+            this._validator.AddHandler('Validated', (event, args) => this._save.enabled = this._validator.Validate());
+
+            this._save.ClearHandlers();
+            this._save.AddHandler('Clicked', (event, args) => {
+                resolve(this._form.value);
+                this.Hide();
+            });
+    
+            this._cancel.ClearHandlers();
+            this._cancel.AddHandler('Clicked', (event, args) => {
+                reject();
+                this.Hide();
+            });
+
+        });
+
+    }
+
+}
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Components.Timer', 
 '<div namespace="App.Modules.YerevanParking.Components.Timer">' + 
 '    <!-- yerevanparking-components-timer -->' + 
@@ -45591,6 +45923,12 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.MainPage',
 '            </FlexBox>' + 
 '        </FlexBox>' + 
 '' + 
+'        <FlexBox shown="false" name="choose">' + 
+'            <Forms.Form shown="true" name="form" />' + 
+'            <SuccessButton shown="true" className="small" name="start" value="Начать парковку" />' + 
+'            <SimpleButton shown="true" className="small" name="cancel" value="Вернуться" />' + 
+'        </FlexBox>' + 
+'' + 
 '    </FlexBox>' + 
 '' + 
 '    ' + 
@@ -45598,7 +45936,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.MainPage',
 '</div>' + 
 '');
 App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
-    
+
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.MainPage']);
@@ -45607,28 +45945,144 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
 
         this._zoneA = this.Children('container/zone-a');
         this._zoneB = this.Children('container/zone-b');
-        
+
+        this._containerChoose = this.Children('container/choose');
+        this._containerChooseForm = this.Children('container/choose/form');
+        this._containerChooseStart = this.Children('container/choose/start');
+        this._containerChooseCancel = this.Children('container/choose/cancel');
+
         this._zoneA.AddHandler('Clicked', (event, args) => this.__zoneAClicked(event, args));
         this._zoneB.AddHandler('Clicked', (event, args) => this.__zoneBClicked(event, args));
-        
+
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
-        
+
+        this._containerChooseStart.AddHandler('Clicked', (event, args) => this.__containerChooseStartClicked(event, args));
+        this._containerChooseCancel.AddHandler('Clicked', (event, args) => this.__containerChooseCancelClicked(event, args));
+
+    }
+
+    _showFields() {
+        this._containerChooseForm.fields = {
+            vahile: {
+                component: 'Radio',
+                desc: 'Автомобиль',
+                values: () => new Promise((resolve, reject) => {
+                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then((settings) => {
+                        let selected = 0;
+                        resolve(settings.vahiles.map(v => {
+                            return { value: v.number, title: v.name + ' (' + v.number + ')', __selected: selected++ === 0 };
+                        }));
+                    });
+                })
+            },
+            paytime: {
+                component: 'Radio',
+                desc: 'Выберите длительность парковки',
+                values: () => new Promise((resolve, reject) => {
+                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
+                        const paymenttype = settings.session.settings.payment_type ?? null;
+                        if (paymenttype === 'sms') {
+                            resolve([
+                                { value: '1', 'title': '1 час', __selected: true }
+                            ]);
+                        } else {
+                            resolve([
+                                { value: '1', title: '1 час', __selected: true },
+                                { value: '2', title: '2 часа' },
+                                { value: '3', title: '3 часа' },
+                                { value: '4', title: '4 часа' },
+                                // {value: '24', 'title': '1 день'},
+                                // {value: '48', 'title': '2 дня'},
+                            ])
+                        }
+                    });
+
+
+                })
+            }
+        };
     }
 
     __thisShown(event, args) {
-        const currentTimerState = App.Browser.Get('current-timer-state');
-        const currentTimerSettings = JSON.parse(App.Browser.Get('current-timer-settings')) ?? {};
-        if(currentTimerState === 'waiting' || currentTimerState === 'paid') {
-            App.Router.Navigate('/timer', {zone: currentTimerSettings.zone});
+        const currentZone = App.Browser.Get('current-zone');
+        if (currentZone) {
+            this._zoneA.shown = false;
+            this._zoneB.shown = false;
+            this._containerChoose.shown = true;
+            this._showFields();
+        } else {
+            this._zoneA.shown = true;
+            this._zoneB.shown = true;
+            this._containerChoose.shown = false;
         }
     }
 
     __zoneAClicked(event, args) {
-        App.Router.Navigate('/timer', {zone: 'A'});
+        App.Browser.Set('current-zone', 'A');
+        this._zoneA.shown = false;
+        this._zoneB.shown = false;
+        this._containerChoose.shown = true;
+        this._showFields();
     }
 
     __zoneBClicked(event, args) {
-        App.Router.Navigate('/timer', {zone: 'B'});
+        App.Browser.Set('current-zone', 'B');
+        this._zoneA.shown = false;
+        this._zoneB.shown = false;
+        this._containerChoose.shown = true;
+        this._showFields();
+    }
+
+    __containerChooseCancelClicked(event, args) {
+        App.Browser.Delete('current-zone');
+        this._zoneA.shown = true;
+        this._zoneB.shown = true;
+        this._containerChoose.shown = false;
+    }
+
+    __containerChooseStartClicked(event, args) {
+        const currentZone = App.Browser.Get('current-zone');
+        const vahile = this._containerChooseForm.value.vahile;
+        const paytime = this._containerChooseForm.value.paytime;
+        App.Browser.Delete('current-zone');
+        YerevanParking.Confirm.Show(
+            'Бесплатное время',
+            'Первые 15 минут парковки предоставляются бесплатно, хотите подождать?',
+            'Подождать',
+            'Оплатить сейчас'
+        ).then(() => { 
+            App.Router.Navigate('/wait', {
+                zone: currentZone,
+                vahile: vahile,
+                paytime: paytime
+            });
+        }).catch(() => {
+
+            YerevanParking.Pay(
+                currentZone,
+                vahile,
+                paytime
+            ).then(() => {
+
+                App.Router.Navigate('/parking', {
+                    zone: currentZone,
+                    vahile: vahile,
+                    paytime: paytime
+                });
+
+            }).catch(e => {
+
+                YerevanParking.Alert.Show(
+                    'Ошибка оплаты',
+                    'Произошла непредвиденная ошибка при оплате парковки, возможно у вас не выданы права на отправку СМС или нет связи, проверьте разрешения и связь и попробуйте еще раз',
+                    'Хорошо'
+                );
+
+            });
+
+        })
+
+
     }
 
 }
@@ -46015,28 +46469,12 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.TimerPage',
 '    ' + 
 '    <Layouts.Header shown="true" name="header" />' + 
 '' + 
-'    <FlexBox shown="true" name="container">' + 
-'        <FlexBox shown="true" name="choose">' + 
-'            <Forms.Form shown="true" name="form" />' + 
-'            <SuccessButton shown="true" className="small" name="paynow" value="Оплатить сейчас" />' + 
-'            <SimpleButton shown="true" className="small" name="cancel" value="Вернуться" />' + 
-'        </FlexBox>' + 
+'    <FlexBox shown="true" name="container">    ' + 
 '    ' + 
-'        <FlexBox shown="true" name="timer-15minutes">' + 
-'    ' + 
-'            <Components.Timer shown="true" name="timer" beforeReady="05:00"  />' + 
-'            <SuccessButton shown="true" className="small" name="paynow" value="Оплатить сейчас" />' + 
-'            <SimpleButton shown="true" className="small" name="cancel" value="Вернуться" />' + 
-'    ' + 
-'        </FlexBox>' + 
-'    ' + 
-'        <FlexBox shown="true" name="timer-minutes">' + 
-'    ' + 
-'            <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
-'            <SuccessButton shown="true" className="small" name="paynow" value="Оплатить сейчас" />' + 
-'            <SimpleButton shown="true" className="small" name="cancel" value="Вернуться" />' + 
-'    ' + 
-'        </FlexBox>' + 
+'        <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
+'        <SuccessButton shown="true" className="small" name="paynow" value="Продлить парковку" />' + 
+'        <SimpleButton shown="true" className="small" name="cancel" value="Уехать" />' + 
+'' + 
 '    ' + 
 '    </FlexBox>' + 
 '' + 
@@ -46050,350 +46488,134 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this.AddClass('app-modules-yerevanparking-layers-timerpage');
         this.AddClass('app-layer-component');
 
-        this._timer15minutes = this.Children('container/timer-15minutes');
-        this._timer15minutesTimer = this.Children('container/timer-15minutes/timer');
-        this._timer15minutesPaynow = this.Children('container/timer-15minutes/paynow');
-        this._timer15minutesCancel = this.Children('container/timer-15minutes/cancel');
-
-        this._timerMinutes = this.Children('container/timer-minutes');
-        this._timerMinutesTimer = this.Children('container/timer-minutes/timer');
-        this._timerMinutesPaynow = this.Children('container/timer-minutes/paynow');
-        this._timerMinutesCancel = this.Children('container/timer-minutes/cancel');
-
-        this._choose = this.Children('container/choose');
-        this._chooseForm = this.Children('container/choose/form');
-        this._choosePaynow = this.Children('container/choose/paynow');
-        this._chooseCancel = this.Children('container/choose/cancel');
-
-        this._choosePaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args));
-        this._timer15minutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args));
-        this._timerMinutesPaynow.AddHandler('Clicked', (event, args) => this.__choosepaynow(event, args));
-
-        this._timer15minutesTimer.AddHandler('TimerIsReadyToEnd', (event, args) => this.__timer15minutesTimerTimerIsReadyToEnd(event, args));
-        this._timer15minutesTimer.AddHandler('TimerEnds', (event, args) => this.__timer15minutesTimerTimerEnds(event, args));
-
-        this._timerMinutesTimer.AddHandler('TimerIsReadyToEnd', (event, args) => this.__timerMinutesTimerTimerIsReadyToEnd(event, args));
-        this._timerMinutesTimer.AddHandler('TimerEnds', (event, args) => this.__timerMinutesTimerTimerEnds(event, args));
-
-        this._chooseCancel.AddHandler('Clicked', (event, args) => this.__chooseCancelClicked(event, args));
-        this._timer15minutesCancel.AddHandler('Clicked', (event, args) => this.__chooseCancelClicked(event, args));
-        this._timerMinutesCancel.AddHandler('Clicked', (event, args) => this.__chooseCancelClicked(event, args));
-
+        this._containerCancel = this.Children('container/cancel');
+        this._containerPaynow = this.Children('container/paynow');
+        this._containerTimer = this.Children('container/timer');
+        
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
 
-        this._payAfter15minutesId = 1;
-        this._payAfterTime = 2;
-
-
-        this.AddHandler('PayNowClicked', (event, args) => this.__choosepaynow(event, args));
+        this._containerCancel.AddHandler('Clicked', (event, args) => this.__containerCancelClicked(event, args));
+        this._containerPaynow.AddHandler('Clicked', (event, args) => this.__containerPaynowClicked(event, args));
 
     }
 
-    /**
-     * Register events
-     */
-    _registerEvents() {
-        super._registerEvents();
-        this.RegisterEvent('PayNowClicked', false, 'When paynow event raised');
+    __containerCancelClicked(event, args) {
+        try {
+            App.Device.Notifications.Cancel(2);
+        } catch(e) {}
+        YerevanParking.DisposeTimer('parking');
+        App.Router.Navigate('/main');
     }
 
-    _showFields() {
-        this._chooseForm.fields = {
-            vahile: {
-                component: 'Radio',
-                desc: 'Автомобиль',
-                values: () => new Promise((resolve, reject) => {
-                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then((settings) => {
-                        let selected = 0;
-                        resolve(settings.vahiles.map(v => {
-                            return { value: v.number, title: v.name + ' (' + v.number + ')', __selected: selected++ === 0 };
-                        }));
-                    });
-                })
-            },
-            paytime: {
-                component: 'Radio',
-                desc: 'Выберите длительность парковки',
-                values: () => new Promise((resolve, reject) => {
-                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
-                        const paymenttype = settings.session.settings.payment_type ?? null;
-                        if (paymenttype === 'sms') {
-                            resolve([
-                                { value: '1', 'title': '1 час', __selected: true }
-                            ]);
-                        } else {
-                            resolve([
-                                { value: '1', 'title': '1 час', __selected: true },
-                                { value: '2', 'title': '2 часа' },
-                                { value: '3', 'title': '3 часа' },
-                                { value: '4', 'title': '4 часа' },
-                                // {value: '24', 'title': '1 день'},
-                                // {value: '48', 'title': '2 дня'},
-                            ])
-                        }
-                    });
-
-
-                })
-            }
-        };
-    }
-
-    __currentTimerTimerStarts(event, args) {
-        if(args.secondsLeft < 0) {
-            this.__chooseCancelClicked(null, null);
-            return;
+    __containerPaynowClicked(event, args) {
+        // enhance parking time
+        
+        
+        const settings = YerevanParking.Store.Query('yerevan-parking.settings');
+        const paymenttype = settings.session.settings.payment_type ?? null;
+        if(paymenttype === 'sms') {
+            YerevanParking.Pay(App.Router.options.zone, App.Router.options.vahile, 1).then(() => {
+                this._currentTimer.Enhance(60 * 60, Object.assign(
+                    {}, 
+                    this._currentTimer.tag, 
+                    {paytime: parseInt(this._currentTimer.tag.paytime) + 1}
+                ));
+            });
+            // we can enhance no more than 1 hour
         } else {
-            if (this._currentTimer.name === 'wating') {
-                this._timer15minutesTimer.value = args.secondsLeft;
-            } else if (this._currentTimer.name === 'paid') {
-                this._timerMinutesTimer.value = args.secondsLeft;
-            }
-            this._timer15minutesPaynow.RemoveClass('-urgent');
-            this._timerMinutesPaynow.RemoveClass('-urgent');
-        }
-    }
 
-    __currentTimerTimerTick(event, args) {
-        if (this._currentTimer.name === 'wating') {
-            this._timer15minutesTimer.value = args.secondsLeft;
-        } else if (this._currentTimer.name === 'paid') {
-            this._timerMinutesTimer.value = args.secondsLeft;
-        }
-    }
+            // show choose page
+            YerevanParking.Prompt.Show(
+                'Продление парковки',
+                {
+                    paytime: {
+                        component: 'Radio',
+                        desc: 'Выберите длительность парковки',
+                        values: [
+                            { value: '1', title: '1 час', __selected: true },
+                            { value: '2', title: '2 часа' },
+                            { value: '3', title: '3 часа' },
+                            { value: '4', title: '4 часа' },
+                            // {value: '24', 'title': '1 день'},
+                            // {value: '48', 'title': '2 дня'},
+                        ]
+                    }
+                },
+                'Продлить'
+            ).then(response => {
+                YerevanParking.Pay(App.Router.options.zone, App.Router.options.vahile, response.paytime).then(() => {
+                    this._currentTimer.Enhance(response.paytime * 60 * 60, Object.assign(
+                        {}, 
+                        this._currentTimer.tag, 
+                        {paytime: parseInt(this._currentTimer.tag.paytime) + parseInt(response.paytime)}
+                    ));
+                });
+            });
 
-    __currentTimerTimerBeforeEnd(event, args) {
-        if (this._currentTimer.name === 'wating') {
-            this._timer15minutesTimer.AddClass('-urgent');
-            this._timer15minutesPaynow.AddClass('-urgent');
-            try {
-                App.Device.Dialogs.Beep(1);
-            } catch (e) { }
-        } else if (this._currentTimer.name === 'paid') {
-            this._timerMinutesTimer.AddClass('-urgent');
-            this._timerMinutesPaynow.AddClass('-urgent');
-            try {
-                App.Device.Dialogs.Beep(1);
-            } catch (e) { }
         }
 
     }
-
-    __currentTimerTimerEnds(event, args) {
-        if (this._currentTimer.name === 'wating') {
-
-            try {
-                this._timer15minutesTimer.value = 0;
-                App.Device.Dialogs.Beep(1);
-                App.Device.Notifications.Schedule(
-                    { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
-                    'Бесплатная парковка',
-                    'Время бесплатной парковки завершилось',
-                    null,
-                    { in: 1, unit: 'second' },
-                    true, true, 1, this._payAfter15minutesId
-                );
-            } catch (e) { }
-
-        } else if (this._currentTimer.name === 'paid') {
-            try {
-                this._timerMinutesTimer.value = 0;
-                App.Device.Dialogs.Beep(1);
-                App.Device.Notifications.Schedule(
-                    { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
-                    'Парковка',
-                    'Время парковки закончилось, вам необходимо уехать, либо оплатить следующий час ',
-                    null,
-                    { in: 1, unit: 'second' },
-                    true, true, 1, this._payAfterTime
-                );
-            } catch (e) { }
-        }
-
-    }
-
-    _createTimer(name, seconds = 0, beforeEndSeconds = 0) {
-        this._disposeTimer();
-        this._currentTimer = new App.Modules.YerevanParking.Timer(name);
-        this._currentTimer.AddHandler('TimerTick', (event, args) => this.__currentTimerTimerTick(event, args));
-        this._currentTimer.AddHandler('TimerStarts', (event, args) => this.__currentTimerTimerStarts(event, args));
-        this._currentTimer.AddHandler('TimerEnds', (event, args) => this.__currentTimerTimerEnds(event, args));
-        this._currentTimer.AddHandler('TimerBeforeEnd', (event, args) => this.__currentTimerTimerBeforeEnd(event, args));
-        if (!this._currentTimer.started) {
-            this._currentTimer.Start(seconds, beforeEndSeconds);
-        }
-        return this._currentTimer;
-    }
-
-    _disposeTimer() {
-        if (this._currentTimer) {
-            this._currentTimer.Stop();
-            this._currentTimer.Dispose();
-            this._currentTimer = null;
-        }
-    }
-
 
     __thisShown(event, args) {
-        this._currentTimerState = App.Browser.Get('current-timer-state');
-
-        this._showFields();
-
-        const savedInfo = JSON.parse(App.Browser.Get('current-timer-settings')) ?? null;
-        if (savedInfo) {
-            this._chooseForm.value = savedInfo;
-        }
-
-        if (this._currentTimerState === 'waiting') {
-
-            this._timer15minutes.shown = true;
-            this._timerMinutes.shown = false;
-            this._choose.shown = false;
-
-            this._createTimer('wating');
-
-
-        } else if (this._currentTimerState === 'paid') {
-
-            this._timer15minutes.shown = false;
-            this._timerMinutes.shown = true;
-            this._choose.shown = false;
-
-            this._createTimer('paid');
-
-
-        } else {
-            this._timer15minutes.shown = false;
-            this._timerMinutes.shown = false;
-            this._choose.shown = true;
-
-            this._disposeTimer();
-        }
-
-    }
-
-    __choosepaynow(event, args) {
-        if(!App.Browser.Get('current-timer-state')) {
-            YerevanParking.Confirm.Show(
-                'Бесплатное время',
-                'Первые 15 минут парковки предоставляются бесплатно, хотите подождать?',
-                'Подождать',
-                'Оплатить сейчас'
-            ).then(() => {
-                this.StartWaiting();
-            }).catch(() => {
-                this.StartPaymentPeriod();
-            })
-        } else {
-            this.StartPaymentPeriod();
-        }
-    }
-
-    __chooseCancelClicked(event, args) {
-        this._disposeTimer();
-
-        App.Browser.Delete('current-timer-state');
-        App.Browser.Delete('current-timer-settings');
-        App.Router.Navigate('/main');
-
+        this._containerTimer.RemoveClass('-urgent');
+        this._containerPaynow.RemoveClass('-urgent');
+        this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
         try {
-            App.Device.Notifications.Cancel(this._payAfter15minutesId);
-            App.Device.Notifications.Cancel(this._payAfterTime);
-        } catch (e) { }
-
-    }
-
-    StartPaymentPeriod() {
-        const value = this._chooseForm.value;
-        value.zone = App.Router.options?.zone ?? null;
-
-        try {
-            App.Device.Notifications.Cancel(this._payAfter15minutesId);
-            App.Device.Notifications.Cancel(this._payAfterTime);
-        } catch (e) { }
-
-        YerevanParking.Pay(value.vahile, value.paytime).then(() => {
             
-            this._timer15minutes.shown = false;
-            this._timerMinutes.shown = true;
-            this._choose.shown = false;
+            const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
 
-            if (App.Browser.Get('current-timer-state') === 'paid') {
-
-                value.paytime = parseFloat(value.paytime) + 1;
-                this._chooseForm.value = value;
-                App.Browser.Set('current-timer-settings', JSON.stringify(value));
-
-                const currentTimerSecondsLeft = this._currentTimer.secondsLeft;
-
-                this._createTimer(
-                    'paid', 
-                    currentTimerSecondsLeft + (parseInt(value.paytime) - 1) * 60 * 60, 
-                    10 * 60
-                );
-
-                try {
-                    App.Device.Notifications.Cancel(this._payAfterTime);
-                    App.Device.Notifications.Schedule(
-                        { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
-                        'Парковка',
-                        'До окончания парковки осталось 15 минут',
-                        null,
-                        { in: value.paytime * 60 - 15, unit: 'minute' },
-                        true, true, 1, this._payAfterTime
-                    );
-
-                } catch (e) { }
-
-            } else {
-
-                App.Browser.Set('current-timer-state', 'paid');
-                App.Browser.Set('current-timer-settings', JSON.stringify(value));
-
-                this._createTimer('paid', parseInt(value.paytime) * 60 * 60, 10 * 60);
-
-                try {
-                    App.Device.Notifications.Cancel(this._payAfter15minutesId);
-                    App.Device.Notifications.Schedule(
-                        { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
-                        'Парковка',
-                        'До окончания парковки осталось 15 минут',
-                        null,
-                        { in: value.paytime * 60 - 15, unit: 'minute' },
-                        true, true, 1, this._payAfterTime
-                    );
-
-                } catch (e) { }
-
-            }
-
-        });
-    }
-
-    StartWaiting() {
-        const value = this._chooseForm.value;
-        value.zone = App.Router.options?.zone ?? null;
-
-        App.Browser.Set('current-timer-state', 'waiting');
-        App.Browser.Set('current-timer-settings', JSON.stringify(value));
-
-        this._createTimer('wating', 15 * 60, 5 * 60);
-
-        this._timer15minutes.shown = true;
-        this._choose.shown = false;
-
-        try {
+            App.Device.Notifications.Cancel(2);
             App.Device.Notifications.Schedule(
-                { event: { sender: 'ActivePage', name: 'PayNowClicked' } },
-                'Бесплатная парковка',
-                'До окончания беплатной парковки осталось 5 минут',
-                null,
-                { in: 10, unit: 'minute' },
-                true, true, this._payAfter15minutesId
+                'Парковка',
+                'До окончания парковки осталось 15 минут',
+                'paynow-cancel',
+                { in: secondsLeft, unit: 'second' },
+                true, true, 1, 'parking_timer'
             );
 
         } catch (e) { }
     }
+
+
+    __currentTimerTimerTick(event, args) {
+        this._containerTimer.value = args.secondsLeft;
+    }
+
+    __currentTimerTimerStarts(event, args) {
+        if(args.secondsLeft < 0) {
+            this.__containerCancelClicked(null, null);
+        } else {
+            this._containerTimer.value = args.secondsLeft;
+            this._containerPaynow.RemoveClass('-urgent');
+        }
+    }
+
+    __currentTimerTimerBeforeEnd(event, args) {
+        this._containerTimer.AddClass('-urgent');
+        this._containerPaynow.AddClass('-urgent');
+        try {
+            App.Device.Dialogs.Beep(1);
+        } catch (e) { }
+    }
+
+    __currentTimerTimerEnds(event, args) {
+        try {
+            this._timer15minutesTimer.value = 0;
+            App.Device.Dialogs.Beep(1);
+            App.Device.Notifications.Schedule(
+                null,
+                'Парковка',
+                'Время парковки закончилось, вам необходимо уехать, либо оплатить следующий час ',
+                'paynow-cancel',
+                null,
+                true, true, 1, 'parking_timer'
+            );
+        } catch (e) { }
+    }
+    
+
+
+
 
 }
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage', 
@@ -46450,6 +46672,123 @@ App.Modules.YerevanParking.Layers.WalletPage = class extends Colibri.UI.FlexBox 
         }
 
     }
+
+}
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WaitPage', 
+'<div namespace="App.Modules.YerevanParking.Layers.WaitPage">' + 
+'    <!-- yerevanparking-layers-waitpage -->' + 
+'    ' + 
+'    ' + 
+'    <Layouts.Header shown="true" name="header" />' + 
+'' + 
+'    <FlexBox shown="true" name="container">' + 
+'' + 
+'        <Components.Timer shown="true" name="timer" />' + 
+'        <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
+'        <SimpleButton shown="true" className="small" name="cancel" value="Уехать" />' + 
+'' + 
+'</FlexBox>' + 
+'' + 
+'</div>' + 
+'');
+App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
+    
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.WaitPage']);
+        this.AddClass('app-modules-yerevanparking-layers-waitpage');
+        this.AddClass('app-layer-component');
+
+        this._containerCancel = this.Children('container/cancel');
+        this._containerPaynow = this.Children('container/paynow');
+        this._containerTimer = this.Children('container/timer');
+
+        this._containerCancel.AddHandler('Clicked', (event, args) => this.__containerCancelClicked(event, args));
+        this._containerPaynow.AddHandler('Clicked', (event, args) => this.__containerPaynowClicked(event, args));
+
+        this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
+    
+    }
+
+    __thisShown(event, args) {
+        this._containerPaynow.RemoveClass('-urgent');
+        this._containerPaynow.RemoveClass('-urgent');
+        this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
+    }
+
+    __containerCancelClicked(event, args) {
+        
+        try {
+            App.Device.Notifications.Cancel(1);
+        } catch(e) { }
+        YerevanParking.DisposeTimer();
+        App.Router.Navigate('/main');
+
+    }
+
+    __containerPaynowClicked(event, args) {
+
+        YerevanParking.DisposeTimer();
+        YerevanParking.Pay(
+            App.Router.options.zone,
+            App.Router.options.vahile,
+            App.Router.options.paytime
+        ).then(() => {
+            App.Router.Navigate('/timer', App.Router.options);
+        });
+    }
+
+    __currentTimerTimerTick(event, args) {
+        this._containerTimer.value = args.secondsLeft;
+        if(args.secondsLeft % 10 == 0) {
+            App.Device.Notifications.Schedule(
+                'Бесплатная парковка',
+                'Осталось',
+                'paynow-cancel',
+                null,
+                true, 
+                true, 
+                1, 
+                1, {
+                    value: 100 - parseInt(args.secondsLeft * 100 / 600)
+                }
+            );
+        }
+    }
+
+    __currentTimerTimerStarts(event, args) {
+        if(args.secondsLeft < 0) {
+            this.__containerCancelClicked(null, null);
+        } else {
+            this._containerTimer.value = args.secondsLeft;
+            this._containerPaynow.RemoveClass('-urgent');
+            this._containerPaynow.RemoveClass('-urgent');
+        }
+    }
+
+    __currentTimerTimerBeforeEnd(event, args) {
+        this._containerTimer.AddClass('-urgent');
+        this._containerPaynow.AddClass('-urgent');
+        try {
+            App.Device.Dialogs.Beep(1);
+            App.Device.WakeUp();
+        } catch (e) { }
+    }
+
+    __currentTimerTimerEnds(event, args) {
+        try {
+            this._containerTimer.value = 0;
+            App.Device.Dialogs.Beep(1);
+            App.Device.Notifications.Schedule(
+                'Бесплатная парковка',
+                'Время бесплатной парковки завершилось',
+                'paynow-cancel',
+                null,
+                true, true, 1, 1
+            );
+        } catch (e) { }
+    }
+    
 
 }
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header', 
@@ -46645,6 +46984,17 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
 
     }
 
+    static IsTimerStarted(name) {
+        let values = App.Browser.Get(name + '.values');
+        if(values) {
+            values = JSON.parse(values);
+            if(values.timerEnds.toDate() > new Date()) {
+                return values;
+            }
+        }
+        return false;
+    }
+
     /**
      * Register events
      */
@@ -46661,7 +47011,7 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
         this._beforeEndSeconds = beforeEndSeconds;
         this._startDate = new Date();
         this._endDate = new Date();
-        this._endDate .setTime(this._startDate.getTime() + seconds * 1000);
+        this._endDate.setTime(this._startDate.getTime() + seconds * 1000);
         this._saveData();
 
         this._start();
@@ -46674,6 +47024,22 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
 
     get name() {
         return this._name;
+    }
+
+    set tag(value) {
+        this._tag = value;
+    }
+
+    get tag() {
+        return this._tag;
+    }
+
+    Enhance(seconds, newTag = null) {
+        debugger;
+        this._tag = newTag;
+        this._seconds += seconds;
+        this._endDate.addMinute(seconds / 60);
+        this._saveData();
     }
 
 
@@ -46734,6 +47100,7 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
             this._beforeEndSeconds = values.beforeEndSeconds;
             this._startDate = values.timerStarts.toDate();
             this._endDate = values.timerEnds.toDate();
+            this._tag = values.tag;
             this._start();
         }
     }
@@ -46743,7 +47110,8 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
             seconds: this._seconds,
             beforeEndSeconds: this._beforeEndSeconds,
             timerStarts: this._startDate.toDbDate(),
-            timerEnds: this._endDate.toDbDate()
+            timerEnds: this._endDate.toDbDate(),
+            tag: this._tag
         }));
     }
 
