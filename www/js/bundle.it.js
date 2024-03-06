@@ -46742,14 +46742,14 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         this._containerTimer.value = args.secondsLeft;
         App.Device.Notifications.Schedule(
             '',
-            ' ' + args.secondsLeft.toTimeString(':'),
+            ' ' + args.secondsLeft.toTimeString(':') + parseInt(args.secondsLeft * 100 / 900) + '%',
             'paynow-cancel',
             null,
             true, 
             true, 
             1, 
             1, {
-                value: parseInt(args.secondsLeft * 100 / 600)
+                value: parseInt(args.secondsLeft * 100 / 900)
             }
         );
     }
