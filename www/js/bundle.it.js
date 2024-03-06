@@ -35852,7 +35852,6 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
             // Делаем всякое после того, как DOM загрузился окончательно
             Colibri.Common.WaitForDocumentReady().then(() => { 
                 this.Dispatch('DocumentReady');
-                debugger;
     
                 const headers = {};
                 if(this._csrfToken) {
