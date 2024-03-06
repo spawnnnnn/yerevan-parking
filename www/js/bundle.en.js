@@ -46711,22 +46711,9 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     }
 
     __thisShown(event, args) {
-        
-        if(this._showing) {
-            return;
-        }
-
         this._containerPaynow.RemoveClass('-urgent');
         this._containerPaynow.RemoveClass('-urgent');
-
         this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
-        try {
-            
-            
-
-        } catch (e) {
-            alert(e)
-        }
     }
 
     __containerCancelClicked(event, args) {
