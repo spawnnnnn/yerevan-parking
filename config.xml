@@ -62,6 +62,16 @@
         <icon src="resources/ios/180.png" width="180" height="180" />
         <icon src="resources/ios/1024.png" width="1024" height="1024" />
 
+        <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
+            <string>Need location access to find parking place</string>
+        </edit-config>
+        <edit-config target="NSLocationAlwaysAndWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
+            <string>Need location access to find parking place</string>
+        </edit-config>
+        <edit-config target="NSLocationAlwaysUsageDescription" file="*-Info.plist" mode="merge">
+            <string>Need location access to find parking place</string>
+        </edit-config>
+
     </platform>
 
 </widget>

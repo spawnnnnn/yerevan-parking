@@ -35522,7 +35522,7 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         this._plugin.local.addActions(groupName, actions);
     }
 
-    Schedule(event, title, message, actions = null, trigger = null, isForeground = true, isLaunch = true, priority = 2, id = null) {
+    Schedule(title, message, actions = null, trigger = null, isForeground = true, isLaunch = true, priority = 2, id = null, progressBar = null) {
         // trigger = { in: 1, unit: 'second' }, { in: 15, unit: 'minutes' }
         this.RequestPermission().then(() => {
             const params = {
@@ -35541,10 +35541,18 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
             if(actions && actions.length > 0) {
                 params.actions = actions;
             }
-            if(event) {
-                params.event = event;
+            if(progressBar) {
+                params.progressBar = progressBar;
+                params.sticky = true;
             }
-            this._plugin.local.schedule(params);    
+            if(params.id) {
+                this._plugin.local.isPresent(params.id, () => {
+                    params.sound = false;
+                    this._plugin.local.schedule(params);    
+                });
+            } else {
+                this._plugin.local.schedule(params);    
+            }
         });
     }
 
@@ -35749,6 +35757,30 @@ Colibri.Devices.Dialogs = class extends Destructable {
             foreground: isForeground,
             launch: isLaunch,
             priority: priority,
+        });
+    }
+
+}
+
+Colibri.Devices.Dialogs = class extends Destructable {
+
+    _device = null;
+    _plugin = null;
+    _permited = false;
+
+    constructor(device) {
+        super();
+        this._device = device;
+        this._plugin = this._device.Plugin('geolocation');
+    }
+
+    Detect(options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }) {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition((position) => {
+                resolve(position);
+            }, (error) => {
+                reject(error);
+            });    
         });
     }
 
@@ -44607,6 +44639,8 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     InitParkingApp() {
         this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
 
+            this.ParkingZones();
+
             if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
                 if(['', '/', '/payment', '/vahiles', '/registration'].indexOf(App.Router.current) !== -1) {
                     App.Router.Navigate('/main');
@@ -44639,7 +44673,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 App.Device.Notifications.On('cancel', this.CancelEventHandler);
 
             } catch(e) {
-                alert(e)
+                
             }
             
 
@@ -44899,6 +44933,15 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 this.InitParkingApp();
                 resolve(response.result);
             }).catch(error => reject(error.result));
+        });
+    }
+
+    ParkingZones(vahiles) {
+        return new Promise((resolve, reject) => {
+            this.Call('YerevanParking', 'ParkingZones', {vahiles: vahiles}).then(response => {
+                this._store.Set('yerevan-parking.parkingzones', response.result);
+                resolve(response.result);
+            }).catch(error => console.log(error.result));
         });
     }
     
@@ -46523,12 +46566,11 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
             App.Device.Notifications.Cancel(2);
             App.Device.Notifications.Schedule(
-                null,
                 'Parking',
                 '15 minutes left until parking ends',
                 'paynow-cancel',
                 { in: secondsLeft, unit: 'second' },
-                true, true, 1, 2
+                true, true, 1, 'parking_timer'
             );
 
         } catch (e) { }
@@ -46566,7 +46608,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 'The parking time has ended, you need to leave or pay for the next hour',
                 'paynow-cancel',
                 null,
-                true, true, 1, 1
+                true, true, 1, 'parking_timer'
             );
         } catch (e) { }
     }
@@ -46680,20 +46722,11 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
         try {
             
-            const secondsLeft = this._currentTimer.secondsLeft - 5 * 60;
-            alert(secondsLeft);
+            
 
-            App.Device.Notifications.Cancel(1);
-            App.Device.Notifications.Schedule(
-                null,
-                'Free parking',
-                '5 minutes left until free parking ends',
-                'paynow-cancel',
-                { in: secondsLeft, unit: 'second' },
-                true, true, 1, 1
-            );
-
-        } catch (e) { }
+        } catch (e) {
+            alert(e)
+        }
     }
 
     __containerCancelClicked(event, args) {
@@ -46719,7 +46752,21 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     }
 
     __currentTimerTimerTick(event, args) {
-        this._containerTimer.value = args.secondsLeft
+        this._containerTimer.value = args.secondsLeft;
+        if(args.secondsLeft % 30 == 0) {
+            App.Device.Notifications.Schedule(
+                'Free parking',
+                'Time left',
+                'paynow-cancel',
+                null,
+                true, 
+                true, 
+                1, 
+                1, {
+                    value: 100 - parseInt(args.secondsLeft * 100 / 600)
+                }
+            );
+        }
     }
 
     __currentTimerTimerStarts(event, args) {
@@ -46745,7 +46792,6 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
             this._containerTimer.value = 0;
             App.Device.Dialogs.Beep(1);
             App.Device.Notifications.Schedule(
-                null,
                 'Free parking',
                 'Free parking time has ended',
                 'paynow-cancel',

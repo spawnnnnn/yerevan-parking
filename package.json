@@ -29,6 +29,7 @@
     "cordova-plugin-file": "^8.0.1",
     "cordova-plugin-file-opener2": "^4.0.0",
     "cordova-plugin-file-transfer": "^2.0.0",
+    "cordova-plugin-geolocation": "^5.0.0",
     "cordova-plugin-local-notification-12": "^0.1.4",
     "cordova-plugin-push-notifications": "^1.1.7",
     "cordova-plugin-safearea": "^1.0.0",
@@ -66,7 +67,10 @@
       "cordova-plugin-safearea": {},
       "cordova-plugin-cutout": {},
       "cordova-plugin-wkwebview-file-xhr": {},
-      "cordova-plugin-wkwebview-cookies": {}
+      "cordova-plugin-wkwebview-cookies": {},
+      "cordova-plugin-geolocation": {
+        "GPS_REQUIRED": "true"
+      }
     }
   }
 }
