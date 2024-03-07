@@ -44701,15 +44701,12 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             Colibri.Common.LoadScript('https://unpkg.com/geometric@2.5.4/build/geometric.js').then(() => {
                 this._geometricLoaded = true;
                 this.ParkingZones().then(() => {
-                    const street = this._checkPosition(40.19034303870468, 44.51896123588085);
-                    this.Dispatch('GeoPositionChanged', {position: {lat: 40.19034303870468, lng: 44.51896123588085}, found: street});
-                    // App.Device.GeoLocation.Watch((location) => {
-                        // const street = this._checkPosition(location.coords.latitude, location.coords.longitude);
-                        // this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
-                    // }).catch((error) => {
-                    //     App.Notices.Add(new Colibri.UI.Notice(error.code + ': ' + error.message));
-                    // });
-                        
+                    App.Device.GeoLocation.Watch((location) => {
+                        const street = this._checkPosition(location.coords.latitude, location.coords.longitude);
+                        this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
+                    }).catch((error) => {
+                        App.Notices.Add(new Colibri.UI.Notice(error.code + ': ' + error.message));
+                    });                        
                 });
 
             
