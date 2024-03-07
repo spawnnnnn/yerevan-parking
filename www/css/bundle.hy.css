@@ -6377,6 +6377,23 @@ input::placeholder, textarea::placeholder, select::placeholder {
   justify-content: center;
   gap: 20px;
 }
+.app-modules-yerevanparking-layers-mainpage [data-object-name="geoposition"] {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="geoposition"] [data-object-name="name"].app-component-shown {
+  display: block;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="geoposition"] [data-object-name="value"] {
+  text-align: center;
+  font-size: 8px;
+}
+.app-modules-yerevanparking-layers-mainpage [data-object-name="geoposition"] [data-object-name="value"].app-component-shown {
+  display: block;
+}
 .app-modules-yerevanparking-layers-mainpage [data-object-name="choose"] {
   flex-direction: column;
   gap: 10px;

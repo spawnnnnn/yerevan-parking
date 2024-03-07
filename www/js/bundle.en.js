@@ -44700,14 +44700,18 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             this._geometricLoaded = false;
             Colibri.Common.LoadScript('https://unpkg.com/geometric@2.5.4/build/geometric.js').then(() => {
                 this._geometricLoaded = true;
-                this.ParkingZones();
-
-                App.Device.GeoLocation.Watch((location) => {
-                    const street = this._checkPosition(location.coords.latitude, location.coords.longitude);
-                    this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
-                }).catch((error) => {
-                    App.Notices.Add(new Colibri.UI.Notice(error.code + ': ' + error.message));
+                this.ParkingZones().then(() => {
+                    const street = this._checkPosition(40.19034303870468, 44.51896123588085);
+                    this.Dispatch('GeoPositionChanged', {position: {lat: 40.19034303870468, lng: 44.51896123588085}, found: street});
+                    // App.Device.GeoLocation.Watch((location) => {
+                        // const street = this._checkPosition(location.coords.latitude, location.coords.longitude);
+                        // this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
+                    // }).catch((error) => {
+                    //     App.Notices.Add(new Colibri.UI.Notice(error.code + ': ' + error.message));
+                    // });
+                        
                 });
+
             
             });
             
@@ -44716,32 +44720,31 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     _checkPosition(lat, lng) {
-        
-        const streets = this.Store.Query('yerevan-parking.parkingzones');
-        let found = null;
-        Object.forEach(streets, (name, polylines) => {
 
-            Object.forEach(polylines, (index, poly) => {
+        const zones = this.Store.Query('yerevan-parking.parkingzones');
+        for(const zone of zones) {
+
+            for(const poly of zone.polylines) {
+            
                 const polygon = [];
-                for(const p of poly) {
+                for(const p of poly.polyline) {
                     polygon.push([parseFloat(p.lat), parseFloat(p.lng)]);
                 }
                 
                 const check = geometric.pointOnPolygon([lat, lng], polygon, 0.1);
                 if(check) {
-                    found = {
-                        name: name,
-                        polylines: polylines
+                    return {
+                        zone: zone.zone,
+                        street: zone.street
                     };
-                    return false;
                 }
-            });
+
+            }
     
 
-        });
+        }
 
-
-        return found;
+        return null;
 
     }
 
@@ -44770,6 +44773,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         }
         headers.clientId = App.Comet.clientId;
         headers['yp-jwt'] = App.Browser.Get('yp-jwt');
+        headers['Colibri-Language'] = App.Browser.Get('lang');
         return super.Call(controller, method, params, headers, withCredentials, requestKeyword);
     }
 
@@ -45992,7 +45996,10 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.MainPage',
 '' + 
 '    <FlexBox shown="true" name="container">' + 
 '' + 
-'        <Pane shown="true" name="geoposition"></Pane>' + 
+'        <FlexBox shown="true" name="geoposition">' + 
+'            <TextSpan shown="true" name="name"></TextSpan>' + 
+'            <TextSpan shown="true" name="value"></TextSpan>' + 
+'        </FlexBox>' + 
 '' + 
 '        <FlexBox shown="true" name="zone-a">' + 
 '            <FlexBox shown="true" name="content">' + 
@@ -46033,7 +46040,8 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
         this._zoneA = this.Children('container/zone-a');
         this._zoneB = this.Children('container/zone-b');
 
-        this._containerGeoposition = this.Children('container/geoposition');
+        this._containerGeopositionName = this.Children('container/geoposition/name');
+        this._containerGeopositionValue = this.Children('container/geoposition/value');
         
 
         this._containerChoose = this.Children('container/choose');
@@ -46054,7 +46062,8 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
     }
 
     __geoPositionChanged(event, args) {
-        this._containerGeoposition.value = args.position.lat + ' ' + args.position.lng + ' ' + (args.found ? '(' + args.found.name + ')' : '');
+        this._containerGeopositionName.value = (args.found ? 'ZONE: ' + args.found.zone + ', ' + args.found.street + ', ' : '');
+        this._containerGeopositionValue.value = args.position.lat + ' ' + args.position.lng;
     }
 
     _showFields() {
