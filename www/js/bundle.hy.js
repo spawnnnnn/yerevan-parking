@@ -44697,9 +44697,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 
             }
 
-            this._geometricLoaded = false;
-            Colibri.Common.LoadScript('https://unpkg.com/geometric@2.5.4/build/geometric.js').then(() => {
-                this._geometricLoaded = true;
+            // this._geometricLoaded = false;
+            // Colibri.Common.LoadScript('https://unpkg.com/geometric@2.5.4/build/geometric.js').then(() => {
+                // this._geometricLoaded = true;
                 this.ParkingZones().then(() => {
                     App.Device.GeoLocation.Watch((location) => {
                         const street = this._checkPosition(location.coords.latitude, location.coords.longitude);
@@ -44710,7 +44710,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 });
 
             
-            });
+            // });
             
 
         });
@@ -45041,9 +45041,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         });
     }
 
-    SavePaymentType(paymentType) {
+    SavePaymentType(paymentType, autosms) {
         return new Promise((resolve, reject) => {
-            this.Call('Client', 'SavePaymentType', {type: paymentType}).then(response => {
+            this.Call('Client', 'SavePaymentType', {type: paymentType, autosms: autosms}).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
                 resolve(response.result);
@@ -46080,32 +46080,24 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
             paytime: {
                 component: 'Radio',
                 desc: 'Ընտրեք կայանման տևողությունը',
-                values: () => new Promise((resolve, reject) => {+
-                    resolve([
-                        { value: '1', title: '1 ժամ', __selected: true },
-                        { value: '2', title: '2 ժամ' },
-                        { value: '3', title: '3 ժամ' },
-                        { value: '4', title: '4 ժամ' },
-                        // {value: '24', 'title': '1 օր'},
-                        // {value: '48', 'title': '2 օր'},
-                    ])
-                    // YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
-                    //     // const paymenttype = settings.session.settings.payment_type ?? null;
-                    //     // if (paymenttype === 'sms') {
-                    //     //     resolve([
-                    //     //         { value: '1', 'title': '1 ժամ', __selected: true }
-                    //     //     ]);
-                    //     // } else {
-                    //         resolve([
-                    //             { value: '1', title: '1 ժամ', __selected: true },
-                    //             { value: '2', title: '2 ժամ' },
-                    //             { value: '3', title: '3 ժամ' },
-                    //             { value: '4', title: '4 ժամ' },
-                    //             // {value: '24', 'title': '1 օր'},
-                    //             // {value: '48', 'title': '2 օր'},
-                    //         ])
-                    //     // }
-                    // });
+                values: () => new Promise((resolve, reject) => {
+                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
+                        const paymenttype = settings.session.settings.payment_type ?? null;
+                        if (paymenttype === 'sms') {
+                            resolve([
+                                { value: '1', 'title': '1 ժամ', __selected: true }
+                            ]);
+                        } else {
+                            resolve([
+                                { value: '1', title: '1 ժամ', __selected: true },
+                                { value: '2', title: '2 ժամ' },
+                                { value: '3', title: '3 ժամ' },
+                                { value: '4', title: '4 ժամ' },
+                                // {value: '24', 'title': '1 օր'},
+                                // {value: '48', 'title': '2 օր'},
+                            ]);
+                        }
+                    });
 
 
                 })
@@ -46444,6 +46436,16 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '                            params: {' + 
 '                                rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\'' + 
 '                            }' + 
+'                        },' + 
+'                        autosms: {' + 
+'                            component: \'Checkbox\',' + 
+'                            placeholder: \'Երկարացնել ավտոմատ\',' + 
+'                            params: {' + 
+'                                condition: {' + 
+'                                    field: \'payment_type\',' + 
+'                                    value: \'sms\'' + 
+'                                }' + 
+'                            }' + 
 '                        }' + 
 '                    }' + 
 '                </fields>' + 
@@ -46483,7 +46485,7 @@ App.Modules.YerevanParking.Layers.PaymentPage = class extends Colibri.UI.FlexBox
 
     __thisShown(event, args) {
         YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
-            this._form.value = {payment_type: settings.session?.settings?.payment_type ?? null};
+            this._form.value = {payment_type: settings.session?.settings?.payment_type ?? null, autosms: settings.session?.settings?.autosms ?? false};
         });
     }
 
@@ -46516,7 +46518,7 @@ App.Modules.YerevanParking.Layers.PaymentPage = class extends Colibri.UI.FlexBox
                 });
             } catch(e) {}
         }
-        YerevanParking.SavePaymentType((this._form.value.payment_type?.value ?? this._form.value.payment_type));
+        YerevanParking.SavePaymentType((this._form.value.payment_type?.value ?? this._form.value.payment_type), this._form.value.autosms);
     }
 
 }
@@ -46617,6 +46619,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         try {
             App.Device.Notifications.Cancel(2);
             App.Device.Notifications.Cancel(4);
+            App.Device.Notifications.Cancel(5);
         } catch(e) {}
         YerevanParking.DisposeTimer('parking');
         App.Router.Navigate('/main');
@@ -46632,12 +46635,14 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         const paymenttype = settings.session.settings.payment_type ?? null;
         if(paymenttype === 'sms') {
             YerevanParking.Pay(App.Router.options.zone, App.Router.options.vahile, 1).then(() => {
-                App.Router.options.paytime = parseInt(App.Router.options.paytime) - 1;
+                this._containerTimer.RemoveClass('-urgent');
+                this._containerPaynow.RemoveClass('-urgent');
                 this._currentTimer.Enhance(60 * 60, Object.assign(
                     {}, 
                     this._currentTimer.tag, 
                     {paytime: parseInt(this._currentTimer.tag.paytime) + 1}
                 ));
+                App.Notices.Add(new Colibri.UI.Notice('Ավտոկանգառը երկարացվել է', Colibri.UI.Notice.Success));
             });
             // we can enhance no more than 1 hour
         } else {
@@ -46667,6 +46672,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                         this._currentTimer.tag, 
                         {paytime: parseInt(this._currentTimer.tag.paytime) + parseInt(response.paytime)}
                     ));
+                    App.Notices.Add(new Colibri.UI.Notice('Ավտոկանգառը երկարացվել է', Colibri.UI.Notice.Success));
                 });
             });
 
@@ -46681,33 +46687,35 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
     __thisShown(event, args) {
+
         this._containerTimer.RemoveClass('-urgent');
         this._containerPaynow.RemoveClass('-urgent');
+        this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
+        // this._currentTimer = YerevanParking.CreateTimer('parking', this, 3 * 60, 1 * 60, App.Router.options);
+        const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
+
         YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
             const paymenttype = settings.session.settings.payment_type ?? null;
-            if(paymenttype === 'sms') {
-                if(App.Router.options.paytime > 1) {
-                    this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
-                    try {
-                        const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
-                        App.Device.Notifications.Schedule(
-                            'Ավտոկայանատեղի',
-                            'Մնացել է 15 րոպե կայանման ավարտին',
-                            'enhance-leave',
-                            { in: secondsLeft, unit: 'second' },
-                            true,
-                            true,
-                            1, 
-                            2
-                        );
-                    } catch (e) { }
-                } else {
-                    this.TryCancel();
+            const autosms = (settings.session.settings.autosms ?? 0) === 1;
+            if(paymenttype === 'sms' && autosms === true) {
+                try {
+                    App.Device.Notifications.Schedule(
+                        'Ավտոկայանատեղի',
+                        'Մնացել է 15 րոպե կայանման ավարտին. Կայանատեղին կերկարացվի ավտոմատ',
+                        'enhance-leave',
+                        { in: secondsLeft, unit: 'second' },
+                        true,
+                        true,
+                        1, 
+                        2
+                    );
+                } catch (e) {
+                    Colibri.Common.Delay(secondsLeft * 1000).then(() => {
+                        App.Notices.Add(new Colibri.UI.Notice('Մնացել է 15 րոպե կայանման ավարտին. Կայանատեղին կերկարացվի ավտոմատ'));
+                    });
                 }
             } else {
-                this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
                 try {
-                    const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
                     App.Device.Notifications.Schedule(
                         'Ավտոկայանատեղի',
                         'Մնացել է 15 րոպե կայանման ավարտին',
@@ -46718,10 +46726,16 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                         1, 
                         2
                     );
-                } catch (e) { }
+                            
+                } catch (e) { 
+                    Colibri.Common.Delay(secondsLeft * 1000).then(() => {
+                        App.Notices.Add(new Colibri.UI.Notice('Մնացել է 15 րոպե կայանման ավարտին'));
+                    });
+                }
             }
         });
         
+
     }
 
 
@@ -46743,7 +46757,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 );
             }
         } catch(e) {
-
+            
         }
     }
 
@@ -46779,24 +46793,24 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._containerPaynow.AddClass('-urgent');
         try {
             App.Device.Dialogs.Beep(1);
-        } catch (e) { }
+        } catch (e) {
+            // do nothing
+        }
     }
 
     __currentTimerTimerEnds(event, args) {
-        YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
-            const paymenttype = settings.session.settings.payment_type ?? null;
-            if(paymenttype === 'sms' && App.Router.options.paytime > 1) {
-                this.TryEnhance();
-            } else {
-                this.TryCancel();
-            }
-        });
+
+        const settings = YerevanParking.Store.Query('yerevan-parking.settings');
+        const paymenttype = settings.session.settings.payment_type ?? null;
+        const autosms = (settings.session.settings.autosms ?? 0) === 1;
+        if(paymenttype === 'sms' && autosms === true) {
+            this.TryEnhance();
+        } else {
+            this.TryCancel();
+        }
+
     }
     
-
-
-
-
 }
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage', 
 '<div namespace="App.Modules.YerevanParking.Layers.WalletPage">' + 
@@ -46898,16 +46912,22 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         this._containerPaynow.RemoveClass('-urgent');
         this._containerPaynow.RemoveClass('-urgent');
         this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
-        App.Device.Notifications.Schedule(
-            'Անվճար ավտոկայանատեղի',
-            'Մնացել է',
-            'paynow-cancel',
-            { in: 10, unit: 'minute' },
-            true,
-            true,
-            1, 
-            1
-        );
+        try {
+            App.Device.Notifications.Schedule(
+                'Անվճար ավտոկայանատեղի',
+                '5 րոպեից քիչ ժամանակ է մնացել անվճար կայանման ավարտին',
+                'paynow-cancel',
+                { in: 10, unit: 'minute' },
+                true,
+                true,
+                1, 
+                1
+            );
+        } catch(e) {
+            Colibri.Common.Delay(10 * 20 * 1000).then(() => {
+                App.Notices.Add(new Colibri.UI.Notice('5 րոպեից քիչ ժամանակ է մնացել անվճար կայանման ավարտին'));
+            });
+        }
     }
 
     TryCancel() {
@@ -46950,18 +46970,22 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
         if(App.Device.isAndroid) {
-            App.Device.Notifications.Schedule(
-                'Անվճար ավտոկայանատեղի',
-                'Մնացել է ' + args.secondsLeft.toTimeString(':'),
-                'paynow-cancel',
-                null,
-                true, 
-                true, 
-                1, 
-                3, {
-                    value: parseInt(args.secondsLeft * 100 / 900)
-                }, false
-            );
+            try {
+                App.Device.Notifications.Schedule(
+                    'Անվճար ավտոկայանատեղի',
+                    'Մնացել է ' + args.secondsLeft.toTimeString(':'),
+                    'paynow-cancel',
+                    null,
+                    true, 
+                    true, 
+                    1, 
+                    3, {
+                        value: parseInt(args.secondsLeft * 100 / 900)
+                    }, false
+                );
+            } catch(e) {
+
+            }
         }
     }
 
@@ -46988,7 +47012,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
                     );
                 }    
             } catch(e) {
-
+                App.Notices.Add(new Colibri.UI.Notice('Մնացել է ' + args.secondsLeft.toTimeString(':')));
             }
         }
     }
@@ -47183,6 +47207,877 @@ App.Modules.YerevanParking.Icons.Logout = '<svg width="24" height="24" viewBox="
 App.Modules.YerevanParking.Icons.Langs = '<svg width="48" height="30" viewBox="0 0 118 71" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M35.5774 63.0332C37.8793 63.0332 40.1813 62.7489 42.4832 62.1734C42.199 61.598 41.6235 61.3137 40.7568 61.598C41.6165 57.5695 42.192 55.5588 43.9185 53.8323C45.0695 52.9726 45.6449 51.5304 44.7782 50.3794C44.2028 49.5196 43.0518 48.9441 42.192 49.2284C40.4656 49.5127 41.6165 47.2177 40.1813 46.9265C38.746 46.6422 36.7283 43.7647 34.7176 42.898C33.5666 42.3226 32.4156 40.8873 30.6892 40.8873C29.2539 40.8873 26.952 42.3226 26.952 41.1716C26.952 37.7187 26.6677 35.4167 26.6677 34.2657C26.6677 33.406 26.0922 33.9814 28.3942 33.9814C29.5451 33.9814 28.9697 31.6795 30.1206 31.6795C31.2716 31.6795 33.8578 32.8305 34.4333 32.255C35.0088 31.9707 39.0372 42.6138 39.0372 33.9814C39.0372 32.8305 38.4617 31.104 39.0372 30.2442C40.4725 27.9423 41.9147 25.3561 43.0657 22.7629C41.9147 22.4786 40.4794 22.4786 39.3284 22.7629C38.753 23.0472 39.6127 23.9139 38.753 23.9139C35.8755 24.4894 33.2893 23.0541 34.149 21.6119C35.0088 20.1767 38.4617 21.0364 38.753 18.159C39.0372 16.4325 39.0372 14.7061 39.0372 13.2708C42.7744 13.8463 42.4902 8.95811 37.602 7.80713H36.1667C22.9305 7.80713 11.7119 17.0149 9.11877 29.96C10.2698 31.1109 12.2805 31.1109 13.1472 29.6757C12.8629 29.3914 12.8629 29.3914 13.1472 29.1002C14.2982 29.96 16.0246 29.96 16.0246 31.4021C16.0246 36.2903 16.3089 41.4697 20.6285 41.4697C22.355 42.0452 23.506 43.4805 24.0815 45.2069C24.3657 46.3579 26.0922 45.2069 27.5344 45.2069C28.3942 45.2069 27.5344 46.6422 27.5344 49.5196C27.5344 52.3971 34.149 57.2853 34.149 57.2853C34.149 59.0117 34.149 60.447 34.4333 62.1734C33.5736 62.1734 32.4226 62.1734 31.5559 62.4577C32.9911 63.0332 34.1421 63.0332 35.5774 63.0332ZM61.4743 26.202C61.4743 26.202 61.1901 26.202 61.1901 25.9177C59.4636 21.3138 55.1509 24.7667 56.5862 28.5039C48.5293 34.5431 50.8313 38.8627 53.4244 41.1646C54.8597 42.5999 56.0107 44.0421 56.8774 45.7686C56.0176 48.0705 59.4636 47.495 61.7656 44.0421C62.9165 41.1647 63.2008 38.0029 63.2008 34.8343V32.248C63.2008 31.6726 63.2008 31.0971 62.9165 30.8128C62.6253 29.6549 62.0498 27.9284 61.4743 26.202Z" fill="#2D2D2D"/><path d="M35.8686 65.6265C19.1794 65.6265 5.65894 52.106 5.65894 35.4168C5.65894 18.7276 19.1794 5.2002 35.8686 5.2002C52.5578 5.2002 66.0783 18.7207 66.0783 35.4099C66.0783 52.099 52.5578 65.6265 35.8686 65.6265ZM35.8686 8.07764C20.9059 8.07764 8.53638 20.4472 8.53638 35.4099C8.53638 50.3726 20.9059 62.749 35.8686 62.749C50.8313 62.749 63.2008 50.3795 63.2008 35.4168C63.2008 20.4541 50.8313 8.07764 35.8686 8.07764Z" fill="#2D2D2D"/><path d="M87.7811 23.2275L105.35 40.851L99.9578 46.243L82.3891 28.6195L87.7811 23.2275Z" fill="#212121"/><path d="M117.85 28.3773L100.144 46.3826L94.7521 40.9906L112.458 22.9853L117.85 28.3773Z" fill="#212121"/></svg>';
 App.Modules.YerevanParking.Icons.SettingIcon = '<svg width="22" height="22" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M57.1687 24.5232H53.9626C53.3666 22.1998 52.4365 20.0237 51.2235 18.0332L53.5285 15.723C54.1507 15.1008 54.4928 14.2706 54.4928 13.3891C54.4928 12.509 54.1481 11.6775 53.5285 11.0565L49.6869 7.21889C48.4409 5.97168 46.2637 5.97299 45.023 7.21757L42.6207 9.60541C40.6526 8.45819 38.5423 7.5741 36.2176 7.00576V3.57463C36.2176 1.75514 34.7638 0.259277 32.9444 0.259277H27.5135C25.6939 0.259277 24.2626 1.75514 24.2626 3.57463V7.00444C21.9392 7.57147 19.8159 8.45688 17.845 9.60541L15.444 7.21757C14.1994 5.97037 12.0208 5.97169 10.7723 7.21625L6.93329 11.0539C6.31759 11.6683 5.96631 12.5182 5.96631 13.3865C5.96631 14.2666 6.30706 15.0955 6.93066 15.7177L9.23563 18.0332C8.02394 20.0237 7.09248 22.1998 6.49783 24.5232H3.29035C1.46954 24.5232 0 25.9861 0 27.8017V33.2286C0 35.0495 1.46954 36.4795 3.29035 36.4795H6.49783C7.09248 38.8029 8.02262 40.992 9.23299 42.9826L6.92803 45.302C6.30443 45.9243 5.96237 46.7571 5.96237 47.6386C5.96237 48.52 6.30574 49.3528 6.92803 49.9751L10.7696 53.8154C11.3932 54.4376 12.2208 54.7797 13.1009 54.7797C13.9811 54.7797 14.8099 54.4364 15.4335 53.8154L17.845 51.4262C19.8159 52.5747 21.9392 53.4589 24.2626 54.0285V57.4544C24.2626 59.2738 25.6939 60.7408 27.5135 60.7408H32.9444C34.7638 60.7408 36.2176 59.2738 36.2176 57.4544V54.0272C38.5423 53.4589 40.6526 52.5747 42.6233 51.4262L45.0138 53.8101C45.6374 54.4351 46.4663 54.777 47.349 54.777C48.2304 54.777 49.0606 54.4337 49.6829 53.8127L53.5245 49.9751C54.1467 49.3541 54.4875 48.524 54.4902 47.6438C54.4902 46.7623 54.1455 45.9348 53.5245 45.3112L51.2222 42.9826C52.4325 40.9907 53.3627 38.8003 53.9586 36.4795H57.1662C58.9856 36.4795 60.4815 35.0495 60.4815 33.2286V27.8017C60.4828 25.9861 58.9883 24.5232 57.1687 24.5232ZM30.2276 40.846C24.4678 40.846 19.7974 36.219 19.7974 30.5158C19.7974 24.8086 24.4678 20.1882 30.2276 20.1882C35.9887 20.1882 40.6617 24.8086 40.6617 30.5158C40.6604 36.2203 35.9887 40.846 30.2276 40.846Z" fill="#2D2D2D"/></svg>';
 
+// https://github.com/HarryStevens/geometric#readme Version 2.5.4. Copyright 2023 Harry Stevens.
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (factory((global.geometric = {})));
+  }(this, (function (exports) { 'use strict';
+  
+    // Converts radians to degrees.
+    function angleToDegrees(angle) {
+      return angle * 180 / Math.PI;
+    }
+  
+    function lineAngle(line) {
+      return angleToDegrees(Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]));
+    }
+  
+    function _slicedToArray(arr, i) {
+      return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+    }
+  
+    function _toConsumableArray(arr) {
+      return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+    }
+  
+    function _arrayWithoutHoles(arr) {
+      if (Array.isArray(arr)) {
+        for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+  
+        return arr2;
+      }
+    }
+  
+    function _arrayWithHoles(arr) {
+      if (Array.isArray(arr)) return arr;
+    }
+  
+    function _iterableToArray(iter) {
+      if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+    }
+  
+    function _iterableToArrayLimit(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+  
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+  
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"] != null) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+  
+      return _arr;
+    }
+  
+    function _nonIterableSpread() {
+      throw new TypeError("Invalid attempt to spread non-iterable instance");
+    }
+  
+    function _nonIterableRest() {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  
+    // Returns an interpolator function given a line [a, b].
+    // The returned interpolator function takes a single argument t, where t is a number ranging from 0 to 1;
+    // a value of 0 returns a, while a value of 1 returns b.
+    // Intermediate values interpolate from start to end along the line segment.
+    // By default, the returned interpolator will output points outside of the line segment if t is less than 0 or greater than 1.
+    // You can pass an optional boolean indicating whether to the returned point to inside of the line segment,
+    // even if t is greater than 1 or less then 0.
+    function lineInterpolate(line) {
+      var clamp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  
+      var _line = _slicedToArray(line, 2),
+          _line$ = _slicedToArray(_line[0], 2),
+          x1 = _line$[0],
+          y1 = _line$[1],
+          _line$2 = _slicedToArray(_line[1], 2),
+          x2 = _line$2[0],
+          y2 = _line$2[1];
+  
+      var x = function x(v) {
+        return (x2 - x1) * v + x1;
+      };
+  
+      var y = function y(v) {
+        return (y2 - y1) * v + y1;
+      };
+  
+      return function (t) {
+        var t0 = clamp ? t < 0 ? 0 : t > 1 ? 1 : t : t;
+        return [x(t0), y(t0)];
+      };
+    }
+  
+    // Calculates the distance between the endpoints of a line segment.
+    function lineLength(line) {
+      return Math.sqrt(Math.pow(line[1][0] - line[0][0], 2) + Math.pow(line[1][1] - line[0][1], 2));
+    }
+  
+    // Calculates the midpoint of a line segment.
+    function lineMidpoint(line) {
+      return [(line[0][0] + line[1][0]) / 2, (line[0][1] + line[1][1]) / 2];
+    }
+  
+    // Converts degrees to radians.
+    function angleToRadians(angle) {
+      return angle / 180 * Math.PI;
+    }
+  
+    function pointRotate(point, angle, origin) {
+      var r = angleToRadians(angle || 0);
+  
+      if (!origin || origin[0] === 0 && origin[1] === 0) {
+        return rotate(point, r);
+      } else {
+        // See: https://math.stackexchange.com/questions/1964905/rotation-around-non-zero-point
+        var p0 = point.map(function (c, i) {
+          return c - origin[i];
+        });
+        var rotated = rotate(p0, r);
+        return rotated.map(function (c, i) {
+          return c + origin[i];
+        });
+      }
+    }
+  
+    function rotate(point, angle) {
+      // See: https://en.wikipedia.org/wiki/Cartesian_coordinate_system#Rotation
+      return [point[0] * Math.cos(angle) - point[1] * Math.sin(angle), point[0] * Math.sin(angle) + point[1] * Math.cos(angle)];
+    }
+  
+    // If origin is not specified, the origin defaults to the midpoint of the line.
+  
+    function lineRotate(line, angle, origin) {
+      return line.map(function (point) {
+        return pointRotate(point, angle, origin || lineMidpoint(line));
+      });
+    }
+  
+    function pointTranslate(point) {
+      var angle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var distance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var r = angleToRadians(angle);
+      return [point[0] + distance * Math.cos(r), point[1] + distance * Math.sin(r)];
+    }
+  
+    function lineTranslate(line, angle, distance) {
+      return line.map(function (point) {
+        return pointTranslate(point, angle, distance);
+      });
+    }
+  
+    // Calculates the area of a polygon.
+    function polygonArea(vertices) {
+      var signed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var a = 0;
+  
+      for (var i = 0, l = vertices.length; i < l; i++) {
+        var v0 = vertices[i],
+            v1 = vertices[i === l - 1 ? 0 : i + 1];
+        a += v0[0] * v1[1];
+        a -= v1[0] * v0[1];
+      }
+  
+      return signed ? a / 2 : Math.abs(a / 2);
+    }
+  
+    // Calculates the bounds of a polygon.
+    function polygonBounds(polygon) {
+      if (polygon.length < 3) {
+        return null;
+      }
+  
+      var xMin = Infinity,
+          xMax = -Infinity,
+          yMin = Infinity,
+          yMax = -Infinity,
+          found = false;
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        var p = polygon[i],
+            x = p[0],
+            y = p[1];
+  
+        if (x != null && isFinite(x) && y != null && isFinite(y)) {
+          found = true;
+          if (x < xMin) xMin = x;
+          if (x > xMax) xMax = x;
+          if (y < yMin) yMin = y;
+          if (y > yMax) yMax = y;
+        }
+      }
+  
+      return found ? [[xMin, yMin], [xMax, yMax]] : null;
+    }
+  
+    // Calculates the weighted centroid a polygon.
+    function polygonCentroid(vertices) {
+      var a = 0,
+          x = 0,
+          y = 0,
+          l = vertices.length;
+  
+      for (var i = 0; i < l; i++) {
+        var s = i === l - 1 ? 0 : i + 1,
+            v0 = vertices[i],
+            v1 = vertices[s],
+            f = v0[0] * v1[1] - v1[0] * v0[1];
+        a += f;
+        x += (v0[0] + v1[0]) * f;
+        y += (v0[1] + v1[1]) * f;
+      }
+  
+      var d = a * 3;
+      return [x / d, y / d];
+    }
+  
+    // See https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript
+    // and https://math.stackexchange.com/questions/274712/calculate-on-which-side-of-a-straight-line-is-a-given-point-located
+    function cross(a, b, o) {
+      return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    }
+  
+    // See https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript
+  
+    function polygonHull(points) {
+      if (points.length < 3) {
+        return null;
+      }
+  
+      var pointsCopy = points.slice().sort(function (a, b) {
+        return a[0] === b[0] ? a[1] - b[1] : a[0] - b[0];
+      });
+      var lower = [];
+  
+      for (var i = 0; i < pointsCopy.length; i++) {
+        while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], pointsCopy[i]) <= 0) {
+          lower.pop();
+        }
+  
+        lower.push(pointsCopy[i]);
+      }
+  
+      var upper = [];
+  
+      for (var _i = pointsCopy.length - 1; _i >= 0; _i--) {
+        while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], pointsCopy[_i]) <= 0) {
+          upper.pop();
+        }
+  
+        upper.push(pointsCopy[_i]);
+      }
+  
+      upper.pop();
+      lower.pop();
+      return lower.concat(upper);
+    }
+  
+    // Closes a polygon if it's not closed already. Does not modify input polygon.
+    function close(polygon) {
+      return isClosed(polygon) ? polygon : [].concat(_toConsumableArray(polygon), [polygon[0]]);
+    } // Tests whether a polygon is closed
+  
+    function isClosed(polygon) {
+      var first = polygon[0],
+          last = polygon[polygon.length - 1];
+      return first[0] === last[0] && first[1] === last[1];
+    }
+  
+    // Calculates the length of a polygon's perimeter. See https://github.com/d3/d3-polygon/blob/master/src/length.js
+    function polygonLength(vertices) {
+      if (vertices.length === 0) {
+        return 0;
+      }
+  
+      var i = -1,
+          n = vertices.length,
+          b = vertices[n - 1],
+          xa,
+          ya,
+          xb = b[0],
+          yb = b[1],
+          perimeter = 0;
+  
+      while (++i < n) {
+        xa = xb;
+        ya = yb;
+        b = vertices[i];
+        xb = b[0];
+        yb = b[1];
+        xa -= xb;
+        ya -= yb;
+        perimeter += Math.sqrt(xa * xa + ya * ya);
+      }
+  
+      return perimeter;
+    }
+  
+    function polygonInterpolate(polygon) {
+      return function (t) {
+        if (t <= 0) {
+          return polygon[0];
+        }
+  
+        var closed = close(polygon);
+  
+        if (t >= 1) {
+          return closed[closed.length - 1];
+        }
+  
+        var target = polygonLength(closed) * t;
+        var point = [],
+            track = 0;
+  
+        for (var i = 0; i < closed.length - 1; i++) {
+          var side = [closed[i], closed[i + 1]],
+              length = lineLength(side),
+              angle = lineAngle(side),
+              delta = target - (track += length);
+  
+          if (delta < 0) {
+            point = pointTranslate(side[0], angle, length + delta);
+            break;
+          } else if (i === polygon.length - 2) {
+            point = pointTranslate(side[0], angle, delta);
+          }
+        }
+  
+        return point;
+      };
+    }
+  
+    // Calculates the arithmetic mean of a polygon's vertices.
+    function polygonMean(vertices) {
+      var x = 0,
+          y = 0,
+          l = vertices.length;
+  
+      for (var i = 0; i < l; i++) {
+        var v = vertices[i];
+        x += v[0];
+        y += v[1];
+      }
+  
+      return [x / l, y / l];
+    }
+  
+    // The returned polygon's area is equal to the input polygon's area multiplied by the scaleFactor.
+    // The origin defaults to the polygon's centroid.
+  
+    function polygonScaleArea(polygon, scale, origin) {
+      if (!origin) {
+        origin = polygonCentroid(polygon);
+      }
+  
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        var v = polygon[i],
+            d = lineLength([origin, v]),
+            a = lineAngle([origin, v]);
+        p[i] = pointTranslate(origin, a, d * Math.sqrt(scale));
+      }
+  
+      return p;
+    }
+  
+    function polygonTranslate(polygon, angle, distance) {
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        p[i] = pointTranslate(polygon[i], angle, distance);
+      }
+  
+      return p;
+    }
+  
+    // Based on an algorithm by Pavel Valtr and an implementation by Maneesh Agrawala: https://observablehq.com/@magrawala/random-convex-polygon
+  
+    function polygonRandom() {
+      var sides = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
+      var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+      var centroid = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [0, 0];
+      var r = Math.sqrt(area / Math.PI),
+          xs = Array.from({
+        length: sides
+      }, function () {
+        return 2 * r * Math.random();
+      }),
+          ys = Array.from({
+        length: sides
+      }, function () {
+        return 2 * r * Math.random();
+      });
+      xs.sort(function (a, b) {
+        return a - b;
+      });
+      ys.sort(function (a, b) {
+        return a - b;
+      });
+      var vecXS = chain(xs, xs[0], xs[xs.length - 1]),
+          vecYS = chain(ys, ys[0], ys[ys.length - 1]);
+      shuffle(vecYS); //Make polygon coordinates from the vecs by laying them out end to end
+  
+      var polygon = [],
+          x = 0,
+          y = 0; // Zip the vector arrays together
+      // Then, sort the vectors by angle, in a counter clockwise fashion. 
+      // a and b are tuples representing vectors. Compute angle for each vector and compare them.
+  
+      var vecs = vecXS.map(function (d, i) {
+        return [d, vecYS[i]];
+      }).sort(function (a, b) {
+        return Math.atan2(b[1], b[0]) - Math.atan2(a[1], a[0]);
+      }).forEach(function (vec) {
+        x += vec[0] * 1;
+        y += vec[1] * 1;
+        polygon.push([x, y]);
+      }); // Scale and translate
+  
+      var c = polygonCentroid(polygon);
+      return polygonTranslate(polygonScaleArea(polygon, area / polygonArea(polygon)), lineAngle([c, centroid]), lineLength([c, centroid]));
+    }
+  
+    function chain(values, min, max) {
+      var lastMin = min,
+          lastMax = min;
+      var output = [];
+  
+      for (var i = 1; i < values.length - 1; i++) {
+        var val = values[i];
+  
+        if (Math.random() > 0.5) {
+          output.push(val - lastMin);
+          lastMin = val;
+        } else {
+          output.push(lastMax - val);
+          lastMax = val;
+        }
+      }
+  
+      output.push(max - lastMin);
+      output.push(lastMax - max);
+      return output;
+    }
+  
+    function shuffle(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var _ref = [array[j], array[i]];
+        array[i] = _ref[0];
+        array[j] = _ref[1];
+      }
+    }
+  
+    function polygonReflectX(polygon) {
+      var reflectFactor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  
+      var _polygonBounds = polygonBounds(polygon),
+          _polygonBounds2 = _slicedToArray(_polygonBounds, 2),
+          _polygonBounds2$ = _slicedToArray(_polygonBounds2[0], 2),
+          min = _polygonBounds2$[0],
+          _ = _polygonBounds2$[1],
+          _polygonBounds2$2 = _slicedToArray(_polygonBounds2[1], 2),
+          max = _polygonBounds2$2[0],
+          __ = _polygonBounds2$2[1];
+  
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        var _polygon$i = _slicedToArray(polygon[i], 2),
+            x = _polygon$i[0],
+            y = _polygon$i[1];
+  
+        var r = [min + max - x, y];
+  
+        if (reflectFactor === 0) {
+          p[i] = [x, y];
+        } else if (reflectFactor === 1) {
+          p[i] = r;
+        } else {
+          var t = lineInterpolate([[x, y], r]);
+          p[i] = t(Math.max(Math.min(reflectFactor, 1), 0));
+        }
+      }
+  
+      return p;
+    }
+  
+    function polygonReflectY(polygon) {
+      var reflectFactor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  
+      var _polygonBounds = polygonBounds(polygon),
+          _polygonBounds2 = _slicedToArray(_polygonBounds, 2),
+          _polygonBounds2$ = _slicedToArray(_polygonBounds2[0], 2),
+          _ = _polygonBounds2$[0],
+          min = _polygonBounds2$[1],
+          _polygonBounds2$2 = _slicedToArray(_polygonBounds2[1], 2),
+          __ = _polygonBounds2$2[0],
+          max = _polygonBounds2$2[1];
+  
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        var _polygon$i = _slicedToArray(polygon[i], 2),
+            x = _polygon$i[0],
+            y = _polygon$i[1];
+  
+        var r = [x, min + max - y];
+  
+        if (reflectFactor === 0) {
+          p[i] = [x, y];
+        } else if (reflectFactor === 1) {
+          p[i] = r;
+        } else {
+          var t = lineInterpolate([[x, y], r]);
+          p[i] = t(Math.max(Math.min(reflectFactor, 1), 0));
+        }
+      }
+  
+      return p;
+    }
+  
+    function polygonRegular() {
+      var sides = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
+      var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+      var center = arguments.length > 2 ? arguments[2] : undefined;
+      var polygon = [],
+          point = [0, 0],
+          sum = [0, 0],
+          angle = 0;
+  
+      for (var i = 0; i < sides; i++) {
+        polygon[i] = point;
+        sum[0] += point[0];
+        sum[1] += point[1];
+        point = pointTranslate(point, angle, Math.sqrt(4 * area * Math.tan(Math.PI / sides) / sides)); // https://web.archive.org/web/20180404142713/http://keisan.casio.com/exec/system/1355985985
+  
+        angle -= 360 / sides;
+      }
+  
+      if (center) {
+        var line = [[sum[0] / sides, sum[1] / sides], center];
+        polygon = polygonTranslate(polygon, lineAngle(line), lineLength(line));
+      }
+  
+      return polygon;
+    }
+  
+    function polygonRotate(polygon, angle, origin) {
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        p[i] = pointRotate(polygon[i], angle, origin);
+      }
+  
+      return p;
+    }
+  
+    // The returned polygon's area is equal to the input polygon's area multiplied by the square of the scaleFactor.
+    // The origin defaults to the polygon's centroid.
+  
+    function polygonScale(polygon, scale, origin) {
+      if (!origin) {
+        origin = polygonCentroid(polygon);
+      }
+  
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        var v = polygon[i],
+            d = lineLength([origin, v]),
+            a = lineAngle([origin, v]);
+        p[i] = pointTranslate(origin, a, d * scale);
+      }
+  
+      return p;
+    }
+  
+    // The origin defaults to the polygon's centroid.
+  
+    function polygonScaleX(polygon, scale, origin) {
+      if (!origin) {
+        origin = polygonCentroid(polygon);
+      }
+  
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        var v = polygon[i],
+            d = lineLength([origin, v]),
+            a = lineAngle([origin, v]),
+            t = pointTranslate(origin, a, d * scale);
+        p[i] = [t[0], v[1]];
+      }
+  
+      return p;
+    }
+  
+    // The origin defaults to the polygon's centroid.
+  
+    function polygonScaleY(polygon, scale, origin) {
+      if (!origin) {
+        origin = polygonCentroid(polygon);
+      }
+  
+      var p = [];
+  
+      for (var i = 0, l = polygon.length; i < l; i++) {
+        var v = polygon[i],
+            d = lineLength([origin, v]),
+            a = lineAngle([origin, v]),
+            t = pointTranslate(origin, a, d * scale);
+        p[i] = [v[0], t[1]];
+      }
+  
+      return p;
+    }
+  
+    // If order is passed as a strings of "cw" or "clockwise", returns a polygon with a clockwise winding order.
+    // Otherwise, returns a polygon with a counter-clockwise winding order.
+  
+    function polygonWind(polygon) {
+      var order = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "ccw";
+      if (polygon.length < 3) return null;
+      var reversed = polygon.slice().reverse();
+      var isClockwise = polygonArea(polygon, true) > 0;
+  
+      if (order === "cw" || order === "clockwise") {
+        return isClockwise ? polygon : reversed;
+      } else {
+        return isClockwise ? reversed : polygon;
+      }
+    }
+  
+    function topPointFirst(line) {
+      return line[1][1] > line[0][1] ? line : [line[1], line[0]];
+    }
+  
+    function pointLeftofLine(point, line) {
+      var t = topPointFirst(line);
+      return cross(point, t[1], t[0]) < 0;
+    }
+    function pointRightofLine(point, line) {
+      var t = topPointFirst(line);
+      return cross(point, t[1], t[0]) > 0;
+    }
+    function pointOnLine(point, line) {
+      var epsilon = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var l = lineLength(line);
+      return pointWithLine(point, line, epsilon) && lineLength([line[0], point]) <= l && lineLength([line[1], point]) <= l;
+    }
+    function pointWithLine(point, line) {
+      var epsilon = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      return Math.abs(cross(point, line[0], line[1])) <= epsilon;
+    }
+  
+    // Returns a boolean.
+  
+    function lineIntersectsLine(lineA, lineB) {
+      var _lineA = _slicedToArray(lineA, 2),
+          _lineA$ = _slicedToArray(_lineA[0], 2),
+          a0x = _lineA$[0],
+          a0y = _lineA$[1],
+          _lineA$2 = _slicedToArray(_lineA[1], 2),
+          a1x = _lineA$2[0],
+          a1y = _lineA$2[1],
+          _lineB = _slicedToArray(lineB, 2),
+          _lineB$ = _slicedToArray(_lineB[0], 2),
+          b0x = _lineB$[0],
+          b0y = _lineB$[1],
+          _lineB$2 = _slicedToArray(_lineB[1], 2),
+          b1x = _lineB$2[0],
+          b1y = _lineB$2[1]; // Test for shared points
+  
+  
+      if (a0x === b0x && a0y === b0y) return true;
+      if (a1x === b1x && a1y === b1y) return true; // Test for point on line
+  
+      if (pointOnLine(lineA[0], lineB) || pointOnLine(lineA[1], lineB)) return true;
+      if (pointOnLine(lineB[0], lineA) || pointOnLine(lineB[1], lineA)) return true;
+      var denom = (b1y - b0y) * (a1x - a0x) - (b1x - b0x) * (a1y - a0y);
+      if (denom === 0) return false;
+      var deltaY = a0y - b0y,
+          deltaX = a0x - b0x,
+          numer0 = (b1x - b0x) * deltaY - (b1y - b0y) * deltaX,
+          numer1 = (a1x - a0x) * deltaY - (a1y - a0y) * deltaX,
+          quotA = numer0 / denom,
+          quotB = numer1 / denom;
+      return quotA > 0 && quotA < 1 && quotB > 0 && quotB < 1;
+    }
+  
+    // Returns a boolean.
+  
+    function lineIntersectsPolygon(line, polygon) {
+      var intersects = false;
+      var closed = close(polygon);
+  
+      for (var i = 0, l = closed.length - 1; i < l; i++) {
+        var v0 = closed[i],
+            v1 = closed[i + 1];
+  
+        if (lineIntersectsLine(line, [v0, v1]) || pointOnLine(v0, line) && pointOnLine(v1, line)) {
+          intersects = true;
+          break;
+        }
+      }
+  
+      return intersects;
+    }
+  
+    // Determines whether a point is inside of a polygon, represented as an array of vertices.
+    // From https://github.com/substack/point-in-polygon/blob/master/index.js,
+    // based on the ray-casting algorithm from https://web.archive.org/web/20180115151705/https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html
+    // Wikipedia: https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm
+    // Returns a boolean.
+    function pointInPolygon(point, polygon) {
+      var x = point[0],
+          y = point[1],
+          inside = false;
+  
+      for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        var xi = polygon[i][0],
+            yi = polygon[i][1],
+            xj = polygon[j][0],
+            yj = polygon[j][1];
+  
+        if (yi > y != yj > y && x < (xj - xi) * (y - yi) / (yj - yi) + xi) {
+          inside = !inside;
+        }
+      }
+  
+      return inside;
+    }
+  
+    // Returns a boolean.
+  
+    function pointOnPolygon(point, polygon) {
+      var epsilon = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var on = false;
+      var closed = close(polygon);
+  
+      for (var i = 0, l = closed.length - 1; i < l; i++) {
+        if (pointOnLine(point, [closed[i], closed[i + 1]], epsilon)) {
+          on = true;
+          break;
+        }
+      }
+  
+      return on;
+    }
+  
+    // Polygons are represented as an array of vertices, each of which is an array of two numbers,
+    // where the first number represents its x-coordinate and the second its y-coordinate.
+    // Returns a boolean.
+  
+    function polygonInPolygon(polygonA, polygonB) {
+      var inside = true;
+      var closed = close(polygonA);
+  
+      for (var i = 0, l = closed.length - 1; i < l; i++) {
+        var v0 = closed[i]; // Points test  
+  
+        if (!pointInPolygon(v0, polygonB)) {
+          inside = false;
+          break;
+        } // Lines test
+  
+  
+        if (lineIntersectsPolygon([v0, closed[i + 1]], polygonB)) {
+          inside = false;
+          break;
+        }
+      }
+  
+      return inside;
+    }
+  
+    // Polygons are represented as an array of vertices, each of which is an array of two numbers,
+    // where the first number represents its x-coordinate and the second its y-coordinate.
+    // Returns a boolean.
+  
+    function polygonIntersectsPolygon(polygonA, polygonB) {
+      var intersects = false,
+          onCount = 0;
+      var closed = close(polygonA);
+  
+      for (var i = 0, l = closed.length - 1; i < l; i++) {
+        var v0 = closed[i],
+            v1 = closed[i + 1];
+  
+        if (lineIntersectsPolygon([v0, v1], polygonB)) {
+          intersects = true;
+          break;
+        }
+  
+        if (pointOnPolygon(v0, polygonB)) {
+          ++onCount;
+        }
+  
+        if (onCount === 2) {
+          intersects = true;
+          break;
+        }
+      }
+  
+      return intersects;
+    }
+  
+    // Returns the angle of reflection given an angle of incidence and a surface angle.
+    function angleReflect(incidenceAngle, surfaceAngle) {
+      var a = surfaceAngle * 2 - incidenceAngle;
+      return a >= 360 ? a - 360 : a < 0 ? a + 360 : a;
+    }
+  
+    exports.lineAngle = lineAngle;
+    exports.lineInterpolate = lineInterpolate;
+    exports.lineLength = lineLength;
+    exports.lineMidpoint = lineMidpoint;
+    exports.lineRotate = lineRotate;
+    exports.lineTranslate = lineTranslate;
+    exports.pointRotate = pointRotate;
+    exports.pointTranslate = pointTranslate;
+    exports.polygonArea = polygonArea;
+    exports.polygonBounds = polygonBounds;
+    exports.polygonCentroid = polygonCentroid;
+    exports.polygonHull = polygonHull;
+    exports.polygonInterpolate = polygonInterpolate;
+    exports.polygonLength = polygonLength;
+    exports.polygonMean = polygonMean;
+    exports.polygonRandom = polygonRandom;
+    exports.polygonReflectX = polygonReflectX;
+    exports.polygonReflectY = polygonReflectY;
+    exports.polygonRegular = polygonRegular;
+    exports.polygonRotate = polygonRotate;
+    exports.polygonScale = polygonScale;
+    exports.polygonScaleArea = polygonScaleArea;
+    exports.polygonScaleX = polygonScaleX;
+    exports.polygonScaleY = polygonScaleY;
+    exports.polygonTranslate = polygonTranslate;
+    exports.polygonWind = polygonWind;
+    exports.lineIntersectsLine = lineIntersectsLine;
+    exports.lineIntersectsPolygon = lineIntersectsPolygon;
+    exports.pointInPolygon = pointInPolygon;
+    exports.pointOnPolygon = pointOnPolygon;
+    exports.pointLeftofLine = pointLeftofLine;
+    exports.pointRightofLine = pointRightofLine;
+    exports.pointOnLine = pointOnLine;
+    exports.pointWithLine = pointWithLine;
+    exports.polygonInPolygon = polygonInPolygon;
+    exports.polygonIntersectsPolygon = polygonIntersectsPolygon;
+    exports.angleReflect = angleReflect;
+    exports.angleToDegrees = angleToDegrees;
+    exports.angleToRadians = angleToRadians;
+  
+    Object.defineProperty(exports, '__esModule', { value: true });
+  
+  })));
+  
 
 App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
 
@@ -47252,11 +48147,11 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
     }
 
     Enhance(seconds, newTag = null) {
-        debugger;
         this._tag = newTag;
         this._seconds += seconds;
         this._endDate.addMinute(seconds / 60);
         this._saveData();
+        this._start();
     }
 
 
@@ -47287,7 +48182,7 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
                 secondsLeft: secondsLeft
             });
 
-            if(secondsLeft < 0) {
+            if(secondsLeft <= 0) {
                 this.Stop();
                 this.Dispatch('TimerEnds', {
                     seconds: this._seconds,
@@ -47338,7 +48233,11 @@ App.Modules.YerevanParking.Timer = class extends Colibri.Events.Dispatcher {
 
     _calculateTimesLeft() {
         const currentDate = new Date();
-        return parseInt(this._seconds) - parseInt(this._startDate.Diff(currentDate));
+        const ret = parseInt(this._seconds) - parseInt(this._startDate.Diff(currentDate));
+        if(ret < 0) {
+            return 0;
+        }
+        return ret;
     }
 
     get secondsLeft() {

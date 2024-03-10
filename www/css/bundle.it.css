@@ -6090,6 +6090,33 @@ input::placeholder, textarea::placeholder, select::placeholder {
 .app-modules-yerevanparking-form-component .app-component-field.app-component-number-field [data-object-name$="-container"], .app-modules-yerevanparking-form-component .app-component-field.app-component-text-field [data-object-name$="-container"] {
   border-radius: 10px;
 }
+.app-modules-yerevanparking-form-component .app-component-checkbox-field [data-object-name$="-container"] {
+  padding: 5px 12px;
+  gap: 10px;
+}
+.app-modules-yerevanparking-form-component .app-component-checkbox-field [data-object-name$="-container"] [data-object-name$="-input"] {
+  order: 1;
+  margin-right: 0px;
+  flex: 0 0 26px;
+  margin-left: auto;
+}
+.app-modules-yerevanparking-form-component .app-component-checkbox-field [data-object-name$="-container"] [data-object-name$="-input"] .app-component-icon {
+  border: 2px solid #000000;
+  background-color: transparent;
+  border-radius: 50px;
+  width: 22px;
+  height: 22px;
+}
+.app-modules-yerevanparking-form-component .app-component-checkbox-field [data-object-name$="-container"] [data-object-name$="-input"].-checked .app-component-icon {
+  background-color: #233B79;
+  border: 2px solid #233B79;
+}
+.app-modules-yerevanparking-form-component .app-component-checkbox-field [data-object-name$="-container"] [data-object-name$="-label"] {
+  order: 0;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 130%;
+}
 .app-success-button-component {
   background: #233B79;
   width: 100%;
