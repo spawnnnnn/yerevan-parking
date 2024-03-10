@@ -45058,20 +45058,20 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             const amount = parseFloat(settings.zones[zone.toLowerCase()]);
             if(paymenttype === 'sms') {
                 const zoneSettings = settings.sms;
-                try {
-                    App.Device.Sms.Send(zoneSettings[zone], vahile, '').then(() => {
-                        this.Call('Client', 'AddHistory', {
-                            vahile: vahile,
-                            paytime: paytime,
-                            payment_type: paymenttype,
-                            zone: zone.toLowerCase(),
-                            amount: amount,
-                            dateclient: Date.Now().toDbDate()
-                        }).then((response) => {
-                            resolve();
-                        }).catch((response) => reject(response));
-                    });    
-                } catch(e) {
+                // try {
+                //     App.Device.Sms.Send(zoneSettings[zone], vahile, '').then(() => {
+                //         this.Call('Client', 'AddHistory', {
+                //             vahile: vahile,
+                //             paytime: paytime,
+                //             payment_type: paymenttype,
+                //             zone: zone.toLowerCase(),
+                //             amount: amount,
+                //             dateclient: Date.Now().toDbDate()
+                //         }).then((response) => {
+                //             resolve();
+                //         }).catch((response) => reject(response));
+                //     });    
+                // } catch(e) {
                     this.Call('Client', 'AddHistory', {
                         vahile: vahile,
                         paytime: paytime,
@@ -45082,7 +45082,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                     }).then((response) => {
                         resolve();
                     }).catch((response) => reject(response));
-                }
+                // }
             // } else if(paymenttype === 'card') {
     
             //     this.Call('Client', 'AddHistory', {
@@ -46080,24 +46080,32 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
             paytime: {
                 component: 'Radio',
                 desc: 'Выберите длительность парковки',
-                values: () => new Promise((resolve, reject) => {
-                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
-                        const paymenttype = settings.session.settings.payment_type ?? null;
-                        if (paymenttype === 'sms') {
-                            resolve([
-                                { value: '1', 'title': '1 час', __selected: true }
-                            ]);
-                        } else {
-                            resolve([
-                                { value: '1', title: '1 час', __selected: true },
-                                { value: '2', title: '2 часа' },
-                                { value: '3', title: '3 часа' },
-                                { value: '4', title: '4 часа' },
-                                // {value: '24', 'title': '1 день'},
-                                // {value: '48', 'title': '2 дня'},
-                            ])
-                        }
-                    });
+                values: () => new Promise((resolve, reject) => {+
+                    resolve([
+                        { value: '1', title: '1 час', __selected: true },
+                        { value: '2', title: '2 часа' },
+                        { value: '3', title: '3 часа' },
+                        { value: '4', title: '4 часа' },
+                        // {value: '24', 'title': '1 день'},
+                        // {value: '48', 'title': '2 дня'},
+                    ])
+                    // YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
+                    //     // const paymenttype = settings.session.settings.payment_type ?? null;
+                    //     // if (paymenttype === 'sms') {
+                    //     //     resolve([
+                    //     //         { value: '1', 'title': '1 час', __selected: true }
+                    //     //     ]);
+                    //     // } else {
+                    //         resolve([
+                    //             { value: '1', title: '1 час', __selected: true },
+                    //             { value: '2', title: '2 часа' },
+                    //             { value: '3', title: '3 часа' },
+                    //             { value: '4', title: '4 часа' },
+                    //             // {value: '24', 'title': '1 день'},
+                    //             // {value: '48', 'title': '2 дня'},
+                    //         ])
+                    //     // }
+                    // });
 
 
                 })
@@ -46624,6 +46632,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         const paymenttype = settings.session.settings.payment_type ?? null;
         if(paymenttype === 'sms') {
             YerevanParking.Pay(App.Router.options.zone, App.Router.options.vahile, 1).then(() => {
+                App.Router.options.paytime = parseInt(App.Router.options.paytime) - 1;
                 this._currentTimer.Enhance(60 * 60, Object.assign(
                     {}, 
                     this._currentTimer.tag, 
@@ -46674,22 +46683,45 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     __thisShown(event, args) {
         this._containerTimer.RemoveClass('-urgent');
         this._containerPaynow.RemoveClass('-urgent');
-        this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
-        try {
-            
-            const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
-            App.Device.Notifications.Schedule(
-                'Парковка',
-                'До окончания парковки осталось 15 минут',
-                'enhance-leave',
-                { in: secondsLeft, unit: 'second' },
-                true,
-                true,
-                1, 
-                2
-            );
-
-        } catch (e) { }
+        YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
+            const paymenttype = settings.session.settings.payment_type ?? null;
+            if(paymenttype === 'sms') {
+                if(App.Router.options.paytime > 1) {
+                    this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
+                    try {
+                        const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
+                        App.Device.Notifications.Schedule(
+                            'Парковка',
+                            'До окончания парковки осталось 15 минут',
+                            'enhance-leave',
+                            { in: secondsLeft, unit: 'second' },
+                            true,
+                            true,
+                            1, 
+                            2
+                        );
+                    } catch (e) { }
+                } else {
+                    this.TryCancel();
+                }
+            } else {
+                this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
+                try {
+                    const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
+                    App.Device.Notifications.Schedule(
+                        'Парковка',
+                        'До окончания парковки осталось 15 минут',
+                        'enhance-leave',
+                        { in: secondsLeft, unit: 'second' },
+                        true,
+                        true,
+                        1, 
+                        2
+                    );
+                } catch (e) { }
+            }
+        });
+        
     }
 
 
@@ -46751,7 +46783,14 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
     __currentTimerTimerEnds(event, args) {
-        this.TryCancel();
+        YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
+            const paymenttype = settings.session.settings.payment_type ?? null;
+            if(paymenttype === 'sms' && App.Router.options.paytime > 1) {
+                this.TryEnhance();
+            } else {
+                this.TryCancel();
+            }
+        });
     }
     
 
