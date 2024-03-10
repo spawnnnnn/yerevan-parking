@@ -45058,20 +45058,20 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             const amount = parseFloat(settings.zones[zone.toLowerCase()]);
             if(paymenttype === 'sms') {
                 const zoneSettings = settings.sms;
-                // try {
-                //     App.Device.Sms.Send(zoneSettings[zone], vahile, '').then(() => {
-                //         this.Call('Client', 'AddHistory', {
-                //             vahile: vahile,
-                //             paytime: paytime,
-                //             payment_type: paymenttype,
-                //             zone: zone.toLowerCase(),
-                //             amount: amount,
-                //             dateclient: Date.Now().toDbDate()
-                //         }).then((response) => {
-                //             resolve();
-                //         }).catch((response) => reject(response));
-                //     });    
-                // } catch(e) {
+                try {
+                    App.Device.Sms.Send(zoneSettings[zone], vahile, '').then(() => {
+                        this.Call('Client', 'AddHistory', {
+                            vahile: vahile,
+                            paytime: paytime,
+                            payment_type: paymenttype,
+                            zone: zone.toLowerCase(),
+                            amount: amount,
+                            dateclient: Date.Now().toDbDate()
+                        }).then((response) => {
+                            resolve();
+                        }).catch((response) => reject(response));
+                    });    
+                } catch(e) {
                     this.Call('Client', 'AddHistory', {
                         vahile: vahile,
                         paytime: paytime,
@@ -45082,7 +45082,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                     }).then((response) => {
                         resolve();
                     }).catch((response) => reject(response));
-                // }
+                }
             // } else if(paymenttype === 'card') {
     
             //     this.Call('Client', 'AddHistory', {
