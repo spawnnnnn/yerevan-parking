@@ -14,7 +14,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <access origin="https://127.0.0.1*" />
-    <platform name="android">
+    <platform name="android"> 
         <allow-intent href="market:*" />
     </platform>
     <preference name="useBrowserHistory" value="true" />
