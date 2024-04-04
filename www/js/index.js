@@ -99,8 +99,6 @@ function Cookie(c_name) {
 
 function onDeviceReady() {
 
-    console.log('ready');
-
     let lang = window.localStorage.getItem('lang');
     if (!lang) {
         lang = 'hy';
@@ -130,15 +128,8 @@ function onDeviceReady() {
                 symbol: '֏'
             }
         ).finally(() => {
+            App.appVersion = '1.0.30.0';
             App.Device.backgroundMode = true;
-            // App.Device.SafeArea().then((result) => {
-            //     window['safearea'] = result;
-            // });
-            // App.Device.Notifications.On('click', (notification) => {
-            //     alert(JSON.stringify(notification));
-            //     notifications.push(notification);
-            // });
-            // alert(JSON.stringify(notifications));
         });
 
    });

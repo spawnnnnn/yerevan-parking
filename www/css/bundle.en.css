@@ -6723,6 +6723,14 @@ input::placeholder, textarea::placeholder, select::placeholder {
 .app-modules-yerevanparking-layers-timerpage [data-object-name="paynow"].-urgent {
   background: #9E0507;
 }
+.app-paytime-column [data-object-name="paytime-container"] {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  padding-top: 20px;
+}
+.app-paytime-column [data-object-name="paytime-container"] label {
+  width: 95px;
+}
 .app-modules-yerevanparking-layers-walletpage {
   flex-direction: column;
   gap: 20px;
@@ -6751,6 +6759,19 @@ input::placeholder, textarea::placeholder, select::placeholder {
 }
 .app-modules-yerevanparking-layers-waitpage [data-object-name="paynow"].-urgent {
   background: #9E0507;
+}
+.app-modules-yerevanparking-layers-updatepage {
+  flex-direction: column;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
+.app-modules-yerevanparking-layers-updatepage [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 .app-modules-yerevanparking-layouts-header {
   gap: 10px;

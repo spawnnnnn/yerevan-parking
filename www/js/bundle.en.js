@@ -25976,7 +25976,11 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
 
 
     Focus() {
-        this._element.querySelector('input').focus();   
+        if(this._element.querySelector('input')) {
+            this._element.querySelector('input').focus();
+        } else {
+            this._focusOnFirst = true;
+        }
     }
 
     get value() {
@@ -26052,6 +26056,10 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
             }
             
             this._showValue();
+
+            if(this._focusOnFirst) {
+                this.Focus();
+            }
 
         });
 
@@ -36184,6 +36192,14 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    get appVersion() {
+        return this._appVersion;
+    }
+
+    set appVersion(value) {
+        this._appVersion = value;
+    }
+
     get name() {
         return this._name;
     }
@@ -45017,8 +45033,14 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     InitParkingApp() {
         this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
 
+            if(settings.version != App.appVersion) {
+                App.Router.Navigate('/update');
+                return;
+                
+            }
+
             if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
-                if(['', '/', '/payment', '/vahiles', '/registration'].indexOf(App.Router.current) !== -1) {
+                if(['', '/', '/payment', '/vahiles', '/registration', '/update'].indexOf(App.Router.current) !== -1) {
                     App.Router.Navigate('/main');
                 }
             } else if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length == 0) {
@@ -45254,6 +45276,13 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return this._waitPage;
     }
 
+    get UpdatePage() {
+        if(!this._updatePage) {
+            this._updatePage = new App.Modules.YerevanParking.Layers.UpdatePage('update-page', document.body);
+        }
+        return this._updatePage;
+    }
+
     PayNowEventHandler(notification, eopts) {
         try {
             App.Device.WakeUp();
@@ -45308,6 +45337,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         if(this._waitPage && except != 'wait') {
             this._waitPage.Hide();
         }
+        if(this._updatePage && except != 'update') {
+            this._updatePage.Hide();
+        }
     }
 
     get ActivePage() {
@@ -45342,6 +45374,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         } else if(layer === 'wallet') {
             this.WalletPage.Show();
             this._activePage = this.WalletPage;
+        } else if(layer === 'update') {
+            this.UpdatePage.Show();
+            this._activePage = this.UpdatePage;
         } else {
             this._activePage = null;
         }
@@ -46780,7 +46815,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '    <FlexBox shown="true" name="container">' + 
 '        <FlexBox shown="true" name="content">' + 
 '' + 
-'            <H2 shown="true" name="h2" value="Choose payment method" />' + 
+'            <H2 shown="true" name="h2" value="" />' + 
 '' + 
 '            <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
 '                <fields>' + 
@@ -47033,13 +47068,16 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                         component: 'Radio',
                         desc: 'Select parking duration',
                         values: [
-                            { value: '1', title: '1 hour', __selected: true },
+                            { value: '1', title: '1 hour' },
                             { value: '2', title: '2 hours' },
                             { value: '3', title: '3 hours' },
                             { value: '4', title: '4 hours' },
                             // {value: '24', 'title': '1 day'},
                             // {value: '48', 'title': '2 days'},
-                        ]
+                        ],
+                        attrs: {
+                            class: 'app-paytime-column'
+                        }
                     }
                 },
                 'Enhance'
@@ -47256,10 +47294,10 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WaitPage',
 '    <FlexBox shown="true" name="container">' + 
 '' + 
 '        <Components.Timer shown="true" name="timer" />' + 
-'        <SuccessButton shown="true" className="small" name="paynow" value="Pay parking" />' + 
-'        <SimpleButton shown="true" className="small" name="cancel" value="Leave parking" />' + 
+'        <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
+'        <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
 '' + 
-'</FlexBox>' + 
+'    </FlexBox>' + 
 '' + 
 '</div>' + 
 '');
@@ -47408,6 +47446,35 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         this.TryCancel();
     }
     
+
+}
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.UpdatePage', 
+'<div namespace="App.Modules.YerevanParking.Layers.UpdatePage">' + 
+'    <!-- yerevanparking-layers-updatepage -->' + 
+'    <Layouts.Header shown="true" name="header" />' + 
+'' + 
+'    <FlexBox shown="true" name="container">' + 
+'' + 
+'        <H2 shown="true" name="h2" value="Version is outdated" />' + 
+'' + 
+'        <Pane shown="true" name="text">' + 
+'            The app version is outdated, please update it from the app store' + 
+'        </Pane>' + 
+'' + 
+'    </FlexBox>' + 
+'    ' + 
+'</div>' + 
+'');
+App.Modules.YerevanParking.Layers.UpdatePage = class extends Colibri.UI.FlexBox {
+    
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.UpdatePage']);
+        this.AddClass('app-modules-yerevanparking-layers-updatepage');
+        this.AddClass('app-layer-component');
+
+
+    }
 
 }
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header', 
