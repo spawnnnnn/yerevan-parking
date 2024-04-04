@@ -45124,6 +45124,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             headers = {};
         }
         headers.clientId = App.Comet.clientId;
+        headers.dateClient = Date.Now().toDbDate();
         headers['yp-jwt'] = App.Browser.Get('yp-jwt');
         headers['Colibri-Language'] = App.Browser.Get('lang');
         return super.Call(controller, method, params, headers, withCredentials, requestKeyword);
@@ -45422,9 +45423,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                                 paytime: paytime,
                                 payment_type: paymenttype,
                                 zone: zone.toLowerCase(),
-                                amount: amount,
-                                dateclient: Date.Now().toDbDate()
+                                amount: amount
                             }).then((response) => {
+                                this._store.Set('yerevan-parking.settings', response.result);
                                 resolve();
                             }).catch((response) => reject(response));
                         });    
@@ -45434,9 +45435,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                             paytime: paytime,
                             payment_type: paymenttype,
                             zone: zone.toLowerCase(),
-                            amount: amount,
-                            dateclient: Date.Now().toDbDate()
+                            amount: amount
                         }).then((response) => {
+                            this._store.Set('yerevan-parking.settings', response.result);
                             resolve();
                         }).catch((response) => reject(response));
                     }
@@ -45446,31 +45447,20 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                         paytime: paytime,
                         payment_type: paymenttype,
                         zone: zone.toLowerCase(),
-                        amount: amount,
-                        dateclient: Date.Now().toDbDate()
+                        amount: amount
                     }).then((response) => {
+                        this._store.Set('yerevan-parking.settings', response.result);
                         resolve();
                     }).catch((response) => reject(response));
                 }
-                
-            // } else if(paymenttype === 'card') {
-    
-            //     this.Call('Client', 'AddHistory', {
-            //         vahile: vahile,
-            //         paytime: paytime,
-            //         payment_type: paymenttype,
-            //         zone: zone,
-            //         amount: amount,
-            //         dateclient: Date.Now().toDbDate()
-            //     }).then((response) => {
-            //         resolve();
-            //     }).catch((response) => reject(response));
-
+            
             } else if(paymenttype === 'wallet') {
 
-                if(parseFloat(settings.session.settings.wallet) < amount) {
-                    App.Router.Navigate('/wallet', {zone: zone, amount: amount});
-                    reject();
+                const paymentPercent = 0.01;
+
+                if(parseFloat(settings.session.settings.wallet) < amount + (amount * paymentPercent)) {
+                    App.Router.Navigate('/wallet', {zone: zone, amount: (amount + (amount * paymentPercent)) - parseFloat(settings.session.settings.wallet)});
+                    reject({code: 501, message: 'You do not have enough funds in your account, please top up your wallet before paying'});
                 } else {
 
                     this.Call('Client', 'AddHistory', {
@@ -45478,9 +45468,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                         paytime: paytime,
                         payment_type: paymenttype,
                         zone: zone,
-                        amount: amount,
-                        dateclient: Date.Now().toDbDate()
+                        amount: amount
                     }).then((response) => {
+                        this._store.Set('yerevan-parking.settings', response.result);
                         resolve();
                     }).catch((response) => reject(response));
     
@@ -46546,7 +46536,7 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
 
                 YerevanParking.Alert.Show(
                     'Payment error',
-                    'An unexpected error occurred when paying for parking, you may not have permission to send SMS or there is no connection, check your permissions and connection and try again',
+                    e.code === 501 ? e.message : 'An unexpected error occurred when paying for parking, you may not have permission to send SMS or there is no connection, check your permissions and connection and try again',
                     'Okay'
                 );
 
@@ -46819,7 +46809,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '                        },' + 
 '                        sendsms: {' + 
 '                            component: \'Checkbox\',' + 
-'                            placeholder: \'\',' + 
+'                            placeholder: \'Send real SMS\',' + 
 '                            params: {' + 
 '                                condition: {' + 
 '                                    field: \'payment_type\',' + 
