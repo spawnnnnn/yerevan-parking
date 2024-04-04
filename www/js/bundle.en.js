@@ -171,6 +171,10 @@ Array.prototype.part = function(l) {
     return ret;
 }
 
+Array.prototype.last = function(n) {
+    return this.splice(this.length - n, this.length);
+}
+
 // attach the .equals method to Array's prototype to call it on any array
 Array.prototype.equals = function (array) {
     // if the other array is a falsy value, return
@@ -832,7 +836,7 @@ String.prototype.CyrToUrl = function (words) {
     if (words == undefined) words = 3;
 
     let val = this.Transliterate()
-        .trim()
+        .trimString()
         .replaceArray([" ", "|", ".", ",", "(", ")", "[", "]", "!", "@", ":", ";", "*", "#", "$", "%", "^"], "-")
         .replaceArray(["'", "?", '"', '…', '&quot;', "\\", "/", '«', '»', /[0-9]/i], "")
         .replaceAll('--', '-')
@@ -841,10 +845,10 @@ String.prototype.CyrToUrl = function (words) {
     val = val.split('-');
     let v = [];
     val.forEach(function (vv) {
-        v.push(vv.trim());
+        v.push(vv.trimString());
     });
     val = v.splice(0, words).join('-');
-    return val.trim();
+    return val.trimString();
 
 };
 String.prototype.ellipsis = function (length, hasTitle = false) {
@@ -918,7 +922,7 @@ String.prototype.replaceDateMonthName = function (months) {
 };
 String.prototype.toCamelCase = function (splitter, firstIsCapital) {
     splitter = splitter || '-';
-    if (this.trim().indexOf('--') === 0) { return this; }
+    if (this.trimString().indexOf('--') === 0) { return this; }
 
     let parts = this.split(splitter);
     let ret = [];
@@ -929,7 +933,7 @@ String.prototype.toCamelCase = function (splitter, firstIsCapital) {
 };
 String.prototype.fromCamelCase = function (splitter) {
     splitter = splitter || '-';
-    if (this.trim().indexOf('--') === 0) { return this; }
+    if (this.trimString().indexOf('--') === 0) { return this; }
 
     return this.replaceAll(new RegExp('([A-Z])'), (v) => { return splitter + v.toLowerCase(); }).rtrim('-').ltrim('-');
 
@@ -953,7 +957,7 @@ String.prototype.isDate = function () {
 };
 String.prototype.makeFio = function () {
     const parts = this.split(' ');
-    return (parts[0].capitalize() + ' ' + (parts.length > 1 ? (parts[1].substring(0, 1) + '. ' + (parts.length > 2 ? parts[2].substring(0, 1) + '.' : '')) : '')).trim();
+    return (parts[0].capitalize() + ' ' + (parts.length > 1 ? (parts[1].substring(0, 1) + '. ' + (parts.length > 2 ? parts[2].substring(0, 1) + '.' : '')) : '')).trimString();
 };
 String.prototype.extractExt = function () {
     const parts = this.split('.');
@@ -1280,7 +1284,7 @@ Number.prototype.toMoney = function (digits, force = true, space = ' ', useNulls
     }
 
     result = price.substring(0, len - count * 3) + result;
-    let ret = (result + (dec ? ',' + dec : (force ? ',' + '0'.repeat(digits) : ''))).trim('.').trim(',');
+    let ret = (result + (dec ? ',' + dec : (force ? ',' + '0'.repeat(digits) : ''))).trimString('.').trimString(',');
     if(!useNulls) {
         ret = ret.replaceAll('.00', '');
         ret = ret.replaceAll(',00', '');
@@ -1764,7 +1768,7 @@ Element.create = function (name, attr, data = null, ns = null) {
  */
 Element.fromHtml = function (html) {
     var template = document.createElement('template');
-    html = html.trim();
+    html = html.trimString();
     template.innerHTML = html;
     return template.content.childNodes;
 };
@@ -2172,7 +2176,7 @@ Element.prototype.isValueExceeded = function() {
         'font-weight' : this.css('font-weight'),
         'font-style' : this.css('font-style')
     });
-    s.html(this.value);
+    s.html(this.value || this.html());
     document.body.append(s);
     var result = s.bounds().outerWidth > width;
     s.remove();
@@ -2513,7 +2517,7 @@ Colibri.UI = class {
 
     /** Maximum tab index fo elements */
     static tabIndex = 1;
-
+ 
     /** Maximum of z-index css property */
     static maxZIndex = 0;
 
@@ -2717,14 +2721,12 @@ Colibri.Common.HashActions = class {
     }
     
     init() {
-        document.addEventListener('click', (e) => {
-            if(e.target?.href && e.target.href.indexOf('#action=') !== -1) {
-                this._handleAction(e.target.href.split('#')[1]);
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        });
+        this.__clickEvent = (e) => {
+            this._handleAction(e.target.data('action').substring(1));
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        };
     }
     
     HandleDomReady() {
@@ -2732,16 +2734,23 @@ Colibri.Common.HashActions = class {
         this._handleAction(location.hash.substring(1));
     }
     
+    
     InitDOMHandlers() {
-        document.querySelectorAll('[data-action]').forEach((element) => { 
-            element.addEventListener('click', (е) => {
-                let el = e.currentTarget;
-                location.hash = '#' + el.dataset.action;
-                е.stopPropagation();
-                e.preventDefault();
-                return false;
+
+        Colibri.Common.StartTimer('actions-timer', 500, () => {
+
+            document.querySelectorAll('a[href*="#action"]').forEach((a) => {
+                a.data('action', a.attr('href'))
+                a.attr('href', 'javascript:void(0)');
             });
-        }); 
+
+            document.querySelectorAll('[data-action]').forEach((element) => { 
+                element.removeEventListener('mousedown', this.__clickEvent);
+                element.addEventListener('mousedown', this.__clickEvent);
+            }); 
+    
+        });
+        
     }
     
     AddHandler(action, handler) {
@@ -5903,9 +5912,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         else {
             namespace = parent?.closest('[namespace]')?.attr('namespace') ?? '';
         }
-        namespace = namespace.split('.');
         
         if(namespace) {
+            namespace = namespace.split('.');
             while(namespace.length > 0) {
                 try {
                     objectClass = eval(namespace.join('.') + '.' + comp);
@@ -6316,7 +6325,6 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
             respondent,
             handler
         };
-
         respondent.addEventListener(domEvent, handler);
     }
 
@@ -7919,6 +7927,15 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._metrixKey = value;
     }
 
+    /**
+     * Is value of input exceeded input width
+     * @type {Boolean}
+     */
+    get isValueExceeded() {
+        return this._element.isValueExceeded();
+    }
+
+
 }
 
 Colibri.UI.Button = class extends Colibri.UI.Component {
@@ -8046,13 +8063,17 @@ Colibri.UI.Image = class extends Colibri.UI.Component {
     }
 
     set source(value) {
+        
         this._element.css('background-image', value);
-        const img = new Image();
-        img.onload = (e) => {
-            this.width = img.width;
-            this.height = img.height;
-        }
-        img.src = value.replaceAll(/\w+\(/, '').replaceAll(')', '');
+        value = value.replaceAll(/\w+\(/, '').replaceAll(')', '');
+        if(value.indexOf('data:') === -1) {
+            const img = new Image();
+            img.onload = (e) => {
+                this.width = img.width;
+                this.height = img.height;
+            }
+            img.src = value;
+        } 
 
     }
 
@@ -11323,7 +11344,7 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
 
     ResetSort() {
         this._sortColumn = null;
-        this._sortOrder = Colibri.UI.Grid.SortAsc;
+        this._sortOrder = null;
     }
 
     /**
@@ -12473,6 +12494,13 @@ Colibri.UI.Grid.Columns = class extends Colibri.UI.Component {
         if(col) {
             col.Dispose();
         }
+    }
+
+    Column(name) {
+        if(name === 'firstChild') {
+            return this.Children(1);
+        } 
+        return this.Children(name);
     }
 
     get grid() {
@@ -18090,7 +18118,11 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
     }
 
     DisableAllButtons() {
-        this.ForEach((name, component) => component.enabled = false);
+        const childs = this.Children();
+        for(const child of childs) {
+            child.enabled = false;
+        }
+        // this.ForEach((name, component) => component.enabled = false);
     }
 
     EnableButton(name) {
@@ -20282,12 +20314,18 @@ Colibri.UI.Switcher = class extends Colibri.UI.Component {
         this.itemIndex = 0;
 
         this._prevButton.AddHandler('Clicked', () => {
+            if(this._prevButton.ContainsClass('disabled')) {
+                return false;
+            }
             this.itemIndex--;
             this.Dispatch('ButtonClicked', {button: 'prevButton', itemIndex: this.itemIndex});
             this.Dispatch('Changed', this.value[this._itemIndex]);
         });
 
         this._nextButton.AddHandler('Clicked', () => {
+            if(this._nextButton.ContainsClass('disabled')) {
+                return false;
+            }
             this.itemIndex++;
             this.Dispatch('ButtonClicked', {button: 'nextButton', itemIndex: this.itemIndex});
             this.Dispatch('Changed', this.value[this._itemIndex]);
@@ -21098,7 +21136,7 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         if(this._chooser) {
             const component = this._chooser;
             if(!this._chooserObject) {
-                this._chooserObject = new component(this.name + '-chooser', document.body, this._selector?.params || {}, this._values);
+                this._chooserObject = new component(this.name + '-chooser', document.body, this._selector?.params || {}, this._values, this._selector.title, this._selector.value);
                 this._chooserObject.AddHandler('Choosed', (event, args) => {
                     this.value = args.value;
                     this.valueObject = args.valueObject;
@@ -21262,14 +21300,14 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
                     this._value = Array.findObject(this.values, this._valueField, this._value);
                 }
                 const v = Object.isObject(this._value) ? (this._value[this._titleField] ?? this._value[this._valueField] ?? '') : this._value
-                this._input.value = v ? v[Lang.Current] : v;
+                this._input.value = Lang ? Lang.Translate(v) : v;
             } else {
                 const values = this._value.map((v) => {
                     if(!Object.isObject(v)) {
                         v = Array.findObject(this.values, this._valueField, v);
                     }    
                     v = Object.isObject(v) ? (v[this._titleField] ?? v[this._valueField] ?? '') : v;
-                    return v[Lang.Current] ?? v;
+                    return Lang ? Lang.Translate(v) : v;
                 });
                 this._input.value = values.join(', ');
             }
@@ -21318,7 +21356,7 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         return this._placeholder;
     }
     set placeholder(value) {
-        this._placeholder = value ? value[Lang.Current] ?? value : '';
+        this._placeholder = Lang ? Lang.Translate(value) : value;
         this._input.placeholder = this._placeholder;
         this._renderValue(false);
     }
@@ -22199,6 +22237,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
             if(fieldData.params && fieldData.params.condition) {
                 const condition = fieldData.params.condition;
                 if(condition.field) {
+
                     const type = condition?.type == 'disable' ? 'enabled' : 'shown';
                     const empty = condition?.empty || false;
                     const inverse = condition?.inverse || false;
@@ -22213,7 +22252,11 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
                             conditionResult = fieldValue === undefined || (fieldValue !== undefined && fieldValue === condition.value);
                         }
                     } else if(condition?.method) {
-                        conditionResult = eval(condition.method);
+                        if(typeof condition.method === 'string') {
+                            conditionResult = eval(condition.method);
+                        } else {
+                            conditionResult = condition.method(fieldValue, data, type, empty, inverse, fieldData);
+                        }
                     }
 
                     if(inverse) {
@@ -22740,6 +22783,9 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
 
         if(this._fieldData?.params?.className) {
             this.AddClass(this._fieldData?.params?.className);
+        }
+        if(this._fieldData?.attrs?.class) {
+            this.AddClass(this._fieldData?.attrs?.class);
         }
 
         if(this._fieldData?.break) {
@@ -23623,6 +23669,12 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         this._input.addEventListener('focus', (e) => this.Dispatch('ReceiveFocus', {domEvent: e}));
         this._input.addEventListener('blur', (e) => this.Dispatch('LoosedFocus', {domEvent: e}));
         this._input.addEventListener('change', (e) => {
+            if(this.max !== null && this._input.value > this.max) {
+                this._input.value = this.max;
+            }
+            if(this.min !== null && this._input.value < this.min) {
+                this._input.value = this.min;
+            }
             if(this._original != this._input.value) {
                 this.Dispatch('Changed', {domEvent: e, component: this, original: this._original});
             }
@@ -23672,6 +23724,13 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         }
         else {
             this.enabled = this._fieldData.params.enabled;
+        }
+
+        if(this._fieldData?.params?.max !== undefined) {
+            this.max = this._fieldData?.params?.max;
+        }
+        if(this._fieldData?.params?.min !== undefined) {
+            this.min = this._fieldData?.params?.min;
         }
 
     }
@@ -23780,6 +23839,37 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
+
+    /**
+     * Maximum allowed value
+     * @type {Number}
+     */
+    get max() {
+        return this._input.attr('max');
+    }
+    /**
+     * Maximum allowed value
+     * @type {Number}
+     */
+    set max(value) {
+        this._input.attr('max', value);
+    }
+
+    /**
+     * Minimum allowed value
+     * @type {Number}
+     */
+    get min() {
+        return this._input.attr('min');
+    }
+    /**
+     * Minimum allowed value
+     * @type {Number}
+     */
+    set min(value) {
+        this._input.attr('min', value);
+    }
+
 
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Number', 'Colibri.UI.Forms.Number', 'Number')
@@ -27965,9 +28055,8 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
         
             if(fieldComponent && fieldData.params && fieldData.params.condition) {
 
-                
                 const condition = fieldData.params.condition;
-                if(condition.field) {        
+                if(condition.field) {     
                     const type = condition?.type == 'disable' ? 'enabled' : 'shown';            
                     const empty = condition?.empty || false;
                     const inverse = condition?.inverse || false;
@@ -27985,7 +28074,11 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
                             conditionResult = fieldValue === undefined || (fieldValue !== undefined && fieldValue === condition.value);
                         }
                     } else if(condition?.method) {
-                        conditionResult = eval(condition.method);
+                        if(typeof condition.method === 'string') {
+                            conditionResult = eval(condition.method);
+                        } else {
+                            conditionResult = condition.method(fieldValue, data, type, empty, inverse, fieldData);
+                        }
                     }
                     if(inverse) {
                         conditionResult = !conditionResult;
@@ -28518,7 +28611,11 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
                             conditionResult = fieldValue === undefined || (fieldValue !== undefined && fieldValue === condition.value);
                         }
                     } else if(condition?.method) {
-                        conditionResult = eval(condition.method);
+                        if(typeof condition.method === 'string') {
+                            conditionResult = eval(condition.method);
+                        } else {
+                            conditionResult = condition.method(fieldValue, data, type, empty, inverse, fieldData);
+                        }
                     }
                     if(inverse) {
                         conditionResult = !conditionResult;
@@ -29632,6 +29729,25 @@ Colibri.UI.Loading = class extends Colibri.UI.Pane {
                 this.SendToBack();
             }
         }
+    }
+
+    /**
+     * Loading icon
+     * @type {String}
+     */
+    get icon() {
+        return this._icon;
+    }
+    /**
+     * Loading icon
+     * @type {String}
+     */
+    set icon(value) {
+        this._icon = value;
+        this._showicon();
+    }
+    _showicon() {
+        this._element.html(eval(this._icon));
     }
 
 }
@@ -30982,6 +31098,15 @@ Colibri.UI.BoolViewer = class extends Colibri.UI.Viewer {
 
         const values = Object.values(this._field.values);
         const found = values.filter(o => o.value == value);
+
+        if(this._field?.params?.colors) {
+            this.RemoveClass(this._field.params.colors.map(v => v!=''));
+            if(value) {
+                this.AddClass(this._field.params.colors[0]);
+            } else {
+                this.AddClass(this._field.params.colors[1]);
+            }
+        }
 
         this._element.html(found.length == 1 ? found[0].title : value);
     }
@@ -33991,7 +34116,7 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
         this._preventNextEvent = preventNextEvent;
 
-        const u = url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) : '');
+        const u = url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) : '') + this.GetSafeParamsAsString();
         if(this._type == Colibri.Web.Router.RouteOnHash) {
             location.hash = '#' + u;
         } else if(this._type == Colibri.Web.Router.RouteOnHistory) {
@@ -34094,6 +34219,31 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
             this._initRouterOnHistory();
         }
         this.HandleDomReady();
+    }
+
+    /**
+     * Array of query params to save in query string
+     * @type {Array}
+     */
+    get safeParams() {
+        return this._safeParams ?? [];
+    }
+    /**
+     * Array of query params to save in query string
+     * @type {Array}
+     */
+    set safeParams(value) {
+        this._safeParams = value;
+    }
+
+    GetSafeParamsAsString() {
+        let ret = [];
+        for(const param of this.safeParams) {
+            if(this.options[param]) {
+                ret.push(param + '=' + this.options[param]);
+            }
+        }
+        return ret.join('&');
     }
 
 }
@@ -35953,8 +36103,8 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
                     }
     
                     // запускаем обработку экшенов в документе
-                    this._actions.HandleDomReady();
                     this._router.HandleDomReady();
+                    this._actions.HandleDomReady();
     
                     if(showLoader) {
                         Colibri.Common.Delay(1500).then(() => {
@@ -37680,7 +37830,7 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
 
         App.AddHandler('ApplicationReady', (event, args) => {
             this.Render(document.body);
-            this.Status();
+            // this.Status();
         });
         this._store.AddHandler('StoreLoaderCrushed', (event, args) => {
             if(args.status === 403) {
@@ -37727,12 +37877,12 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
             return promise;
         }
         promise.then((response) => {
-                this._store.Set('sites.status', response.result);
-            })
-            .catch(error => {
-                App.Notices.Add(new Colibri.UI.Notice(error.result));
-                console.error(error);
-            });    
+            this._store.Set('sites.status', response.result);
+        })
+        .catch(error => {
+            App.Notices.Add(new Colibri.UI.Notice(error.result));
+            console.error(error);
+        });    
     }
 
     Check(current) {
@@ -37953,9 +38103,39 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
                 
                 let newData = [];
                 data.map((p) => {
-                    if(dataIds.indexOf(p.id) === -1) {
+                    if(storage.params.softdeletes && storage.params.deletedautoshow) {
+                        p.datedeleted = Date.Now();
                         newData.push(p);
+                    } else {
+                        if(dataIds.indexOf(p.id) === -1) {
+                            newData.push(p);
+                        }    
                     }
+                });
+                this._store.Set('sites.data', newData);
+            })
+            .catch(error => {
+                App.Notices.Add(new Colibri.UI.Notice(error.result));
+                console.error(error);
+            });
+    }
+
+    RestoreData(storage, dataIds) {
+        this.Call('Data', 'Restore', {storage: storage.name, ids: dataIds.join(',')})
+            .then((response) => {
+                App.Notices.Add(new Colibri.UI.Notice('Data restored', Colibri.UI.Notice.Success, 3000));
+
+                let data = this._store.Query('sites.data');
+                if(!data || !Array.isArray(data)) {
+                    data = [];
+                }
+                
+                let newData = [];
+                data.map((p) => {
+                    if(dataIds.indexOf(p.id) !== -1) {
+                        p.datedeleted = null;
+                    }
+                    newData.push(p);
                 });
                 this._store.Set('sites.data', newData);
             })
@@ -38971,6 +39151,16 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
                 dateCreatedColumn.sortable = true;
             }
 
+            if(this._storage.params.softdeletes && this._storage.params.deletedautoshow) {
+                let dateDeletedColumn = this.header.columns.Children('datedeleted');
+                if(!dateDeletedColumn) {
+                    dateDeletedColumn = this.header.columns.Add('datedeleted', 'Deleted', {width: '10%'});
+                    dateDeletedColumn.viewer = 'Colibri.UI.DateTimeViewer';
+                    dateDeletedColumn.resizable = true;
+                    dateDeletedColumn.sortable = true;
+                }   
+            }
+
             const intemplate = {};
             let column = null;
             Object.forEach(this._storage.fields, (name, field, index) => {
@@ -39208,14 +39398,17 @@ App.Modules.Sites.StoragesManagerTree = class extends Colibri.UI.Tree {
     }
 
     _insertStorageNode(moduleNode, storage) {
+       
+        let storageNode = this.FindNode(storage.name);
         if(!storage.params.visible) {
+            storageNode.Dispose();
             return null;
         }
-        this._names.set(storage.name, storage.name);
-        let storageNode = this.FindNode(storage.name);
         if(!storageNode) {
             storageNode = moduleNode.nodes.Add(storage.name);
         }
+
+        this._names.set(storage.name, storage.name);
         
         const group = (storage.group ? ((storage.group[Lang.Current] ?? storage.group) + ': ') : '');
         const desc = storage.desc[Lang.Current] ?? storage.desc;
@@ -39343,28 +39536,55 @@ App.Modules.Sites.StoragesManagerTree = class extends Colibri.UI.Tree {
             data = Object.values(data);
         }
 
-        if(path.indexOf('.modules') !== -1) {
-            data.forEach((module) => {
-                const moduleNode = this._insertModuleNode(module);
-            });
+        this.value = data;
+
+    }
+
+    /**
+     * Value Array
+     * @type {Array}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value Array
+     * @type {Array}
+     */
+    set value(value) {
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        
+        if(!this._module) {
+            this.nodes.Clear();
+            return;
         }
-        else if(path.indexOf('.storages') !== -1) {
 
-            this._names.clear();
-            
-            data.forEach((storage) => {
-                const moduleNode = this.FindNode(storage.module);
-                const storageNode = this._insertStorageNode(moduleNode, storage);
-            });
+        this._value.forEach((storage) => {
+            if(storage.module === this._module) {
+                this._insertStorageNode(this, storage);
+            }    
+        });
+    }
 
-            for(const node of this._allNodes) {
-                if(node.tag.type !== 'module' && !this._names.has(node.name)) {
-                    node.Dispose();
-                }
-            }
 
-        }
-
+    /**
+     * Module name
+     * @type {String}
+     */
+    get module() {
+        return this._module;
+    }
+    /**
+     * Module name
+     * @type {String}
+     */
+    set module(value) {
+        this._module = value;
+        this.nodes.Clear();
+        this._showValue();
     }
     
 }
@@ -39970,6 +40190,7 @@ Colibri.UI.AddTemplate('App.Modules.Sites.DataPage',
 '                <SuccessButton name="dubl-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuDublicateIcon">Dublicate</SuccessButton>' + 
 '                <SuccessButton name="edit-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuEditIcon">Edit</SuccessButton>' + 
 '                <SuccessButton name="delete-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuRemoveIcon">Delete</SuccessButton>' + 
+'                <SuccessButton name="restore-data" shown="false" enabled="false" icon="Colibri.UI.ContextMenuRemoveIcon">Restore</SuccessButton>' + 
 '                <SuccessButton name="export-data" shown="true" enabled="false">Export</SuccessButton>' + 
 '                <UI.Pager shown="true" name="pager" hasMaxPages="false" enabled="false" />' + 
 '            </FlexBox>' + 
@@ -39995,6 +40216,7 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._dublData = this.Children('split/data-pane/buttons-pane/dubl-data');
         this._editData = this.Children('split/data-pane/buttons-pane/edit-data');
         this._deleteData = this.Children('split/data-pane/buttons-pane/delete-data');
+        this._restoreData = this.Children('split/data-pane/buttons-pane/restore-data');
         this._exportData = this.Children('split/data-pane/buttons-pane/export-data');
         this._pagerData = this.Children('split/data-pane/buttons-pane/pager');
         
@@ -40011,6 +40233,7 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._data.AddHandler('ColumnClicked', (event, args) => this.__clickOnDataColumn(event, args));        
 
         this._deleteData.AddHandler('Clicked', (event, args) => this.__deleteDataButtonClicked(event, args));
+        this._restoreData.AddHandler('Clicked', (event, args) => this.__restoreDataButtonClicked(event, args));
         this._addData.AddHandler('Clicked', (event, args) => this.__addDataButtonClicked(event, args));
         this._editData.AddHandler('Clicked', (event, args) => this.__editDataButtonClicked(event, args));
         this._dublData.AddHandler('Clicked', (event, args) => this.__dublDataButtonClicked(event, args));
@@ -40113,6 +40336,28 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._editData.Dispatch('Clicked');
     }
 
+    __restoreDataButtonClicked(event, args) {
+        const selection = this._storages.selected;
+        const storage = selection?.tag;
+        if(!storage) {
+            return;
+        }
+        if(this._data.checked.length == 0) {
+            App.Confirm.Show('Restore data', 'Are you sure you want to restore the selected rows?', 'Restore!').then(() => {
+                Sites.RestoreData(storage, [this._data.selected?.value?.id]);
+            });
+        }
+        else {
+            App.Confirm.Show('Restore data', 'Are you sure you want to restore the selected rows?', 'Restore!').then(() => {
+                let ids = [];
+                this._data.checked.forEach((row) => {
+                    ids.push(row.value.id);
+                });
+                Sites.RestoreData(storage, ids);
+            });
+        }
+    }
+
     __deleteDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
@@ -40125,7 +40370,7 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
             });
         }
         else {
-            App.Confirm.Show('', 'Are you sure you want to delete the selected rows?', 'Delete').then(() => {
+            App.Confirm.Show('Delete rows', 'Are you sure you want to delete the selected rows?', 'Delete').then(() => {
                 let ids = [];
                 this._data.checked.forEach((row) => {
                     ids.push(row.value.id);
@@ -40217,7 +40462,12 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         
         contextmenu.push({name: 'dubl-data', title: 'Dublicate data', icon: Colibri.UI.ContextMenuDublicateIcon});
         contextmenu.push({name: 'edit-data', title: 'Edit data', icon: Colibri.UI.ContextMenuEditIcon});
-        contextmenu.push({name: 'remove-data', title: 'Delete', icon: Colibri.UI.ContextMenuRemoveIcon});
+
+        if(!args.item.value.datedeleted) {
+            contextmenu.push({name: 'remove-data', title: 'Delete', icon: Colibri.UI.ContextMenuRemoveIcon});
+        } else {
+            contextmenu.push({name: 'restore-data', title: 'Restore', icon: Colibri.UI.ContextMenuRemoveIcon});
+        }
 
         args.item.contextmenu = contextmenu;
         args.item.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB], '', args.isContextMenuEvent ? {left: args.domEvent.clientX, top: args.domEvent.clientY} : null);
@@ -40241,6 +40491,9 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         else if(menuData.name == 'remove-data') {
             this._deleteData.Dispatch('Clicked');
         }
+        else if(menuData.name == 'restore-data') {
+            this._restoreData.Dispatch('Clicked');
+        }
     }
 
     __clickOnDataColumn(event, args) {
@@ -40253,7 +40506,14 @@ Colibri.UI.AddTemplate('App.Modules.Sites.StoragesPage',
 '' + 
 '    <Pane name="storages-pane" shown="true">' + 
 '        <H2 name="ttl" shown="true">Storages</H2>' + 
-'        <StoragesManagerTree name="storages" shown="true" hasContextMenu="true" expandOnClick="true"  />' + 
+'        <Split shown="true" name="split">' + 
+'            <Pane shown="true" name="left">' + 
+'                <ModulesManagerList shown="true" name="modules"></ModulesManagerList>' + 
+'            </Pane>' + 
+'            <Pane shown="true" name="right">' + 
+'                <StoragesManagerTree name="storages" shown="true" hasContextMenu="true" expandOnClick="true"  />' + 
+'            </Pane>' + 
+'        </Split>' + 
 '    </Pane>' + 
 '' + 
 '    <Pane shown="false" name="storages-cannotchange">' + 
@@ -40270,14 +40530,18 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         this.AddClass('app-sites-storages-page-component');
 
         this._copiedField = null;
-        this._storages = this.Children('storages-pane/storages');
         this._storagesPane = this.Children('storages-pane');
         this._storagesCannotchange = this.Children('storages-cannotchange');
+
+        this._storages = this.Children('storages-pane/split/right/storages');
+        this._modules = this.Children('storages-pane/split/left/modules');
         
 
         this._storages.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderStoragesContextMenu(event, args))
         this._storages.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnStoragesContextMenu(event, args));
         this._storages.AddHandler('DoubleClicked', (event, args) => this.__storagesDoubleClick(event, args));
+
+        this._modules.AddHandler('SelectionChanged', (event, args) => this.__modulesSelectionChanged(event, args)); 
 
         this._dragManager = new Colibri.UI.DragManager([this._storages], [this._storages]);
         this._dragManager.AddHandler('DragDropComplete', (event, args) => this.__dragDropComplete(event, args));
@@ -40291,7 +40555,8 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             } else {
                 this._storagesPane.shown = true;
                 this._storagesCannotchange.shown = false;
-                this._storages.binding = 'app.manage.modules;app.manage.storages';
+                this._modules.binding = 'app.manage.modules';
+                this._storages.binding = 'app.manage.storages';
             }
         });
 
@@ -40299,6 +40564,21 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
     _canAddFieldAsChild(field) {
         return field.type === 'json';
+    }
+
+    __modulesSelectionChanged(event, args) {
+        const selected = this._modules.selected;
+        if(!selected) {
+            this._storages.value = null;
+        } else {
+
+            const module = selected.value;
+            this._storages.module = module.name;
+            // App.Store.AsyncQuery('app.manage.storages').then(storages => {
+            //     const storagesList = Object.values(storages).filter(v => v.module == module.name);
+            //     this._storages.value = storagesList;
+            // });
+        }
     }
 
     __renderStoragesContextMenu(event, args) {
@@ -40646,6 +40926,12 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                         softdeletes: {
                             type: 'bool',
                             placeholder: 'Soft deletes',
+                            component: 'Checkbox',
+                            default: false
+                        },
+                        deletedautoshow: {
+                            type: 'bool',
+                            placeholder: 'Show deleted items in backend',
                             component: 'Checkbox',
                             default: false
                         },
@@ -41827,11 +42113,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         }
 
         if (menuData.name == 'new-storage') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             if (Security.IsCommandAllowed('sites.storages.add')) {
                 Manage.FormWindow.Show('New storage', 800, this._storageFields(), {})
                     .then((data) => {
-                        Sites.SaveStorage(moduleNode.tag.entry, data);
+                        Sites.SaveStorage(moduleNode.value, data);
                     })
                     .catch(() => { });
             }
@@ -41840,15 +42126,16 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             }
         }
         else if (menuData.name == 'edit-storage') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             if (Security.IsCommandAllowed('sites.storages.edit')) {
                 const storageData = node.tag.entry;
                 if(storageData.group) {
                     storageData.group_enabled = true;
                 }
+                console.log(storageData);
                 Manage.FormWindow.Show('Edit storage', 800, this._storageFields(), storageData)
                     .then((data) => {
-                        Sites.SaveStorage(moduleNode.tag.entry, data);
+                        Sites.SaveStorage(moduleNode.value, data);
                     })
                     .catch(() => { });
             }
@@ -41858,9 +42145,9 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         }
         else if (menuData.name == 'remove-storage') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             App.Confirm.Show('Delete storage', 'Are you sure you want to delete the datastore?', 'Delete').then(() => {
-                Sites.DeleteStorage(moduleNode.tag.entry, node.tag.entry);
+                Sites.DeleteStorage(moduleNode.value, node.tag.entry);
             });
         }
         else if (menuData.name == 'copy-field') {
@@ -41871,20 +42158,20 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         }
         else if (menuData.name == 'paste-field') {
             const data = this._copiedField;
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data, true).then((response) => {
+            Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node, data.name), data, true).then((response) => {
                 App.Notices.Add(new Colibri.UI.Notice('Field is successfully passed', Colibri.UI.Notice.Success, 5000));
                 this._copiedField = null;
             });
         }
         else if (menuData.name == 'new-field') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) { // node.tag.type === 'fields'
-                Manage.FormWindow.Show('New property', 1024, this._fieldFields(true, moduleNode.tag.entry), {})
+                Manage.FormWindow.Show('New property', 1024, this._fieldFields(true, moduleNode.value), {})
                     .then((data) => {
-                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data, true);
+                        Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node, data.name), data, true);
                     })
                     .catch(() => { });
             }
@@ -41893,13 +42180,13 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             }
         }
         else if (menuData.name == 'new-virtual-field') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
                 Manage.FormWindow.Show('New virtual property', 1024, this._fieldVirtualFields(), {})
                     .then((data) => {
                         data.virtual = true;
-                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node, data.name), data, true);
+                        Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node, data.name), data, true);
                     })
                     .catch(() => { });
             }
@@ -41908,7 +42195,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             }
         }
         else if (menuData.name == 'edit-field') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
                 
@@ -41922,9 +42209,9 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                 }
 
                 // node.parentNode.tag.type === 'fields'
-                Manage.FormWindow.Show('Edit property', 1024, fieldData.virtual ? this._fieldVirtualFields(moduleNode.tag.entry) : this._fieldFields(true, moduleNode.tag.entry), fieldData)
+                Manage.FormWindow.Show('Edit property', 1024, fieldData.virtual ? this._fieldVirtualFields(moduleNode.value) : this._fieldFields(true, moduleNode.value), fieldData)
                     .then((data) => {
-                        Sites.SaveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node), data, false);
+                        Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node), data, false);
                     })
                     .catch(() => { });
             }
@@ -41934,12 +42221,12 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         }
         else if (menuData.name == 'remove-field') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             const selectedNode = this.selected;
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
                 App.Confirm.Show('Delete property', 'Are you sure you want to delete the property?', 'Delete').then(() => {
-                    Sites.DeleteField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(node));
+                    Sites.DeleteField(moduleNode.value, storageNode.tag.entry, this._getPath(node));
                 });
             }
             else {
@@ -41948,12 +42235,12 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         }
         else if (menuData.name == 'new-index') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.indexes')) {
                 Manage.FormWindow.Show('New index', 800, this._fieldIndex(storageNode.tag.entry.name), {})
                     .then((data) => {
-                        Sites.SaveIndex(moduleNode.tag.entry, storageNode.tag.entry, data);
+                        Sites.SaveIndex(moduleNode.value, storageNode.tag.entry, data);
                     })
                     .catch(() => { });
             }
@@ -41962,12 +42249,12 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             }
         }
         else if (menuData.name == 'edit-index') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.indexes')) {
                 Manage.FormWindow.Show('Edit index', 800, this._fieldIndex(storageNode.tag.entry.name), node.tag.entry)
                     .then((data) => {
-                        Sites.SaveIndex(moduleNode.tag.entry, storageNode.tag.entry, data);
+                        Sites.SaveIndex(moduleNode.value, storageNode.tag.entry, data);
                     })
                     .catch(() => { });
             }
@@ -41977,11 +42264,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         }
         else if (menuData.name == 'remove-index') {
-            const moduleNode = node.FindParent((node) => node.tag.type === 'module');
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
             const storageNode = node.FindParent((node) => node.tag.type === 'storage');
             if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
                 App.Confirm.Show('Delete index', 'Are you sure you want to delete the index?', 'Delete').then(() => {
-                    Sites.DeleteIndex(moduleNode.tag.entry, storageNode.tag.entry, node.tag.entry);
+                    Sites.DeleteIndex(moduleNode.value, storageNode.tag.entry, node.tag.entry);
                 });
             }
             else {
@@ -42045,10 +42332,10 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         const droppedToElement = args.droppedToElement;
         const dropSibling = droppedToElement.attr('drop');
 
-        const moduleNode = dragged.FindParent((node) => node.tag.type === 'module');
+        const moduleNode = this._modules.selected; // dragged.FindParent((node) => node.tag.type === 'module');
         const storageNode = dragged.FindParent((node) => node.tag.type === 'storage');
 
-        Sites.MoveField(moduleNode.tag.entry, storageNode.tag.entry, this._getPath(dragged), this._getPath(droppedTo), dropSibling);
+        Sites.MoveField(moduleNode.value, storageNode.tag.entry, this._getPath(dragged), this._getPath(droppedTo), dropSibling);
 
     }
 
@@ -42186,6 +42473,82 @@ App.Modules.Sites.DataWindow = class extends Colibri.UI.Window {
 
     }
 
+
+}
+App.Modules.Sites.ModulesManagerList = class extends Colibri.UI.List {
+    
+    
+
+    constructor(name, container) {
+        super(name, container);
+        this.AddClass('app-manager-module-list-component');
+        this._modulesList = [];
+        this._names = new Map();
+        this.removeHiddenNodes = true;
+
+        this.AddClass('-has-search');
+        this.rendererComponent = 'App.Modules.Sites.ModulesManagerListItem';
+
+        this._group = new Colibri.UI.List.Group(this.name + '_group', this);
+        this._group.shown = true;
+
+    }
+
+    __renderBoundedValues(data, path) {
+        
+        if(!data) {
+            return;
+        }
+
+        if(Object.isObject(data)) {
+            data = Object.values(data);
+        }
+
+        this._group.value = data;
+
+    }
+    
+}
+Colibri.UI.AddTemplate('App.Modules.Sites.ModulesManagerListItem', 
+'<div namespace="App.Modules.Sites.ModulesManagerListItem">' + 
+'' + 
+'    <H3 shown="true" name="ttl2"></H3>' + 
+'    <TextSpan shown="true" name="nam"></TextSpan>' + 
+'' + 
+'</div>' + 
+'');
+App.Modules.Sites.ModulesManagerListItem = class extends Colibri.UI.Pane {
+    
+    
+
+    constructor(name, container) {
+        super(name, container, Colibri.UI.Templates['App.Modules.Sites.ModulesManagerListItem']);
+        this.AddClass('app-manager-module-list-item-component');
+        
+        this._ttl = this.Children('ttl2');
+        this._nam = this.Children('nam');
+        
+    }
+
+    /**
+     * Value Object
+     * @type {Object}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value Object
+     * @type {Object}
+     */
+    set value(value) {
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        this._ttl.value = this._value.desc;
+        this._nam.value = this._value.name
+    }
 
 }
 
@@ -46446,7 +46809,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '                        },' + 
 '                        autosms: {' + 
 '                            component: \'Checkbox\',' + 
-'                            placeholder: \'Send real sms\',' + 
+'                            placeholder: \'Automaticaly enhance parking time\',' + 
 '                            params: {' + 
 '                                condition: {' + 
 '                                    field: \'payment_type\',' + 
@@ -46456,7 +46819,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '                        },' + 
 '                        sendsms: {' + 
 '                            component: \'Checkbox\',' + 
-'                            placeholder: \'Send real sms\',' + 
+'                            placeholder: \'\',' + 
 '                            params: {' + 
 '                                condition: {' + 
 '                                    field: \'payment_type\',' + 

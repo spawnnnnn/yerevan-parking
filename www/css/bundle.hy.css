@@ -4482,6 +4482,7 @@ h4.app-component-heading {
   font-weight: normal;
   font-size: 14px;
   line-height: 140%;
+  word-wrap: break-word;
 }
 .appapp-textarea-viewer-component {
   font-style: normal;
@@ -5601,6 +5602,14 @@ body {
 .app-sites-storages-page-component [data-object-name="storages-cannotchange"].app-component-shown {
   display: flex;
 }
+.app-sites-storages-page-component [data-object-name="split"] .app-component-split-left {
+  flex: 0 0 25%;
+  height: 100%;
+}
+.app-sites-storages-page-component [data-object-name="split"] .app-component-split-right {
+  height: 100%;
+  padding-left: 10px;
+}
 .app-data-window-component .app-component-window-container {
   width: 95%;
   height: calc(95% - 120px);
@@ -5637,6 +5646,19 @@ body {
 }
 .app-data-window-component .app-component-window-container .app-component-window-content [data-object-name="split"] .app-ui-tree-component {
   padding-top: 10px;
+}
+.app-manager-module-list-component {
+  height: 100%;
+}
+.app-manager-module-list-component [data-object-name="modules_group"] > div {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  flex-direction: column;
+  gap: 0px;
+}
+.app-manager-module-list-item-component {
+  padding: 20px;
 }
 .app-tools-backup-log-component {
   position: fixed;
