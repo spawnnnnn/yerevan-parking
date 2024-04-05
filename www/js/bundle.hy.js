@@ -45465,13 +45465,13 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             const paymenttype = settings.session.settings.payment_type ?? null;
             const sendsms = (settings.session.settings.sendsms ?? 0) === 1;
             const amount = parseFloat(settings.zones[zone.toLowerCase()]);
-            alert(amount);
-            alert(sendsms);
-            alert(paymenttype);
             if(paymenttype === 'sms') {
                 const zoneSettings = settings.sms;
                 if(sendsms) {
                     try {
+                        alert(zone);
+                        alert(zoneSettings[zone]);
+                        alert(vahile);
                         App.Device.Sms.Send(zoneSettings[zone], vahile, '').then(() => {
                             this.Call('Client', 'AddHistory', {
                                 vahile: vahile,
