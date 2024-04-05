@@ -36,6 +36,7 @@
     "cordova-plugin-push-notifications": "^1.1.7",
     "cordova-plugin-safearea": "^1.0.0",
     "cordova-plugin-screen-orientation": "^3.0.4",
+    "cordova-plugin-sms-receive": "^2.0.0",
     "cordova-plugin-theme-detection": "^1.3.0",
     "cordova-plugin-wkwebview-cookies": "^1.0.1",
     "cordova-plugin-wkwebview-file-xhr": "^3.1.0",
@@ -53,7 +54,6 @@
         "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
       },
       "cordova-plugin-auto-theme": {},
-      "cordova-sms-plugin": {},
       "cordova-plugin-downloader": {},
       "cordova-plugin-file": {},
       "cordova-plugin-file-opener2": {},
@@ -73,7 +73,9 @@
       "cordova-plugin-geolocation": {
         "GPS_REQUIRED": "true"
       },
-      "cordova-plugin-app-version": {}
+      "cordova-plugin-app-version": {},
+      "cordova-sms-plugin": {},
+      "cordova-plugin-sms-receive": {}
     }
   }
 }
