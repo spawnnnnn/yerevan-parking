@@ -18174,6 +18174,9 @@ Colibri.UI.ToggleBox = class extends Colibri.UI.Component {
     }
 
     Toggle() {
+        if(!this.enabled) {
+            return;
+        }
         this._input.checked = !this._input.checked;
         this._showState(); 
         this.Dispatch('Changed', {state: this._input.checked});
@@ -45442,12 +45445,29 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         });
     }
 
+    MakeIncome(type, amount) {
+        return new Promise((resolve, reject) => {
+            this.Call('Client', 'AddIncome', {
+                type: type,
+                amount: amount
+            }).then((response) => {
+                // может быть надо переадресовать куда то для получения подтверждения
+
+                this._store.Set('yerevan-parking.settings', response.result);
+                resolve();
+            }).catch((response) => reject(response));
+        });
+    }
+
     Pay(zone, vahile, paytime) {
         return new Promise((resolve, reject) => {
             const settings = YerevanParking.Store.Query('yerevan-parking.settings');
             const paymenttype = settings.session.settings.payment_type ?? null;
             const sendsms = (settings.session.settings.sendsms ?? 0) === 1;
             const amount = parseFloat(settings.zones[zone.toLowerCase()]);
+            alert(amount);
+            alert(sendsms);
+            alert(paymenttype);
             if(paymenttype === 'sms') {
                 const zoneSettings = settings.sms;
                 if(sendsms) {
@@ -47257,9 +47277,10 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage',
 '                }' + 
 '            </fields>' + 
 '        </Forms.Form>' + 
+'        <SuccessButton shown="true" name="pay" value="Լիցքավորել" />' + 
+'    ' + 
 '    </FlexBox>' + 
 '' + 
-'    <SuccessButton shown="true" name="pay" value="Լիցքավորել" />' + 
 '' + 
 '' + 
 '' + 
@@ -47281,6 +47302,12 @@ App.Modules.YerevanParking.Layers.WalletPage = class extends Colibri.UI.FlexBox 
             this._form.value = {type: 'arca', amount: App.Router.options.amount};
         }
 
+        this._pay.AddHandler('Clicked', (event, args) => this.__payClicked(event, args));
+
+    }
+
+    __payClicked(event, args) {
+        YerevanParking.MakeIncome(this._form.value.type.value, this._form.value.amount);
     }
 
 }

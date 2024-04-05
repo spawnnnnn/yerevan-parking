@@ -128,7 +128,7 @@ function onDeviceReady() {
                 symbol: '֏'
             }
         ).finally(() => {
-            App.appVersion = '1.0.30.0';
+            App.appVersion = '1.0.31.0';
             App.Device.backgroundMode = true;
         });
 

@@ -2092,6 +2092,9 @@ h4.app-component-heading {
 .app-togglebox-component.-selected .toggle .box {
   left: calc(100% - 10px);
 }
+.app-togglebox-component.ui-disabled {
+  opacity: 0.3;
+}
 .app-contextmenu-component {
   position: absolute;
   left: 0;
