@@ -382,10 +382,6 @@ h4.app-component-heading {
 .app-component-strong {
   font-weight: bold;
 }
-.app-component-hr {
-  background: transparent;
-  border-bottom: 1px solid #c0c0c0;
-}
 .app-component-pane {
   position: relative;
 }
@@ -5662,6 +5658,12 @@ body {
 }
 .app-manager-module-list-item-component {
   padding: 20px;
+}
+.app-manager-module-list-item-component [data-object-name="ttl"].app-component-shown {
+  display: block;
+}
+.app-manager-module-list-item-component [data-object-name="nam"].app-component-shown {
+  display: block;
 }
 .app-tools-backup-log-component {
   position: fixed;

@@ -1,18 +1,42 @@
-
+/**
+ * Prevents the default behavior of an event and stops its propagation.
+ * @param {Event} e - The event object.
+ * @returns {boolean} Returns false to indicate that the default action should be prevented.
+ */
 const nullhandler = (e) => {
     e.preventDefault();
     e.stopPropagation();
     return false;
 };
 
+/**
+ * Parses a JSON string into a JavaScript object.
+ * If the input string is null or undefined, it defaults to an empty object ({}).
+ * @param {string} v - The JSON string to parse.
+ * @returns {Object} Returns the parsed JavaScript object.
+ */
 const json_object = function (v) {
     return JSON.parse(v || '{}');
 };
 
+/**
+ * Parses a JSON string into a JavaScript array.
+ * If the input string is null or undefined, it defaults to an empty array ([]).
+ * @param {string} v - The JSON string to parse.
+ * @returns {Array} Returns the parsed JavaScript array.
+ */
 const json_array = function (v) {
     return JSON.parse(v || '[]');
 };
 
+/**
+ * Evaluates a default value string.
+ * If the default value is a string and contains 'json_object' or 'json_array',
+ * it evaluates the string as JavaScript code.
+ * Otherwise, it returns the default value as is.
+ * @param {string} defaultAsString - The default value string to evaluate.
+ * @returns {any} Returns the evaluated default value.
+ */
 const eval_default_values = function (defaultAsString) { 
     if (typeof defaultAsString == 'string' && (defaultAsString.indexOf('json_object') !== -1 || defaultAsString.indexOf('json_array') !== -1)) {
         return eval(defaultAsString);
@@ -20,11 +44,20 @@ const eval_default_values = function (defaultAsString) {
     return defaultAsString; 
 };  
 
+/**
+ * Checks whether a value is iterable.
+ * @param {any} value - The value to check.
+ * @returns {boolean} Returns true if the value is iterable, false otherwise.
+ */
 const isIterable = (value) => { 
     return Symbol.iterator in Object(value);
 };
 
-
+/**
+ * Extends the prototype of Intl.NumberFormat to provide a method for unformatting a formatted number string.
+ * @param {string} stringNumber - The formatted number string to unformat.
+ * @returns {number} Returns the unformatted number.
+ */
 Intl.NumberFormat.prototype.unformat = function(stringNumber) {
     const thousandSeparator = this.format(11111).replace(/\p{Number}/gu, '');
     const decimalSeparator = this.format(1.1).replace(/\p{Number}/gu, '');
@@ -35,11 +68,30 @@ Intl.NumberFormat.prototype.unformat = function(stringNumber) {
     );
 }
 
+/**
+ * Returns a new array containing only unique elements from the original array.
+ * @param {Array} a - The original array.
+ * @returns {Array} Returns a new array with unique elements.
+ */
 Array.unique = function (a) { return a.filter((v, i, ab) => { return a.indexOf(v) === i; }); }
+
+/**
+ * Merges another array into the current array.
+ * @param {Array} a - The current array.
+ * @param {Array} ar - The array to merge into the current array.
+ * @returns {Array} Returns the merged array.
+ */
 Array.merge = function (a, ar) {
     ar.forEach((o) => a.push(o));
     return this;
 };
+
+/**
+ * Returns a new array containing elements that meet a specified condition.
+ * @param {Array} a - The array to filter.
+ * @param {(Function|string)} e - The condition function or string to evaluate elements against.
+ * @returns {Array} Returns a new array containing filtered elements.
+ */
 Array.part = function (a, e) {
     var r = [];
     a.forEach((o, index) => {
@@ -55,6 +107,14 @@ Array.part = function (a, e) {
     });
     return r;
 };
+
+/**
+ * Finds the first element in an array that matches a specified key-value pair.
+ * @param {Array} a - The array to search.
+ * @param {string} k - The key to search for.
+ * @param {any} v - The value to search for.
+ * @returns {any|null} Returns the found element or null if not found.
+ */
 Array.find = function (a, k, v) {
     var found = false;
     a.forEach((vv) => {
@@ -66,6 +126,12 @@ Array.find = function (a, k, v) {
     return found;
 };
 
+/**
+ * Finds the index of the first element in an array that satisfies a provided function.
+ * @param {Array} a - The array to search.
+ * @param {Function} predicate - The function used to test each element of the array.
+ * @returns {number} Returns the index of the found element or -1 if not found.
+ */
 Array.findIndex = function (a, predicate) {
     if (a == null) {
         throw new TypeError('Array.prototype.findIndex called on null or undefined');
@@ -87,6 +153,13 @@ Array.findIndex = function (a, predicate) {
     return -1;
 };
 
+/**
+ * Generates an array of values by invoking a callback function for each index from start to end.
+ * @param {number} start - The start index.
+ * @param {number} end - The end index.
+ * @param {Function} callback - The callback function to invoke for each index.
+ * @returns {Array} Returns the generated array.
+ */
 Array.enumerate = function (start, end, callback) {
     let ret = [];
     for (let i = start; i <= end; i++) {
@@ -95,6 +168,13 @@ Array.enumerate = function (start, end, callback) {
     return ret;
 };
 
+/**
+ * Generates an array of values by invoking a callback function for each index in reverse order from end to start.
+ * @param {number} start - The start index.
+ * @param {number} end - The end index.
+ * @param {Function} callback - The callback function to invoke for each index.
+ * @returns {Array} Returns the generated array.
+ */
 Array.enumerateRev = function (start, end, callback) {
     let ret = [];
     for (let i = end; i >= start; i--) {
@@ -103,6 +183,11 @@ Array.enumerateRev = function (start, end, callback) {
     return ret;
 };
 
+/**
+ * Converts an array to an object.
+ * @param {Array} a - The array to convert.
+ * @returns {Object} Returns the converted object.
+ */
 Array.toObject = function (a) {
     if(Object.isObject(a)) {
         return a;
@@ -115,6 +200,13 @@ Array.toObject = function (a) {
     return ret;
 };
 
+/**
+ * Finds the first object in an array that matches a specified field-value pair.
+ * @param {Array} arr - The array to search.
+ * @param {(string|Function)} field - The field name or function used to extract field values.
+ * @param {any} value - The value to search for.
+ * @returns {Object|null} Returns the found object or null if not found.
+ */
 Array.findObject = function (arr, field, value = null) {
     for (let i = 0; i < arr.length; i++) {
         const o = arr[i];
@@ -141,6 +233,15 @@ Array.findObject = function (arr, field, value = null) {
     return null;
 };
 
+/**
+ * Replaces or removes an object from an array based on a specified field-value pair.
+ * @param {Array} arr - The array to modify.
+ * @param {string} field - The field name to search for.
+ * @param {any} value - The value to search for.
+ * @param {Object|null} replace - The object to replace with (or null to remove).
+ * @param {boolean} insertIfNotExists - Whether to insert the replace object if not found.
+ * @returns {Array} Returns the modified array.
+ */
 Array.replaceObject = function (arr, field, value, replace = null, insertIfNotExists = true) {
     for (let i = 0; i < arr.length; i++) {
         if (arr[i][field] == value) {
@@ -159,10 +260,19 @@ Array.replaceObject = function (arr, field, value, replace = null, insertIfNotEx
     return arr;
 };
 
+/**
+ * Calculates the average of all elements in the array.
+ * @returns {number} Returns the average value.
+ */
 Array.prototype.avg = function() {
     return this.reduce((a, b) => a + b, 0) / this.length;
 }
 
+/**
+ * Returns a new array containing the first 'l' elements of the original array.
+ * @param {number} l - The number of elements to include in the new array.
+ * @returns {Array} Returns a new array containing the first 'l' elements.
+ */
 Array.prototype.part = function(l) {
     let ret = [];
     for(let i=0; i<l; i++) {
@@ -171,11 +281,20 @@ Array.prototype.part = function(l) {
     return ret;
 }
 
+/**
+ * Returns the last 'n' elements of the array and removes them from the original array.
+ * @param {number} n - The number of elements to return.
+ * @returns {Array} Returns the last 'n' elements.
+ */
 Array.prototype.last = function(n) {
     return this.splice(this.length - n, this.length);
 }
 
-// attach the .equals method to Array's prototype to call it on any array
+/**
+ * Compares the current array with another array to check for equality.
+ * @param {Array} array - The array to compare with.
+ * @returns {boolean} Returns true if the arrays are equal, false otherwise.
+ */
 Array.prototype.equals = function (array) {
     // if the other array is a falsy value, return
     if (!array)
@@ -205,6 +324,12 @@ Array.prototype.equals = function (array) {
     return true;
 };
 
+/**
+ * Sorts the array based on multiple fields.
+ * @param {Array} fields - An array of objects specifying fields and sort order.
+ * @param {Function|null} handler - Optional handler function for custom sorting logic.
+ * @returns {Array} Returns the sorted array.
+ */
 Array.prototype.multiSort = function(fields, handler = null) {
     this.sort((a, b) => {
 
@@ -228,6 +353,10 @@ Array.prototype.multiSort = function(fields, handler = null) {
     return this;
 }
 
+/**
+ * Flattens a nested array structure into a single array.
+ * @returns {Array} Returns the flattened array.
+ */
 Array.prototype.concatAll = function() {
     let ret = [];
     for(const item of this) {
@@ -236,6 +365,10 @@ Array.prototype.concatAll = function() {
     return ret;
 }
 
+/**
+ * Calculates the standard deviation of the array.
+ * @returns {number} Returns the standard deviation.
+ */
 Array.prototype.stanDeviate = function() {
     if(this.length === 0) {
         return 0;
@@ -246,9 +379,19 @@ Array.prototype.stanDeviate = function() {
     return (Math.sqrt(diffSqredArr.reduce((f, n) => parseFloat(f || 0) + parseFloat(n || 0)) / (this.length-1)));
 };
 
+/**
+ * Returns an array containing elements that are present in both arrays.
+ * @param {Array} arr - The array to intersect with.
+ * @returns {Array} Returns the intersected array.
+ */
 Array.prototype.intersect = function (arr) {
     return this.filter(value => arr.includes(value));
 };
+
+/**
+ * Converts the array elements into an object with each element as a key, and the value set to true.
+ * @returns {Object} Returns the object with array elements as keys.
+ */
 Array.prototype.toObjectAsTrue = function() {
     let ret = {};
     for(const v of this) {
@@ -256,6 +399,12 @@ Array.prototype.toObjectAsTrue = function() {
     }
     return ret;
 }
+
+/**
+ * Calculates the sum of all elements in the array.
+ * @param {(string|Function)} field - Optional field to specify which values to sum.
+ * @returns {number} Returns the sum of values.
+ */
 Array.prototype.sum = function(field = null) {
     if(!field) {
         return this.reduce((partialSum, a) => partialSum + a, 0);
@@ -264,6 +413,11 @@ Array.prototype.sum = function(field = null) {
     }
 }
 
+/**
+ * Calculates the average of all elements in the array.
+ * @param {(string|Function)} field - Optional field to specify which values to average.
+ * @returns {number} Returns the average value.
+ */
 Array.prototype.avg = function(field = null) {
     if(!field) {
         return this.sum() / this.length;
@@ -272,6 +426,13 @@ Array.prototype.avg = function(field = null) {
     }
 }
 
+/**
+ * Converts an array of objects into an object with specified keys and values.
+ * @param {Array} array - The array of objects.
+ * @param {string} fieldKey - The field to use as keys in the resulting object.
+ * @param {string} fieldValue - The field to use as values in the resulting object.
+ * @returns {Object} Returns the resulting object.
+ */
 Array.toObjectWithKeys = function (array, fieldKey, fieldValue) {
     let ret = {};
     array.forEach((item) => {
@@ -280,10 +441,21 @@ Array.toObjectWithKeys = function (array, fieldKey, fieldValue) {
     return ret;
 };
 
+/**
+ * Calculates the sum of all elements in the given array.
+ * @param {Array} ar - The array to calculate the sum.
+ * @returns {number} Returns the sum of values.
+ */
 Array.sum = function(ar) {
     return ar.reduce((partialSum, a) => partialSum + a, 0);
 }
 
+/**
+ * Organizes objects by specifying keys array.
+ * @param {Array} objects - The array of objects to organize.
+ * @param {Array} keysArray - The array of keys to organize the objects.
+ * @returns {Array} Returns the organized array of objects.
+ */
 Array.organizeObjectKeys = function(objects, keysArray) {
     let ret = [];
     for(const obj of objects) {
@@ -292,6 +464,12 @@ Array.organizeObjectKeys = function(objects, keysArray) {
     return ret;
 }
 
+/**
+ * Creates a new object containing specified keys and their corresponding values from the original object.
+ * @param {Object} obj - The original object.
+ * @param {Array} keysArray - An array of keys to include in the new object.
+ * @returns {Object} Returns a new object with the specified keys.
+ */
 Object.organizeKeys = function(obj, keysArray) {
     let ret = {};
     for(const key of keysArray) {
@@ -300,6 +478,11 @@ Object.organizeKeys = function(obj, keysArray) {
     return ret;
 }
 
+/**
+ * Creates an array of keys from an object where the corresponding values are truthy.
+ * @param {Object} object - The object to extract keys from.
+ * @returns {Array} Returns an array of keys with truthy values.
+ */
 Object.fromObjectAsTrue = function(object) {
     let ret = [];
     Object.forEach(object, (name, value) => {
@@ -310,14 +493,29 @@ Object.fromObjectAsTrue = function(object) {
     return ret;
 }
 
+/**
+ * Checks if a value is an object (excluding arrays).
+ * @param {*} o - The value to check.
+ * @returns {boolean} Returns true if the value is an object (excluding arrays), false otherwise.
+ */
 Object.isObject = function(o) {
     return o instanceof Object && !Array.isArray(o);
 }
 
+/**
+ * Converts an object to an extended object (not implemented).
+ * @param {Object} object - The object to convert.
+ * @returns {Object} Returns the extended object.
+ */
 Object.convertToExtended = function(object) {
     return object;
 }
 
+/**
+ * Recursively sorts the properties of an object alphabetically.
+ * @param {Object} object - The object to sort.
+ * @returns {Object} Returns the sorted object.
+ */
 Object.sortPropertiesRecursive = function(object) {
     if(!(object instanceof Object)) {
         return object;
@@ -344,6 +542,13 @@ Object.sortPropertiesRecursive = function(object) {
     return ret;
 }
 
+/**
+ * Creates an object from an array of objects, using one field as the key and another as the value (optional).
+ * @param {Array} array - The array of objects.
+ * @param {string} keyField - The field to use as the key.
+ * @param {string|null} valueField - The field to use as the value (optional).
+ * @returns {Object} Returns the resulting object.
+ */
 Object.createFromArray = function(array, keyField, valueField = null) {
     const ret = {};
     array.forEach((v) => {
@@ -352,9 +557,18 @@ Object.createFromArray = function(array, keyField, valueField = null) {
     return ret;
 }
 
-// Hide method from for-in loops
+/**
+ * Iterates over the properties of an object, invoking a callback function for each property.
+ * @param {Object} o - The object to iterate over.
+ * @param {Function} callback - The callback function to invoke for each property.
+ */
 Object.defineProperty(Array.prototype, "equals", { enumerable: false });
 
+/**
+ * Iterates over the properties of an object in reverse order, invoking a callback function for each property.
+ * @param {Object} o - The object to iterate over.
+ * @param {Function} callback - The callback function to invoke for each property.
+ */
 Object.forEach = function (o, callback) {
     if (!o) {
         return;
@@ -370,6 +584,12 @@ Object.forEach = function (o, callback) {
     }
 };
 
+/**
+ * Retrieves the index of a property in an object.
+ * @param {Object} o - The object to search.
+ * @param {string} name - The name of the property.
+ * @returns {number} Returns the index of the property.
+ */
 Object.forReverseEach = function (o, callback) {
     if (!o) {
         return;
@@ -386,13 +606,29 @@ Object.forReverseEach = function (o, callback) {
     }
 };
 
+/**
+ * Counts the number of keys in an object.
+ * @param {Object} o - The object to count keys from.
+ * @returns {number} Returns the number of keys in the object.
+ */
 Object.indexOf = function (o, name) {
     const keys = Object.keys(o);
     return keys.indexOf(name);
 };
 
+/**
+ * Counts the number of keys in an object.
+ * @param {Object} o - The object to count keys from.
+ * @returns {number} Returns the number of keys in the object.
+ */
 Object.countKeys = function (o) { return o && o instanceof Object && !Array.isArray(o) ? Object.keys(o).length : 0; };
 
+/**
+ * Converts an object to a query string format.
+ * @param {Object} o - The object to convert.
+ * @param {Array} splittersArray - An array containing the separator strings.
+ * @returns {string} Returns the query string.
+ */
 Object.toQueryString = function (o, splittersArray) {
     let ret = [];
     Object.keys(o).forEach((key) => {
@@ -401,6 +637,11 @@ Object.toQueryString = function (o, splittersArray) {
     return ret.join(splittersArray[0]);
 };
 
+/**
+ * Converts an object to a CSS styles string.
+ * @param {Object} o - The object to convert.
+ * @returns {string} Returns the CSS styles string.
+ */
 Object.toStyles = function (o) {
     let splittersArray = [';', ':'];
     let ret = [];
@@ -412,6 +653,14 @@ Object.toStyles = function (o) {
     return ret.join(splittersArray[0]);
 };
 
+/**
+ * Inserts a key-value pair into an object at a specified index.
+ * @param {Object} object - The object to insert into.
+ * @param {string} key - The key to insert.
+ * @param {*} value - The value to insert.
+ * @param {number} index - The index at which to insert the key-value pair.
+ * @returns {Object} Returns the modified object.
+ */
 Object.insertAt = function (object, key, value, index) {
 
     // Create a temp object and index variable
@@ -438,6 +687,12 @@ Object.insertAt = function (object, key, value, index) {
 
 };
 
+/**
+ * Converts a nested object to a plain object with flattened keys.
+ * @param {Object} object - The object to convert.
+ * @param {string} [prefix=''] - Optional prefix to prepend to flattened keys.
+ * @returns {Object} Returns the plain object with flattened keys.
+ */
 Object.toPlain = function (object, prefix) {
     let ret = {};
     Object.forEach(object, (k, v) => {
@@ -451,6 +706,13 @@ Object.toPlain = function (object, prefix) {
     return ret;
 };
 
+/**
+ * Creates a deep clone of an object, optionally excluding specified keys.
+ * @param {Object|string} object - The object to clone, or a JSON string representation of the object.
+ * @param {Function|null} [callback=null] - Optional callback function to apply to the cloned object.
+ * @param {Array} [excludeKeys=[]] - Optional array of keys to exclude from the cloned object.
+ * @returns {Object} Returns the cloned object.
+ */
 Object.cloneRecursive = function (object, callback = null, excludeKeys = []) {
     if(typeof object == 'string') {
         object = JSON.parse(object);    
@@ -495,6 +757,12 @@ Object.cloneRecursive = function (object, callback = null, excludeKeys = []) {
     return ret;
 };
 
+/**
+ * Checks if two objects are shallowly equal.
+ * @param {Object} object1 - The first object to compare.
+ * @param {Object} object2 - The second object to compare.
+ * @returns {boolean} Returns true if the objects are shallowly equal, false otherwise.
+ */
 Object.shallowEqual = function (object1, object2) {
     if (!object1 || !object2) {
         return object1 == object2;
@@ -528,6 +796,13 @@ Object.shallowEqual = function (object1, object2) {
     return true;
 };
 
+/**
+ * Sets the value of a property in an object using dot notation.
+ * @param {Object} obj - The object to set the value in.
+ * @param {string|Array} path - The path to the property, either as a dot-separated string or as an array of keys.
+ * @param {*} value - The value to set.
+ * @returns {boolean} Returns true if the value was successfully set, false otherwise.
+ */
 Object.setValue = function (obj, path, value) {
     let properties = Array.isArray(path) ? path : path.split(".");
 
@@ -540,6 +815,13 @@ Object.setValue = function (obj, path, value) {
     }
 };
 
+/**
+ * Retrieves the value of a property in an object using dot notation.
+ * @param {Object} obj - The object to retrieve the value from.
+ * @param {string|Array} path - The path to the property, either as a dot-separated string or as an array of keys.
+ * @param {*} [_default=undefined] - Optional default value if the property is not found.
+ * @returns {*} Returns the value of the property, or the default value if not found.
+ */
 Object.getValue = function (obj, path, _default = undefined) {
     let properties = Array.isArray(path) ? path : path.split(".");
 
@@ -550,6 +832,12 @@ Object.getValue = function (obj, path, _default = undefined) {
     }
 };
 
+/**
+ * Maps over the properties of an object, applying a function to each key-value pair.
+ * @param {Object} obj - The object to map over.
+ * @param {Function} func - The mapping function to apply to each key-value pair.
+ * @returns {Object} Returns a new object with the mapped key-value pairs.
+ */
 Object.map = function (obj, func) {
     let newObject = {};
     Object.forEach(obj, (key, value) => {
@@ -561,7 +849,11 @@ Object.map = function (obj, func) {
     return newObject;
 };
 
-
+/**
+ * Returns an array of all captured groups in a string that match the regular expression.
+ * @param {string} str - The string to search for matches.
+ * @returns {Array} Returns an array containing all captured groups.
+ */
 RegExp.prototype.all = function(str) {
     let ret = [];
     const matches = str.match(this);
@@ -572,6 +864,12 @@ RegExp.prototype.all = function(str) {
     }
     return ret;
 }
+
+/**
+ * Escapes special characters in a string to create a valid regular expression pattern.
+ * @param {string} string - The string to escape.
+ * @returns {string} Returns the escaped string.
+ */
 RegExp.quote = function(string) {
     if(typeof string === 'string') {
         return string.replace(/[.,*+?^${}()|[\]\\]/g, "\\$&");
@@ -579,20 +877,55 @@ RegExp.quote = function(string) {
     return string;
 }
 
-/* String prototype expansion */
+/**
+ * Removes formatting characters and converts the string to a number using the current locale settings.
+ * @returns {number|string} Returns the unformatted number if successful, otherwise an empty string.
+ */
 String.prototype.unformatCurrent = function() {
     return (this + '') === '' ? '' : new Intl.NumberFormat(App.NumberFormat).unformat(this);
 }
+/**
+ * Formats the string as a number using the current locale settings.
+ * @returns {string} Returns the formatted string representation of the number if successful, otherwise an empty string.
+ */
 String.prototype.formatCurrent = function() {
     return (this + '') === '' || isNaN(this) ? '' : new Intl.NumberFormat(App.NumberFormat).format(this);
 }
+/**
+ * Removes HTML tags and entities from the string.
+ * @returns {string} Returns the string with HTML tags removed.
+ */
 String.prototype.stripHtml = function () { return this.replace(/<[^>]+>/gim, "").replace(/<\/[^>]+>/gim, "").replace(/&nbsp;/gim, ""); }
+/**
+ * Removes leading whitespace or specified characters from the string.
+ * @param {string} [c] - Optional characters to trim from the beginning of the string.
+ * @returns {string} Returns the string with leading whitespace or specified characters removed.
+ */
 String.prototype.ltrim = function (c) { return this.replace(new RegExp('^' + (c != undefined ? c : '\\s') + '+'), ""); }
+/**
+ * Removes trailing whitespace or specified characters from the string.
+ * @param {string} [c] - Optional characters to trim from the end of the string.
+ * @returns {string} Returns the string with trailing whitespace or specified characters removed.
+ */
 String.prototype.rtrim = function (c) { return this.replace(new RegExp((c != undefined ? c : '\\s') + '+$'), ""); }
+/**
+ * Removes leading and trailing whitespace or specified characters from the string.
+ * @param {string} [c] - Optional characters to trim from the beginning and end of the string.
+ * @returns {string} Returns the string with leading and trailing whitespace or specified characters removed.
+ */
 String.prototype.trimString = function (c) { 
     return this.replace(new RegExp('^' + (c != undefined ? RegExp.quote(c) : '\\s') + '*(.*?)' + (c != undefined ? RegExp.quote(c) : '\\s') + '*$'), '$1'); 
 }
+/**
+ * Splits the string into an array of substrings using the specified separator.
+ * @param {string} separator - The string or regular expression used to separate the string.
+ * @returns {Array} Returns an array of substrings.
+ */
 String.prototype.trim = function (c) { return this.trimString(c); }
+/**
+ * Attempts to convert the string to an integer.
+ * @returns {number} Returns the integer value if successful, otherwise NaN.
+ */
 String.prototype.splitA = function (separator) {
     var retArr = new Array();
     var s = this;
@@ -611,14 +944,35 @@ String.prototype.splitA = function (separator) {
     }
     return retArr;
 };
+/**
+ * Attempts to convert the string to a floating-point number.
+ * @returns {number} Returns the floating-point value if successful, otherwise NaN.
+ */
 String.prototype.toInt = function () {
     return this / 1;
 };
+/**
+ * Attempts to convert the string to a floating-point number.
+ * @returns {number} Returns the floating-point value if successful, otherwise NaN.
+ */
 String.prototype.toFloat = function () {
     return this / 1.0;
 };
+/**
+ * Checks if the string represents a finite number.
+ * @returns {boolean} Returns true if the string represents a finite number, otherwise false.
+ */
 String.prototype.isFinite = function () { return isFinite(this); }
+/**
+ * Checks if the string represents a numeric value.
+ * @returns {boolean} Returns true if the string represents a numeric value, otherwise false.
+ */
 String.prototype.isNumeric = function () { return this.isFinite((this * 1.0)); }
+
+/**
+ * Checks if the string represents a valid email address.
+ * @returns {boolean} Returns true if the string represents a valid email address, otherwise false.
+ */
 String.prototype.isEmail = function () {
     if (this.indexOf(" ") != -1) {
         return false;
@@ -640,6 +994,12 @@ String.prototype.isEmail = function () {
     }
     return true;
 };
+
+/**
+ * Repeats the string a specified number of times.
+ * @param {number} n - The number of times to repeat the string.
+ * @returns {string} Returns the repeated string.
+ */
 String.prototype.repeat = function (n) {
     var a = [];
     var s = this;
@@ -648,6 +1008,12 @@ String.prototype.repeat = function (n) {
     }
     return a.join('');
 };
+/**
+ * Expands the string to a specified length by padding it with a specified character.
+ * @param {string} c - The character used for padding.
+ * @param {number} l - The desired length of the expanded string.
+ * @returns {string} Returns the expanded string.
+ */
 String.prototype.expand = function (c, l) {
     if (this.length >= l) {
         return this;
@@ -655,6 +1021,10 @@ String.prototype.expand = function (c, l) {
         return c.repeat(l - this.length) + this;
     }
 };
+/**
+ * Converts the string to a Date object.
+ * @returns {Date} Returns the Date object representing the date and time parsed from the string.
+ */
 String.prototype.toDate = function () {
 
     if (this.isNumeric()) {
@@ -673,6 +1043,10 @@ String.prototype.toDate = function () {
     let timeParts = parts[1] ? parts[1].split(':') : ['0', '0', '0'];
     return new Date((dateParts[0] + '').toInt(), (dateParts[1] + '').toInt() - 1, (dateParts[2] + '').toInt(), (timeParts[0] + '').toInt(), (timeParts[1] + '').toInt(), (timeParts[2] + '').toInt());
 };
+/**
+ * Converts the string from DDMMYYYY format to a Date object.
+ * @returns {Date} Returns the Date object representing the date parsed from the string in DDMMYYYY format.
+ */
 String.prototype.fromDDMMYYYY = function() {
     let splitter = '-';
     if(this.indexOf('.') !== -1) {
@@ -680,6 +1054,10 @@ String.prototype.fromDDMMYYYY = function() {
     }
     return (this.split(splitter)[2] + '-' + this.split(splitter)[1] + '-' + this.split(splitter)[0]).toDate();
 }
+/**
+ * Converts the string from European date format to a Date object.
+ * @returns {Date} Returns the Date object representing the date and time parsed from the string in European date format.
+ */
 String.prototype.fromEuropeanDate = function() {
     const euroDate = this;
     const parts = euroDate.split(' ');
@@ -691,12 +1069,20 @@ String.prototype.fromEuropeanDate = function() {
     return new Date(dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + ' ' + time);
 }
 
-
+/**
+ * Converts the string to a Date object with a short date format (DD/MM/YYYY).
+ * @returns {Date} Returns the Date object representing the date parsed from the string.
+ */
 String.prototype.toShortDate = function () {
     var parts = this.split(/\/|\.|\-/);
     return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parts[0]);
 
 };
+/**
+ * Truncates the string to a specified number of words followed by an ellipsis.
+ * @param {number} l - The maximum number of words to include.
+ * @returns {string} Returns the truncated string with an ellipsis.
+ */
 String.prototype.words = function (l) {
     var a = this.split(/ |,|\.|-|;|:|\(|\)|\{|\}|\[|\]/);
 
@@ -716,6 +1102,12 @@ String.prototype.words = function (l) {
         return this.substring(0, l) + '...';
     }
 };
+/**
+ * Replaces all occurrences of a substring with another substring in the string.
+ * @param {string} from - The substring to replace.
+ * @param {string} to - The substring to replace with.
+ * @returns {string} Returns the string with all occurrences of 'from' replaced by 'to'.
+ */
 String.prototype.replaceAll = function (from, to) {
     let s = this;
     let s1 = s.replace(from, to);
@@ -725,11 +1117,22 @@ String.prototype.replaceAll = function (from, to) {
     }
     return s1;
 };
+/**
+ * Replaces placeholders in the string with values from an object using template syntax.
+ * @param {Object} values - The object containing values to substitute into the template.
+ * @returns {string} Returns the string with placeholders replaced by corresponding values from the object.
+ */
 String.prototype.template = function (values) {
     return this.replace(/{(.+?)(?:\|(.*?))?}/g, (keyExpr, key, defaultVal) => {
         return eval(`typeof values?.${key}`) === 'undefined' ? (defaultVal ?? "") : eval(`values.${key}`);
     })
 };
+/**
+ * Replaces substrings in the string with specified replacements from an array.
+ * @param {string[]} from - The substrings to replace.
+ * @param {string[]} to - The replacement substrings.
+ * @returns {string} Returns the string with specified replacements.
+ */
 String.prototype.replaceArray = function (from, to) {
     let ret = this;
     from.forEach(function (el) {
@@ -737,6 +1140,12 @@ String.prototype.replaceArray = function (from, to) {
     });
     return ret;
 };
+/**
+ * Replaces placeholders in the string with values from an object using key-value pairs.
+ * @param {Object} obj - The object containing key-value pairs for replacement.
+ * @param {string[]} [wrappers] - Optional wrappers to surround keys in the string.
+ * @returns {string} Returns the string with placeholders replaced by corresponding values from the object.
+ */
 String.prototype.replaceObject = function (obj, wrappers) {
     let ret = this;
     Object.forEach(obj, function (name, value) {
@@ -744,16 +1153,34 @@ String.prototype.replaceObject = function (obj, wrappers) {
     });
     return ret;
 };
+/**
+ * Converts the string representing a monetary value to an integer (removes spaces).
+ * @returns {number} Returns the integer value parsed from the monetary string.
+ */
 String.prototype.fromMoney = function () {
     return parseInt(val.replace(/\s*/g, ''));
 };
+/**
+ * Converts the string representing a time in HH:MM:SS format to seconds.
+ * @returns {number} Returns the time in seconds parsed from the string.
+ */
 String.prototype.fromTimeString = function () {
     let parts = this.split(':');
     return parseInt(parseInt(parts[2]) + parseInt(parts[1]) * 60 + parseInt(parts[0]) * 60 * 60);
 };
+/**
+ * Capitalizes the first character of the string.
+ * @returns {string} Returns the string with the first character capitalized.
+ */
 String.prototype.capitalize = function () {
     return this.substring(0, 1).toUpperCase() + this.substring(1);
 };
+/**
+ * Transliterates the string, converting characters from one script to another.
+ * This method aims to convert characters from one writing system to another.
+ * Specific rules for transliteration should be implemented separately.
+ * @returns {string} The transliterated string.
+ */
 String.prototype.Transliterate = function () {
     let val = this;
 
@@ -832,6 +1259,11 @@ String.prototype.Transliterate = function () {
     )
     return val;
 };
+/**
+ * Converts Cyrillic characters to URL-friendly format.
+ * @param {number} [words=3] - Number of words to include in the generated URL.
+ * @returns {string} The generated URL string.
+ */
 String.prototype.CyrToUrl = function (words) {
     if (words == undefined) words = 3;
 
@@ -851,6 +1283,12 @@ String.prototype.CyrToUrl = function (words) {
     return val.trimString();
 
 };
+/**
+ * Truncates a string and appends ellipsis (...) if its length exceeds the specified length.
+ * @param {number} length - The maximum length of the truncated string.
+ * @param {boolean} [hasTitle=false] - Indicates whether to include a title attribute with the full string.
+ * @returns {string} The truncated string with ellipsis.
+ */
 String.prototype.ellipsis = function (length, hasTitle = false) {
     var str = this;
     if (!str) {
@@ -871,7 +1309,15 @@ String.prototype.ellipsis = function (length, hasTitle = false) {
     }
     return ret;
 };
+/**
+ * Reverses the order of characters in the string.
+ * @returns {string} The reversed string.
+ */
 String.prototype.reverse = function () { return this.split("").reverse().join(""); }
+/**
+ * Converts a hexadecimal string to its equivalent ASCII string.
+ * @returns {string} The ASCII string.
+ */
 String.prototype.hexToString = function () {
     let string = '';
     for (let i = 0; i < this.length; i += 2) {
@@ -879,13 +1325,24 @@ String.prototype.hexToString = function () {
     }
     return string;
 };
-
+/**
+ * Replaces the last part of the string separated by the specified delimiter with the new part.
+ * @param {string} splitter - The delimiter used to split the string.
+ * @param {string} newPart - The new part to replace the last part with.
+ * @returns {string} The modified string.
+ */
 String.prototype.replaceLastPart = function(splitter, newPart) {
     let parts = this.split(splitter);
     parts.splice(-1);
     return parts.join(splitter) + splitter + newPart;
 }
-
+/**
+ * Converts an object to a string representation using specified delimiters.
+ * @param {object} object - The object to convert.
+ * @param {string[]} delimiters - Array containing two delimiters for key-value pairs and items separation.
+ * @param {Function} [callback] - Function to process each value in the object.
+ * @returns {string} The string representation of the object.
+ */
 String.fromObject = function (object, delimiters, callback) {
     let ret = [];
     Object.forEach(object, function (name, value) {
@@ -893,6 +1350,13 @@ String.fromObject = function (object, delimiters, callback) {
     });
     return ret.join(delimiters[0]);
 };
+/**
+ * Converts a string representation of an object to an object.
+ * @param {string[]} delimiters - Array containing two delimiters for key-value pairs and items separation.
+ * @param {Function} [callback] - Function to process each value in the resulting object.
+ * @param {Function} [keyCallback] - Function to process each key in the resulting object.
+ * @returns {object} The object created from the string representation.
+ */
 String.prototype.toObject = function (delimiters, callback, keyCallback) {
 
     let ret = {};
@@ -912,6 +1376,11 @@ String.prototype.toObject = function (delimiters, callback, keyCallback) {
 
     return ret;
 };
+/**
+ * Replaces month names in the string with the specified months.
+ * @param {string[]} months - Array containing month names.
+ * @returns {string} The string with replaced month names.
+ */
 String.prototype.replaceDateMonthName = function (months) {
     let n = this + '';
     const enMonths = ['Jan', 'Feb', 'Mar', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -920,6 +1389,12 @@ String.prototype.replaceDateMonthName = function (months) {
     }
     return n;
 };
+/**
+ * Converts a string to camelCase format.
+ * @param {string} [splitter='-'] - The delimiter to split the string into words.
+ * @param {boolean} [firstIsCapital=false] - Indicates whether the first letter should be capitalized.
+ * @returns {string} The camelCase formatted string.
+ */
 String.prototype.toCamelCase = function (splitter, firstIsCapital) {
     splitter = splitter || '-';
     if (this.trimString().indexOf('--') === 0) { return this; }
@@ -931,6 +1406,11 @@ String.prototype.toCamelCase = function (splitter, firstIsCapital) {
     });
     return ret.join('');
 };
+/**
+ * Converts a camelCase formatted string to its original format.
+ * @param {string} [splitter='-'] - The delimiter to insert between words.
+ * @returns {string} The original formatted string.
+ */
 String.prototype.fromCamelCase = function (splitter) {
     splitter = splitter || '-';
     if (this.trimString().indexOf('--') === 0) { return this; }
@@ -938,6 +1418,10 @@ String.prototype.fromCamelCase = function (splitter) {
     return this.replaceAll(new RegExp('([A-Z])'), (v) => { return splitter + v.toLowerCase(); }).rtrim('-').ltrim('-');
 
 };
+/**
+ * Retrieves the first character of each word in the string.
+ * @returns {string} The concatenated first characters of words.
+ */
 String.prototype.firstCharsOfWords = function () {
     let parts = this.split(' ');
     let chars = [];
@@ -946,23 +1430,48 @@ String.prototype.firstCharsOfWords = function () {
     });
     return chars.join('');
 };
+/**
+ * Checks if the string represents an integer.
+ * @returns {boolean} true if the string represents an integer, otherwise false.
+ */
 String.prototype.isInt = function () {
     return Number.isInteger(Number(this));
 };
+/**
+ * Checks if the string represents a floating-point number.
+ * @returns {boolean} true if the string represents a float, otherwise false.
+ */
 String.prototype.isFloat = function () {
     return this.isNumeric() && !Number.isInteger(this);
 };
+/**
+ * Checks if the string represents a valid date.
+ * @returns {boolean} true if the string represents a valid date, otherwise false.
+ */
 String.prototype.isDate = function () {
     return (new Date(this) !== "Invalid Date") && !isNaN(new Date(this));
 };
+
+/**
+ * Converts a string containing a full name to abbreviated form (e.g., John D.).
+ * @returns {string} The abbreviated full name.
+ */
 String.prototype.makeFio = function () {
     const parts = this.split(' ');
     return (parts[0].capitalize() + ' ' + (parts.length > 1 ? (parts[1].substring(0, 1) + '. ' + (parts.length > 2 ? parts[2].substring(0, 1) + '.' : '')) : '')).trimString();
 };
+/**
+ * Extracts the file extension from the string.
+ * @returns {string} The extracted file extension.
+ */
 String.prototype.extractExt = function () {
     const parts = this.split('.');
-    return parts[parts.length - 1];
+    return parts[parts.length - 1].toLowerCase();
 };
+/**
+ * Extracts information about the file path.
+ * @returns {object} An object containing information about the file path (basename, extension, filename, dirname).
+ */
 String.prototype.pathinfo = function () {
     try {
         const parts = this.split('/');
@@ -982,6 +1491,10 @@ String.prototype.pathinfo = function () {
     }
 };
 
+/**
+ * Extracts information from a URL string including the URL and its query parameters.
+ * @returns {object} An object containing the URL and its options (query parameters).
+ */
 String.prototype.urlinfo = function () {
     try {
         const parts = this.split('?');
@@ -995,6 +1508,10 @@ String.prototype.urlinfo = function () {
     }
 };
 
+/**
+ * Removes XML entities from the string.
+ * @returns {string} The string with XML entities replaced.
+ */
 String.prototype.removeXmlEntities = function () {
     let s = this + '';
     s = s.replaceAll('&laquo;', '«');
@@ -1009,10 +1526,18 @@ String.prototype.removeXmlEntities = function () {
     return s;
 };
 
+/**
+ * Sets the base URL for relative URLs in the string.
+ * @param {string} baseUrl - The base URL to prepend to relative URLs.
+ * @returns {string} The modified string with the base URL set.
+ */
 String.prototype.setBaseUrl = function (baseUrl) {
     return this.replaceAll('src="/', 'src="' + baseUrl + '/');
 };
-
+/**
+ * Copies the string to the clipboard.
+ * @returns {Promise} A promise that resolves when the string is successfully copied to the clipboard.
+ */
 String.prototype.copyToClipboard = function () {
     const text = this + '';
     return new Promise((resolve, reject) => {
@@ -1052,7 +1577,11 @@ String.prototype.copyToClipboard = function () {
     });
 
 };
-
+/**
+ * Calculates the MD5 hash of the string.
+ * @param {string} [e=''] - The string to calculate the MD5 hash for.
+ * @returns {string} The MD5 hash of the string.
+ */
 String.MD5 = function (e) {
     if (!e) {
         e = '';
@@ -1122,11 +1651,18 @@ String.MD5 = function (e) {
     for (e = 0; e < f.length; e += 16) q = a, r = b, s = c, t = d, a = k(a, b, c, d, f[e + 0], 7, 3614090360), d = k(d, a, b, c, f[e + 1], 12, 3905402710), c = k(c, d, a, b, f[e + 2], 17, 606105819), b = k(b, c, d, a, f[e + 3], 22, 3250441966), a = k(a, b, c, d, f[e + 4], 7, 4118548399), d = k(d, a, b, c, f[e + 5], 12, 1200080426), c = k(c, d, a, b, f[e + 6], 17, 2821735955), b = k(b, c, d, a, f[e + 7], 22, 4249261313), a = k(a, b, c, d, f[e + 8], 7, 1770035416), d = k(d, a, b, c, f[e + 9], 12, 2336552879), c = k(c, d, a, b, f[e + 10], 17, 4294925233), b = k(b, c, d, a, f[e + 11], 22, 2304563134), a = k(a, b, c, d, f[e + 12], 7, 1804603682), d = k(d, a, b, c, f[e + 13], 12, 4254626195), c = k(c, d, a, b, f[e + 14], 17, 2792965006), b = k(b, c, d, a, f[e + 15], 22, 1236535329), a = l(a, b, c, d, f[e + 1], 5, 4129170786), d = l(d, a, b, c, f[e + 6], 9, 3225465664), c = l(c, d, a, b, f[e + 11], 14, 643717713), b = l(b, c, d, a, f[e + 0], 20, 3921069994), a = l(a, b, c, d, f[e + 5], 5, 3593408605), d = l(d, a, b, c, f[e + 10], 9, 38016083), c = l(c, d, a, b, f[e + 15], 14, 3634488961), b = l(b, c, d, a, f[e + 4], 20, 3889429448), a = l(a, b, c, d, f[e + 9], 5, 568446438), d = l(d, a, b, c, f[e + 14], 9, 3275163606), c = l(c, d, a, b, f[e + 3], 14, 4107603335), b = l(b, c, d, a, f[e + 8], 20, 1163531501), a = l(a, b, c, d, f[e + 13], 5, 2850285829), d = l(d, a, b, c, f[e + 2], 9, 4243563512), c = l(c, d, a, b, f[e + 7], 14, 1735328473), b = l(b, c, d, a, f[e + 12], 20, 2368359562), a = m(a, b, c, d, f[e + 5], 4, 4294588738), d = m(d, a, b, c, f[e + 8], 11, 2272392833), c = m(c, d, a, b, f[e + 11], 16, 1839030562), b = m(b, c, d, a, f[e + 14], 23, 4259657740), a = m(a, b, c, d, f[e + 1], 4, 2763975236), d = m(d, a, b, c, f[e + 4], 11, 1272893353), c = m(c, d, a, b, f[e + 7], 16, 4139469664), b = m(b, c, d, a, f[e + 10], 23, 3200236656), a = m(a, b, c, d, f[e + 13], 4, 681279174), d = m(d, a, b, c, f[e + 0], 11, 3936430074), c = m(c, d, a, b, f[e + 3], 16, 3572445317), b = m(b, c, d, a, f[e + 6], 23, 76029189), a = m(a, b, c, d, f[e + 9], 4, 3654602809), d = m(d, a, b, c, f[e + 12], 11, 3873151461), c = m(c, d, a, b, f[e + 15], 16, 530742520), b = m(b, c, d, a, f[e + 2], 23, 3299628645), a = n(a, b, c, d, f[e + 0], 6, 4096336452), d = n(d, a, b, c, f[e + 7], 10, 1126891415), c = n(c, d, a, b, f[e + 14], 15, 2878612391), b = n(b, c, d, a, f[e + 5], 21, 4237533241), a = n(a, b, c, d, f[e + 12], 6, 1700485571), d = n(d, a, b, c, f[e + 3], 10, 2399980690), c = n(c, d, a, b, f[e + 10], 15, 4293915773), b = n(b, c, d, a, f[e + 1], 21, 2240044497), a = n(a, b, c, d, f[e + 8], 6, 1873313359), d = n(d, a, b, c, f[e + 15], 10, 4264355552), c = n(c, d, a, b, f[e + 6], 15, 2734768916), b = n(b, c, d, a, f[e + 13], 21, 1309151649), a = n(a, b, c, d, f[e + 4], 6, 4149444226), d = n(d, a, b, c, f[e + 11], 10, 3174756917), c = n(c, d, a, b, f[e + 2], 15, 718787259), b = n(b, c, d, a, f[e + 9], 21, 3951481745), a = h(a, q), b = h(b, r), c = h(c, s), d = h(d, t);
     return (p(a) + p(b) + p(c) + p(d)).toLowerCase()
 };
-
+/**
+ * Generates a GUID (Globally Unique Identifier).
+ * @returns {string} The generated GUID.
+ */
 String.GUID = function () {
     return (Number.Rnd4() + Number.Rnd4() + Number.Rnd4() + Number.Rnd4() + Number.Rnd4() + Number.Rnd4() + Number.Rnd4() + Number.Rnd4());
 };
-
+/**
+ * Generates a random password of the specified length.
+ * @param {number} l - The length of the password to generate.
+ * @returns {string} The generated password.
+ */
 String.Password = function (l) {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const charset2 = '!@#%^&*()';
@@ -1140,21 +1676,21 @@ String.Password = function (l) {
     }
     return retVal;
 };
-
+/**
+ * Escapes special characters in a regular expression pattern.
+ * @param {string} string - The regular expression pattern to escape.
+ * @returns {string} The escaped regular expression pattern.
+ */
 String.EscapeRegExp = function (string) {
     return string ? string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : string;
 };
 
 
 /**
- * Например:
- * String.Pluralize('Один файл|{n} файла|{n} файлов', 1) //output: Один файл
- * String.Pluralize('Один файл|{n} файла|{n} файлов', 10) //output: 10 файлов
- *
- * @param {string} template
- * @param {int} count
- * @returns {string}
- * @constructor
+ * Pluralizes a string based on the count.
+ * @param {string} template - The template string containing plural forms separated by '|'. Use '{n}' as a placeholder for the count.
+ * @param {number} count - The count used to determine which plural form to use.
+ * @returns {string} The pluralized string.
  */
 String.Pluralize = function (template, count) {
     let cases = [2, 0, 1, 1, 1, 2],
@@ -1163,7 +1699,10 @@ String.Pluralize = function (template, count) {
     return words[(count % 100 > 4 && count % 100 < 20) ? 2 : cases[Math.min(count % 10, 5)]].replace('{n}', count);
 };
 
-
+/**
+ * Calculates the SHA-256 hash of the string.
+ * @returns {Promise<string>} A promise that resolves with the SHA-256 hash of the string.
+ */
 String.prototype.sha256 = function () {
     const msgBuffer = new TextEncoder().encode(this);
     return new Promise((resolve, reject) => {
@@ -1175,7 +1714,11 @@ String.prototype.sha256 = function () {
     });
 
 };
-
+/**
+ * Encrypts the string using the RC4 algorithm with the provided key.
+ * @param {string} key - The key used for encryption.
+ * @returns {string} The encrypted string.
+ */
 String.prototype.rc4 = function (key) {
     let str = this;
     var s = [], j = 0, x, res = '';
@@ -1200,14 +1743,20 @@ String.prototype.rc4 = function (key) {
     }
     return res;
 };
-
+/**
+ * Converts the hexadecimal string to a binary string.
+ * @returns {string} The binary string.
+ */
 String.prototype.hex2bin = function () {
     var bytes = [];
     for (var i = 0; i < this.length - 1; i += 2)
         bytes.push(parseInt(this.substring(i, i + 2), 16));
     return String.fromCharCode.apply(String, bytes);
 };
-
+/**
+ * Converts the binary string to a hexadecimal string.
+ * @returns {string} The hexadecimal string.
+ */
 String.prototype.bin2hex = function () {
     var i = 0, l = this.length, chr, hex = '';
     for (i; i < l; ++i) {
@@ -1217,19 +1766,25 @@ String.prototype.bin2hex = function () {
     return hex;
 };
 
-/* number prototype expansion */
-Number.prototype.formatCurrent = function() {
-    return isNaN(this) ? '' : new Intl.NumberFormat(App.NumberFormat).format(this);
-}
-Number.prototype.toDateFromUnixTime = function () {
-    let d = new Date();
-    d.setTime(this * 1000);
-    return d;
-};
+/**
+ * Formats the number according to the current locale.
+ * @returns {string} The formatted number string.
+ */
+Number.prototype.formatCurrent = function() { return isNaN(this) ? '' : new Intl.NumberFormat(App.NumberFormat).format(this); }
+/**
+ * Converts the Unix timestamp to a JavaScript Date object.
+ * @returns {Date} The Date object corresponding to the Unix timestamp.
+ */
+Number.prototype.toDateFromUnixTime = function () { let d = new Date(); d.setTime(this * 1000); return d; };
+/**
+ * Formats the number as a sequence with different labels depending on its last digit.
+ * @param {string[]} labels - Array of labels for different sequences.
+ * @param {boolean} [viewnumber=true] - Whether to include the number in the output.
+ * @returns {string} The formatted sequence.
+ */
 Number.prototype.formatSequence = function (labels, viewnumber) {
     let s = this + " ";
-    if (!viewnumber)
-        s = "";
+    if (!viewnumber) { s = ""; }
 
     let ssecuence = this + '';
     let sIntervalLastChar = ssecuence.substr(ssecuence.length - 1, 1);
@@ -1253,6 +1808,10 @@ Number.prototype.formatSequence = function (labels, viewnumber) {
         }
     }
 };
+/**
+ * Returns the number of decimal places.
+ * @returns {number} The number of decimal places.
+ */
 Number.prototype.decPlaces = function () {
     var n = this + '';
     n = n.split('.');
@@ -1261,6 +1820,14 @@ Number.prototype.decPlaces = function () {
     }
     return n[1].length;
 };
+/**
+ * Formats the number as a money string.
+ * @param {number} [digits=2] - The number of digits after the decimal point.
+ * @param {boolean} [force=true] - Whether to force displaying the decimal part.
+ * @param {string} [space=' '] - The character used to separate thousands.
+ * @param {boolean} [useNulls=true] - Whether to remove '.00' from the result.
+ * @returns {string} The formatted money string.
+ */
 Number.prototype.toMoney = function (digits, force = true, space = ' ', useNulls = true) {
     var result = '';
     if (digits == undefined) {
@@ -1291,6 +1858,14 @@ Number.prototype.toMoney = function (digits, force = true, space = ' ', useNulls
     }
     return ret;
 };
+/**
+ * Formats the number according to the provided type.
+ * @param {string} type - The type of formatting ('money', 'percent', or any other).
+ * @param {number} [decimal=2] - The number of decimal places.
+ * @param {string} [unit=null] - The unit to append to the formatted number.
+ * @param {string} [currencyCode=null] - The currency code for 'money' type formatting.
+ * @returns {string} The formatted number string.
+ */
 Number.prototype.intlFormat = function(type, decimal = 2, unit = null, currencyCode = null) {
     let v = this;
     if(type === 'money') {
@@ -1315,6 +1890,12 @@ Number.prototype.intlFormat = function(type, decimal = 2, unit = null, currencyC
     }
     return v;
 };
+/**
+ * Converts the number to a time string.
+ * @param {string} [daySplitter] - The character used to separate days from hours.
+ * @param {boolean} [trim00=true] - Whether to trim leading '00' and ':' characters.
+ * @returns {string} The formatted time string.
+ */
 Number.prototype.toTimeString = function (daySplitter, trim00 = true) {
     let days = 0;
     let hours = 0;
@@ -1368,6 +1949,15 @@ Number.prototype.toTimeString = function (daySplitter, trim00 = true) {
 
     return txt;
 };
+/**
+ * Converts the number to a size string.
+ * @param {string[]} postfixes - Array of postfixes for different size units.
+ * @param {number} range - The range used to determine the size unit.
+ * @param {boolean} [remove0s=false] - Whether to remove '.00' from the result.
+ * @param {boolean} [approximate=false] - Whether to round the number to the nearest integer.
+ * @param {boolean} [shownumber=true] - Whether to include the number in the output.
+ * @returns {string} The formatted size string.
+ */
 Number.prototype.toSizeString = function (postfixes, range, remove0s = false, approximate = false, shownumber = true) {
     let number = this;
     let isMinus = number < 0;
@@ -1390,69 +1980,144 @@ Number.prototype.toSizeString = function (postfixes, range, remove0s = false, ap
     }
     return (shownumber ? (isMinus ? '-' : '') + number + ' ' : '') + postfixes[j];
 };
-Number.prototype.percentOf = function (max) {
-    return (this * 100) / max;
-};
-Number.prototype.isInt = function () {
-    return Number.isInteger(this);
-};
-Number.prototype.isFloat = function () {
-    return Number.isFloat(this);
-};
-Number.prototype.isNumeric = function () {
-    return true;
-};
-Number.random = function (min, max) {
-    return Math.floor(min + Math.random() * (max + 1));
-};
-Number.Rnd4 = function () {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-};
-Number.unique = function () {
-    return (window.performance.getEntries()[0].duration + window.performance.now() + Math.random()) * 1e13;
-};
+/**
+ * Calculates the percentage of the current number relative to a maximum value.
+ * @param {number} max - The maximum value.
+ * @returns {number} The percentage.
+ */
+Number.prototype.percentOf = function (max) { return (this * 100) / max; };
+/**
+ * Checks if the number is an integer.
+ * @returns {boolean} True if the number is an integer, false otherwise.
+ */
+Number.prototype.isInt = function () { return Number.isInteger(this); };
+/**
+ * Checks if the number is a float.
+ * @returns {boolean} True if the number is a float, false otherwise.
+ */
+Number.prototype.isFloat = function () { return Number.isFloat(this); };
+/**
+ * Checks if the number is numeric.
+ * @returns {boolean} Always returns true.
+ */
+Number.prototype.isNumeric = function () { return true; };
+/**
+ * Generates a random number between the specified range.
+ * @param {number} min - The minimum value.
+ * @param {number} max - The maximum value.
+ * @returns {number} The random number.
+ */
+Number.random = function (min, max) { return Math.floor(min + Math.random() * (max + 1)); };
+/**
+ * Generates a random hexadecimal string of length 4.
+ * @returns {string} The random hexadecimal string.
+ */
+Number.Rnd4 = function () { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); };
+/**
+ * Generates a unique number based on the current timestamp, performance data, and randomness.
+ * @returns {number} The unique number.
+ */
+Number.unique = function () { return (window.performance.getEntries()[0].duration + window.performance.now() + Math.random()) * 1e13;};
 
-
-/* date prototype expansion */
-Date.prototype.toDbDate = function () {
-    return this.getFullYear() + '-' + ((this.getMonth() + 1) + '').expand('0', 2) + '-' + (this.getDate() + '').expand('0', 2) + ' ' + (this.getHours() + '').expand('0', 2) + ':' + (this.getMinutes() + '').expand('0', 2) + ':' + (this.getSeconds() + '').expand('0', 2);
-};
-Date.prototype.toUnixTime = function () {
-    return this.getTime() / 1000;
-};
-Date.prototype.toShortDateString = function () {
-    return this.getFullYear() + '-' + ((this.getMonth() + 1) + '').expand('0', 2) + '-' + (this.getDate() + '').expand('0', 2);
-};
-Date.prototype.toTimeString = function (hasSeconds = true) {
-    if (this == 'Invalid Date') {
-        return '00:00:00';
-    }
-    return (this.getHours() + '').expand('0', 2) + ':' + (this.getMinutes() + '').expand('0', 2) + (hasSeconds ? ':' + (this.getSeconds() + '').expand('0', 2) : '');
-};
+/**
+ * Formats the date as a string in the 'YYYY-MM-DD HH:mm:ss' format.
+ * @returns {string} The formatted date string.
+ */
+Date.prototype.toDbDate = function () { return this.getFullYear() + '-' + ((this.getMonth() + 1) + '').expand('0', 2) + '-' + (this.getDate() + '').expand('0', 2) + ' ' + (this.getHours() + '').expand('0', 2) + ':' + (this.getMinutes() + '').expand('0', 2) + ':' + (this.getSeconds() + '').expand('0', 2); };
+/**
+ * Converts the date to Unix timestamp (seconds since January 1, 1970).
+ * @returns {number} The Unix timestamp.
+ */
+Date.prototype.toUnixTime = function () { return this.getTime() / 1000; };
+/**
+ * Formats the date as a short date string in the 'YYYY-MM-DD' format.
+ * @returns {string} The formatted short date string.
+ */
+Date.prototype.toShortDateString = function () { return this.getFullYear() + '-' + ((this.getMonth() + 1) + '').expand('0', 2) + '-' + (this.getDate() + '').expand('0', 2); };
+/**
+ * Formats the time part of the date as a string in the 'HH:mm:ss' format.
+ * @param {boolean} [hasSeconds=true] - Whether to include seconds in the output.
+ * @returns {string} The formatted time string.
+ */
+Date.prototype.toTimeString = function (hasSeconds = true) { if (this == 'Invalid Date') { return '00:00:00'; }; return (this.getHours() + '').expand('0', 2) + ':' + (this.getMinutes() + '').expand('0', 2) + (hasSeconds ? ':' + (this.getSeconds() + '').expand('0', 2) : ''); };
+/**
+ * Checks if the given year is a leap year.
+ * @param {number} year - The year to check.
+ * @returns {boolean} True if the year is a leap year, false otherwise.
+ */
 Date.isLeapYear = function (year) {  return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); };
+/**
+ * Returns the number of days in the given month and year.
+ * @param {number} year - The year.
+ * @param {number} month - The month (0-based index).
+ * @returns {number} The number of days in the month.
+ */
 Date.daysInMonth = function (year, month) { return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month]; };
 
+/**
+ * Returns the number of days in the month of the current date.
+ * @returns {number} The number of days in the month.
+ */
 Date.prototype.daysInMonth = function () {  return Date.daysInMonth(this.getFullYear(), this.getMonth()); };
+/**
+ * Represents the timezone offset of the current date in hours.
+ */
 Date.prototype.timezoneoffset = (new Date()).getTimezoneOffset() / 60;
+/**
+ * Converts the current date to the local time based on the timezone offset.
+ * @returns {Date} The date converted to local time.
+ */
 Date.prototype.toLocalTime = function () { this.setTime(this.getTime() - this.timezoneoffset * 60 * 60 * 1000); return this; };
-Date.prototype.addMinute = function (min) { this.setTime(this.getTime() + min * 60 * 1000); return this; }
-Date.prototype.addHours = function (hours) { this.setTime(this.getTime() + hours * 60 * 60 * 1000); return this; }
-Date.prototype.addDays = function (days) { this.setTime(this.getTime() + days * 24 * 60 * 60 * 1000); return this; }
-Date.prototype.addYears = function (years) { this.setFullYear(this.getFullYear() + years); return this; }
-Date.prototype.addMonths = function (months, setDay = true) { 
-    let n = this.getDate();
-    this.setMonth(this.getMonth() + months);
-    if(setDay) {
-        this.setDate(Math.min(n, this.daysInMonth()));
-    }
-    return this;
-}
-Date.prototype.isWorkingDay = function(holidays) {
-    return !([0, 6].indexOf(this.getDay()) !== -1 || holidays.indexOf(this.toShortDateString()) !== -1);
-}
-Date.prototype.isHoliday = function(holidays) {
-    return !(holidays.indexOf(this.toShortDateString()) !== -1);
-}
+/**
+ * Adds the specified number of minutes to the current date.
+ * @param {number} min - The number of minutes to add.
+ * @returns {Date} The updated date.
+ */
+Date.prototype.addMinute = function (min) { this.setTime(this.getTime() + min * 60 * 1000); return this; };
+/**
+ * Adds the specified number of hours to the current date.
+ * @param {number} hours - The number of hours to add.
+ * @returns {Date} The updated date.
+ */
+Date.prototype.addHours = function (hours) { this.setTime(this.getTime() + hours * 60 * 60 * 1000); return this; };
+/**
+ * Adds the specified number of days to the current date.
+ * @param {number} days - The number of days to add.
+ * @returns {Date} The updated date.
+ */
+Date.prototype.addDays = function (days) { this.setTime(this.getTime() + days * 24 * 60 * 60 * 1000); return this; };
+/**
+ * Adds the specified number of years to the current date.
+ * @param {number} years - The number of years to add.
+ * @returns {Date} The updated date.
+ */
+Date.prototype.addYears = function (years) { this.setFullYear(this.getFullYear() + years); return this; };
+/**
+ * Adds the specified number of months to the current date.
+ * @param {number} months - The number of months to add.
+ * @param {boolean} [setDay=true] - Whether to adjust the day to be within the new month's range.
+ * @returns {Date} The updated date.
+ */
+Date.prototype.addMonths = function (months, setDay = true) {  let n = this.getDate(); this.setMonth(this.getMonth() + months); if(setDay) { this.setDate(Math.min(n, this.daysInMonth())); } return this; };
+/**
+ * Checks if the current date is a working day (not a weekend or holiday).
+ * @param {string[]} holidays - An array of holiday dates in 'YYYY-MM-DD' format.
+ * @returns {boolean} True if it's a working day, false otherwise.
+ */
+Date.prototype.isWorkingDay = function(holidays) { return !([0, 6].indexOf(this.getDay()) !== -1 || holidays.indexOf(this.toShortDateString()) !== -1); };
+/**
+ * Checks if the current date is a holiday.
+ * @param {string[]} holidays - An array of holiday dates in 'YYYY-MM-DD' format.
+ * @returns {boolean} True if it's a holiday, false otherwise.
+ */
+Date.prototype.isHoliday = function(holidays) { return !(holidays.indexOf(this.toShortDateString()) !== -1); };
+/**
+ * Adds the specified number of working days to the current date, considering holidays.
+ * @param {number} days - The number of working days to add. Positive values for future dates, negative values for past dates.
+ * @param {string[]} holidays - An array of holiday dates in 'YYYY-MM-DD' format.
+ * @param {boolean} [holidaysOnly=false] - If true, only holidays will be considered as working days.
+ * @returns {Date} The updated date.
+ */
 Date.prototype.addWorkingDays = function (days, holidays, holidaysOnly = false) { 
     let addFactor = days < 0 ? -1 : 1;
 
@@ -1468,15 +2133,37 @@ Date.prototype.addWorkingDays = function (days, holidays, holidaysOnly = false) 
     }
 
     return this; 
-}
+};
+/**
+ * Finds the next working day from the current date, considering holidays.
+ * @param {number} [addFactor=1] - The factor to add (1 for next working day, -1 for previous working day).
+ * @param {string[]} [holidays=[]] - An array of holiday dates in 'YYYY-MM-DD' format.
+ * @param {boolean} [holidaysOnly=false] - If true, only holidays will be considered as working days.
+ * @returns {Date} The next working day.
+ */
 Date.prototype.nextWorkingDay = function (addFactor = 1, holidays = [], holidaysOnly = false) {
     while(!(holidaysOnly ? this.isHoliday(holidays) : this.isWorkingDay(holidays))) {
         this.addDays(1 * addFactor);
     } 
     return this; 
-}
-Date.prototype.Copy = function() { let d = new Date(); d.setTime(this.getTime()); return d; }
-Date.prototype.Diff = function (dt) { return parseInt((dt.getTime() - this.getTime()) / 1000); }
+};
+/**
+ * Creates a copy of the current date object.
+ * @returns {Date} The copied date object.
+ */
+Date.prototype.Copy = function() { let d = new Date(); d.setTime(this.getTime()); return d; };
+/**
+ * Calculates the difference in seconds between the current date and the specified date.
+ * @param {Date} dt - The date to compare with.
+ * @returns {number} The difference in seconds.
+ */
+Date.prototype.Diff = function (dt) { return parseInt((dt.getTime() - this.getTime()) / 1000); };
+
+/**
+ * Calculates the difference in months between the current date and the specified date.
+ * @param {Date} dateTo - The date to compare with.
+ * @returns {number} The difference in months.
+ */
 Date.prototype.DiffInMonths = function (dateTo) {
     let d = new Date();
     d.setTime(this.getTime());
@@ -1487,9 +2174,37 @@ Date.prototype.DiffInMonths = function (dateTo) {
     }
     return i - 1;
 };
+/**
+ * Calculates the difference in days between the current date and the specified date.
+ * @param {Date} dateTo - The date to compare with.
+ * @returns {number} The difference in days.
+ */
 Date.prototype.DiffInDays = function (dateTo) {
     return Math.ceil(this.Diff(dateTo) / 86400);
 };
+/**
+ * Calculates holidays count within two dates
+ * @param {Date} dateTo date to
+ * @param {Array} holidays holidays with holidays mark
+ */
+Date.prototype.DiffInDaysHolidays = function(dateTo, holidays) {
+    let holidays2 = holidays.filter(v => v.isholiday).map(v => v.date);
+    let d = new Date();
+    d.setTime(this.getTime());
+    let i = 0;
+    while(d <= dateTo) {
+        if(holidays2.indexOf(d.toShortDateString()) !== -1) {
+            i++;
+        }
+        d.addDays(1);
+    }
+    return i;
+}
+/**
+ * Calculates the difference in years between the current date and the specified date.
+ * @param {Date} dateTo - The date to compare with.
+ * @returns {number} The difference in years.
+ */
 Date.prototype.DiffInYears = function(dateTo) {
     let d = new Date();
     d.setTime(this.getTime());
@@ -1499,7 +2214,12 @@ Date.prototype.DiffInYears = function(dateTo) {
         i++;
     }
     return i - 1;
-}
+};
+/**
+ * Calculates the difference between two dates in years, months, and days.
+ * @param {Date} dateTo - The date to compare with.
+ * @returns {Object} An object containing the difference in years, months, and days.
+ */
 Date.prototype.DiffFull = function(dateTo) {
 
     // не считаем дату начала и считаем дату окончания полностью
@@ -1515,7 +2235,14 @@ Date.prototype.DiffFull = function(dateTo) {
     let d = time1.DiffInDays(time2);
     return {days: d > 0 ? d : 0, months: m > 0 ? m : 0, years: y > 0 ? y : 0};
 
-}
+};
+/**
+ * Calculates the difference between two dates in years, months, and days and formats the result as tokens.
+ * @param {Date} dateTo - The date to compare with.
+ * @param {string} [splitter=' '] - The separator between tokens.
+ * @param {string[][]} [tokens] - An array of tokens for years, months, and days.
+ * @returns {string} The formatted difference string.
+ */
 Date.prototype.DiffFullTokens = function(
     dateTo,
     splitter = ' ', 
@@ -1531,6 +2258,13 @@ Date.prototype.DiffFullTokens = function(
         (diff.days > 0 ? diff.days.formatSequence(tokens[2], true).replaceAll(' ', '&nbsp;') : ''); 
 
 };
+/**
+ * Calculates the age based on the current date.
+ * @param {boolean} [removeNazad=false] - Whether to remove the "назад" (ago) suffix.
+ * @param {boolean} [returnFull=false] - Whether to return the full age string.
+ * @param {string[][]} [tokens=null] - An array of tokens for years, months, weeks, days, hours, minutes, and seconds.
+ * @returns {string} The age string.
+ */
 Date.prototype.Age = function (removeNazad = false, returnFull = false, tokens = null) {
     let time = Math.abs((new Date()).getTime() / 1000 - this.getTime() / 1000); // to get the time since that moment
 
@@ -1569,7 +2303,18 @@ Date.prototype.Age = function (removeNazad = false, returnFull = false, tokens =
         return 'только что';
     }
 };
-Date.prototype.format = function (formatString) { return this.toString(formatString); }
+/**
+ * Formats the date using the specified format string.
+ * @param {string} formatString - The format string.
+ * @returns {string} The formatted date string.
+ */
+Date.prototype.format = function (formatString) { return this.toString(formatString); };
+/**
+ * Formats the date according to the locale, optionally including time and excluding day.
+ * @param {boolean} [withTime=false] - Whether to include time.
+ * @param {boolean} [withoutDay=false] - Whether to exclude day.
+ * @returns {string} The formatted date string.
+ */
 Date.prototype.intlFormat = function (withTime = false, withoutDay = false) { 
     let dateformat = App.DateFormat || 'ru-RU';
     const params = {day: '2-digit', month: 'short', year: 'numeric'};
@@ -1582,50 +2327,106 @@ Date.prototype.intlFormat = function (withTime = false, withoutDay = false) {
     }
     const format = new Intl.DateTimeFormat(dateformat, params);
     return format.format(this); 
-}
+};
+/**
+ * Gets the day index of the year.
+ * @returns {number} The day index.
+ */
 Date.prototype.DayIndex = function () {
     var start = new Date(this.getFullYear(), 0, 0);
     var diff = this - start;
     var oneDay = 1000 * 60 * 60 * 24;
     return Math.floor(diff / oneDay);
 };
+/**
+ * Returns a short Russian date string optionally showing the year and day.
+ * @param {boolean} [showYear=true] - Whether to show the year.
+ * @param {boolean} [showDay=true] - Whether to show the day.
+ * @returns {string} The short Russian date string.
+ */
 Date.prototype.toShortRUString = function (showYear, showDay) {
     const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
     return (showDay === undefined || showDay === true ? this.getDate() + ' ' : '') + months[this.getMonth()] + (showYear === undefined || showYear === true ? ' ' + this.getFullYear() : '');
 };
+/**
+ * Creates a copy of the current date object.
+ * @returns {Date} The copied date object.
+ */
 Date.prototype.copy = function () {
     let dt = new Date();
     dt.setTime(this.getTime());
     return dt;
 };
+/**
+ * Sets the date to the start of the current year.
+ * @returns {Date} The updated date object.
+ */
 Date.prototype.setAsStartOfYear = function() {
     this.setDate(1);
     this.setMonth(0);
     return this;
 };
+/**
+ * Sets the date to the end of the current year.
+ * @returns {Date} The updated date object.
+ */
 Date.prototype.setAsEndOfYear = function() {
     this.setMonth(11);
     this.setDate(31);
     return this;
 };
+/**
+ * Gets the quarter of the year.
+ * @returns {number} The quarter number.
+ */
 Date.prototype.getQuarter = function() {
     return Math.floor((this.getMonth() + 3) / 3);
-}
+};
+/**
+ * Converts the date to a quarter string.
+ * @param {string} [quarterName='квартал'] - The name of the quarter.
+ * @param {boolean} [numberOnly=false] - Whether to return only the quarter number.
+ * @returns {string} The quarter string.
+ */
 Date.prototype.toQuarterString = function(quarterName = 'квартал', numberOnly = false) {
     let quarter = this.getQuarter();
     if (numberOnly) {
         return quarter;
     }
     return quarter + ' ' + quarterName + ' ' + this.getFullYear();
-}
-Date.Now = function () { return new Date(); }
-Date.Ms = function () { return Date.Now().getTime(); }
-Date.Mc = function () { return (window.performance.getEntries()[0].duration + window.performance.now()) * 1e13; }
+};
+/**
+ * Gets the current date and time.
+ * @returns {Date} The current date and time.
+ */
+Date.Now = function () { return new Date(); };
+/**
+ * Gets the current time in milliseconds.
+ * @returns {number} The current time in milliseconds.
+ */
+Date.Ms = function () { return Date.Now().getTime(); };
+/**
+ * Gets a unique timestamp.
+ * @returns {number} The unique timestamp.
+ */
+Date.Mc = function () { return (window.performance.getEntries()[0].duration + window.performance.now()) * 1e13; };
+/**
+ * Creates a date object from the specified timestamp.
+ * @param {number} from - The timestamp.
+ * @returns {Date} The date object.
+ */
 Date.from = function (from) {
     let dt = new Date();
     dt.setTime(parseInt(from));
     return dt;
 };
+/**
+ * Converts a quarter and year to a period start or end date string.
+ * @param {number} quarter - The quarter number (1 to 4).
+ * @param {number} year - The year.
+ * @param {number} [startOrEnd=1] - 1 for start date, 2 for end date.
+ * @returns {string} The period start or end date string.
+ */
 Date.QuarterToPeriod = function(quarter, year, startOrEnd = 1) {
     
     let ret = '';
@@ -1646,7 +2447,11 @@ Date.QuarterToPeriod = function(quarter, year, startOrEnd = 1) {
 
 }
 
-
+/**
+ * Animates scrolling to a specified scrollTop value within a specified duration.
+ * @param {number} to - The target scrollTop value to scroll to.
+ * @param {number} duration - The duration of the animation in milliseconds.
+ */
 Element.prototype.animateScrollTop = function(to, duration) {
     let start = this.scrollTop,
         change = to - start,
@@ -1666,8 +2471,10 @@ Element.prototype.animateScrollTop = function(to, duration) {
 
 
 /**
- * Удостоверяется, что элемент виден в паренте
- * @param {Element} container
+ * Ensures that the element is visible within its parent container.
+ * Scrolls the container to bring the element into view if necessary.
+ * @param {Element} container The parent container element.
+ * @param {number} [top=null] Additional offset from the top of the container.
  */
 Element.prototype.ensureInViewport = function (container, top = null) {
 
@@ -1691,8 +2498,9 @@ Element.prototype.ensureInViewport = function (container, top = null) {
 };
 
 /**
- * Проверяет видим ли элемент полностью
- * @param {Element} container
+ * Checks if the element is fully visible within its parent container.
+ * @param {Element} container The parent container element.
+ * @returns {boolean} True if the element is fully visible, false otherwise.
  */
 Element.prototype.inInViewport = function (container) {
 
@@ -1713,6 +2521,10 @@ Element.prototype.inInViewport = function (container) {
     return true;
 };
 
+/**
+ * Returns the index of the element within its parent's list of children.
+ * @returns {number|null} The index of the element, or null if it has no parent.
+ */
 Element.prototype.index = function () {
     if(this.parentElement) {
         return Array.prototype.indexOf.call(this.parentElement.children, this);
@@ -1722,9 +2534,10 @@ Element.prototype.index = function () {
 };
 
 /**
- * Краткая запись для установки атрибута
- * @param {string} name название атрибута
- * @param {string} value значение атрибута
+ * Provides a shortcut for working with element attributes.
+ * @param {string} [name] The name of the attribute.
+ * @param {string} [value] The value of the attribute.
+ * @returns {string|Element} The value of the attribute if only name is provided, otherwise returns the element itself.
  */
 Element.prototype.attr = function (name, value) {
     if (name === undefined && value === undefined) {
@@ -1743,12 +2556,12 @@ Element.prototype.attr = function (name, value) {
 };
 
 /**
- * Создает элемент
- * @param {string} name название элемента
- * @param {Object} attr атрибуты
- * @param {Object} data dataset
- * @param ns
- * @returns {HTMLElement}
+ * Creates a new element with the specified name, attributes, and dataset.
+ * @param {string} name The name of the element.
+ * @param {Object} [attr] Attributes to be set on the element.
+ * @param {Object} [data=null] Dataset to be set on the element.
+ * @param {string} [ns=null] Namespace for creating elements in a different XML namespace.
+ * @returns {HTMLElement} The newly created element.
  */
 Element.create = function (name, attr, data = null, ns = null) {
     const element = ns ? document.createElementNS(ns, name) : document.createElement(name);
@@ -1759,12 +2572,9 @@ Element.create = function (name, attr, data = null, ns = null) {
 
 
 /**
- * Создает элемент на основе HTML
- * @param {string} name название элемента
- * @param {Object} attr атрибуты
- * @param {Object} data dataset
- * @param ns
- * @returns {HTMLElement}
+ * Creates DOM elements from the provided HTML string and returns them as a document fragment.
+ * @param {string} html The HTML string.
+ * @returns {NodeList} The NodeList containing the created elements.
  */
 Element.fromHtml = function (html) {
     var template = document.createElement('template');
@@ -1773,6 +2583,10 @@ Element.fromHtml = function (html) {
     return template.content.childNodes;
 };
 
+/**
+ * Returns the path of the element, representing its ancestry within the DOM tree.
+ * @returns {string} The path of the element.
+ */
 Element.prototype.path = function() {
     let path = [];
     let p = this;
@@ -1784,9 +2598,10 @@ Element.prototype.path = function() {
 }
 
 /**
- * Краткая запись для работы с dataset
- * @param {string} name название свойства data-
- * @param {*} value значение свойства
+ * Provides a shortcut for working with the `data-*` attributes of the element.
+ * @param {string} [name] The name of the data attribute.
+ * @param {*} [value] The value of the data attribute.
+ * @returns {Object|string|Element} The dataset object if no arguments are provided, the value of the specified dataset property if only name is provided, otherwise returns the element itself.
  */
 Element.prototype.data = function (name, value) {
     if (name === undefined) {
@@ -1805,9 +2620,10 @@ Element.prototype.data = function (name, value) {
 };
 
 /**
- * Дополнительные данные обьекта
- * @param {string} name название свойства data-
- * @param {*} value значение свойства
+ * Attaches additional custom data to the element using a private `_tag` property.
+ * @param {string} [name] The name of the property.
+ * @param {*} [value] The value of the property.
+ * @returns {Object|string|Element} The tag object if no arguments are provided, the value of the specified property if only name is provided, otherwise returns the element itself.
  */
 Element.prototype.tag = function (name, value) {
     if (!this._tag) {
@@ -1823,7 +2639,13 @@ Element.prototype.tag = function (name, value) {
         return this;
     }
 };
-
+/**
+ * Inserts the element at the specified index within the parent's list of children.
+ * If the index exceeds the number of children, appends the element to the end.
+ * @param {HTMLElement} parent The parent element.
+ * @param {number} index The index at which to insert the element.
+ * @returns {HTMLElement} The inserted element.
+ */
 Element.prototype.insertAtIndex = function(parent, index) {
     const childOnIndex = parent.children[index];
     if(childOnIndex) {
@@ -1835,8 +2657,9 @@ Element.prototype.insertAtIndex = function(parent, index) {
 }
 
 /**
- * Запихивает элемент в конец списка дочерних элементов родителя
- * @param {HTMLElement} parent родительский элемент
+ * Appends the element to the end of the parent's list of child elements.
+ * @param {HTMLElement} parent The parent element.
+ * @returns {HTMLElement} The appended element.
  */
 Element.prototype.appendTo = function (parent) {
     parent.appendChild(this);
@@ -1844,8 +2667,9 @@ Element.prototype.appendTo = function (parent) {
 };
 
 /**
- * Запихивает заданный элемент в список дочерних элементов текущего элемента в конец
- * @param {HTMLElement} child дочерний элемент
+ * Appends the specified child element(s) to the end of the current element's list of children.
+ * @param {HTMLElement|NodeList} child The child element or list of child elements to append.
+ * @returns {HTMLElement} The last appended child element.
  */
 Element.prototype.append = function (child) {
 
@@ -1867,8 +2691,9 @@ Element.prototype.append = function (child) {
 };
 
 /**
- * Запихивает текущий элемент в список дочерних элементов заданного элемента в начало
- * @param {HTMLElement} parent родительский элемент
+ * Prepends the element to the beginning of the parent's list of child elements.
+ * @param {HTMLElement} parent The parent element.
+ * @returns {HTMLElement} The prepended element.
  */
 Element.prototype.prependTo = function (parent) {
     if (parent.childNodes.length > 0) {
@@ -1880,8 +2705,9 @@ Element.prototype.prependTo = function (parent) {
 };
 
 /**
- * Запихивает заданный элемент в список дочерних элементов текущего элемента в начало
- * @param {HTMLElement} child дочерний элемент
+ * Prepends the specified child element(s) to the beginning of the current element's list of children.
+ * @param {HTMLElement|NodeList} child The child element or list of child elements to prepend.
+ * @returns {HTMLElement} The last prepended child element.
  */
 Element.prototype.prepend = function (child) {
     try {
@@ -1908,8 +2734,9 @@ Element.prototype.prepend = function (child) {
 };
 
 /**
- * Запихивает заданный элемент прямо за текущим элементом
- * @param {HTMLElement} element элемент
+ * Inserts the specified element after the current element.
+ * @param {HTMLElement} element The element to insert.
+ * @returns {HTMLElement} The current element.
  */
 Element.prototype.after = function (element) {
     if (this.nextElementSibling && this.parentElement) {
@@ -1921,8 +2748,9 @@ Element.prototype.after = function (element) {
 };
 
 /**
- * Запихивает заданный элемент перед текущим элементом
- * @param {HTMLElement} element элемент
+ * Inserts the specified element before the current element.
+ * @param {HTMLElement} element The element to insert.
+ * @returns {HTMLElement} The current element.
  */
 Element.prototype.before = function (element) {
     this.parentElement.insertBefore(element, this);
@@ -1930,7 +2758,9 @@ Element.prototype.before = function (element) {
 };
 
 /**
- * Окружает элемент другим элементом
+ * Wraps the current element with the specified wrapper element.
+ * @param {HTMLElement} element The wrapper element.
+ * @returns {HTMLElement} The current element.
  */
 Element.prototype.wrapWith = function (element) {
     this.remove();
@@ -1938,12 +2768,22 @@ Element.prototype.wrapWith = function (element) {
     return this;
 };
 
+/**
+ * Hides the current element by setting its display property to 'none'.
+ * Stores the previous display value in the 'shown' dataset attribute.
+ * @returns {HTMLElement} The current element.
+ */
 Element.prototype.hideElement = function () {
     this.dataset.shown = this.css('display');
     this.css('display', 'none');
     return this;
 };
 
+/**
+ * Shows the current element by setting its display property to its previous value stored in the 'shown' dataset attribute.
+ * If the 'shown' attribute is not set or is 'none', sets the display property to 'block'.
+ * @returns {HTMLElement} The current element.
+ */
 Element.prototype.showElement = function (element) {
     if (this.dataset.shown && this.dataset.shown !== 'none') {
         this.css('display', this.dataset.shown);
@@ -1954,21 +2794,24 @@ Element.prototype.showElement = function (element) {
 };
 
 /**
- * Возвращает следующий элемент
+ * Returns the next sibling element.
+ * @returns {HTMLElement|null} The next sibling element, or null if there is none.
  */
 Element.prototype.next = function () {
     return this.nextElementSibling;
 };
 
 /**
- * Возвращает предыдущий элемент
+ * Returns the previous sibling element.
+ * @returns {HTMLElement|null} The previous sibling element, or null if there is none.
  */
 Element.prototype.prev = function () {
     return this.previousElementSibling;
 };
 
 /**
- * Возвращает родительский элемент
+ * Returns the parent element.
+ * @returns {HTMLElement|null} The parent element, or null if there is none.
  */
 Element.prototype.parent = function () {
     return this.parentElement;
@@ -1976,7 +2819,9 @@ Element.prototype.parent = function () {
 
 
 /**
- * Возвращает родительский элемент
+ * Finds the closest ancestor of the current element (or the element itself) that matches the specified selector.
+ * @param {string} selector A CSS selector string to match the ancestor element against.
+ * @returns {HTMLElement|null} The closest ancestor element that matches the selector, or null if none is found.
  */
 (!Element.prototype.closest && (Element.prototype.closest = function (selector) {
     let elem = this;
@@ -1989,14 +2834,20 @@ Element.prototype.parent = function () {
     return null;
 }));
 
+/**
+ * Retrieves the computed style value of the specified CSS property for the element.
+ * @param {string} name The name of the CSS property.
+ * @returns {string} The computed style value of the specified CSS property.
+ */
 Element.prototype.computedCss = function(name) {
     return getComputedStyle(this)[name];
 }
 
 /**
- * Устанавливает или возвращает стили
- * @param {(string|Object)} [name] название стиля или обьект содержащий все стили
- * @param {string} [value] значение
+ * Sets or retrieves styles for the element.
+ * @param {(string|Object)} [name] The name of the style or an object containing all styles.
+ * @param {string} [value] The value of the style.
+ * @returns {Element|string|Object} The element itself, computed style value, or styles object.
  */
 Element.prototype.css = function (name, value) {
 
@@ -2025,7 +2876,11 @@ Element.prototype.css = function (name, value) {
 };
 
 /**
- * Возвращает местоположение и размеры элемента
+ * Returns the position and dimensions of the element.
+ * @param {boolean} [includeBorders=false] Whether to include borders in the calculation.
+ * @param {boolean} [includeMargin=false] Whether to include margins in the calculation.
+ * @param {Element} [parent=null] The parent element for calculating offset.
+ * @returns {Object} An object containing the position and dimensions of the element.
  */
 Element.prototype.bounds = function (includeBorders = false, includeMargin = false, parent = null) {
 
@@ -2062,7 +2917,15 @@ Element.prototype.bounds = function (includeBorders = false, includeMargin = fal
 
 };
 
+/**
+ * Returns the offset of the element.
+ * @returns {Object} An object containing the offset of the element.
+ */
 Element.prototype.offset = function() { return this.bounds(); };
+/**
+ * Returns the position of the element.
+ * @returns {Object} An object containing the position of the element.
+ */
 Element.prototype.position = function() {
     const bounds = this.bounds();
     return {left: bounds.left, top: bounds.top};
@@ -2073,8 +2936,9 @@ Element.prototype.position = function() {
 // };
 
 /**
- * Устанавливает или возвращает содержание в виде HTML
- * @param {string} value содержание
+ * Sets or retrieves the HTML content of the element.
+ * @param {string} [value] The HTML content to set.
+ * @returns {Element|string} The element itself or the HTML content.
  */
 Element.prototype.html = function (value) {
     if (value === undefined) {
@@ -2086,8 +2950,9 @@ Element.prototype.html = function (value) {
 };
 
 /**
- * Устанавливает или возвращает содержание в виде text
- * @param {string} value содержание
+ * Sets or retrieves the text content of the element.
+ * @param {string} [value] The text content to set.
+ * @returns {Element|string} The element itself or the text content.
  */
 Element.prototype.text = function (value) {
     if (value === undefined) {
@@ -2098,13 +2963,34 @@ Element.prototype.text = function (value) {
     }
 };
 
+
 if (!Element.prototype.matches) {
+    /**
+     * Polyfill for the Element.matches method, providing compatibility with various vendor-prefixed implementations.
+     * Matches the element against a specified CSS selector.
+     * @function matches
+     * @memberof Element.prototype
+     * @param {string} selector The CSS selector to match against.
+     * @returns {boolean} true if the element matches the selector, otherwise false.
+     */
     Element.prototype.matches = Element.prototype.matchesSelector || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.oMatchesSelector;
 };
+
+/**
+ * Checks if the element matches the specified selector.
+ * @param {string} selector The CSS selector to match against.
+ * @returns {boolean} true if the element matches the selector, otherwise false.
+ */
 Element.prototype.is = function (selector) {
     return this.matches(selector);
 };
-
+/**
+ * Clones the element, including attributes and data attributes, and creates a new element.
+ * @function clone
+ * @memberof Element.prototype
+ * @param {string} [ns] The namespace URI of the cloned element.
+ * @returns {HTMLElement} The cloned element.
+ */
 Element.prototype.clone = function (ns) {
 
     let attr = {};
@@ -2128,6 +3014,13 @@ Element.prototype.clone = function (ns) {
 
 };
 
+/**
+ * Hides the element, executes a callback function after a specified timeout, and then shows the element again.
+ * @function hideShowProcess
+ * @memberof Element.prototype
+ * @param {Function} callback The callback function to execute after hiding the element.
+ * @param {number} [timeout=30] The timeout duration in milliseconds before showing the element again.
+ */
 Element.prototype.hideShowProcess = function (callback, timeout = 30) {
     this.css('visibility', 'hidden');
     document.body.css('overflow', 'hidden');
@@ -2138,18 +3031,36 @@ Element.prototype.hideShowProcess = function (callback, timeout = 30) {
     });
 };
 
-
+/**
+ * Emits a custom event from the element.
+ * @function emitCustomEvent
+ * @memberof Element.prototype
+ * @param {string} eventName The name of the custom event.
+ * @param {*} [args] Additional arguments to include in the event.
+ */
 Element.prototype.emitCustomEvent = function (eventName, args) {
     var event = new CustomEvent(eventName, { detail: args });
     this.dispatchEvent(event);
 };
 
+/**
+ * Emits a mouse event from the element.
+ * @function emitMouseEvent
+ * @memberof Element.prototype
+ * @param {string} eventType The type of mouse event to emit (e.g., 'click', 'mousedown', 'mouseup').
+ */
 Element.prototype.emitMouseEvent = function (eventType) {
     const event = document.createEvent('MouseEvents');
     event.initMouseEvent(eventType, true, true, window, 0, 0, 345, 7, 220, false, false, true, false, 0, null);
     this.dispatchEvent(event);
 };
 
+/**
+ * Emits an HTML event from the element.
+ * @function emitHtmlEvents
+ * @memberof Element.prototype
+ * @param {string} eventType The type of HTML event to emit (e.g., 'change', 'submit', 'focus').
+ */
 Element.prototype.emitHtmlEvents = function (eventType) {
     if ("createEvent" in document) {
         var evt = document.createEvent("HTMLEvents");
@@ -2160,6 +3071,12 @@ Element.prototype.emitHtmlEvents = function (eventType) {
     }
 };
 
+/**
+ * Checks if the value or content of the element exceeds its width.
+ * @function isValueExceeded
+ * @memberof Element.prototype
+ * @returns {boolean} true if the value or content exceeds the element's width, otherwise false.
+ */
 Element.prototype.isValueExceeded = function() {
     const width = this.bounds().outerWidth;
     if(!width) {
@@ -2183,13 +3100,23 @@ Element.prototype.isValueExceeded = function() {
     return result;    
 }
 
+/**
+ * Clears all tokens from the DOMTokenList.
+ */
 DOMTokenList.prototype.clear = function () {
     for (let i = 0; i < this.length; i++) {
         this.remove(this.item(i));
     }
 };
 
-
+/**
+ * Converts base64 data to a File object.
+ * @param {string} data The base64 data.
+ * @param {string} filename The filename.
+ * @param {string} mime The MIME type.
+ * @param {boolean} isBase Indicates if the data is base64 encoded.
+ * @returns {File} The created File object.
+ */
 function Base2File(data, filename, mime, isBase) {
     var bstr = isBase ? atob(data) : data,
         n = bstr.length,
@@ -2199,14 +3126,25 @@ function Base2File(data, filename, mime, isBase) {
     }
     return new File([u8arr], filename, { type: mime });
 };
-
+/**
+ * Downloads a file using provided data.
+ * @param {string} data The file data.
+ * @param {string} filename The filename.
+ * @param {string} mime The MIME type.
+ * @param {boolean} [isBase=true] Indicates if the data is base64 encoded.
+ */
 function DownloadFile(data, filename, mime, isBase = true) {
     var a = Element.create('a', { href: window.URL.createObjectURL(Base2File(data, filename, mime, isBase), { type: mime }), download: filename});
     document.body.append(a);
     a.click();
     document.body.removeChild(a);
 };
-
+/**
+ * Downloads a file from a URL.
+ * @param {string} url The URL of the file.
+ * @param {string} [filename=null] The filename.
+ * @param {string} [target='_self'] The target window.
+ */
 function DownloadUrl(url, filename = null, target = '_self') {
     if(!filename) {
         const pi = url.pathinfo();
@@ -2217,7 +3155,11 @@ function DownloadUrl(url, filename = null, target = '_self') {
     a.click();
     document.body.removeChild(a);
 };
-
+/**
+ * Downloads a file by its path.
+ * @param {string} path The path of the file.
+ * @param {string} filename The filename.
+ */
 function DownloadFileByPath(path, filename) {
     if (!DownloadOnDevice(path, filename)) {
         const pi = path.pathinfo();
@@ -2227,7 +3169,12 @@ function DownloadFileByPath(path, filename) {
         document.body.removeChild(a);
     }
 };
-
+/**
+ * Downloads a file to the device's storage.
+ * @param {string} path The path of the file.
+ * @param {string} filename The filename.
+ * @returns {boolean} Indicates if the download was successful.
+ */
 function DownloadOnDevice(path, filename) {
 
     try {
@@ -2275,7 +3222,9 @@ function DownloadOnDevice(path, filename) {
 
 
 };
-
+/**
+ * Downloads the file.
+ */
 File.prototype.download = function () {
     var a = Element.create('a', { href: window.URL.createObjectURL(this, { type: this.type }), download: this.name });
     document.body.append(a);
@@ -2283,6 +3232,9 @@ File.prototype.download = function () {
     document.body.removeChild(a);
 };
 
+/**
+ * Emulate resized event, 1 time when resize is complete
+ */
 window.resizeEndTimeout = -1;
 window.addEventListener('resize', (e) => {
 
@@ -2296,10 +3248,23 @@ window.addEventListener('resize', (e) => {
 
 });
 
+/**
+ * Checks if the object is a Promise.
+ * @param {*} p The object to check.
+ * @returns {boolean} Indicates if the object is a Promise.
+ */
 Function.isPromise = function (p) {
     return (typeof p === 'object' && typeof p.then === 'function');
 };
 
+/**
+ * Eases animation using the ease-in-out quadratic function.
+ * @param {number} t The current time.
+ * @param {number} b The beginning value.
+ * @param {number} c The change in value.
+ * @param {number} d The duration.
+ * @returns {number} The eased value.
+ */
 Math.easeInOutQuad = function(t, b, c, d) {
     t /= d/2;
     if (t < 1) {
@@ -2309,17 +3274,32 @@ Math.easeInOutQuad = function(t, b, c, d) {
     return -c/2 * (t*(t-2) - 1) + b;
 };
 
-
+/**
+ * Colibri class serves as a namespace for related functionality.
+ * @namespace
+ */
 const Colibri = class {
  
 }
 
+/**
+ * Destructable class provides a base class for objects that need cleanup upon destruction.
+ * @class
+ */
 const Destructable = class {
 
+    /**
+     * Constructs a new Destructable object.
+     * Registers a listener for the 'beforeunload' event to trigger the destructor method.
+     */
     constructor() {
         window.addEventListener('beforeunload', e => this.destructor());
     }
 
+    /**
+     * The destructor method that needs to be implemented by subclasses.
+     * This method should perform cleanup tasks before the object is destroyed.
+     */
     destructor() {}
 
 }
@@ -2335,6 +3315,11 @@ var hexcase=0;function hex_md5(a){return rstr2hex(rstr_md5(str2rstr_utf8(a)))}fu
 function hex2bin(h) { var r = ""; for (var i= (h.substr(0, 2)=="0x")?2:0; i<h.length; i+=2) {r += String.fromCharCode (parseInt (h.substr (i, 2), 16));} return r; }
 function bin2hex(bin) { var result = ""; var temp = ""; for(var i=0; i < bin.length; i++) { var chr = bin.charCodeAt(i); if(chr > 127){ chr = encodeURIComponent(bin.charAt(i)); } else { chr = chr.toString(16); } result += chr; }  for(var i=0; i < result.length ;i++) { var chr = result.charAt(i); if(chr != '%') temp += chr; }  return temp.toLowerCase(); } 
 
+/**
+ * Represents common utility functions.
+ * @namespace
+ * @class
+ */
 Colibri.Common = class {
 
     /** @constructor */
@@ -2344,16 +3329,23 @@ Colibri.Common = class {
 
     
     /**
-     * Ожидание
-     * @param {number} timeout время ожидания в милисекундах 
-     * @return {Promise} 
+     * Delays execution for a specified time.
+     * @param {number} timeout - The time to wait in milliseconds.
+     * @return {Promise} - A promise that resolves after the specified time.
      */
     static Delay(timeout) {
         return new Promise((resolve, reject) => setTimeout(() => resolve(), timeout));
     }
 
+    /** @type {Object.<string, number>} */
     static _timers = {};
 
+    /**
+     * Starts a timer with the specified name.
+     * @param {string} name - The name of the timer.
+     * @param {number} timeout - The interval of the timer in milliseconds.
+     * @param {Function} tickFunction - The function to execute on each tick of the timer.
+     */
     static StartTimer(name, timeout, tickFunction) {
         if(Colibri.Common._timers[name]) {
             clearTimeout(Colibri.Common._timers[name]);
@@ -2361,18 +3353,21 @@ Colibri.Common = class {
         Colibri.Common._timers[name] = setInterval(tickFunction, timeout);
     }
 
+    /**
+     * Stops the timer with the specified name.
+     * @param {string} name - The name of the timer to stop.
+     */
     static StopTimer(name) {
         clearInterval(Colibri.Common._timers[name]);
         delete Colibri.Common._timers[name];
     }
 
     /**
-     *
-     * @param {Function} action метод проверки
-     * @param maxTimeout
-     * @param interval
-     * @returns {Promise}
-     * @constructor
+     * Waits for a condition to be true.
+     * @param {Function} action - The function to check the condition.
+     * @param {number} [maxTimeout=0] - The maximum time to wait in milliseconds.
+     * @param {number} [interval=100] - The interval to check the condition in milliseconds.
+     * @returns {Promise} - A promise that resolves when the condition is true or the timeout occurs.
      */
     static Wait(action, maxTimeout = 0, interval = 100) {
         let waiting = 0;
@@ -2403,24 +3398,26 @@ Colibri.Common = class {
     }
 
     /**
-     * Ожидает появления документа
-     * @return {Promise}
+     * Waits for the document to be ready.
+     * @return {Promise} - A promise that resolves when the document is ready.
      */
     static WaitForDocumentReady() {
         return Colibri.Common.Wait(() => document.readyState === 'complete');
     }
 
     /**
-     * Ожидает появления документа
-     * @return {Promise}
+     * Waits for the body element to be available.
+     * @return {Promise} - A promise that resolves when the body element exists.
      */
     static WaitForBody() {
         return Colibri.Common.Wait(() => document.body != null);
     }
 
     /**
-     * Загружает скрипт по URL
-     * @param {string} url ссылка на скрипт
+     * Loads a script from a URL.
+     * @param {string} url - The URL of the script.
+     * @param {string} [id=null] - The ID to assign to the script element.
+     * @returns {Promise} - A promise that resolves with the ID of the loaded script.
      */
     static LoadScript(url, id = null) {
 
@@ -2448,8 +3445,10 @@ Colibri.Common = class {
     }
 
     /**
-     * Загружает стили по URL
-     * @param {string} url ссылка на стили
+     * Loads styles from a URL.
+     * @param {string} url - The URL of the styles.
+     * @param {string} [id=null] - The ID to assign to the link element.
+     * @returns {Promise} - A promise that resolves with the ID of the loaded styles.
      */
      static LoadStyles(url, id = null) {
 
@@ -2477,6 +3476,12 @@ Colibri.Common = class {
 
     }
 
+    /**
+     * Executes a callback function for each item in an array with a delay between each execution.
+     * @param {Array} array - The array of items.
+     * @param {number} timeout - The delay between executions in milliseconds.
+     * @param {Function} callback - The callback function to execute for each item.
+     */
     static Tick(array, timeout, callback) {
         array.forEach((v, i) => {
             Colibri.Common.Delay(i * timeout).then(() => {
@@ -2486,42 +3491,80 @@ Colibri.Common = class {
     }
 
 }
+/**
+ * Represents a module for handling events.
+ * @namespace
+ */
 Colibri.Events = class {
     
 }
+/**
+ * Represents the input/output (IO) operations class in the Colibri framework.
+ * This class provides functionality for handling input and output operations.
+ * @namespace
+ */
 Colibri.IO = class {
     
 }
 
-
+/**
+ * Represents a module management class in the Colibri framework.
+ * This class provides functionality for managing modules within an application.
+ * @namespace
+ */
 Colibri.Modules = class {
 
 }
 
 
+/**
+ * Represents a storage utility class for managing different types of storage.
+ * @namespace
+ */
 Colibri.Storages = class {
 
 }
 
+/**
+ * Represents a namespace for storage-related models in the Colibri framework.
+ * @namespace
+ * @memberof Colibri.Storages
+ */
 Colibri.Storages.Models = class {
 
 }
 
 /**
- * ОБьект UI
+ * @namespace
+ * @class
  */
 Colibri.UI = class {
 
-    /** Resizing indicator */
+    /** 
+     * Resizing indicator
+     * @type {boolean} 
+     * @static
+     */
     static Resizing = false;
 
-    /** Maximum tab index fo elements */
+    /** 
+     * Maximum tab index fo elements
+     * @type {string} 
+     * @static
+     */
     static tabIndex = 1;
  
-    /** Maximum of z-index css property */
+    /** 
+     * Maximum of z-index css property
+     * @type {string} 
+     * @static
+     */
     static maxZIndex = 0;
 
-    /** Private max z-index calculator */
+    /** 
+     * Private max z-index calculator 
+     * @static
+     */
     static _getZIndex(elements = null) {
         return (elements ?? [...document.querySelectorAll('body *')]).reduce((accumulator, current_value) => {
             current_value = +getComputedStyle(current_value).zIndex;
@@ -2532,7 +3575,10 @@ Colibri.UI = class {
         }, 0);
     }
 
-    /** Registers mutation observer for calculating current maximum of z-index */
+    /** 
+     * Registers mutation observer for calculating current maximum of z-index
+     * @static 
+     */
     static registerMutationObserver() {
         // fixing start max z-index 
         Colibri.UI.maxZIndex = Colibri.UI._getZIndex();
@@ -2553,6 +3599,10 @@ Colibri.UI = class {
         });
     }
 
+    /**
+     * Updates max z-index in static property
+     * @static
+     */
     static UpdateMaxZIndex() {
         Colibri.UI.maxZIndex = Colibri.UI._getZIndex();
     }
@@ -2563,6 +3613,7 @@ Colibri.UI = class {
      * @param {string} componentPath path for searching
      * @param {Colibri.UI.Component} parent search component within given parent component
      * @returns {Colibri.UI.Component}
+     * @static
      */
     static Find(componentPath, parent = null) {
         const path = componentPath.split('/');
@@ -2579,6 +3630,7 @@ Colibri.UI = class {
      * @param {string} componentPath path for searching
      * @param {Colibri.UI.Component} parent search component within given parent component
      * @returns {Colibri.UI.Component}
+     * @static
      */
     static FindAll(componentPath, parent = null) {
         const path = componentPath.split('/');
@@ -2597,6 +3649,7 @@ Colibri.UI = class {
      * @param {Array<string>} css string array of css files
      * @param {Array<string>} js string array of js files 
      * @returns Promise
+     * @static
      */
     static Require(css, js) { 
         return new Promise((resolve, reject) => {
@@ -2642,45 +3695,97 @@ Colibri.UI = class {
     }
 
 
+
 }
 
 Colibri.UI.registerMutationObserver();
 
+/**
+ * Forms namespace
+ * @namespace
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Forms = class {}
 
+/**
+ * @namespace
+ */
 Colibri.UI.Utilities = {}
+/**
+ * Represents the Colibri web utility.
+ * @namespace
+ */
 Colibri.Web = class {
     
 }
+/**
+ * Represents device-related functionalities in the Colibri framework.
+ * @namespace
+ */
 Colibri.Devices = class {
     
 }
+/**
+ * Represents a browser storage utility.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.BrowserStorage = class {
-    
-    constructor() {
+    /** @constructor */
+    constructor() {}
 
-    }
-
+    /**
+     * Sets a value in the browser storage.
+     * @param {string} name - The name of the item.
+     * @param {*} [value=true] - The value to set. Defaults to true if not provided.
+     */
     Set(name, value = true) {
         window.localStorage.setItem(name, value);
     }
 
+    /**
+     * Gets a value from the browser storage.
+     * @param {string} name - The name of the item.
+     * @returns {*} - The value retrieved from the storage.
+     */
     Get(name) {
         return window.localStorage.getItem(name);
     }
 
+    /**
+     * Deletes an item from the browser storage.
+     * @param {string} name - The name of the item to delete.
+     */
     Delete(name) {
         window.localStorage.removeItem(name);
     }
 
+    /**
+     * Checks if an item exists in the browser storage.
+     * @param {string} name - The name of the item to check.
+     * @returns {boolean} - True if the item exists, false otherwise.
+     */
     Has(name) {
         return !!this.Get(name);
     }
-
-    
-}
+};
+/**
+ * Represents a cookie utility for managing cookies in the browser.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.Cookie = class {
     
+    /**
+     * Sets a cookie.
+     * @param {string} c_name - The name of the cookie.
+     * @param {*} value - The value to set for the cookie.
+     * @param {number} exdays - The number of days until the cookie expires.
+     * @param {string} [path] - The path for which the cookie is valid.
+     * @param {string} [domain] - The domain for which the cookie is valid.
+     * @param {boolean} [secure] - Whether the cookie should only be sent over secure connections.
+     * @param {string} [samesite] - The SameSite attribute for the cookie.
+     */
     static Set(c_name, value, exdays, path, domain, secure, samesite) {
         var exdate = new Date();
         exdate.setDate(exdate.getDate() + exdays);
@@ -2693,6 +3798,11 @@ Colibri.Common.Cookie = class {
         document.cookie = c_name + "=" + c_value;
     }
 
+    /**
+     * Gets the value of a cookie.
+     * @param {string} c_name - The name of the cookie to retrieve.
+     * @returns {*} - The value of the cookie.
+     */
     static Get (c_name) {
         var i,x,y,ARRcookies=document.cookie.split(";");
         for( i=0; i < ARRcookies.length; i++) {
@@ -2705,12 +3815,22 @@ Colibri.Common.Cookie = class {
         return null;
     }
 
+    /**
+     * Deletes a cookie.
+     * @param {string} c_name - The name of the cookie to delete.
+     * @param {string} [path] - The path of the cookie to delete.
+     * @param {string} [domain] - The domain of the cookie to delete.
+     */
     static Delete(c_name, path, domain) {
         document.cookie = c_name + '=;max-age=0;' + (path == null ? '; path=/' : '; path=' + path) + (domain ? '; domain=' + domain : '');
     }
     
 }
-
+/**
+ * Represents a utility for handling hash actions in the browser.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.HashActions = class {
     
     
@@ -2729,12 +3849,17 @@ Colibri.Common.HashActions = class {
         };
     }
     
+    /**
+     * Handles the DOM ready event.
+     */
     HandleDomReady() {
         this.InitDOMHandlers();
         this._handleAction(location.hash.substring(1));
     }
     
-    
+    /**
+     * Initializes DOM event handlers.
+     */
     InitDOMHandlers() {
 
         Colibri.Common.StartTimer('actions-timer', 500, () => {
@@ -2753,12 +3878,22 @@ Colibri.Common.HashActions = class {
         
     }
     
+    /**
+     * Adds a handler for a hash action.
+     * @param {string} action - The hash action.
+     * @param {Function} handler - The handler function.
+     */
     AddHandler(action, handler) {
         if(this.handlers[action] === undefined)
             this.handlers[action] = [];
         this.handlers[action].push(handler);
     }
 
+    /**
+     * Removes a handler for a hash action.
+     * @param {string} action - The hash action.
+     * @param {Function} handler - The handler function.
+     */
     RemoveHandler(action, handler) {
         if(this.handlers[action] === undefined)
             this.handlers[action] = [];
@@ -2768,6 +3903,12 @@ Colibri.Common.HashActions = class {
         }
     }
     
+    /**
+     * Raises a hash action.
+     * @param {string} action - The hash action.
+     * @param {Object} [args={}] - Additional arguments.
+     * @returns {boolean} - Indicates if the action was raised successfully.
+     */
     Raise(action, args = {}) {
         try {
             if(this.handlers[action] === undefined)
@@ -2784,6 +3925,11 @@ Colibri.Common.HashActions = class {
         
     }
     
+    /**
+     * Handles a hash action.
+     * @param {string} actionString - The hash action string.
+     * @private
+     */
     _handleAction(actionString) {
         
         var queryString = actionString.toObject('&=');
@@ -2802,8 +3948,19 @@ Colibri.Common.HashActions = class {
 }
 
 
+/**
+ * Represents a utility for validation of various identification numbers in Russia.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.Validation = class {
 
+    /**
+     * Validates the BIC (Bank Identification Code).
+     * @param {string|number} bik - The БИК to validate.
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the БИК is valid.
+     */
     static ValidateBik(bik, error) {
         var result = false;
         if (typeof bik === 'number') {
@@ -2826,6 +3983,12 @@ Colibri.Common.Validation = class {
         return result;
     }
     
+    /**
+     * Validates the ИНН (Taxpayer Identification Number).
+     * @param {string|number} inn - The ИНН to validate.
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the ИНН is valid.
+     */
     static ValidateInn(inn, error) {
         var result = false;
         if (typeof inn === 'number') {
@@ -2873,6 +4036,12 @@ Colibri.Common.Validation = class {
         return result;
     }
     
+    /**
+     * Validates the КПП (Tax Registration Reason Code).
+     * @param {string|number} kpp - The КПП to validate.
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the КПП is valid.
+     */
     static ValidateKpp(kpp, error) {
         var result = false;
         if (typeof kpp === 'number') {
@@ -2895,6 +4064,13 @@ Colibri.Common.Validation = class {
         return result;
     }
     
+    /**
+     * Validates the КС (Correspondent Account Number).
+     * @param {string|number} ks - The КС to validate.
+     * @param {string|number} bik - The БИК (Bank Identifier Code) associated with the КС.
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the КС is valid.
+     */
     static ValidateKs(ks, bik, error) {
         var result = false;
         if (validateBik(bik, error)) {
@@ -2930,6 +4106,12 @@ Colibri.Common.Validation = class {
         return result;
     }
     
+    /**
+     * Validates the OGRN (Primary State Registration Number).
+     * @param {string|number} ogrn - The OGRN to validate.
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the OGRN is valid.
+     */
     static ValidateOgrn(ogrn, error) {
         var result = false;
         if (typeof ogrn === 'number') {
@@ -2958,6 +4140,12 @@ Colibri.Common.Validation = class {
         return result;
     }
     
+    /**
+     * Validates the OGRNIP (Primary State Registration Number of Individual Entrepreneur).
+     * @param {string|number} ogrnip - The OGRNIP to validate.
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the OGRNIP is valid.
+     */
     static ValidateOgrnip(ogrnip, error) {
         var result = false;
         if (typeof ogrnip === 'number') {
@@ -2986,6 +4174,13 @@ Colibri.Common.Validation = class {
         return result;
     }
     
+    /**
+     * Validates the Russian bank account number (RS).
+     * @param {string|number} rs - The Russian bank account number to validate.
+     * @param {string|number} bik - The Russian bank identification code (BIK).
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the RS is valid.
+     */
     static ValidateRs(rs, bik, error) {
         var result = false;
         if (validateBik(bik, error)) {
@@ -3021,6 +4216,12 @@ Colibri.Common.Validation = class {
         return result;
     }
     
+    /**
+     * Validates the Russian individual insurance account number (SNILS).
+     * @param {string|number} snils - The Russian individual insurance account number to validate.
+     * @param {Object} error - An object to store error information.
+     * @returns {boolean} - Indicates whether the SNILS is valid.
+     */
     static ValidateSnils(snils, error) {
         var result = false;
         if (typeof snils === 'number') {
@@ -3062,8 +4263,17 @@ Colibri.Common.Validation = class {
     }
 
 }
+/**
+ * Represents a utility class for handling MIME types.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.MimeType = class {
     
+    /**
+     * A map of file extensions to MIME types.
+     * @type {Object<string, string>}
+     */
     static types = {
         "acx" :  "application/internet-property-stream",
         "ai" :  "application/postscript",
@@ -3258,10 +4468,20 @@ Colibri.Common.MimeType = class {
         
     }
 
+    /**
+     * Returns the MIME type associated with the given file extension.
+     * @param {string} ext - The file extension.
+     * @returns {string|undefined} The MIME type, or undefined if not found.
+     */
     static ext2type(ext) {
         return Colibri.Common.MimeType.types[ext];
     }
 
+    /**
+     * Returns the file extension associated with the given MIME type.
+     * @param {string} type - The MIME type.
+     * @returns {string|false} The file extension, or false if not found.
+     */
     static type2ext(type) {
         var ret = false;
         Object.keys(Colibri.Common.MimeType.types).forEach(key => {
@@ -3271,6 +4491,11 @@ Colibri.Common.MimeType = class {
         return ret;
     }
 
+    /**
+     * Returns the file extension associated with the given base64 encoded data.
+     * @param {string} base - The base64 encoded data.
+     * @returns {string|false} The file extension, or false if not found.
+     */
     static base2type(base) {
         var ret = false;
         var type = base.split('data:')[1];
@@ -3282,15 +4507,60 @@ Colibri.Common.MimeType = class {
         return ret;
     }
 
+    /**
+     * Check if a file with the given extension is an image.
+     * @param {string} ext - The file extension.
+     * @returns {boolean} True if the file is an image, otherwise false.
+     */
     static isImage(ext) { return ["gif", "jpeg", "jpg", "png", "bmp", "dib", "svg"].indexOf(ext.toLowerCase()) != -1; }
+    /**
+     * Check if a file with the given extension is an audio file.
+     * @param {string} ext - The file extension.
+     * @returns {boolean} True if the file is an audio file, otherwise false.
+     */
     static isAudio(ext) { return ["mid", "mp3", "au"].indexOf(ext.toLowerCase()) != -1; }
+    /**
+     * Check if a file with the given extension is a video file.
+     * @param {string} ext - The file extension.
+     * @returns {boolean} True if the file is a video file, otherwise false.
+     */
     static isVideo(ext) { return ["wmv", "mpg", "mp4"].indexOf(ext.toLowerCase()) != -1; }
+    /**
+     * Check if a file with the given extension is a Flash file.
+     * @param {string} ext - The file extension.
+     * @returns {boolean} True if the file is a Flash file, otherwise false.
+     */
     static isFlash(ext) { return ["swf"].indexOf(ext.toLowerCase()) != -1; }
+    /**
+     * Check if a file with the given extension is editable.
+     * @param {string} ext - The file extension.
+     * @returns {boolean} True if the file is editable, otherwise false.
+     */
     static isEditable(ext) { return ["txt", "js", "css", "scss", "less", "layout", "php", "htm", "html", "service", "xml", "xsl"].indexOf(ext.toLowerCase()) != -1; }
+    /**
+     * Check if a file with the given extension is viewable.
+     * @param {string} ext - The file extension.
+     * @returns {boolean} True if the file is viewable, otherwise false.
+     */
     static isBrowserCapable(ext) { return ["jpg", "png", "gif", "swf", "html", "htm", "txt", "css", "js", "pdf", "wmv", "mpg", "mp4", "mid", "mp3", "au"].indexOf(ext.toLowerCase()) != -1; }
+    /**
+     * Get the icon class for a file with the given extension.
+     * @param {string} ext - The file extension.
+     * @returns {string} The icon class.
+     */
     static isViewable(ext) { return isImage(ext) || isFlash(ext); }
+    /**
+     * Get the CodeMirror mode associated with a given file extension.
+     * @param {string} ext - The file extension.
+     * @returns {string} The CodeMirror mode.
+     */
     static icon(ext) { return 'icon-file-' + ext; }
     
+    /**
+     * Get the CodeMirror mode associated with a given file extension.
+     * @param {string} ext - The file extension.
+     * @returns {string} The CodeMirror mode.
+     */
     static ext2mode(ext) {
         
         if(ext == 'js') return 'javascript';
@@ -3305,6 +4575,12 @@ Colibri.Common.MimeType = class {
         
     }
 
+    /**
+     * Get the CodeMirror requirements for a given file extension.
+     * @param {string} ext - The file extension.
+     * @param {string} [path='/res/codemirror'] - The base path for resources.
+     * @returns {Object<string, string[]>} The CodeMirror requirements.
+     */
     static extrequirements(ext, path = '/res/codemirror') {
         
         if(ext == 'js') return {
@@ -3334,12 +4610,25 @@ Colibri.Common.MimeType = class {
 
 }
 
+/**
+ * Class representing Base64 encoding and decoding utility functions.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.Base64 = class {
 
-    // private property
+    /**
+     * Private property containing the Base64 key string.
+     * @type {string}
+     * @private
+     */
     static _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-    // public method for encoding
+    /**
+     * Encode a string using Base64 encoding.
+     * @param {string} _input - The input string to encode.
+     * @returns {string} The Base64 encoded string.
+     */
     static encode(_input) {
         var output = "";
         var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
@@ -3371,7 +4660,11 @@ Colibri.Common.Base64 = class {
         return output;
     }
 
-    // public method for decoding
+    /**
+     * Decode a Base64 encoded string.
+     * @param {string} _input - The Base64 encoded string to decode.
+     * @returns {string} The decoded string.
+     */
     static decode(_input) {
         var output = "";
         var chr1, chr2, chr3;
@@ -3406,7 +4699,12 @@ Colibri.Common.Base64 = class {
         return output;
     }
 
-    // private method for UTF-8 encoding
+    /**
+     * Private method for UTF-8 encoding.
+     * @param {string} string - The input string to encode.
+     * @returns {string} The UTF-8 encoded string.
+     * @private
+     */
     static _utf8_encode(string) {
         string = string.replace(/\r\n/g,"\n");
         var utftext = "";
@@ -3431,7 +4729,12 @@ Colibri.Common.Base64 = class {
         return utftext;
     }
 
-    // private method for UTF-8 decoding
+    /**
+     * Private method for UTF-8 decoding.
+     * @param {string} utftext - The UTF-8 encoded string to decode.
+     * @returns {string} The decoded string.
+     * @private
+     */
     static _utf8_decode(utftext) {
         var string = "";
         var i = 0;
@@ -3464,14 +4767,31 @@ Colibri.Common.Base64 = class {
     }
 
 }
+/**
+ * Class representing font utility functions.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.Font = class {
 
+    /**
+     * Array containing the loaded fonts.
+     * @type {Array}
+     * @private
+     */
     _list = [];
 
+    /**
+     * Creates an instance of Colibri.Common.Font.
+     */
     constructor() {
         this._load();
     }
 
+    /**
+     * Loads the fonts from the document.
+     * @private
+     */
     _load() {
         let { fonts } = document;
         const it = fonts.entries();
@@ -3491,10 +4811,19 @@ Colibri.Common.Font = class {
         this._list = arr;
     }
 
+    /**
+     * Creates an instance of Colibri.Common.Font.
+     * @returns {Colibri.Common.Font} A new instance of Colibri.Common.Font.
+     * @static
+     */
     static Create() {
         return new Colibri.Common.Font();
     }
 
+    /**
+     * Get an array of unique font families.
+     * @returns {Array} Array of unique font families.
+     */
     get families() {
         let ret = [];
         for(const font of this._list) {
@@ -3503,43 +4832,69 @@ Colibri.Common.Font = class {
         return Array.unique(ret);
     }
 
+    /**
+     * Get an array of font lookup objects containing value and title properties.
+     * @returns {Array} Array of font lookup objects.
+     */
     get lookup() {
         return this.families.map(v => { return {value: v, title: v}; });
     }
 
+    /**
+     * Get the list of loaded fonts.
+     * @returns {Array} List of loaded fonts.
+     */
     get list() {
         return this._list;
     }
 
 }
+/**
+ * Class representing scrolling utility functions.
+ * @class
+ * @memberof Colibri.Common
+ */
 Colibri.Common.Scrolling = class {
 
-
+    /**
+     * Creates an instance of Colibri.Common.Scrolling.
+     * @param {HTMLElement} element - The HTML element to apply scrolling behavior.
+     */
     constructor(element) {
         
         this._element = element;
 
         this.supportsPassive = false;
-        // try {
-        //   window.addEventListener('test', null, Object.defineProperty({}, 'passive', { get: function () { this.supportsPassive = true; }  }));
-        // } catch(e) {
-        //     console.log('supportsPassive', e)
-        // }
-        // console.log('supportsPassive', this.supportsPassive);
-        
         this.wheelOpt = this.supportsPassive ? { passive: false } : false;
         this.wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
     
     }
 
+    /**
+     * Creates an instance of Colibri.Common.Scrolling.
+     * @param {HTMLElement} element - The HTML element to apply scrolling behavior.
+     * @returns {Colibri.Common.Scrolling} A new instance of Colibri.Common.Scrolling.
+     * @static
+     */
     Create(element) {
         return new Colibri.Common.Scrolling(element);
     }
 
+    /**
+     * Prevents default behavior for the event.
+     * @param {Event} e - The event object.
+     * @private
+     */
     __preventDefault(e) {
         try { e.preventDefault(); } catch(e) {}
     }
 
+    /**
+     * Prevents default behavior for scroll keys.
+     * @param {KeyboardEvent} e - The keyboard event object.
+     * @returns {boolean} True if default behavior is prevented, otherwise false.
+     * @private
+     */
     __preventDefaultForScrollKeys(e) {
         const keys = [37,38,39,40];
         if (keys.indexOf(e.keyCode) !== -1) {
@@ -3549,7 +4904,9 @@ Colibri.Common.Scrolling = class {
         return true;
     }
     
-
+    /**
+     * Disables scrolling behavior on the element.
+     */
     Disable() {
         this._element.addEventListener('DOMMouseScroll', this.__preventDefault, false); // older FF
         this._element.addEventListener(this.wheelEvent, this.__preventDefault, this.wheelOpt); // modern desktop
@@ -3557,6 +4914,9 @@ Colibri.Common.Scrolling = class {
         this._element.addEventListener('keydown', this.__preventDefaultForScrollKeys, false);
     }
 
+    /**
+     * Enables scrolling behavior on the element.
+     */
     Enable() {
         this._element.removeEventListener('DOMMouseScroll', this.__preventDefault, false);
         this._element.removeEventListener(this.wheelEvent, this.__preventDefault, this.wheelOpt); 
@@ -3565,15 +4925,19 @@ Colibri.Common.Scrolling = class {
     }
 
 }
-
+/**
+ * Represents an event.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Events
+ */
 Colibri.Events.Event = class extends Destructable {
 
     /**
-     * Событие
-     * @constructor
-     * @param {*} sender отправитель
-     * @param {string} name событие
-     * @param {boolean} [bubbles] поднимается ли вверх по дереву компонентов или нет
+     * Creates a new instance of Colibri.Events.Event.
+     * @param {*} sender - The sender of the event.
+     * @param {string} name - The name of the event.
+     * @param {boolean} [bubbles=false] - Indicates whether the event bubbles up the component tree or not.
      */
     constructor(sender, name, bubbles) {
         super();
@@ -3594,43 +4958,63 @@ Colibri.Events.Event = class extends Destructable {
     }
 
     /**
-     * Отправитель
-     * @type {Object}
+     * Gets the sender of the event.
+     * @type {*}
      */
     get sender() {
         return this._sender;
     }
+    /**
+     * Sets the sender of the event.
+     * @type {*}
+     */
     set sender(value) {
         this._sender = value;
     }
 
     /**
-     * Название события
+     * Gets the name of the event.
      * @type {string}
      */
     get name() {
         return this._name;
     }
+    /**
+     * Sets the name of the event.
+     * @type {string}
+     */
     set name(value) {
         this._name = value;
     }
 
     /**
-     * Прыгает вверх по дереву обьектов
+     * Indicates whether the event bubbles.
      * @type {boolean}
      */
     get bubbles() {
         return this._bubbles;
     }
+    /**
+     * Sets whether the event bubbles.
+     * @type {boolean}
+     */
     set bubbles(value) {
         this._bubbles = value;
     }
 
 
 }
+/**
+ * Represents a dispatcher for events.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Events
+ */
 Colibri.Events.Dispatcher = class extends Destructable {
 
-    /** @constructor */
+    /**
+     * Creates a new instance of Colibri.Events.Dispatcher.
+     */
     constructor() {
         super();
         /** @type {Object.<string, Array<Object.<handler: Function, respondent: Object>>>} - список обработчиков */
@@ -3644,19 +5028,21 @@ Colibri.Events.Dispatcher = class extends Destructable {
     }
 
     /**
-     * Регистрация события
-     * @param {string} eventName событие
-     * @param {boolean} bubbles поднимается вверх по дереву
+     * Registers an event.
+     * @param {string} eventName - The name of the event.
+     * @param {boolean} bubbles - Indicates whether the event bubbles up the component tree.
+     * @param {string} description - Description of the event.
      */
     RegisterEvent(eventName, bubbles, description) {
         this.__events[eventName] = { name: eventName, bubbles: bubbles, description: description };
     }
 
     /**
-     * Добавляет обработчик события
-     * @param {string|array} eventName Событие
-     * @param {Function} handler Метод
-     * @param {boolean} prepend Вставить в начало
+     * Adds an event handler.
+     * @param {string|array} eventName - The event or array of events to add the handler to.
+     * @param {Function} handler - The handler method.
+     * @param {boolean} [prepend=false] - Whether to insert the handler at the beginning.
+     * @param {Object} [respondent=this] - The object that responds to the event.
      * @returns {Colibri.Events.Dispatcher}
      */
     AddHandler(eventName, handler, prepend = false, respondent = this) {
@@ -3686,9 +5072,9 @@ Colibri.Events.Dispatcher = class extends Destructable {
     }
 
     /**
-     * Удалить обработчик события
-     * @param {string} eventName Событие
-     * @param {Function} handler Обработчик
+     * Removes an event handler.
+     * @param {string} eventName - The event to remove the handler from.
+     * @param {Function} handler - The handler to remove.
      * @returns {Colibri.Events.Dispatcher}
      */
     RemoveHandler(eventName, handler) {
@@ -3709,10 +5095,10 @@ Colibri.Events.Dispatcher = class extends Destructable {
     }
 
     /**
-     *
-     * @param {string} eventName Событие
-     * @param {Function} handler Обработчик
-     * @returns {boolean}
+     * Checks if an event handler exists.
+     * @param {string} eventName - The event to check for the handler.
+     * @param {Function} handler - The handler to check for.
+     * @returns {boolean} - True if the handler exists, false otherwise.
      */
     HandlerExists(eventName, handler) {
         const handlerObject = { handler: handler, respondent: this },
@@ -3727,9 +5113,9 @@ Colibri.Events.Dispatcher = class extends Destructable {
     }
 
     /**
-     * Поднять событие
-     * @param {(Colibri.Events.Event|string)} event событие
-     * @param {object} args аргументы
+     * Dispatches an event.
+     * @param {(Colibri.Events.Event|string)} event - The event object or its name.
+     * @param {object} args - Arguments for the event.
      * @returns {Colibri.Events.Dispatcher}
      */
     Dispatch(event, args = null) {
@@ -3769,10 +5155,16 @@ Colibri.Events.Dispatcher = class extends Destructable {
         return true;
     }
 
+    /**
+     * Clears all event handlers.
+     */
     ClearHandlers() {
         this.__handlers = {};
     }
 
+    /**
+     * Disposes of the dispatcher.
+     */
     Dispose() {
         this.__events = {};
         this.__handlers = {};
@@ -3781,10 +5173,14 @@ Colibri.Events.Dispatcher = class extends Destructable {
 
 }
 /**
- * Определение обьекта для запроса
+ * Defines the object for making requests.
+ * If the XMLHttpRequest object doesn't have the sendAsBinary method, it adds it.
  */
-
 if (!XMLHttpRequest.prototype.sendAsBinary) {
+    /**
+     * Sends data as binary data 
+     * @param {string} sData data to send
+     */
     XMLHttpRequest.prototype.sendAsBinary = function (sData) {
         var nBytes = sData.length, ui8Data = new Uint8Array(nBytes);
         for (var nIdx = 0; nIdx < nBytes; nIdx++) {
@@ -3795,19 +5191,35 @@ if (!XMLHttpRequest.prototype.sendAsBinary) {
 }
 
 /**
- * Класс запросов
- * 
- * @author Vahan P. Grigoran
- * 
+ * Represents the request class for handling HTTP requests.
+ * @class 
+ * @extends Destructable
+ * @memberof Colibri.IO
  */
 Colibri.IO.Request = class extends Destructable {
 
+    /**
+     * Represents the type of request encoding as simple.
+     * @type {string}
+     */
     static RequestEncodeTypeSimple = 'simple';
+
+    /**
+     * Represents the type of request encoding as encrypted.
+     * @type {string}
+     */
     static RequestEncodeTypeEncrypted = 'encrypted';
 
+    /**
+     * Represents the default request type.
+     * @type {string}
+     */
     static type = 'simple';
 
-    /** @constructor */
+    /**
+     * Constructor for the Colibri.IO.Request class.
+     * @param {string} [base] - The base URL for the request.
+     */
     constructor(base) { 
         super();
         this._base = base ? base : '';
@@ -3815,10 +5227,10 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Добавляет параметры к URL
-     * @param {string} url Ссылка 
-     * @param {object} params Параметры
-     * @return {string}
+     * Appends parameters to a URL.
+     * @param {string} url The URL.
+     * @param {object} params The parameters.
+     * @returns {string} The modified URL.
      */
     _paramsAddToUrl(url, params) {
         let urlWithParams = this._base + url;
@@ -3828,9 +5240,11 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Создает FormData из обьекта
-     * @param {object} params 
-     * @return {FormData}
+     * Creates a FormData object from an object.
+     * @param {object} params The object containing the data.
+     * @param {string} [keyBefore=''] The key before the current key.
+     * @param {FormData} [fd=null] The FormData object to append to (optional, default is null).
+     * @returns {FormData} The FormData object containing the data.
      */
     _createFormData(params, keyBefore = '', fd = null) {
         let mainThread = false;
@@ -3881,9 +5295,9 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Ищет файлы в обьекте и заменяет на file(md5)
-     * @param {object} params обьект параметров
-     * @param {object} files файлы, результат
+     * Finds files in an object and replaces them with 'file(md5)'.
+     * @param {object} params The object containing parameters.
+     * @param {object} files The resulting files object.
      */
     _findFiles(params, files) {
 
@@ -3917,8 +5331,9 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Кодирует данные в json и енкодит
-     * @param {object} params данные формы
+     * Encodes data into JSON and encodes it.
+     * @param {object} params The form data.
+     * @returns {FormData} The encoded data.
      */
     _encryptData(params) {
         // ищем файлы и впихиваем в FormData как файлы
@@ -3934,6 +5349,11 @@ Colibri.IO.Request = class extends Destructable {
         return fd;
     }
 
+    /**
+     * Retrieves the response headers from the XMLHttpRequest object.
+     * @param {XMLHttpRequest} xhr The XMLHttpRequest object.
+     * @returns {object} The response headers.
+     */
     _getResponseHeaders(xhr) {
         let responseHeaders = xhr.getAllResponseHeaders();
         let arr = responseHeaders.trimString().split(/[\r\n]+/);
@@ -3952,10 +5372,10 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Добавляет хедер
-     * @param {string} name свойство
-     * @param {string} value значение
-     * @return {Colibri.IO.Request}
+     * Adds a single header to the request headers.
+     * @param {string} name The name of the header.
+     * @param {string} value The value of the header.
+     * @returns {Colibri.IO.Request} The modified request object.
      */
     AddHeader(name, value) {
         this._headers[name] = value;
@@ -3963,9 +5383,9 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Добавляет хедеры
-     * @param {object} headers хедеры
-     * @return {Colibri.IO.Request}
+     * Adds multiple headers to the request headers.
+     * @param {object} headers The headers to add.
+     * @returns {Colibri.IO.Request} The modified request object.
      */
     AddHeaders(headers) {
         this._headers = Object.assign({}, this._headers, headers);
@@ -3973,12 +5393,12 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Выполняет GET запрос
-     * @param {string} url URL
-     * @param {object} params Параметры
-     * @param {boolean} withCredentials Использовать куки
-     * @param {function} onprogressCallback
-     * @return {Promise}
+     * Executes a GET request.
+     * @param {string} url The URL to send the request to.
+     * @param {object} params The parameters to include in the request URL.
+     * @param {boolean} [withCredentials=true] Indicates whether to include cookies in the request.
+     * @param {function} [onprogressCallback=undefined] A callback function to handle progress events.
+     * @returns {Promise} A promise that resolves with the response data or rejects with an error.
      */
     Get(url, params, withCredentials = true, onprogressCallback = undefined) {
         
@@ -4025,12 +5445,12 @@ Colibri.IO.Request = class extends Destructable {
     }
 
     /**
-     * Выполняет POST запрос
-     * @param {string} url URL
-     * @param {object} params Параметры
-     * @param {boolean} withCredentials
-     * @param {function} onprogressCallback
-     * @return {Promise}
+     * Executes a POST request.
+     * @param {string} url The URL to send the request to.
+     * @param {object} params The parameters to include in the request body.
+     * @param {boolean} [withCredentials=true] Indicates whether to include cookies in the request.
+     * @param {function} [onprogressCallback=undefined] A callback function to handle progress events.
+     * @returns {Promise} A promise that resolves with the response data or rejects with an error.
      */
     Post(url, params, withCredentials = true, onprogressCallback = undefined) {
         
@@ -4084,6 +5504,9 @@ Colibri.IO.Request = class extends Destructable {
         
     }
 
+    /**
+     * Aborts the current XMLHttpRequest request.
+     */
     Abort() {
         if(this._currentRequest) {
             this._currentRequest.abort();
@@ -4092,13 +5515,13 @@ Colibri.IO.Request = class extends Destructable {
 }
 
 /**
- * Статическое выполнение POST запроса
- * @param {string} url URL
- * @param {object} params Параметры
- * @param {object} headers Хедеры
- * @param {boolean} withCredentials
- * @param {function} onprogressCallback
- * @return {Promise}
+ * Static method to execute a POST request.
+ * @param {string} url - The URL for the request.
+ * @param {object} params - The parameters for the request.
+ * @param {object} headers - The headers for the request.
+ * @param {boolean} withCredentials - Whether to use credentials.
+ * @param {function} onprogressCallback - Callback function for progress.
+ * @returns {Promise} - A Promise representing the result of the request.
  */
 Colibri.IO.Request.Post = (url, params, headers, withCredentials, onprogressCallback) => {
     const request = new Colibri.IO.Request();
@@ -4106,27 +5529,33 @@ Colibri.IO.Request.Post = (url, params, headers, withCredentials, onprogressCall
 }
 
 /**
- * Статическое выполнение GET запроса
- * @param {string} url URL
- * @param {object} params Параметры
- * @param {object} headers Хедеры
- * @param {boolean} withCredentials
- * @param {function} onprogressCallback
- * @return {Promise}
+ * Static method to execute a GET request.
+ * @param {string} url - The URL for the request.
+ * @param {object} params - The parameters for the request.
+ * @param {object} headers - The headers for the request.
+ * @param {boolean} withCredentials - Whether to use credentials.
+ * @param {function} onprogressCallback - Callback function for progress.
+ * @returns {Promise} - A Promise representing the result of the request.
  */
 Colibri.IO.Request.Get = (url, params, headers, withCredentials, onprogressCallback) => {
     const request = new Colibri.IO.Request();
     return request.AddHeaders(headers).Get(url, params, withCredentials, onprogressCallback);
 }
 
-
-
+/**
+ * Represents a remote procedure call (RPC) request.
+ * @class 
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.IO
+ */
 Colibri.IO.RpcRequest = class extends Colibri.Events.Dispatcher {
 
-    /** 
-     * @constructor
-     * @param {string} moduleEntry - наименование модуля
-     * @param {string} [type] - типе данных 
+    /**
+     * Creates an instance of RpcRequest.
+     * @param {string} moduleEntry - The name of the module.
+     * @param {string} [type] - The type of data.
+     * @param {string|null} [remoteDomain=null] - The remote domain.
+     * @param {Function|null} [urlResolver=null] - The URL resolver function.
      */
     constructor(moduleEntry, type, remoteDomain = null, urlResolver = null) {
         super();
@@ -4145,16 +5574,32 @@ Colibri.IO.RpcRequest = class extends Colibri.Events.Dispatcher {
         this.RegisterEvent('ResultsProcessed', false, 'Обработка результатов завершена');
     }
 
+    /**
+     * Gets or sets the remote domain for RPC requests.
+     * @type {string|null}
+     */
     get remoteDomain() {
         return this._remoteDomain;
     }
+    /**
+     * Gets or sets the remote domain for RPC requests.
+     * @type {string|null}
+     */
     set remoteDomain(value) {
         this._remoteDomain = value;
     }
 
+    /**
+     * Gets or sets the request type for RPC requests.
+     * @type {string}
+     */
     get requestType() {
         return this._requestType;
     }
+    /**
+     * Gets or sets the request type for RPC requests.
+     * @type {string}
+     */
     set requestType(value) {
         this._requestType = value;
     }
@@ -4175,27 +5620,39 @@ Colibri.IO.RpcRequest = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Преобразует строку
-     * @param {string} string строка для преобразования 
+     * Prepares a string for use.
+     * @param {string} string - The string to prepare.
+     * @returns {string} The prepared string.
+     * @private
      */
     _prepareStrings(string) {
         return string.split('\\').map((v) => v.fromCamelCase()).join('/');
     }
 
+    /**
+     * Gets the requests being processed.
+     * @returns {Object} The working requests.
+     */
     Requests() {
         return this._workingRequests;
     }
 
+    /**
+     * Clears the request cache.
+     */
     ClearCache() {
         this._requestsCache = {};
     }
 
     /**
-     * 
-     * @param {string} controller - наименование контролера 
-     * @param {string} method - метод, который нужно выполнить
-     * @param {Object} params - параметры которые нужно передать
-     * @param {Object} headers - заголовки 
+     * Makes a remote procedure call.
+     * @param {string} controller - The controller name.
+     * @param {string} method - The method to execute.
+     * @param {Object} [params=null] - The parameters to pass.
+     * @param {Object} [headers={}] - The headers.
+     * @param {boolean} [withCredentials=true] - Whether to include credentials.
+     * @param {string} [requestKeyword=Date.Mc()] - The request keyword.
+     * @returns {Promise} The result of the RPC call.
      */
     Call(controller, method, params = null, headers = {}, withCredentials = true, requestKeyword = Date.Mc()) {
 
@@ -4304,8 +5761,19 @@ Colibri.IO.RpcRequest = class extends Colibri.Events.Dispatcher {
 
 
 }
+/**
+ * Provides encryption and decryption functionality.
+ * @class
+ * @memberof Colibri.IO
+ */
 Colibri.IO.Crypt = class {
 
+    /**
+     * Encrypts the given data using the specified key.
+     * @param {string} key The encryption key.
+     * @param {string} data The data to encrypt.
+     * @returns {Promise<string>} A promise that resolves to the encrypted data.
+     */
     static Encrypt(key, data) {
         return new Promise((resolve, reject) => {
             key.sha256().then((sha256) => {
@@ -4315,19 +5783,34 @@ Colibri.IO.Crypt = class {
         });
     }
 
+    /**
+     * Decrypts the given data using the specified key.
+     * @param {string} key The decryption key.
+     * @param {string} data The data to decrypt.
+     * @returns {Promise<string>} A promise that resolves to the decrypted data.
+     */
     static Decrypt(key, data) {
         return Colibri.IO.Crypt.Encrypt(key, data);
     }
 
 }
-
+/**
+ * Represents a module class in the Colibri framework.
+ * This class extends Colibri.IO.RpcRequest and provides functionality for managing modules.
+ * @class 
+ * @extends Colibri.IO.RpcRequest
+ * @memberof Colibri.Modules
+ */
 Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
 
-    /** 
-     * @constructor 
-     * @param {string} entryName - наименование модуля
-     * @param {string} [type] - тип данных
-     */ 
+    /**
+     * Constructs an instance of the Colibri.Modules.Module class.
+     * @public 
+     * @param {string} entryName - The name of the module.
+     * @param {string} [type] - The type of data.
+     * @param {string} remoteDomain - The remote domain for the module.
+     * @param {string} urlResolver - The URL resolver for the module.
+     */
     constructor(entryName, type, remoteDomain, urlResolver) {
         super(entryName, type, remoteDomain, urlResolver);
 
@@ -4339,7 +5822,9 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
     }
 
     /**
-     * Инициализация модуля, запускается автоматически
+     * Initializes the module.
+     * This method is automatically called during module construction.
+     * @public 
      */
     InitializeModule() {
 
@@ -4352,19 +5837,29 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
     }
 
     /**
-     * Метод для регистрации событий, запускается автоматически
+     * Registers events for the module.
+     * This method is automatically called during module construction.
+     * @public 
      */
     RegisterEvents() {
         // Тут регистрируем все события (свои события)
     }
 
     /**
-     * Метод для регистрации обработчиков событий
+     * Registers event handlers for the module.
+     * This method is automatically called during module construction.
+     * @public 
      */
     RegisterEventHandlers() {
         // Тут регистрируем обарботчики событий
     }
 
+    /**
+     * Handles routing for the module.
+     * @param {string} pattern - The routing pattern.
+     * @param {string|Function} event - The event associated with the routing pattern.
+     * @public 
+     */
     HandleRoute(pattern, event) {
         pattern = ('/' + this._moduleEntry.fromCamelCase('-') + '/' + pattern).replaceAll('//', '/');
         let handler = event;
@@ -4374,27 +5869,64 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
         App.Router.AddRoutePattern(pattern, handler);
     }
 
+    /**
+     * Navigates to a specified URL within the module.
+     * @param {string} url - The URL to navigate to.
+     * @param {Object} options - Additional navigation options.
+     * @public 
+     */
     RouteTo(url, options = {}) {
         url = ('/' + this._moduleEntry.fromCamelCase('-') + '/' + url).replaceAll('//', '/');
         App.Router.Navigate(url, options);
     }
 
+    /**
+     * Setter for enabling/disabling the use of authorization cookies.
+     * @param {boolean} value - Whether to use authorization cookies.
+     * @public 
+     */
     set useAuthorizationCookie(value) {
         this._useAuthorizationCookie = value;
     }
 
+    /**
+     * Getter for checking if authorization cookies are enabled.
+     * @returns {boolean} - Whether authorization cookies are used.
+     * @public 
+     */
     get useAuthorizationCookie() {
         return this._useAuthorizationCookie;
     }
 
+    /**
+     * Getter for retrieving the name of the authorization cookie.
+     * @returns {string} - The name of the authorization cookie.
+     * @public 
+     */
     get authorizationCookieName() {
         return this._authorizationCookieName;
     }
 
+    /**
+     * Setter for defining the name of the authorization cookie.
+     * @param {string} value - The name of the authorization cookie.
+     * @public 
+     */
     set authorizationCookieName(value) {
         this._authorizationCookieName = value;
     }
 
+    /**
+     * Makes an RPC (Remote Procedure Call) to the specified controller and method.
+     * @param {string} controller - The name of the controller to call.
+     * @param {string} method - The name of the method to call.
+     * @param {Object|null} params - Parameters to pass to the method.
+     * @param {Object} headers - Additional headers for the RPC request.
+     * @param {boolean} withCredentials - Whether to include credentials in the request.
+     * @param {string} requestKeyword - The request keyword.
+     * @returns {Promise} - A promise representing the result of the RPC call.
+     * @public 
+     */
     Call(controller, method, params = null, headers= {}, withCredentials= true, requestKeyword = Date.Mc()) {
         if(!this._useAuthorizationCookie) {
             headers = Object.assign(headers, {
@@ -4408,8 +5940,22 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
     }
 
 }
+/**
+ * Represents a storage class that extends Colibri.Events.Dispatcher.
+ * Manages storage of data and provides methods for querying and updating data.
+ * @class 
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Storages
+ */
 Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
+    /**
+     * Creates an instance of Colibri.Storages.Store.
+     * @param {string} name - The name of the store.
+     * @param {Object} [data={}] - The initial data for the store.
+     * @param {Object} [parent=null] - The parent store, if any.
+     * @param {boolean} [permanent=false] - Indicates whether the store data should be kept permanently.
+     */
     constructor(name, data = {}, parent = null, permanent = false) {
         super('Store');
 
@@ -4436,6 +5982,9 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Saves the store data in the permanent storage.
+     */
     KeepInPermanentStore() {
         const __domain = location.hostname;
         let savingData = this.ExportData();
@@ -4449,6 +5998,9 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves store data from the permanent storage.
+     */
     RetreiveFromPermanentStore() {
         if(App.Db.StoreExists(this._name)) {
             this._data = App.Db.GetDataById(this._name, location.hostname);
@@ -4460,6 +6012,11 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         }
     }
     
+    /**
+     * Exports store data.
+     * @param {boolean} [fullData=false] - Indicates whether to export full data recursively.
+     * @returns {Object} The exported data.
+     */
     ExportData(fullData = false) {
 
         const newData = {};
@@ -4478,14 +6035,16 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * @type {Boolean}
+     * Indicates whether the store is permanent.
+     * @type {boolean}
      */
     get permanent() {
         return this._permanent;
     }
 
     /**
-     * @type {Boolean}
+     * Sets the permanence of the store.
+     * @type {boolean}
      */
     set permanent(value) {
         this._permanent = value;
@@ -4495,20 +6054,24 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Owner module object
+     * Gets the owner module object.
      * @type {Object}
      */
     get owner() {
         return this._owner;
     }
     /**
-     * Owner module object
+     * Sets the owner module object.
      * @type {Object}
      */
     set owner(value) {
         this._owner = value;
     }
     
+    /**
+     * Clears data at the specified path or the entire store if no path is provided.
+     * @param {string} [path] - The path to clear.
+     */
     Clear(path) {
         if(!path) {
             this._data = {};
@@ -4516,10 +6079,17 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         this.Set(path, null);
     }
     
+    /**
+     * Gets the name of the store.
+     * @returns {string} The name of the store.
+     */
     get name() {
         return this._name;
     }
 
+    /**
+     * Registers events for the store.
+     */
     RegisterEvents() {
         this.RegisterEvent('StoreUpdated', true, 'When store data is updated');
         this.RegisterEvent('StoreChildUpdated', true, 'When child store is updated');
@@ -4528,6 +6098,9 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         this.RegisterEvent('StoreKeeped', true, 'When store is keeped to permanent');
     }
 
+    /**
+     * Registers event handlers for the store.
+     */
     RegisterEventHandlers() {
         if(this._parent) {
             this.AddHandler('StoreUpdated', (event, args) => {
@@ -4536,6 +6109,14 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Adds a child store.
+     * @param {string} path - The path to the child store.
+     * @param {object} [data={}] - The data for the child store.
+     * @param {object} [owner=null] - The owner module object.
+     * @param {boolean} [permanent=false] - Indicates whether the child store is permanent.
+     * @returns {Colibri.Storages.Store} The newly added child store.
+     */
     AddChild(path, data = {}, owner = null, permanent = false) {
         let paths = path.split('.');
         const newStore = new Colibri.Storages.Store(paths[paths.length - 1], data, this, permanent);
@@ -4544,6 +6125,11 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return newStore;
     }
 
+    /**
+     * Retrieves the child store at the specified path.
+     * @param {string} path - The path to the child store.
+     * @returns {object} The child store object along with its path.
+     */
     GetChild(path) {
         let p = path.split('.');
         let first = p.shift();
@@ -4576,6 +6162,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return null;
     }
 
+    /**
+     * Adds a path loader.
+     * @param {string} path - The path to add the loader.
+     * @param {function|string} loader - The loader function or string indicating the method.
+     * @param {object} [params={}] - Additional parameters for the loader.
+     * @returns {Colibri.Storages.Store} The store object.
+     */
     AddPathLoader(path, loader, params = {}) {
         if(this._pathLoaders[path]) {
             throw new Error('Path loader is Registered')
@@ -4592,6 +6185,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return this;
     }
 
+    /**
+     * Adds a path handler for the specified path.
+     * @param {string|string[]} path - The path or an array of paths for which the handler is registered.
+     * @param {Function|Array} handler - The handler function or an array containing the respondent and handler function.
+     * @param {boolean} prepend - Indicates whether the handler should be added at the beginning (true) or end (false) of the handlers list.
+     * @returns {Colibri.Storages.Store} The store instance.
+     */
     AddPathHandler(path, handler, prepend) {
 
         if(Array.isArray(path)) {
@@ -4649,6 +6249,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return this;
     }
 
+    /**
+     * Removes a path handler for the specified path.
+     * @param {string} path - The path for which the handler should be removed.
+     * @param {Object} respondent - The respondent object associated with the handler.
+     * @param {Function} handler - The handler function to be removed.
+     * @returns {Colibri.Storages.Store} The store instance.
+     */
     RemovePathHandler(path, respondent, handler) {
         for (let i = 0; i < this._pathHandlers[path].length; i++) {
             const h = this._pathHandlers[path][i];
@@ -4660,6 +6267,11 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return this;
     }
 
+    /**
+     * Dispatches events along the specified path.
+     * @param {string} path - The path along which events should be dispatched.
+     * @returns {boolean} True if all event handlers were executed successfully, otherwise false.
+     */
     DispatchPath(path) {
 
         const childStoreData = this.GetChild(path);
@@ -4699,6 +6311,11 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Checks if the loader associated with the specified path has been executed.
+     * @param {string} path - The path for which to check if the loader has been executed.
+     * @returns {boolean} True if the loader has been executed or if the path doesn't have a loader, otherwise false.
+     */
     IsLoaderExecuted(path) {
         
         const childStore = this.GetChild(path);
@@ -4710,6 +6327,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Reloads the data associated with the specified path, optionally dispatching events after reloading.
+     * @param {string} path - The path to reload data for.
+     * @param {boolean} [nodispatch=true] - Whether to dispatch events after reloading (default: true).
+     * @param {string|int|null} [param=null] - Additional parameter for the reload operation (default: null).
+     * @returns {Promise} A promise that resolves when the reload operation is complete.
+     */
     async Reload(path, nodispatch = true, param = null) {
         
         const childStore = this.GetChild(path);
@@ -4747,10 +6371,11 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Получает данные из хранилища в ассинхронном режиме, используются PathLoader-ы
-     * @param {string} path путь к обьекту
-     * @param {string|int|null} param доп путь
-     * @returns {object}
+     * Asynchronously retrieves data from the storage using PathLoaders.
+     * @param {string} path - The path to the object.
+     * @param {string|int|null} [param=null] - Additional path.
+     * @param {boolean} [reload=false] - Whether to force reload the data (default: false).
+     * @returns {Promise<object>} A promise that resolves with the retrieved data.
      */
     async AsyncQuery(path, param = null, reload = false) {
 
@@ -4768,6 +6393,12 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return this.Reload(path, false, param);
     }
 
+    /**
+     * Retrieves data from the storage based on the provided path and optional query parameters.
+     * @param {string} path - The path to the object.
+     * @param {string|null} [queryList=null] - Optional query parameters in the format "field=value".
+     * @returns {object} The retrieved data.
+     */
     Query(path, queryList = null) {
 
         let p = path.split('.');
@@ -4806,6 +6437,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Sets data at the specified path in the storage.
+     * @param {string} path - The path where the data will be set.
+     * @param {any} d - The data to be set.
+     * @param {boolean} [nodispatch=false] - Whether to dispatch events after setting the data.
+     * @returns {object} The updated storage object.
+     */
     Set(path, d, nodispatch = false) {
 
         let p = path.split('.');
@@ -4847,6 +6485,18 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Updates a list in the storage based on search criteria and sorting options.
+     * @param {string} path - The path of the list in the storage.
+     * @param {string} searchField - The field used for searching within the list.
+     * @param {any} [searchValue=null] - The value to search for within the list.
+     * @param {any} [newData=null] - The new data to replace the existing data that matches the search criteria.
+     * @param {string} [sortField=null] - The field used for sorting the list.
+     * @param {string} [sortOrder='asc'] - The order in which the list should be sorted ('asc' for ascending or 'desc' for descending).
+     * @param {boolean} [insertIfNotExists=true] - Whether to insert the new data if no matching entry is found in the list.
+     * @param {string} [incrementIfInserted=''] - The path where the length of the list should be incremented if a new entry is inserted.
+     * @returns {array} The updated list.
+     */
     UpdateList(path, searchField, searchValue = null, newData = null, sortField = null, sortOrder = 'asc', insertIfNotExists = true, incrementIfInserted = '') {
         let list = this.Query(path);
         if(!Array.isArray(list)) {
@@ -4872,6 +6522,12 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return list;
     }
 
+    /**
+     * Updates the list in the storage by intersecting it with the provided values based on the specified search field.
+     * @param {string} path - The path of the list in the storage.
+     * @param {string} searchField - The field used for searching within the list.
+     * @param {Array} values - The array of values to intersect with the list.
+     */
     IntersectList(path, searchField, values) {
         let list = this.Query(path);
         if(!Array.isArray(list)) {
@@ -4886,6 +6542,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Adds a page of items to the list in the storage.
+     * @param {string} path - The path of the list in the storage.
+     * @param {number} page - The page number.
+     * @param {Array} pageItems - The items to add to the list.
+     * @returns {Array} The updated list after adding the page items.
+     */
     ListAddPage(path, page, pageItems) {
         let list = this.Query(path);
         if(!Array.isArray(list) || page === 1) {
@@ -4896,6 +6559,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return list;
     }
 
+    /**
+     * Sorts the list in the storage based on the specified field and sort order.
+     * @param {string} path - The path of the list in the storage.
+     * @param {string} sortField - The field used for sorting the list.
+     * @param {string} [sortOrder='asc'] - The order in which the list should be sorted ('asc' for ascending or 'desc' for descending).
+     * @returns {Array} The sorted list.
+     */
     SortList(path, sortField, sortOrder = 'asc') {
         let list = this.Query(path);
         if(!Array.isArray(list)) {
@@ -4914,6 +6584,13 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return list;
     }
 
+    /**
+     * Queries the list in the storage based on the specified field and value.
+     * @param {string} path - The path of the list in the storage.
+     * @param {string} field - The field used for querying the list.
+     * @param {any} value - The value to search for within the list.
+     * @returns {any} The queried data from the list.
+     */
     QueryList(path, field, value) {
         let list = this.Query(path);
         if(!Array.isArray(list)) {
@@ -4923,6 +6600,12 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         return Array.findObject(list, field, value);
     }
 
+    /**
+     * Parses the path if it contains a parameter enclosed in parentheses.
+     * @param {string} path - The path to parse.
+     * @returns {[string, string|null]} An array containing the parsed path and the parameter, or null if no parameter is found.
+     * @private
+     */
     _parsePathIfHasParam(path) {
         if(path.indexOf('(') === -1) {
             return [path, null];
@@ -4932,6 +6615,11 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
     }
 
 }
+/**
+ * @class 
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Storages
+ */
 Colibri.Storages.Models.Table = class extends Colibri.Events.Dispatcher {
  
     constructor(controller, params) {
@@ -4960,6 +6648,7 @@ Colibri.Storages.Models.Table = class extends Colibri.Events.Dispatcher {
     
     }
 
+    /** @protected */
     _registerEvents() {
         this.RegisterEvent('DataChanged', false, 'Когда данные изменились');
     }
@@ -4971,6 +6660,11 @@ Colibri.Storages.Models.Table = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __cometEventReveived(event, args) {
         if(args.message.action == 'data-changed' && args.message.binding == this._binding) {
             this.Load();
@@ -5012,6 +6706,11 @@ Colibri.Storages.Models.Table = class extends Colibri.Events.Dispatcher {
     }
 
 }
+/**
+ * @class 
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Storages
+ */
 Colibri.Storages.Models.Model = class extends Colibri.Events.Dispatcher {
     
     constructor(row, table) {
@@ -5059,11 +6758,25 @@ Colibri.Storages.Models.Model = class extends Colibri.Events.Dispatcher {
         return this._table.DeleteRow(this);
     }
 }
-
+/**
+ * @class
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Shortcuts = {
 
+    /**
+     * Keys added for shortcuts
+     * @type {object}
+     */
     keys: {},
 
+    /**
+     * Add handler to shortcut
+     * @public
+     * @static
+     * @param {Array} keys array of keys to add
+     * @param {Function} handler method to execute when shortcut is raised
+     */
     Add: function (keys, handler) {
         if(!this.keys[keys]) {
             this.keys[keys] = [];
@@ -5071,6 +6784,11 @@ Colibri.UI.Shortcuts = {
         this.keys[keys].push(handler);
     },
 
+    /**
+     * Bund all shortcuts added before
+     * @public
+     * @static
+     */
     Bind: function() {
 
         window.addEventListener('keydown', (e) => {
@@ -5113,14 +6831,36 @@ Colibri.UI.Shortcuts = {
 Colibri.UI.Shortcuts.Bind();
 
 
+/**
+ * Templates for UI development
+ * @class
+ * @memberof Colibri.UI
+ */
+Colibri.UI.Templates = {}
 
-Colibri.UI.Templates = {};
-
+/**
+ * @description Add template to
+ * @param {string} name Name of template
+ * @param {string} content content of template
+ * @static
+ * @public
+ */
 Colibri.UI.AddTemplate = (name, content) => {
     Colibri.UI.Templates[name] = new DOMParser().parseFromString(content, "application/xhtml+xml").children[0];
 }
+
+/**
+ * Base renderer class
+ * @class
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Renderer = class extends Destructable {
 
+    /**
+     * @constructor
+     * @param {Colibri.UI.Component} object Component for rendering
+     * @param {*} data Data for rendering
+     */
     constructor(object, data) {
         super();
         
@@ -5141,6 +6881,9 @@ Colibri.UI.Renderer = class extends Destructable {
 
     }
 
+    /**
+     * @description Run render process, must be overloaded
+     */
     Render() {
         throw new Error('');
     }
@@ -5468,12 +7211,37 @@ Colibri.UI.Files['xlsx'] =		 '<svg version="1.1" width="548.29px" height="548.29
 Colibri.UI.Files['xml'] =		 '<svg version="1.1" width="550.801px" height="550.801px" viewBox="0 0 550.801 550.801" style="enable-background:new 0 0 550.801 550.801;"><g><g><path d="M475.084,131.986c-0.021-2.525-0.828-5.015-2.562-6.992L366.324,3.684c-0.031-0.029-0.062-0.045-0.084-0.071c-0.633-0.712-1.371-1.289-2.151-1.803c-0.232-0.15-0.464-0.29-0.707-0.422c-0.675-0.372-1.392-0.669-2.13-0.891c-0.201-0.058-0.38-0.145-0.58-0.188C359.87,0.114,359.037,0,358.193,0H97.2C85.282,0,75.6,9.688,75.6,21.601v507.6c0,11.907,9.682,21.601,21.6,21.601H453.6c11.908,0,21.601-9.693,21.601-21.601V133.197C475.2,132.791,475.137,132.393,475.084,131.986z M177.504,510.543l-10.676-21.331c-4.369-8.211-7.162-14.328-10.481-21.151h-0.345c-2.447,6.823-5.424,12.94-9.094,21.151l-9.79,21.331h-30.406l34.077-59.611l-32.854-58.197h30.586l10.304,21.494c3.499,7.172,6.117,12.941,8.92,19.575h0.346c2.797-7.509,5.065-12.751,8.037-19.575l9.967-21.494h30.409l-33.212,57.507l34.965,60.302H177.504z M323.989,510.543l-1.751-45.099c-0.527-14.164-1.055-31.292-1.055-48.421h-0.517c-3.67,15.035-8.563,31.815-13.109,45.621l-14.333,45.969h-20.812l-12.579-45.615c-3.839-13.807-7.857-30.586-10.666-45.975h-0.345c-0.696,15.905-1.226,34.088-2.101,48.764l-2.089,44.751h-24.647l7.522-117.814h35.479l11.538,39.335c3.671,13.626,7.341,28.308,9.956,42.119h0.527c3.322-13.627,7.341-29.184,11.19-42.293l12.583-39.161h34.783l6.465,117.814h-26.04V510.543z M444.087,510.543H370.49V392.734h26.747v95.438h46.85V510.543z M453.6,366.747H97.2V21.601h250.192v110.51c0,5.962,4.842,10.8,10.801,10.8H453.6V366.747z"/><polygon points="118.078,234.885 180.415,263.844 180.415,250.08 133.273,229.429 133.273,229.166 180.415,208.518 180.415,194.751 118.078,223.71 "/><polygon points="376.829,208.518 425.018,229.166 425.018,229.429 376.829,250.08 376.829,263.844 439.167,235.272 439.167,223.322 376.829,194.751 "/><path d="M277.383,154.916c-41.08,0-74.382,33.302-74.382,74.379c0,41.077,33.302,74.382,74.382,74.382s74.377-33.305,74.377-74.382C351.76,188.217,318.463,154.916,277.383,154.916z M305.337,184.438l5.321-3.56c0,0-2.236-5.729-1.856-8.537c1.287-0.628,6.528,2.122,10.953,6.781c-2.979,11.093-9.972,9.77-9.972,9.77S304.668,188.769,305.337,184.438z M260.502,249.93c-0.33,1.661-2.333,5.664-3.663,8.321c-1.329,2.661-1.993,3.665-3.667,4.994c-1.667,1.35-2.655,3.665-2.655,3.665l-0.335,5.656c0,0,0.654,4.669,1.653,6.336c0.996,1.655-3.565,11.574-3.565,11.574c-2.895-0.574-4.503-3.928-5.508-6.575c-1.005-2.674-2.328-4.093-1.993-7.077c0.335-3.001-2.587-4.583-3.576-6.246c-0.991-1.686-2.331-4-2.331-5.664c0-1.669-3.657-4.002-3.657-4.002s-6.663-2.996-7.662-4.319c-1-1.334-2.01-7.011-2.334-9.326c-0.34-2.323,0.994-8.316,0.994-8.316s2.689-2.02,1-3.667c-1.669-1.661-1.988-6.004-1.988-6.004l-3-3.322c0,0-2.339-3.33-2.668-5c-0.334-1.663,0-2.663,0.335-4.329c0.33-1.674-0.665-4.662-0.665-6.32c12.443-30.504,33.302-37.621,33.302-37.621l1.669,6.977c0,0-3.662,1.004-5.647,0.345c-2.009-0.669-3.02-0.669-3.02-0.669l-2.652,3.657c0,0-1.015,2.336-1.345,3.67s0.665,3.322,0.665,3.322s4.657,0.335,4.657-0.994c0-1.334-0.654-1.999-0.654-1.999l-0.67-2.331c0,0,3.02-1.669,10.982-1.012c7.994,0.675,5.007,6.331,8.345,7.675c3.331,1.332-2.679,5.988-4.008,8.646c-1.329,2.666-3.327-3.333-3.327-3.333s1.999-2.305-1.326-2.993c-3.333-0.651-5.537,5.996-3.853,5.671c1.659-0.329,3.518,1.793,3.177,3.449c-0.334,1.669-0.334,1.54-1.999,5.197c-1.664,3.66-5.281,6.371-5.281,6.371s-1.701-1.037-0.717,0.967c1.021,1.994-0.33,6.653-0.33,7.987c0,1.323-3.997-2.334-4.651-5.672c-0.68-3.309-4.577-0.424-5.906-0.084c-1.334,0.34-3.765-0.58-4.406-2.231c-0.68-1.674-6.681,3.32-8.351,4.314c-1.656,1.004-0.981,3.673,1.669,2.339c2.663-1.334,4.991-0.335,4.332,2.344c-0.659,2.645-3.317,0.999-2.993,2.645c0.33,1.664,2.993,3.333,3.652,5.672c0.669,2.32,7.008,0.335,9.001-0.67c1.991-1.01,7.657-1.999,8.316,0.67c0.691,2.666,7.003,3.649,9.329,4.308c2.339,0.669,7,1.004,9.671,3.667C265.502,243.264,260.854,248.261,260.502,249.93z M275.484,172.007c-0.338,3.338-5.65,7.657-4.989,9.002c0.669,1.345,0,7.037-4.659,2.035c-4.665-4.994-9.337-6.689-8.991-10.033c0.082-0.665,4.822-1.706,4.898-2.874c7.062-6.565,18.339-5.215,19.203-3.66C278.923,169.776,275.822,168.674,275.484,172.007z M333.345,194.369c4.503,7.726,11.085,28.334,8.653,32.015c-1.461-0.659-2.689-1.208-2.689-1.208h-8.886l5.321,6.226c0,0,2.578,3.778,6.228,3.536c-2.404,27.849-25.645,45.736-25.645,45.736c-3.549-3.555-1.771-6.65-1.771-6.65l0.996-5.342l0.564-8.985c0,0,0-9.313-8.886-4.892c-9.545,2.437-5.568,2.437-15.203,3.104c-9.656,0.67-8.058-19.686-8.058-19.686c0-30.473,23.366-7.475,23.366-7.475c13.331,8.867,15.108-7.354,15.108-7.354l9.761-3.538l0.887-4.448l-1.419-6.204l-14.186-5.854c0,0-1.366,4.608,2.272,10.275c0,0-1.213,6.436-4.197,4.772l-8.222-4.129c0,0-2.769-1.2-7.203,1.474c-4.451,2.655-11.976-0.132-11.976-0.132s0.611-4.464,5.283-6.782l3.818-2.521c0,0-1.002-4.559-0.127-8.105c0.876-3.549,2.447-0.442,5.991-3.111c3.549-2.649,5.996,5.216,11.316,4.333c5.321-0.891,2.669-1.777,6.229-3.549c3.56-1.777,6.217,3.549,6.217,3.549l7.088,0.883C333.978,200.312,332.87,192.288,333.345,194.369z"/></g></g></svg>'
 Colibri.UI.Files['yuv'] =		 '<svg version="1.1" width="550.801px" height="550.801px" viewBox="0 0 550.801 550.801" style="enable-background:new 0 0 550.801 550.801;"><g><g><path d="M475.095,131.992c-0.031-2.526-0.828-5.023-2.562-6.993L366.325,3.694c-0.021-0.034-0.053-0.045-0.085-0.076c-0.633-0.707-1.36-1.292-2.141-1.804c-0.232-0.153-0.464-0.287-0.707-0.422c-0.686-0.366-1.392-0.67-2.13-0.892c-0.2-0.058-0.38-0.14-0.58-0.195C359.87,0.119,359.048,0,358.204,0H97.2c-11.907,0-21.6,9.693-21.6,21.601v507.6c0,11.913,9.692,21.601,21.6,21.601h356.4c11.918,0,21.6-9.688,21.6-21.601V133.202C475.2,132.796,475.137,132.398,475.095,131.992z M171.358,464.411v49.781h-26.924v-48.891l-37.737-70.511h30.823l12.221,28.698c3.721,8.68,6.199,15.056,9.213,22.854h0.351c2.663-7.445,5.492-14.349,9.033-22.854l12.047-28.698h30.291L171.358,464.411z M321.042,461.759c0,36.845-18.604,54.385-49.778,54.385c-30.117,0-47.828-16.653-47.828-54.749v-66.604h27.103v68.739c0,20.551,7.791,31.003,21.61,31.003c14.167,0,21.967-9.92,21.967-31.003v-68.739h26.926V461.759z M404.109,514.192h-31.53l-38.264-119.391h29.584l14.522,50.482c4.077,14.175,7.795,27.817,10.632,42.699h0.527c3.017-14.35,6.729-28.524,10.811-42.167l15.229-51.015h28.698L404.109,514.192z M97.2,366.752V21.601h250.204v110.515c0,5.961,4.83,10.8,10.8,10.8h95.396l0.011,223.836H97.2z"/><path d="M354.792,176.386c0.185-2.183,0.312-4.271,0.312-6.249c0-45.062-36.661-81.722-81.723-81.722c-45.064,0-81.726,36.661-81.726,81.722c0,2.36,0.18,4.838,0.443,7.441c-30.913,12.345-51.419,42.235-51.419,75.784c0,45.062,36.661,81.723,81.726,81.723c19.396,0,37.868-6.897,52.639-19.401c14.763,12.504,33.236,19.401,52.637,19.401c45.066,0,81.717-36.661,81.717-81.723C409.398,218.785,387.145,187.795,354.792,176.386z M293.319,253.362c0,17.701-6.486,34.294-18.285,47.351c-11.8-13.057-18.291-29.645-18.291-47.351c0-1.03,0.065-2.138,0.124-3.245c5.476,1.144,11.005,1.737,16.508,1.737c6.636,0,13.268-0.831,19.781-2.474C293.256,250.755,293.319,252.086,293.319,253.362z M291.685,238.61c-10.987,2.969-22.328,3.24-33.479,0.777c2.495-12.416,8.332-24.015,16.828-33.449C283.326,215.156,289.111,226.486,291.685,238.61z M247.85,236.24c-22.228-8.598-38.763-27.947-43.73-51.316c6.017-1.621,12.145-2.479,18.286-2.479c16.447,0,32.146,5.706,44.808,16.089C257.568,209.185,250.858,222.231,247.85,236.24z M301.941,234.958c-3.138-13.531-9.761-26.13-19.095-36.444c16.596-13.574,38.622-19.077,59.99-14.392C338.302,206.577,322.866,225.698,301.941,234.958z M273.381,99.215c39.107,0,70.922,31.814,70.922,70.922c0,1.042-0.031,2.118-0.089,3.235c-24.701-5.147-50.119,1.516-69.056,17.468l-0.119-0.113l-0.119,0.113c-14.737-12.408-33.188-19.19-52.521-19.19c-6.652,0-13.283,0.826-19.802,2.474c-0.097-1.379-0.142-2.695-0.142-3.981C202.456,131.029,234.273,99.215,273.381,99.215z M222.399,324.285c-39.107,0-70.925-31.814-70.925-70.923c0-28.292,16.783-53.623,42.354-64.86c6.236,27.103,26.011,49.341,52.305,58.633l-0.016,0.137l0.108,0.032c-0.185,2.138-0.277,4.126-0.277,6.054c0,20.54,7.512,39.825,21.265,54.896C254.544,318.632,238.832,324.285,222.399,324.285z M327.671,324.285c-16.433,0-32.147-5.653-44.809-16.026c13.753-15.076,21.268-34.356,21.268-54.896c0-2.333-0.126-4.709-0.385-7.285l0.09-0.031l-0.016-0.124c25.064-10.094,43.743-32.342,49.406-58.672c26.995,10.455,45.373,36.819,45.373,66.113C398.599,292.471,366.778,324.285,327.671,324.285z"/></g></g></svg>'
 Colibri.UI.Files['zip'] =		 '<svg version="1.1" viewBox="0 0 317.001 317.001" style="enable-background:new 0 0 317.001 317.001;"><g><path d="M211.648,249.457c-2.36,0-3.959,0.229-4.797,0.456v15.152c0.99,0.229,2.208,0.305,3.884,0.305c6.167,0,9.975-3.122,9.975-8.375C220.709,252.273,217.435,249.457,211.648,249.457z"/><path d="M270.825,70.55L212.17,3.66C210.13,1.334,207.187,0,204.093,0H55.941C49.076,0,43.51,5.566,43.51,12.431V304.57c0,6.866,5.566,12.431,12.431,12.431h205.118c6.866,0,12.432-5.566,12.432-12.432V77.633C273.491,75.027,272.544,72.51,270.825,70.55z M121.114,250.218L100.708,292.4H88.45l20.405-39.822v-0.152h-22.69v-9.518h34.949V250.218z M166.343,292.4h-39.898v-6.243l24.441-35.178v-0.305h-22.157v-9.594h37.233v6.7l-23.908,34.721v0.305h24.289V292.4z M185.303,292.4h-11.649v-51.319h11.649V292.4z M227.486,268.873c-3.96,3.73-9.822,5.405-16.675,5.405c-1.523,0-2.894-0.076-3.96-0.228v18.35h-11.497v-50.634c3.578-0.609,8.604-1.066,15.685-1.066c7.158,0,12.259,1.371,15.686,4.112c3.274,2.588,5.482,6.853,5.482,11.878S230.531,265.979,227.486,268.873z M55.941,211.073L55.941,211.073V12.432H199.94v63.601c0,3.431,2.78,6.216,6.216,6.216h54.904l0.006,128.824H55.941z"/><g><path d="M123.123,41.893V31.871c0-2.203-1.786-3.989-3.989-3.989h-13.037c-2.203,0-3.989-1.786-3.989-3.989V14.2c0-2.203-1.786-3.989-3.989-3.989H76.964c-2.203,0-3.989,1.786-3.989,3.989v10.022c0,2.203,1.786,3.989,3.989,3.989h13.037c2.203,0,3.989,1.786,3.989,3.989v8.798c0,2.203-1.786,3.989-3.989,3.989H76.964c-2.203,0-3.989,1.786-3.989,3.989v10.022c0,2.203,1.786,3.989,3.989,3.989h13.037c2.203,0,3.989,1.786,3.989,3.989v9.266c0,2.203-1.786,3.989-3.989,3.989H76.964c-2.203,0-3.989,1.786-3.989,3.989v10.022c0,2.203,1.786,3.989,3.989,3.989H98.12c2.203,0,3.989-1.786,3.989-3.989v-9.595c0-2.203,1.786-3.989,3.989-3.989h13.037c2.203,0,3.989-1.786,3.989-3.989V66.646c0-2.203-1.786-3.989-3.989-3.989h-13.037c-2.203,0-3.989-1.786-3.989-3.989v-8.798c0-2.203,1.786-3.989,3.989-3.989h13.037C121.338,45.882,123.123,44.096,123.123,41.893z"/><path d="M76.964,148.9h3.827c2.203,0,3.989,1.786,3.989,3.989v22.342c0,2.203,1.786,3.989,3.989,3.989h18.562c2.203,0,3.989-1.786,3.989-3.989v-22.342c0-2.203,1.786-3.989,3.989-3.989h3.827c2.203,0,3.989-1.786,3.989-3.989v-32.798c0-2.203-1.786-3.989-3.989-3.989H76.964c-2.203,0-3.989,1.786-3.989,3.989v32.798C72.975,147.115,74.761,148.9,76.964,148.9z"/></g></g></svg>'
+/**
+ * @classdesc Drag process worker
+ * @class
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Drag = class {
 
+    /**
+     * Element for dragging
+     * @type {Element}
+     */
     _element = null; 
+
+    /**
+     * Container in wich drag must be realized
+     * @type {Element}
+     */
     _container = null;
+
+    /**
+     * Element for handle drag start
+     * @type {Element}
+     */
     _moveHandler = null;
 
+    /**
+     * @constructor
+     * @param {Element} element Element to drag
+     * @param {Element} container Container for drag in
+     * @param {Element} moveHandler Element for drag handle
+     */
     constructor(element, container, moveHandler) {
 
         this._element = element;
@@ -5487,6 +7255,9 @@ Colibri.UI.Drag = class {
 
     }
 
+    /**
+     * @private
+     */
     __start(e) {
         const bounds = this._container.bounds();
         this._element.tag = {state: true, point: [e.clientX - bounds.left, e.clientY - bounds.top]};
@@ -5494,11 +7265,18 @@ Colibri.UI.Drag = class {
         document.addEventListener('mousemove', this.MoveHandle, true);
     }
 
+    /**
+     * @private
+     */
     __end(e) {
         this._element.tag = {state: false};
         document.removeEventListener('mouseup', this.EndHandle, true);
         document.removeEventListener('mousemove', this.MoveHandle, true);
     }
+
+    /**
+     * @private
+     */
     __move(e) {
         if(this._element.tag.state) {
             // двигаем
@@ -5519,13 +7297,38 @@ Colibri.UI.Drag = class {
     }
 
 }
+/**
+ * RGB color representation
+ * @class
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Rgb = class {
 
+
+    /**
+     * @private
+     */
     _r = 0;
+    /**
+     * @private
+     */
     _g = 0;
+    /**
+     * @private
+     */
     _b = 0;
+    /**
+     * @private
+     */
     _a = 1;
 
+    /**
+     * @constructor
+     * @param {Number} r Red color (0, 256)
+     * @param {Number} g Green color (0, 256) 
+     * @param {Number} b Blue color (0, 256)
+     * @param {Number} a Opaque (0, 1)
+     */
     constructor(r = 0, g = 0, b = 0, a = 255) {
         this._r = r;
         this._g = g;
@@ -5533,10 +7336,24 @@ Colibri.UI.Rgb = class {
         this._a = a;
     }
     
+    /**
+     * Creates RGB color representation
+     * @static 
+     * @param {Number} r Red color (0, 256)
+     * @param {Number} g Green color (0, 256) 
+     * @param {Number} b Blue color (0, 256)
+     * @param {Number} a Opaque (0, 1)
+     * @returns {Colibri.UI.Rgb}
+     */
     static Create(r = 0, g = 0, b = 0, a = 255) {
         return new Colibri.UI.Rgb(r, g, b, a);
     }
 
+    /**
+     * Creates RGB color from object
+     * @param {object} obj Object that contains {r,g,b,a} properties 
+     * @returns {Colibri.UI.Rgb}
+     */
     fromObject(obj) {
         this._r = obj.r;
         this._g = obj.g;
@@ -5545,6 +7362,11 @@ Colibri.UI.Rgb = class {
         return this;
     }
 
+    /**
+     * Creates RGB color from hex color
+     * @param {string} hex HEX color presentation 
+     * @returns {Colibri.UI.Rgb}
+     */
     fromHex(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]*?)$/i.exec(hex);
         if(!result) {
@@ -5565,9 +7387,10 @@ Colibri.UI.Rgb = class {
      * Assumes h, s, and l are contained in the set [0, 1] and
      * returns r, g, and b in the set [0, 255].
      *
-     * @param   Number  h       The hue
-     * @param   Number  s       The saturation
-     * @param   Number  l       The lightness
+     * @param   {Number}  h       The hue
+     * @param   {Number}  s       The saturation
+     * @param   {Number}  l       The lightness
+     * @returns {Colibri.UI.Rgb}
      */
     fromHSL(h,s,l) {
         var r, g, b;
@@ -5604,10 +7427,10 @@ Colibri.UI.Rgb = class {
      * Assumes h, s, and v are contained in the set [0, 1] and
      * returns r, g, and b in the set [0, 255].
      *
-     * @param   Number  h       The hue
-     * @param   Number  s       The saturation
-     * @param   Number  v       The value
-     * @return  Array           The RGB representation
+     * @param   {Number}  h       The hue
+     * @param   {Number}  s       The saturation
+     * @param   {Number}  v       The value
+     * @return  {Colibri.UI.Rgb}           The RGB representation
      */
     fromHSV(h, s, v) {
 
@@ -5640,11 +7463,25 @@ Colibri.UI.Rgb = class {
         return this;
     }
 
+    /**
+     * Converts an HSV color value to RGB. Conversion formula
+     * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+     * Assumes h, s, and v are contained in the set [0, 1] and
+     * returns r, g, and b in the set [0, 255].
+     *
+     * @param   {Number}  h       The hue
+     * @param   {Number}  s       The saturation
+     * @param   {Number}  v       The value
+     * @return  {Colibri.UI.Rgb}           The RGB representation
+     */
     fromHue(hue) {
         this.fromHSV(hue, 1, 1);
         return this;
     }
 
+    /**
+     * @private
+     */
     _toHex() {
         try {
             let alpha = this._a.toString(16).expand('0', 2);
@@ -5655,10 +7492,16 @@ Colibri.UI.Rgb = class {
         }
     }
 
+    /**
+     * @private
+     */
     _getHue() {
         return this._getHSV().h;
     }
 
+    /**
+     * @private
+     */
     _getHSL() {
         const r = this._r / 255, g = this._g / 255, b = this._b / 255;
 
@@ -5683,6 +7526,9 @@ Colibri.UI.Rgb = class {
         return { h: h, s: s, l: l };
     }
 
+    /**
+     * @private
+     */
     _getHSV() {
         let r = this._r / 255, g = this._g / 255, b = this._b / 255;
 
@@ -5707,48 +7553,180 @@ Colibri.UI.Rgb = class {
         return { h: h, s: s, v: v };
     }
 
+    /**
+     * Returns Red component of current color
+     * @readonly
+     */
     get red() {
         return this._r;
     }
+    /**
+     * Returns Green component of corrent color
+     * @readonly
+     */
     get green() {
         return this._g;
     }
+    /**
+     * Returns Blue component of corrent color
+     * @readonly
+     */
     get blue() {
         return this._g;
     }
+    /**
+     * Returns Alpha channel of color
+     */
     get alpha() {
         return this._a;
     }
+    /**
+     * Sets Alpha channel of color
+     */
+    set alpha(value) {
+        this._a = value;
+    }
+    /**
+     * Returns Hue
+     * @readonly
+     */
     get hue() {
         return this._getHue();
     }
+    /**
+     * Returns Hex representation of color
+     * @readonly
+     */
     get hex() {
         return this._toHex();
     }
+    /**
+     * Returns HSL representation of color
+     * @readonly
+     */
     get hsl() {
         return this._getHSL();
     }
+    /**
+     * Returns HSV representation of color
+     * @readonly
+     */
     get hsv() {
         return this._getHSV();
     }    
 
-    set alpha(value) {
-        this._a = value;
-    }
 }
 /**
  * Класс компонента по умолчанию
  * @class
- * @extends Colibri.Dispatcher
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.UI
  */
 Colibri.UI.Component = class extends Colibri.Events.Dispatcher 
 {
 
     /**
+     * Null handler, prevents handling event
+     * @static
+     * @param {string|Colibri.UI.Event} event event to handle
+     * @param {*} args arguments for event 
+     */
+    static __nullHandler = (event, args) => {};
+
+    /**
+     * Dom events map to Colibri events
+     * @static
+     */
+    static __domHandlers = {
+        Clicked: {
+            domEvent: 'click',
+        },
+        DoubleClicked: {
+            domEvent: 'dblclick',
+        },
+        MouseUp: {
+            domEvent: 'mouseup',
+        },
+        MouseEnter: {
+            domEvent: 'mouseenter',
+        },
+        MouseLeave: {
+            domEvent: 'mouseleave',
+        },
+        KeyDown: {
+            domEvent: 'keydown',
+        },
+        KeyUp: {
+            domEvent: 'keyup',
+        },
+        KeyPressed: {
+            domEvent: 'keypress',
+        },
+        ReceiveFocus: {
+            domEvent: 'focus',
+        },
+        LoosedFocus: {
+            domEvent: 'blur',
+        },
+        Pasted: {
+            domEvent: 'paste',
+            delay: 100,
+        },
+        DragStart: {
+            domEvent: 'dragstart'
+        },
+        DragEnd: {
+            domEvent: 'dragend'
+        },
+        DragEnter: {
+            domEvent: 'dragenter',
+        },
+        DragOver: {
+            domEvent: 'dragover',
+        },
+        DragLeave: {
+            domEvent: 'dragleave',
+        },
+        Drop: {
+            domEvent: 'drop',
+        },
+        Drag: {
+            domEvent: 'drag',
+        },
+        MouseDown: {
+            domEvent: 'mousedown',
+        },
+        ContextMenu: {
+            domEvent: 'contextmenu'
+        },
+        MouseMove: {
+            domEvent: 'mousemove'
+        },
+        Scrolled: {
+            domEvent: 'scroll'
+        },
+        TouchStarted: {
+            domEvent: 'touchstart'
+        },
+        TouchEnded: {
+            domEvent: 'touchend'
+        },
+        TouchMoved: {
+            domEvent: 'touchmove'
+        }
+    };
+
+    /**
+     * Maped handlers
+     * @private
+     */
+    __domHandlersAttached = {};
+
+    /**
      * @constructor
-     * @param {string} name - наименование обьекта
-     * @param {string} element наименование тэга
-     * @param {(Colibri.UI.Component|Element)} container - обьект в контейнере которого будет создан текущий компонент
+     * @param {string} name - name of component
+     * @param {string} element element to create component on
+     * @param {Colibri.UI.Component|Element} container container object
      */
     constructor(name, container, element, createEvents = {}) {
         super();
@@ -5766,12 +7744,18 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
         /** @type {string} */
         this._toolTip = '';
+        /** @type {string} */
         this._toolTipPosition = 'left bottom';
 
+        /** @type {boolean} */
         this._routeIsRegExp = true;
 
+        /** @type {Colibri.UI.Store} */
         this._storage = null;
+
+        /** @type {string} */
         this._binding = '';
+        
         this._clickToCopyHandler = (e) => this.value.copyToClipboard() && App.Notices.Add(new Colibri.UI.Notice('', Colibri.UI.Notice.Success));
 
         Object.forEach(createEvents, (event, handler) => {
@@ -5837,6 +7821,13 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         });
     }
 
+    /**
+     * Converts property to its correct type, if the value is function then runs a function
+     * @private
+     * @param {string} type type of property to convert 
+     * @param {*} value value of property 
+     * @returns 
+     */
     _convertProperty(type, value) {
         if(typeof value === 'function' && type != 'Function') {
             return value(value, this);
@@ -5856,10 +7847,18 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return value;
     }
 
+    /**
+     * @private
+     * @returns {string}
+     */
     _newName() {
         return 'component-' + Date.Mc()
     }
 
+    /**
+     * Registers an observer for detect visibility
+     * @private
+     */
     _registerObserver() {
         this._observer = new window.IntersectionObserver(([entry]) => {
             if(this._visible != entry.isIntersecting) {
@@ -5873,6 +7872,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._observer.observe(this._element);
     }
 
+    /**
+     * Unregisters an observer
+     * @private
+     */
     _unregisterObserver() {
         if(this._observer) {
             this._observer.unobserve(this._element);
@@ -5880,6 +7883,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Creates a new component class
+     * @param {Element|string} element Element to create component for
+     * @param {Element|Colibri.UI.Component} parent Parent element or component
+     * @returns {string}
+     */
     CreateComponentClass(element, parent) {
         let comp = null;
         try {
@@ -5952,6 +7961,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return null;
     }
 
+    /**
+     * Creates a new component
+     * @param {Element|string} element Element to create component for
+     * @param {Element|Colibri.UI.Component} parent Parent element or component
+     * @returns {Colibri.UI.Component}
+     */
     CreateComponent(objectClass, element, parent, root) {
         try {
 
@@ -5987,6 +8002,13 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return null;
     }
 
+    /**
+     * Processes children elements and creates a components
+     * @param {Array<Element>} children children to generate
+     * @param {Element|null} parent parent component
+     * @param {boolean} dontDispatch do not dispatch ChildsProcessed event
+     * @param {Colibri.UI.Component} root Root component
+     */
     ProcessChildren(children, parent, dontDispatch = false, root = null) {
         if (!parent) {
             parent = this._element;
@@ -6079,6 +8101,11 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
     }
 
+    /**
+     * Generates children
+     * @param {Element|string} element Element to process children for
+     * @param {Element|Colibri.UI.Component} parent parent component or parent element
+     */
     GenerateChildren(element, parent) {
         if (!element) {
             element = Element.create('div');
@@ -6092,6 +8119,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this.ProcessChildren(element.childNodes, parent, false, this);
     }
 
+    /** @protected */
     _registerEvents() {
         this.RegisterEvent('ComponentRendered', false, 'Поднимается, когда компонента готова и привязана к DOM-у');
         this.RegisterEvent('ComponentDisposed', false, 'Поднимается, когда компонента отвязана от DOM-а');
@@ -6143,11 +8171,19 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this.RegisterEvent('TouchMoved', false, 'Когда вазюкают пальцем по экрану');
     }
 
-    
+    /**
+     * Gets context menu icon component
+     * @readonly
+     * @returns {Colibri.UI.Component}
+     */
     get contextMenuIcon() {
         return this.Children(this._name + '-contextmenu-icon-parent');
     }
 
+    /**
+     * @private
+     * @returns {Colibri.UI.Component}
+     */
     _getContextMenuIcon() {
         if(this.Children(this._name + '-contextmenu-icon-parent')) {
             return this.Children(this._name + '-contextmenu-icon-parent/' + this._name + '-contextmenu-icon');
@@ -6155,6 +8191,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return null;
     }
 
+    /**
+     * @private
+     * @returns {Colibri.UI.Component}
+     */
     _createContextMenuButton() {
         if(!this._hasContextMenu || this.Children(this._name + '-contextmenu-icon-parent')) {
             return;
@@ -6172,6 +8212,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         contextMenuIcon.AddHandler('Clicked', (event, args) => this.Dispatch('ContextMenuIconClicked', args));
     }
 
+    /**
+     * @private
+     */
     _removeContextMenuButton() {
         if(this._hasContextMenu && this.Children(this._name + '-contextmenu-icon-parent')) {
             this.Children(this._name + '-contextmenu-icon-parent').Dispose();
@@ -6179,6 +8222,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Shows context menu in given orientation and point
+     * @param {Array<string>} orientation Orientation
+     * @param {string} className class name for context menu
+     * @param {{top, left}} point point to show contextmenu on
+     */
     ShowContextMenu(orientation = [Colibri.UI.ContextMenu.RT, Colibri.UI.ContextMenu.RB], className = '', point = null) {
 
 
@@ -6208,89 +8257,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
     }
 
-    static __nullHandler = (event, args) => {};
-
-    static __domHandlers = {
-        Clicked: {
-            domEvent: 'click',
-        },
-        DoubleClicked: {
-            domEvent: 'dblclick',
-        },
-        MouseUp: {
-            domEvent: 'mouseup',
-        },
-        MouseEnter: {
-            domEvent: 'mouseenter',
-        },
-        MouseLeave: {
-            domEvent: 'mouseleave',
-        },
-        KeyDown: {
-            domEvent: 'keydown',
-        },
-        KeyUp: {
-            domEvent: 'keyup',
-        },
-        KeyPressed: {
-            domEvent: 'keypress',
-        },
-        ReceiveFocus: {
-            domEvent: 'focus',
-        },
-        LoosedFocus: {
-            domEvent: 'blur',
-        },
-        Pasted: {
-            domEvent: 'paste',
-            delay: 100,
-        },
-        DragStart: {
-            domEvent: 'dragstart'
-        },
-        DragEnd: {
-            domEvent: 'dragend'
-        },
-        DragEnter: {
-            domEvent: 'dragenter',
-        },
-        DragOver: {
-            domEvent: 'dragover',
-        },
-        DragLeave: {
-            domEvent: 'dragleave',
-        },
-        Drop: {
-            domEvent: 'drop',
-        },
-        Drag: {
-            domEvent: 'drag',
-        },
-        MouseDown: {
-            domEvent: 'mousedown',
-        },
-        ContextMenu: {
-            domEvent: 'contextmenu'
-        },
-        MouseMove: {
-            domEvent: 'mousemove'
-        },
-        Scrolled: {
-            domEvent: 'scroll'
-        },
-        TouchStarted: {
-            domEvent: 'touchstart'
-        },
-        TouchEnded: {
-            domEvent: 'touchend'
-        },
-        TouchMoved: {
-            domEvent: 'touchmove'
-        }
-    };
-
-    __domHandlersAttached = {};
-
+    /**
+     * Adds a event handler
+     * @param {string} eventName name of event to attach
+     * @param {Function} handler handler to attach
+     * @param {boolean} prepend prepend to array of handlers
+     * @param {Colibri.UI.Dispatcher} respondent respondet object
+     * @returns {Colibri.Events.Dispatcher}
+     */
     AddHandler(eventName, handler, prepend = false, respondent = this) {
         handler = handler || Colibri.UI.Component.__nullHandler;
         const __domHandlers = Colibri.UI.Component.__domHandlers;
@@ -6299,6 +8273,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return super.AddHandler(eventName, handler, prepend, respondent);
     }
 
+    /**
+     * Triggers an event to current component
+     * @param {string} eventName event name
+     */
     TriggerEvent(eventName) {
         const __domHandlers = Colibri.UI.Component.__domHandlers;
         if(__domHandlers[eventName]) {
@@ -6307,6 +8285,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Binds html event to attached component event
+     * @private
+     * @param {string} eventName event name
+     * @param {*} args event arguments
+     */
     __bindHtmlEvent(eventName, args) {
         let {domEvent, respondent, delay, handler} = args;
         handler = handler ? handler : (e => this.Dispatch(eventName, {domEvent: e}));
@@ -6328,10 +8312,17 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         respondent.addEventListener(domEvent, handler);
     }
 
+    /**
+     * @protected
+     */
     _bindHtmlEvents() {
         
     }
 
+    /**
+     * Removes all attachments for html events
+     * @private
+     */
     __removeHtmlEvents() {
         for(let {domEvent, respondent, handler} of Object.values(this.__domHandlersAttached)) {
             (respondent !== this._element)  && respondent.removeEventListener(domEvent, handler);
@@ -6340,6 +8331,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this.__domHandlersAttached = {};
     }
 
+    /**
+     * Registers event handlers
+     * @protected
+     */
     _registerEventHandlers() {
         // do nothing
     }
@@ -6347,6 +8342,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     /**
      * Namespace of component
      * Used in HTML templates to indicates module and component
+     * @type {string}
      */
     get namespace() {
         return this._element.attr('namespace') ?? this._element.closest('[namespace]')?.attr('namespace') ?? null;
@@ -6411,7 +8407,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Контейнер
+     * Container element
      * @type {Element}
      */
     get container() {
@@ -6419,7 +8415,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Контейнер
+     * Main element of component
      * @type {Element}
      */
     get mainElement() {
@@ -6427,7 +8423,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Конрейнер родителя
+     * Parent container of component
      * @type {Element}
      */
     get parentContainer() {
@@ -6547,7 +8543,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Позиция элемента относительно левого края документа
+     * Right position of component element
      * @type {Number}
      */
     get right() {
@@ -6555,7 +8551,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return bounds.left + bounds.outerWidth;
     }
     /**
-     * Позиция элемента относительно левого края документа
+     * Right position of component element
      * @type {Number}
      */
     set right(value) {
@@ -6569,7 +8565,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Позиция элемента относительно верхнего края документа
+     * Top position of component element
      * @type {Number}
      */
     get top() {
@@ -6577,7 +8573,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return bounds.top;
     }
     /**
-     * Позиция элемента относительно верхнего края документа
+     * Top position of component element
      * @type {Number}
      */
     set top(value) {
@@ -6591,7 +8587,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Позиция элемента относительно верхнего края документа
+     * Bottom position of component element
      * @type {Number}
      */
     get bottom() {
@@ -6599,7 +8595,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return bounds.top + bounds.outerHeight;
     }
     /**
-     * Позиция элемента относительно верхнего края документа
+     * Bottom position of component element
      * @type {Number}
      */
     set bottom(value) {
@@ -6614,14 +8610,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Стили обьекта
+     * Style of component element
      * @type {Object}
      */
     get styles() {
         return this._element.css();
     }
     /**
-     * Стили обьекта
+     * Style of component element
      * @type {Object}
      */
     set styles(value) {
@@ -6630,14 +8626,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Наименование обьекта
+     * Name of object
      * @type {string}
      */
     get name() {
         return this._name;
     }
     /**
-     * Наименование обьекта
+     * Name of object
      * @type {string}
      */
     set name(value) {
@@ -6646,14 +8642,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Название класса
+     * Class name of component element
      * @type {string}
      */
     get className() {
         return this._element.attr('class');
     }
     /**
-     * Название класса
+     * Class name of component element
      * @type {string}
      */
     set className(value) {
@@ -6665,14 +8661,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * ID элемента
+     * Element ID
      * @type {string}
      */
     get elementID() {
         return this._element.attr('id');
     }
     /**
-     * ID элемента
+     * Element ID
      * @type {string}
      */
     set elementID(value) {
@@ -6680,14 +8676,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * HTML контент элемента
+     * HTML content of component element
      * @type {string}
      */
     get html() {
         return this._element.html();
     }
     /**
-     * HTML контент элемента
+     * HTML content of component element
      * @type {string}
      */
     set html(value) {
@@ -6695,14 +8691,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Таг
+     * Tag of component
      * @type {Object}
      */
     get tag() {
         return this._tag;
     }
     /**
-     * Таг
+     * Tag of component
      * @type {Object}
      */
     set tag(value) {
@@ -6710,14 +8706,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Данные
+     * Data of component (data- attributes in element)
      * @type {Object}
      */
     get data() {
         return this._element.data();
     }
     /**
-     * Данные
+     * Data of component (data- attributes in element)
      * @type {Object}
      */
     set data(value) {
@@ -6725,14 +8721,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Элемент только для чтения
+     * Is component readonly
      * @type {boolean}
      */
     get readonly() {
         return this._element.is(':scope[readonly]');
     }
     /**
-     * Элемент только для чтения
+     * Is component readonly
      * @type {boolean}
      */
     set readonly(value) {
@@ -6742,29 +8738,31 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Индекс основного элемента в парент-е
+     * Index of component in its parent 
      * @type {Number}
+     * @readonly
      */
     get index() {
         return this._element.index();
     }
     /**
-     * Индекс основного элемента в парент-е
+     * Index of component element in its parent element
      * @type {Number}
+     * @readonly
      */
     get childIndex() {
         return this._parent ? this._parent.indexOf(this.name) : null;
     }
 
     /**
-     * Элемент выключен
+     * Is component enabled
      * @type {boolean}
      */
     get enabled() {
         return !this._element.is(':disabled') && !this._element.is('.ui-disabled');
     }
     /**
-     * Элемент выключен
+     * Is component enabled
      * @type {boolean}
      */
     set enabled(val) {
@@ -6786,14 +8784,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Видимый или нет
+     * Is component shown
      * @type {boolean}
      */
     get shown() {
         return this._element.classList.contains('app-component-shown');
     }
     /**
-     * Видимый или нет
+     * Is component shown
      * @type {boolean}
      */
     set shown(value) {
@@ -6810,6 +8808,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Brings coponent to top of z-index
+     */
     BringToFront() {
         const position = this._element.css('position');
         if(['relative', 'fixed', 'absolute'].indexOf(position) > -1) {
@@ -6820,25 +8821,31 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Sends componpent to bottom of z-index
+     */
     SendToBack() {
         this._element.css('z-index', null);
     }
 
     /**
-     * Видимый или нет
+     * Component value
      * @type {String}
      */
     get value() {
         return this._element.html();
     }
     /**
-     * Видимый или нет
+     * Component value
      * @type {String}
      */
     set value(value) {
        this._element.html(value);
     }
 
+    /**
+     * @private
+     */
     _createTipObject() {
         const tip = document.body.querySelector('.tip');
         if(!tip) {
@@ -6850,14 +8857,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Подсказка
+     * Component toolTip
      * @type {String}
      */
     get toolTip() {
         return this._toolTip;
     }
     /**
-     * Подсказка
+     * Component toolTip
      * @type {String}
      */
     set toolTip(value) {
@@ -6882,6 +8889,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
     }
 
+    /**
+     * @private
+     * @param {Element} elementObject element object to position tooltip
+     */
     _setToolTipPositionAndGap(elementObject = null) {
 
         elementObject = elementObject || this._element;
@@ -6947,14 +8958,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Позиция подсказки
+     * Position of tooltip
      * @type {left bottom,right bottom,left top,right top}
      */
     get toolTipPosition() {
         return this._toolTipPosition;
     }
     /**
-     * Позиция подсказки
+     * Position of tooltip
      * @type {left bottom,right bottom,left top,right top}
      */
     set toolTipPosition(value) {
@@ -6963,16 +8974,17 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Путь к компоненту в дереве
+     * Component path in Component dom
      * @type {string}
+     * @readonly
      */
     get path() {
         return (this.parent instanceof Colibri.UI.Component ? this.parent.path : '') + '/' + this.name;
     }
 
     /**
-     * Может ли компонента получить фокус
-     * @todo Исправить
+     * Can component get focus
+     * @readonly
      * @type {boolean}
      */
     get canFocus() {
@@ -6985,22 +8997,25 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._element.attr('tabIndex');
     }
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     set tabIndex(value) {
         this._element.attr('tabIndex', value === 'true' || value === true ? Colibri.UI.tabIndex++ : value);
     }
 
+    /**
+     * Returns next component in Component DOM
+     * @readonly
+     * @type {Colibri.UI.Component}
+     */
     get next() {
         const myIndex = this.parent ? this.parent?.indexOf(this.name) : -1;
         if(myIndex === -1 || myIndex === this.parent.children - 1) {
@@ -7010,6 +9025,11 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return this.parent.Children(myIndex + 1);
     }
 
+    /**
+     * Returns previous component in Component DOM
+     * @readonly
+     * @type {Colibri.UI.Component}
+     */
     get prev() {
         const myIndex = this.parent ? this.parent.indexOf(this.name) : -1;
         if(myIndex === -1 || myIndex === 0) {
@@ -7019,6 +9039,13 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return this.parent.Children(myIndex - 1);
     }
 
+    /**
+     * 
+     * @param {Colibri.UI.Component} child child to move 
+     * @param {number} fromIndex current index of child 
+     * @param {number} toIndex new index of child 
+     * @param {boolean} raiseEvent rais ComponentMoved event
+     */
     MoveChild(child, fromIndex, toIndex, raiseEvent = false) {
         
         // если то же место то ничего не делаем
@@ -7040,6 +9067,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Move current component up in its parent childs
+     */
     MoveUp() {
         if(!this.prev) {
             return;
@@ -7048,6 +9078,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this.Dispatch('ComponentMoved', {direction: 'up'});
     }
 
+    /**
+     * Move current component down in its parent childs
+     */
     MoveDown() {
         if(!this.next) {
             return;
@@ -7056,6 +9089,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this.Dispatch('ComponentMoved', {direction: 'down'});
     }
 
+    /**
+     * Returns component by its name
+     * @param {string} name name of component
+     * @returns {Colibri.UI.Component}
+     * @private
+     */
     _childByName(name) {
         const filtered = this._children.filter(c => c.name == name);
         if(filtered.length > 0) {
@@ -7064,17 +9103,24 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return null;
     }
 
+    /**
+     * Move element in DOM
+     * @private
+     * @param {Element} insertedElement element to move
+     * @param {Element} parentElement parent element
+     * @param {number} index move to this index
+     */
     _moveInDom(insertedElement, parentElement, index) {
         insertedElement.remove();
         parentElement.insertBefore(insertedElement, parentElement.children[index]);
     }
 
     /**
-     * Добавляет или возвращает компоненту по названию
-     * @param {string} name наименование обьекта
-     * @param {Colibri.UI.Component} val дочерний обьект
-     * @param {number} [index] индекс в массиве, куда вставить элемент
-     * @returns {Colibri.UI.Component[]}
+     * Adds or returns the component from child list    
+     * @param {string} name name of component
+     * @param {Colibri.UI.Component} val component to add 
+     * @param {number} [index] index in childs to add component to
+     * @returns {Colibri.UI.Component[]|Colibri.UI.Component}
      */
     Children(name, val = undefined, index = undefined, container = null, childContainer = null) {
         
@@ -7112,6 +9158,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return val;
     }
 
+    /**
+     * Sort child components
+     * @param {Function} callback callback for sorting
+     */
     Sort(callback) {
         this._children.sort(callback);
         this._children.forEach((child, index) => {
@@ -7126,6 +9176,11 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return this.Children().length;
     }
 
+    /**
+     * Returns index of child component in Component DOM
+     * @param {string} name name of child component
+     * @returns {Colibri.UI.Component}
+     */
     indexOf(name) {
         if(name instanceof Function) {
             return Array.findIndex(this._children, name);
@@ -7135,12 +9190,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Is conponent has shadow
      * @type {Boolean}
      */
     get hasShadow() {
         return this._shadow != null;
     }
     /**
+     * Is conponent has shadow
      * @type {Boolean}
      */
     set hasShadow(value) {
@@ -7168,7 +9225,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
-    __renderBoundedValues(data) {
+    /**
+     * Renders bounded data
+     * @protected
+     * @param {*} data data in store to bind
+     */
+    __renderBoundedValues(data, path) {
         try {
             if(typeof data == 'string') {
                 this.value = data;
@@ -7180,12 +9242,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Store to bind to component
      * @type {Colibri.UI.Store}
      */
     set store(value) {
         this._storage = value;
     }
     /**
+     * Store to bind to component
      * @type {Colibri.UI.Store}
      */
     get store() {
@@ -7193,6 +9257,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Path in store to bind to component
      * @type {String}
      */
     get binding() {
@@ -7200,6 +9265,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Path in store to bind to component
      * @type {String}
      */
     set binding(value) {
@@ -7279,6 +9345,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         
     }
 
+    /**
+     * Reloads binding
+     */
     ReloadBinding() {
         if (this._binding && this._binding instanceof Colibri.UI.Component) {
             this.__renderBoundedValues(this._binding.value);
@@ -7315,6 +9384,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
 
     /**
+     * Is component connected to DOM
+     * @readonly
      * @type {Boolean}
      */
     get isConnected() {
@@ -7322,12 +9393,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Top of the scroll
      * @type {Number}
      */
     get scrollTop() {
         return this._element.scrollTop;
     }
     /**
+     * Top of the scroll
      * @type {Number}
      */
     set scrollTop(value) {
@@ -7340,14 +9413,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Анимировать скрол
+     * Is scrolling must be animated
      * @type {boolean}
      */
     get animateScroll() {
         return this._animateScroll;
     }
     /**
-     * Анимировать скрол
+     * Is scrolling must be animated
      * @type {boolean}
      */
     set animateScroll(value) {
@@ -7355,9 +9428,18 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Is component must handle clicked out event
+     * @type {boolean}
+     */
+    get handleClickedOut() {
+        return this._handleClickedOut;
+    }
+    /**
+     * Is component must handle clicked out event
      * @type {boolean}
      */
     set handleClickedOut(value) {
+        this._handleClickedOut = value;
         if(value) {
             this.__bindHtmlEvent('__ClickedOut', {
                 domEvent: 'click',
@@ -7370,10 +9452,20 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
             });
         }
     }
+
     /**
+     * Is component must handle resize event
+     * @type {boolean}
+     */
+    get handleResize() {
+        return this._handleResize;
+    }
+    /**
+     * Is component must handle resize event
      * @type {boolean}
      */
     set handleResize(value) {
+        this._handleResize = value;
         if(value) {
             this.__bindHtmlEvent('__Resized', {
                 domEvent: 'resized',
@@ -7389,9 +9481,18 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Is component must handle swipe
+     * @type {boolean}
+     */
+    get handleSwipe() {
+        return this._handleSwipe;
+    }
+    /**
+     * Is component must handle swipe
      * @type {boolean}
      */
     set handleSwipe(value) {
+        this._handleSwipe = value;
         if(value) {
             this.__touchStartedPos = null;
             this.AddHandler('TouchStarted', (event, args) => {
@@ -7428,6 +9529,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Connect component to DOM
+     * @param {Element} container container to connect
+     * @param {number} index index to connect child in
+     * @param {boolean} performBinding perform reload binding after connection
+     */
     ConnectTo(container, index = null, performBinding = false) {
         this._container = container instanceof Colibri.UI.Component ? container.container : container;
         if(this._shadow) {
@@ -7445,6 +9552,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this.Dispatch('ConnectedTo');
     }
 
+    /**
+     * Disconnects component from DOM
+     */
     Disconnect() {
         const parentContainer = this._container;
         this._element.remove();
@@ -7453,6 +9563,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return parentContainer;
     }
 
+    /**
+     * Keeps component in memory but removes from DOM
+     */
     KeepInMind() {
         if(this._container) {
             this._hideData = {index: this.index, parent: this._container};
@@ -7462,6 +9575,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Retreives component from memory to DOM in its older position
+     */
     Retreive() {
         if(this._hideData && this._hideData.parent) {
             this.ConnectTo(this._hideData.parent, this._hideData.index);
@@ -7479,7 +9595,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Очищает дочерние компоненты
+     * Clears a children of component
      */
     Clear() {
         this.ForReverseEach((name, control) => {
@@ -7487,6 +9603,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         });
     }
 
+    /**
+     * Hides a tooltip object forcely
+     */
     HideToolTip() {
         const tip = document.body.querySelector('.tip');
         if(tip) {
@@ -7495,7 +9614,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Удаляет компоненту
+     * Disposes a component object and removes it from DOM
      */
     Dispose() {
         this.hasShadow = false;
@@ -7521,8 +9640,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Находит компоненту по пути
-     * @param {string} path путь к компоненту в дереве
+     * Finds component by path
+     * @param {string} path path to component in Component DOM
      * @returns {Colibri.UI.Component}
      */
     Find(path) {
@@ -7530,8 +9649,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Находит компоненты по пути
-     * @param {string} path путь к компоненту в дереве
+     * Finds all components by path
+     * @param {string} path path to components
      * @returns {Colibri.UI.Component}
      */
     FindAll(path) {
@@ -7539,7 +9658,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Находит компоненту по наименованию, поиск по дереву, наименование должно быть уникальным, иначе будет найдено первое
+     * Finds a first occurance of component by name
      * @param {string} path путь к компоненту в дереве
      * @returns {Colibri.UI.Component}
      */
@@ -7553,8 +9672,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Добавляет класс в список classList
-     * @param {string} val название класса
+     * Adds class name to classList of element
+     * @param {string} val class name
      * @returns {this}
      */
     AddClass(val) {
@@ -7571,8 +9690,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Удаляет класс из списка classList
-     * @param {string} val название класса
+     * Removes class names from classList of element
+     * @param {string|Array<string>} val class name or array of class names
      * @returns {this}
      */
     RemoveClass(val) {
@@ -7587,8 +9706,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Проверяет есть ли класс у компонента
-     * @param {string} val название класса
+     * Checkes when component element contains a class name
+     * @param {string} val name of class
      * @returns {this}
      */
     ContainsClass(val) {
@@ -7596,7 +9715,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Ставит фокус на компоменту
+     * Puts a focus to the component
      * @returns {Colibri.UI.Component}
      */
     Focus() {
@@ -7610,7 +9729,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Убирает фокус с компоменты
+     * Blurs a focus from component
      * @returns {Colibri.UI.Component}
      */
     Blur() {
@@ -7624,8 +9743,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Крутит дочерние компоненты
-     * @param {Function} handler обработчик
+     * Cycles a component childs and runs a handler
+     * @param {Function} handler handler
      */
     ForEach(handler) {
         const children = [...this._children];
@@ -7639,8 +9758,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Крутит дочерние компоненты
-     * @param {Function} handler обработчик
+     * Maps a component childs and runs a handler, returns an array of component childs
+     * @param {Function} handler handler
+     * @returns {Array<Colibri.UI.Component>}
      */
     Map(handler) {
         const children = [...this._children];
@@ -7653,7 +9773,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Крутит дочерние компоненты в обратном порядке
+     * Cycles a component childs in reverse order and runs a handler
      * @param {Function} handler обработчик
      */
     ForReverseEach(handler) {
@@ -7667,8 +9787,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Передвигает компоненту в видимую область родительского котейнера
-     * @param {(Colibri.UI.Component|HTMLElement)} [parent] родительский контейнер
+     * Ensures that the component is visible in parent porsion
+     * @param {(Colibri.UI.Component|HTMLElement)} [parent] parent component
      * @returns {void}
      */
     EnsureVisible(parent, top = null) {
@@ -7683,11 +9803,17 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         }
     }
 
+    /**
+     * Scrolls a parent component
+     * @param {number} to position to scroll
+     * @param {number} duration animation duration
+     */
     ScrollTo(to = 0, duration = 200) {
         this._element.animateScrollTop(to, duration);
     }
 
     /**
+     * Is component visible
      * @type {Boolean}
      * @readonly
      */
@@ -7695,17 +9821,23 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return this._visible;
     }
 
+    /**
+     * Is component element visible
+     * @readonly
+     */
     get elementVisible() {
         return this._element.computedCss('display') !== 'none' && this._element.computedCss('visibility') !== 'hidden';
     }
 
     /**
+     * Is component must handle visibility change
      * @type {Boolean}
      */
     get handleVisibilityChange() {
         return !!this._observer;
     }
     /**
+     * Is component must handle visibility change
      * @type {Boolean}
      */
     set handleVisibilityChange(value) {
@@ -7718,23 +9850,29 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
-     * Проверяет содержит ли компонента нужный элемент
+     * Checks the component contains and element
      * @param {HTMLElement} element элемент
      */
     ContainsElement(element) {
         return this._element.contains(element);
     }
 
-
+    /**
+     * Show component
+     */
     Show() {
         this.shown = true;
     }
 
+    /**
+     * Hide component
+     */
     Hide() {
         this.shown = false;
     }
 
     /**
+     * Is component draggable
      * @type {boolean}
      */
     get draggable() {
@@ -7742,6 +9880,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Is component draggable
      * @type {boolean}
      */
     set draggable(value) {
@@ -7749,6 +9888,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Is component handles drop event
      * @type {boolean}
      */
     get dropable() {
@@ -7756,6 +9896,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     }
 
     /**
+     * Is component handles drop event
      * @type {boolean}
      */
     set dropable(value) {
@@ -7793,6 +9934,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._routeIsRegExp = value;
     }
 
+    /**
+     * Processes a match of router
+     * @param {RegExpMatchArray} patternMatches array of matches
+     */
     __processChangeOnRouteSwitch(patternMatches) {
         this.ReloadBinding();
     }
@@ -7812,6 +9957,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._copy = value;
         this._showCopy();
     }
+    /**
+     * @protected
+     */
     _showCopy() {
         if(this._copy) {
             this.AddClass('-cancopy');
@@ -7822,6 +9970,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         } 
     }
 
+    /**
+     * Searches in parent Component DOM or html DOM 
+     * @param {Function} callback callback for search
+     * @param {boolean} useContainers use containers in search method
+     * @returns {Colibri.UI.Component|Element|null}
+     */
     Closest(callback, useContainers = false) {
         let parent = useContainers ? this.container : this;
         while(parent) {
@@ -7867,27 +10021,45 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._setSpanning();
     }
     
+    /**
+     * @private
+     */
     _setSpanning() {
         this._element.css('grid-row-start', this._rowspan ? 'span ' + this._rowspan : 'auto');
         this._element.css('grid-column-start', this._colspan ? 'span ' + this._colspan : 'auto');
     }
 
-
+    /**
+     * Is component went out of right corner of window
+     * @readonly
+     */
     get isComponentWentOutOfRight() {
         const bounds = this.container.bounds();
         return bounds.left + bounds.outerWidth > window.innerWidth;
     }
 
+    /**
+     * Is component went out of left corner of window
+     * @readonly
+     */
     get isComponentWentOutOfLeft() {
         const bounds = this.container.bounds();
         return bounds.left < 0;
     }
 
+    /**
+     * Is component went out of bottom corner of window
+     * @readonly
+     */
     get isComponentWentOutOfBottom() {
         const bounds = this.container.bounds();
         return bounds.top + bounds.outerHeight > window.innerHeight;
     }
 
+    /**
+     * Is component went out of top corner of window
+     * @readonly
+     */
     get isComponentWentOutOfTop() {
         const bounds = this.container.bounds();
         return bounds.top < 0;
@@ -7908,6 +10080,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this._halign = value;
         this._showHalign();
     }
+    /**
+     * @protected
+     */
     _showHalign() {
         this._element.css('text-align', this._halign);
     }
@@ -7938,12 +10113,18 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
 }
 
+/**
+ * Button compomnent
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Button = class extends Colibri.UI.Component {
 
-    /** 
+    /**
      * @constructor
-     * @param {string} name название компоненты
-     * @param {(Aktiondigital.UI.Component|HTMLElement)} container контейнер 
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
      */
     constructor(name, container) {
         super(name, container, Element.create('button', {type: 'button'}));
@@ -7951,37 +10132,78 @@ Colibri.UI.Button = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TextSpan = class extends Colibri.UI.Component {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {string} value value of textspan
+     */
     constructor(name, container, value) {
         super(name, container, Element.create('span'));
         this.AddClass('app-component-textspan');
         this.value = value;
     }
 
+    /**
+     * Value string
+     * @type {string}
+     */
     get value() {
         return this._element.html();
     }
+    /**
+     * Value string
+     * @type {string}
+     */
     set value(value) {
         this._element.html(value);
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Icon = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, Element.create('span'));
         this.AddClass('app-component-icon');
         
     }
 
+    /**
+     * Icon value
+     * @type {string}
+     */
     get icon() {
         return this._element.css('background-image');
     }
 
+    /**
+     * Icon value
+     * @type {string}
+     */
     set icon(value) {
         this._element.css('background-image', value);
     }
 
+    /**
+     * Icon as SVG value
+     * @type {string}
+     */
     set iconSVG(value) {
         if(!value) {
             return;
@@ -8000,16 +10222,28 @@ Colibri.UI.Icon = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Icon as SVG value
+     * @type {string}
+     */
     get iconSVG() {
         return this._iconSVG;
     }
 
+    /**
+     * Fill color
+     * @type {string}
+     */
     set fill(value) {
         for(const el of this._element.querySelectorAll('path,circle,rect,polygon')) {
             el.attr('fill', value);
         }
     }
 
+    /**
+     * Fill color
+     * @type {string}
+     */
     get fill() {
         const el = this._element.querySelector('path,circle,rect,polygon');
         if(!el) {
@@ -8018,12 +10252,20 @@ Colibri.UI.Icon = class extends Colibri.UI.Component {
         return el.attr('fill');
     }
 
+    /**
+     * Stroke color
+     * @type {string}
+     */
     set stroke(value) {
         for(const el of this._element.querySelectorAll('path,circle,rect,polygon')) {
             el.attr('stroke', value);
         }
     }
 
+    /**
+     * Stroke color
+     * @type {string}
+     */
     get stroke() {
         const el = this._element.querySelector('path,circle,rect,polygon');
         if(!el) {
@@ -8032,14 +10274,25 @@ Colibri.UI.Icon = class extends Colibri.UI.Component {
         return el.attr('stroke');
     }
 
+    /**
+     * Is dot icon
+     * @type {boolean}
+     */
     get dot() {
         return this._dot;
     }
 
+    /**
+     * Is dot icon
+     * @type {boolean}
+     */
     set dot(value) {
         this._dot = value === 'true' || value === true;
         this._setDot();
     }
+    /**
+     * @private
+     */
     _setDot() {
         if(this._dot) {
             this._dotElement = Element.create('em', {class: 'app-component-icon-dot'});
@@ -8051,23 +10304,45 @@ Colibri.UI.Icon = class extends Colibri.UI.Component {
     }
     
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Image = class extends Colibri.UI.Component {
-
+    
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, Element.create('span'));
         this.AddClass('app-component-image');
     }
 
+    /**
+     * Source string
+     * @type {string}
+     */
     get source() {
         return this._element.css('background-image');
     }
 
+    /**
+     * Source string
+     * @type {string}
+     */
     set source(value) {
         
         this._element.css('background-image', value);
         value = value.replaceAll(/\w+\(/, '').replaceAll(')', '');
         if(value.indexOf('data:') === -1) {
             const img = new Image();
+            /**
+             * @private
+             * @param {Event} e 
+             */
             img.onload = (e) => {
                 this.width = img.width;
                 this.height = img.height;
@@ -8077,21 +10352,31 @@ Colibri.UI.Image = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Repeat the background
+     * @type {string}
+     */
     get repeat() {
         return this._element.css('background-repeat');
     }
 
+    /**
+     * Repeat the background
+     * @type {string}
+     */
     set repeat(value) {
         this._element.css('background-repeat', value);
     }
 
     /**
+     * Background size
      * @type {contain,cover,revert}
      */
     get size() {
         return this._element.css('background-size');
     }
     /**
+     * Background size
      * @type {contain,cover,revert}
      */
     set size(value) {
@@ -8099,20 +10384,30 @@ Colibri.UI.Image = class extends Colibri.UI.Component {
     }
 
     /**
+     * Background position
      * @type {String}
      */
     get position() {
         return this._element.css('background-position');
     }
     /**
+     * Background position
      * @type {String}
      */
     set position(value) {
         this._element.css('background-position', value);
     }
     
+    /**
+     * Value of image
+     * @type {string}
+     */
     set image(value) {
         let reader = new FileReader();
+        /**
+         * @private
+         * @param {Event} e 
+         */
         reader.onload = (e) => {
             this.source = 'url("' + reader.result + '")';
         }
@@ -8120,6 +10415,10 @@ Colibri.UI.Image = class extends Colibri.UI.Component {
         this._name = value.name;
     }
 
+    /**
+     * Value of image
+     * @type {string}
+     */
     get image() {
         const imageSrc = this.source.replaceAll('url("', '').replaceAll('")', '');
         const data = imageSrc.split(';');
@@ -8129,23 +10428,49 @@ Colibri.UI.Image = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Link = class extends Colibri.UI.Component {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container, value) {
         super(name, container, Element.create('a'));
         this.AddClass('app-component-link');
         this.value = value;
     }
 
+    /**
+     * Href string
+     * @type {string}
+     */
     get href() {
         return this._element.attr('href');
     }
+    /**
+     * Href string
+     * @type {string}
+     */
     set href(value) {
         this._element.attr('href', value);
     }
 
+    /**
+     * Navigate to
+     * @type {{url,options}}
+     */
     get navigate() {
         return this._navigate;
     }
+    /**
+     * Navigate to
+     * @type {{url,options}}
+     */
     set navigate(value) {
         this._navigate = value;
         this._element.attr('href', '#' + Date.Mc());
@@ -8157,23 +10482,47 @@ Colibri.UI.Link = class extends Colibri.UI.Component {
         });
     }
 
+    /**
+     * Value string
+     * @type {string}
+     */
     get value() {
         return this._element.html();
     }
+    /**
+     * Value string
+     * @type {string}
+     */
     set value(value) {
         this._element.html(value);
     }
 
+    /**
+     * Target value
+     * @type {_blank,_self,_top}
+     */
     get target() {
         return this._element.attr('target');
     }
+    /**
+     * Target value
+     * @type {_blank,_self,_top}
+     */
     set target(value) {
         this._element.attr('target', value);
     }
 
+    /**
+     * Download attribute
+     * @type {string}
+     */
     get download() {
         return this._element.attr('download');
     }
+    /**
+     * Download attribute
+     * @type {string}
+     */
     set download(value) {
         this._element.attr('download', value);
     }
@@ -8194,28 +10543,67 @@ Colibri.UI.Link = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Heading = class extends Colibri.UI.Component {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {number} level level of heading
+     */
     constructor(name, container, level = 1) {
         super(name, container, Element.create('h' + level));
         this.AddClass('app-component-heading');
     }
 
+    /**
+     * Value string
+     * @type {string}
+     */
     get value() {
         return this._element.html();
     }
+    /**
+     * Value string
+     * @type {string}
+     */
     set value(value) {
         this._element.html(value);
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Heading
+ * @memberof Colibri.UI
+ */
 Colibri.UI.H1 = class extends Colibri.UI.Heading {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, 1);
         this.AddClass('app-component-heading-h1');
     }
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Heading
+ * @memberof Colibri.UI
+ */
 Colibri.UI.H2 = class extends Colibri.UI.Heading {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, 2);
         this.AddClass('app-component-heading-h2');
@@ -8223,25 +10611,51 @@ Colibri.UI.H2 = class extends Colibri.UI.Heading {
 }
 
 
+/**
+ * @class
+ * @extends Colibri.UI.Heading
+ * @memberof Colibri.UI
+ */
 Colibri.UI.H3 = class extends Colibri.UI.Heading {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, 3);
         this.AddClass('app-component-heading-h3');
     }
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Heading
+ * @memberof Colibri.UI
+ */
 Colibri.UI.H4 = class extends Colibri.UI.Heading {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, 4);
         this.AddClass('app-component-heading-h4');
     }
 }
+/**
+ * Drag manager
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.UI
+ */
 Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
 
     /**
-     * Менеджер перетаскиваний
-     * @param {Colibri.UI.Component[]} sources массив источников
-     * @param {Colibri.UI.Component[]} destinations массив назначений 
+     * @constructor
+     * @param {Colibri.UI.Component[]} sources array of source items
+     * @param {Colibri.UI.Component[]} destinations destination items 
      */
     constructor(sources, destinations) {
         super();
@@ -8265,6 +10679,9 @@ Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
         this._initManager();
     }
     
+    /**
+     * Dispose the component
+     */
     Dispose() {
         this._current = null;
 
@@ -8287,6 +10704,9 @@ Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
         super.Dispose();
     }
 
+    /**
+     * @private
+     */
     _initManager() {
 
         this._sources.forEach((source) => {
@@ -8304,11 +10724,21 @@ Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragStartFromSources(event, args) {
         this._current = args.domEvent.target.closest('[data-object-name][draggable="true"]').tag('component');
         this._current.styles = {overflow: 'hidden'};
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragEndFromSources(event, args) {
         this._current = null;
         const dropComponent = document.querySelector('.app-drop-component');
@@ -8318,6 +10748,11 @@ Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragOverTheDestination(event, args) {
         if(!this._current) {
             return false;
@@ -8351,6 +10786,11 @@ Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
         return true;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragLeaveTheDestination(event, args) {
         if(!this._current) {
             return false;
@@ -8373,6 +10813,11 @@ Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
         args.domEvent.preventDefault();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragDropOnTheDestination(event, args) {
 
         if(!this._current) {
@@ -8395,12 +10840,18 @@ Colibri.UI.DragManager = class extends Colibri.Events.Dispatcher {
     }
    
 }
+/**
+ * Drop manager
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.UI
+ */
 Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
 
     /**
-     * Менеджер перетаскиваний
-     * @param {Colibri.UI.Component[]} sources массив источников
-     * @param {Colibri.UI.Component[]} destinations массив назначений 
+     * @constructor
+     * @param {Colibri.UI.Component} container container to drop in
+     * @param {string} message message to show when dragging 
      */
     constructor(container, message = '') {
         super();
@@ -8408,8 +10859,7 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
         this._allowSize = 900000000;
         this._allowTypes = '*';
         
-        this._dropContainer = container;
-        this._dropHover = Element.create('div', {class: 'app-drop-over'});
+        this._dropContainer = container;this._dropHover = Element.create('div', {class: 'app-drop-over'});
         this._dropHover.append(Element.create('div'));
         container.append(this._dropHover);
 
@@ -8419,15 +10869,27 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
         this.message = message;
     }
 
+    /**
+     * Message value
+     * @type {string}
+     */
     set message(value) {
         this._message = value;
         this._setMessage();
     }
 
+    /**
+     * Message value
+     * @type {string}
+     */
     get message() {
         return this._message;
     }
 
+    /**
+     * Allow types
+     * @type {string|Array}
+     */
     set allowTypes(value) {
         if(typeof value === 'string') {
             value = value.split(',');
@@ -8435,22 +10897,40 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
         this._allowTypes = value;
     }
 
+    /**
+     * Allow types
+     * @type {string|Array}
+     */
     get allowTypes() {
         return this._allowTypes;
     }
 
+    /**
+     * Allow size
+     * @type {number}
+     */
     set allowSize(value) {
         this._allowSize = value;
     }
 
+    /**
+     * Allow size
+     * @type {number}
+     */
     get allowSize() {
         return this._allowSize;
     }
 
+    /**
+     * @private
+     */
     _setMessage() {
         this._dropHover.querySelector('div').html(this._message);
     }
 
+    /**
+     * @private
+     */
     _initManager() {
         
         this._dropContainer.addEventListener('dragover', (e) => {
@@ -8492,10 +10972,20 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragStartFromSources(event, args) {
         this._current = args.domEvent.target.closest('[data-object-name]').tag('component');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragEndFromSources(event, args) {
         this._current = null;
 
@@ -8506,6 +10996,11 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragOverTheDestination(event, args) {
         if(!this._current) {
             return false;
@@ -8530,6 +11025,11 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
         return true;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragLeaveTheDestination(event, args) {
         if(!this._current) {
             return false;
@@ -8547,6 +11047,11 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
         args.domEvent.preventDefault();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragDropOnTheDestination(event, args) {
 
         if(!this._current) {
@@ -8565,6 +11070,9 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * @private
+     */
     _checkFiles(files) {
         let errors = [];
         let success = [];
@@ -8581,47 +11089,108 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
     }
    
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ListItem = class extends Colibri.UI.Component {
-
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, Element.create('li'));
         this.AddClass('app-component-listitem');
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.MenuList = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container, element) {
         super(name, container, element || Element.create('menu'));
         this.AddClass('app-component-menulist');
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.OrderedList = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {*} element element to generate in 
+     */
     constructor(name, container, element) {
         super(name, container, element || Element.create('ol'));
         this.AddClass('app-component-orderedlist');
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.UnorderedList = class extends Colibri.UI.Component {
-
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {*} element element to generate in 
+     */
     constructor(name, container, element) {
         super(name, container, element || Element.create('ul'));
         this.AddClass('app-component-unorderedlist');
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Hr = class extends Colibri.UI.Component {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, Element.create('hr'));
         this.AddClass('app-component-hr');
     }
 
 }
+/**
+ * Blockquote component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Blockquote = class extends Colibri.UI.Component {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('blockquote'));
@@ -8631,29 +11200,49 @@ Colibri.UI.Blockquote = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Img = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, Element.create('img'));
         this.AddClass('app-component-img');
     }
 
+    /**
+     * Source string
+     * @type {string}
+     */
     get source() {
         return this._element.attr('src');
     }
 
+    /**
+     * Source string
+     * @type {string}
+     */
     set source(value) {
         this._element.attr('src', value);
 
     }
 
     /**
+     * Alternate text
      * @type {String}
      */
     get alt() {
         return this._element.attr('alt');
     }
     /**
+     * Alternate text
      * @type {String}
      */
     set alt(value) {
@@ -8661,22 +11250,28 @@ Colibri.UI.Img = class extends Colibri.UI.Component {
    }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Strong = class extends Colibri.UI.Component {
-
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, Element.create('strong'));
         this.AddClass('app-component-strong');
     }
 
 }
-Colibri.UI.Hr = class extends Colibri.UI.Component {
-
-    constructor(name, container) {
-        super(name, container, Element.create('strong'));
-        this.AddClass('app-component-hr');
-    }
-
-}
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Pane = class extends Colibri.UI.Component {
 
     static ResizeNone = 'none';
@@ -8684,20 +11279,24 @@ Colibri.UI.Pane = class extends Colibri.UI.Component {
     static ResizeHorizontalOnly = 'horizontal';
     static ResizeVerticalOnly = 'vertical';
 
+    /** @type {string} */
     _resizable = Colibri.UI.Pane.ResizeNone;
+    /** @type {Function|null} */
     _resizeHandler = null;
+    /** @type {boolean} */
     _resizing = false;
+    /** @type {{horizontalSize,verticalSize}} */
     _resizeData = {
         horizontalSize: 0,
         verticalSize: 0,
     };
 
     /**
-     * Конструктор
-     * @param {string} name Наименование компонента
-     * @param {(HTMLElement|Colibri.UI.Component))} container контейнер 
-     * @param {(string|HTMLElement)} element название тэга, либо содержание компонента (шаблон) в виде строки или обьекта 
-     * @param {int} resizable способ изменения размера 
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|HTMLElement} element element to generate in
+     * @param {number} resizable is component resizable 
      */
     constructor(name, container, element, resizable= 'none') {
         super(name, container, element || Element.create('div'));
@@ -8708,6 +11307,7 @@ Colibri.UI.Pane = class extends Colibri.UI.Component {
         this.AddClass('app-component-resize-' + this._resizable);
     }
 
+    /** @private */
     _createResizeHandler() {
         this._resizeHandler = Element.create('div', {class: 'app-component-pane-resize'});
         this._element.prepend(this._resizeHandler);
@@ -8773,13 +11373,22 @@ Colibri.UI.Pane = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _removeResizeHandler() {
         this._resizeHandler && this._resizeHandler.remove();
     }
 
+    /**
+     * Is block resizable
+     * @type {boolean}
+     */
     get resizable() {
         return this._resizable;
     }
+    /**
+     * Is block resizable
+     * @type {boolean}
+     */
     set resizable(value) {
         this.RemoveClass('app-component-resize-' + this._resizable);
         this._resizable = value;
@@ -8794,13 +11403,26 @@ Colibri.UI.Pane = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Split = class extends Colibri.UI.Component {
 
     static OrientationHorizontal = 'horizontal';
     static OrientationVertical = 'vertical';
 
+    /** @type {string} */
     _orientation = Colibri.UI.Split.OrientationHorizontal;
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|HTMLElement} element element to generate in
+     * @param {orientation} orientation orientation of split (horizontal|vertical) 
+     */
     constructor(name, container, element, orientation) {
         super(name, container, element || Element.create('div'));
 
@@ -8881,6 +11503,7 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('SplitResizeStart', false, 'Когда начинаем изменять размер');
@@ -8889,12 +11512,14 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
     }
 
     /**
-     * @type {String}
+     * Orienatation of split
+     * @type {vertical,horizontal}
      */
     get orientation() {
         return this._orientation;
     }
     /**
+     * Orienatation of split
      * @type {vertical,horizontal}
      */
     set orientation(value) {
@@ -8903,6 +11528,7 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
     }
 
     /**
+     * Container element
      * @type {Element}
      */
     get container() {
@@ -8915,12 +11541,14 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
     }
 
     /**
+     * Is split has resize handle
      * @type {Boolean}
      */
     get hasHandle() {
         return this._hasHandle;
     }
     /**
+     * Is split has resize handle
      * @type {Boolean}
      */
     set hasHandle(value) {
@@ -8931,7 +11559,12 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
             this._handler.style.display = 'none';
         }
     }
-
+    
+    /**
+     * Processes the children object
+     * @param {string|Element|Element[]} children children to generate
+     * @param {Element|Colibri.UI.Component} parent parent component or element
+     */
     ProcessChildren(children, parent) {
 
         for (let i = 0; i < children.length; i++) {
@@ -8946,12 +11579,14 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
     }
 
     /**
+     * Right width
      * @type {Number}
      */
     get rightWidth() {
         return parseInt(this._right.css('width'));
     }
     /**
+     * Left width
      * @type {Number}
      */
     get leftWidth() {
@@ -8959,18 +11594,30 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
     }
 
     /**
+     * Left width
      * @type {Number}
      */
     set leftWidth(value) {
-        this._left.css('flex', '0 0 ' + value );
+        this._left.css('flex', '0 0 ' + value);
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.FlexBox = class extends Colibri.UI.Component {
 
     static Horizontal = 'row';
     static Vertical = 'column'
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|HTMLElement} element element to generate in
+     */
     constructor(name, container, element) {
         super(name, container, element || Element.create('div'));
         this.AddClass('app-component-flexbox');
@@ -8978,6 +11625,10 @@ Colibri.UI.FlexBox = class extends Colibri.UI.Component {
         // this.wrap = false;
     }
 
+    /**
+     * Wrap type
+     * @type {string}
+     */
     get wrap() {
         let flexWrap = this._element.css('flex-wrap');
         switch (flexWrap) {
@@ -8988,6 +11639,10 @@ Colibri.UI.FlexBox = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Wrap type
+     * @type {string}
+     */
     set wrap(value) {
         if (value) {
             this._element.css('flex-wrap', 'wrap');
@@ -8996,18 +11651,38 @@ Colibri.UI.FlexBox = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Flex direction
+     * @type {string}
+     */
     get direction() {
         return this._element.css('flex-direction');
     }
 
+    /**
+     * Flex direction
+     * @type {string}
+     */
     set direction(value) {
         if ([Colibri.UI.FlexBox.Horizontal, Colibri.UI.FlexBox.Vertical].indexOf(value) !== -1) {
             this._element.css('flex-direction', value);
         }
     }
+    
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Widget = class extends Colibri.UI.FlexBox {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|HTMLElement} element element to generate in
+     */
     constructor(name, container, element) {
         super(name, container, Element.fromHtml('<div><div class="widget-header"></div><div class="widget-container"></div><div class="widget-footer"></div></div>')[0]);
         this.AddClass('app-component-widget');
@@ -9034,6 +11709,7 @@ Colibri.UI.Widget = class extends Colibri.UI.FlexBox {
         this._handlerEvents();
     }
 
+    /** @protected */
     _handlerEvents() {
         this._headerCloseToggle.AddHandler('Clicked', (event, args) => {
             if(this.ContainsClass('-minimized')) {
@@ -9051,19 +11727,33 @@ Colibri.UI.Widget = class extends Colibri.UI.FlexBox {
         });
     }
 
+    /**
+     * Header container
+     * @type {Element}
+     * @readonly
+     */
     get header() {
         return this._header.querySelector('span');
     }
 
+    /**
+     * Content container
+     * @type {Element}
+     * @readonly
+     */
     get container() {
         return this._element.querySelector('.widget-container');
     }
 
+    /**
+     * Footer container
+     * @type {Element}
+     * @readonly
+     */
     get footer() {
         return this._footer;
     }
 
-    
     /**
      * Title of widget
      * @type {string}
@@ -9079,6 +11769,7 @@ Colibri.UI.Widget = class extends Colibri.UI.FlexBox {
         this._title = value;
         this._showTitle();
     }
+    /** @private */
     _showTitle() {
         this._headerTitle.value = this._title;
         if(this._title) {
@@ -9103,6 +11794,7 @@ Colibri.UI.Widget = class extends Colibri.UI.FlexBox {
         this._closable = value === true || value === 'true';
         this._showClosable();
     }
+    /** @private */
     _showClosable() {        
         this._headerCloseButton.shown = this._closable;
     }
@@ -9122,6 +11814,7 @@ Colibri.UI.Widget = class extends Colibri.UI.FlexBox {
         this._togglable = value === true || value === 'true';
         this._showTogglable();
     }
+    /** @private */
     _showTogglable() {
         this._headerCloseToggle.shown = this._togglable;
     }
@@ -9202,8 +11895,18 @@ Colibri.UI.Widget = class extends Colibri.UI.FlexBox {
 }
 
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.DropDown = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-dropdown-component');
@@ -9234,18 +11937,39 @@ Colibri.UI.DropDown = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ItemClicked', false, 'Выбран пунт меню');
     }
 
+    /**
+     * Show search box
+     * @type {boolean}
+     */
     set search(value) {
         this._search.shown = value;
     }
+    /**
+     * Show search box
+     * @type {boolean}
+     */
     get search() {
         return this._search.shown;
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
+    get shown () {
+        return super.shown;
+    }
+
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         if(value) {
@@ -9260,11 +11984,11 @@ Colibri.UI.DropDown = class extends Colibri.UI.Component {
 }
 /**
  * 
- * Класс компонент вкладки
- * 
- * Использовать в шаблоне, например
- * @example
- * 
+ * Tab component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ * @example Using in component html
  * <component Component="Colibri.UI.Tabs">
  * 
  *      <component-header>
@@ -9283,9 +12007,7 @@ Colibri.UI.DropDown = class extends Colibri.UI.Component {
  * 
  * </component>
  * 
- * Использовать как класс
- * @example
- * 
+ * @example Using as Class in js
  * const tabs = new Colibri.UI.Tabs('name', document.body);
  * tabs.AddTab(new Colibri.UI.Button('tab1-button', this.header), new Colibri.UI.Pane('tab1-content', this.container));
  * tabs.AddTab(new Colibri.UI.Button('tab2-button', this.header), new Colibri.UI.Pane('tab2-content', this.container));
@@ -9293,6 +12015,12 @@ Colibri.UI.DropDown = class extends Colibri.UI.Component {
  */
 Colibri.UI.Tabs = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|HTMLElement} element element to generate in
+     */
     constructor(name, container, element) {
         super(name, container, element || Element.create('div'));
         this.AddClass('app-tabs-container-component');
@@ -9311,6 +12039,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
         });
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('TabClicked', false, 'Когда кликнули на вкладку');
@@ -9318,11 +12047,13 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
         this.RegisterEvent('Changed', false, 'Когда выбранная вкладка изменилась');
     }
 
+    /** @protected */
     _processEvents() {
         const buttons = this.header.querySelectorAll(':scope > .app-ui-component');
         buttons.forEach((button) => button.tag('component').AddHandler('Clicked', (event, args) => this.Dispatch('TabClicked', {domEvent: args.domEvent, tab: event.sender})));
     }
 
+    /** @private */
     _unselectAllTabs() {
         const buttons = this.header.querySelectorAll(':scope > .app-ui-component');
         const containers = this.container.querySelectorAll(':scope > .app-ui-component');
@@ -9340,6 +12071,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _selectTab(index) {
 
         const currentSelection = this.selectedIndex;
@@ -9379,6 +12111,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Header container
      * @type {Element}
      */
     get headerContainer() {
@@ -9386,6 +12119,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Header container
      * @type {Element}
      */
     set headerContainer(value) {
@@ -9398,6 +12132,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Header container element
      * @type {Element}
      * @readonly
      */
@@ -9406,6 +12141,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Links container element
      * @type {Element}
      * @readonly
      */
@@ -9414,6 +12150,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Content container element
      * @type {Element}
      * @readonly
      */
@@ -9422,6 +12159,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Selected tab index
      * @type {Number}
      */
     get selectedIndex() {
@@ -9429,6 +12167,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Selected tab index
      * @type {Number}
      */
     set selectedIndex(value) {
@@ -9436,6 +12175,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Selected tab button name
      * @type {String}
      */
     get selectedTab() {
@@ -9443,6 +12183,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Selected tab button name
      * @type {String}
      */
     set selectedTab(value) {
@@ -9451,6 +12192,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Selected container component
      * @type {Colibri.UI.Component}
      * @readonly
      */
@@ -9460,6 +12202,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Count of tabs
      * @type {Number}
      * @readonly
      */
@@ -9467,6 +12210,12 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
         return this._element.querySelectorAll(':scope > .tabs-header-container > .tabs-header > *').length;
     }
 
+    /**
+     * Adds tab button and container
+     * @param {Colibri.UI.button} componentHeaderButton tab button
+     * @param {Colibri.UI.Pane} componentContainer tab content component
+     * @returns Colibri.UI.Pane
+     */
     AddTab(componentHeaderButton, componentContainer) {
 
         componentHeaderButton.contentContainer = componentContainer;
@@ -9480,6 +12229,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
 
 
     /**
+     * Array of tab components
      * @type {Array}
      * @readonly
      */
@@ -9496,6 +12246,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
+     * Array of tab buttons
      * @type {Array}
      * @readonly
      */
@@ -9511,6 +12262,9 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Clear tab buttons and containers
+     */
     Clear() {
         Object.forEach(this.buttons, (name, button) => {
             button.Dispose();
@@ -9521,15 +12275,31 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Toolbar = class extends Colibri.UI.Component {
 
+    /** Vertical orientation */
     static Vertical = 'vertical';
+    /** Horizontal orientation */
     static Horizontal = 'horizontal';
 
+    /** Right aligned buttons  */
     static Right = 'right';
+    /** Left aligned buttons  */
     static Left = 'left';
+    /** Center aligned buttons  */
     static Center = 'center';
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|HTMLElement} element element to generate in
+     */
     constructor(name, container, element) {
         super(name, container, element || Element.create('div'));
         this.AddClass('app-toolbar-container-component');
@@ -9538,11 +12308,16 @@ Colibri.UI.Toolbar = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ToolbarButtonClicked', false, 'Кликнули на кнопку внутри Toolbar-а');
     }
 
+    /**
+     * Orientation
+     * @type {vertical,horizontal}
+     */
     set orientation(value) {
         if(value == Colibri.UI.Toolbar.Vertical) {
             this.AddClass('-vertical');
@@ -9552,6 +12327,10 @@ Colibri.UI.Toolbar = class extends Colibri.UI.Component {
         } 
     }
 
+    /**
+     * Orientation
+     * @type {vertical,horizontal}
+     */
     get orientation() {
         if(this.HasClass('-vertical')) {
             return Colibri.UI.Toolbar.Vertical;
@@ -9563,7 +12342,7 @@ Colibri.UI.Toolbar = class extends Colibri.UI.Component {
 
     /**
      * Align the itens
-     * @type {String}
+     * @type {right,left,center}
      */
     get align() {
         if(this.HasClass('-right')) {
@@ -9576,7 +12355,7 @@ Colibri.UI.Toolbar = class extends Colibri.UI.Component {
     }
     /**
      * Align the itens
-     * @type {String}
+     * @type {right,left,center}
      */
     set align(value) {
         this.RemoveClass('-left');
@@ -9590,6 +12369,11 @@ Colibri.UI.Toolbar = class extends Colibri.UI.Component {
         } 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clicked(event, args) {
         const component = args.domEvent.target.closest('.app-toolbar-container-component > *')?.tag('component');
         this.Dispatch('ToolbarButtonClicked', {button: component});
@@ -9597,8 +12381,18 @@ Colibri.UI.Toolbar = class extends Colibri.UI.Component {
 
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Router = class extends Colibri.UI.Pane {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('div'));
@@ -9614,6 +12408,9 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
 
     }
 
+    /**
+     * Disposes the component
+     */
     Dispose() {
         App.Router.RemoveHandler('RouteChanged', this._routeChangedEvent);
         super.Dispose();
@@ -9651,6 +12448,7 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
         }
 
     }
+    /** @private */
     _initStructure() {
         
         for(const pattern of Object.keys(this._structure)) {
@@ -9684,6 +12482,12 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
 
     }
 
+    /**
+     * Creates plane object with keys separated by dot
+     * @param {object} object object to plain
+     * @param {string} prefix prefix to add in keys
+     * @returns object
+     */
     toPlain(object, prefix = '') {
         let ret = {};
         object = Object.cloneRecursive(object, null, ['parent']);
@@ -9699,20 +12503,25 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
     }
 
     /**
-     * 
-     * @type {}
+     * Base route pattern
+     * @type {string}
      */
     get basePattern() {
         return this._current;
     }
     /**
-     * 
-     * @type {}
+     * Base route pattern
+     * @type {string}
      */
     set basePattern(value) {
         this._current = value;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __appRouteChanged(event, args) {
         if(args.url.substring(0, this._current.length) === this._current) {
             this.ForEach((name, component) => {
@@ -9741,8 +12550,18 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Frame = class extends Colibri.UI.Component {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('iframe'));
@@ -9766,14 +12585,29 @@ Colibri.UI.Frame = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Table = class extends Colibri.UI.Component {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('table'));
         this.AddClass('colibri-ui-table');
     }
 
+    /**
+     * Adds a row to table
+     * @param {string} name name of cell
+     * @returns {Colibri.UI.TableRow}
+     */
     AddRow(name) {
         return new Colibri.UI.TableRow(name, this);
     }
@@ -9811,8 +12645,18 @@ Colibri.UI.Table = class extends Colibri.UI.Component {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TableRow = class extends Colibri.UI.Component {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('tr'));
@@ -9820,6 +12664,13 @@ Colibri.UI.TableRow = class extends Colibri.UI.Component {
         this.shown = true;
     }
 
+    /**
+     * Adds a cell to table row
+     * @param {string} name name of cell
+     * @param {string} className class name of cell
+     * @param {string} value value of cell
+     * @returns {Colibri.UI.TableCell}
+     */
     AddCell(name, className = null, value = null) {
         const ret = new Colibri.UI.TableCell(name, this);
         if(className) {
@@ -9831,6 +12682,13 @@ Colibri.UI.TableRow = class extends Colibri.UI.Component {
         return ret;
     }
 
+    /**
+     * Adds a header cell to table row
+     * @param {string} name name of cell
+     * @param {string} className class name of cell
+     * @param {string} value value of cell
+     * @returns {Colibri.UI.TableHeaderCell}
+     */
     AddHeaderCell(name, className = null, value = null) {
         const ret = new Colibri.UI.TableHeaderCell(name, this);
         if(className) {
@@ -9844,8 +12702,18 @@ Colibri.UI.TableRow = class extends Colibri.UI.Component {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TableHeaderCell = class extends Colibri.UI.Component {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('th'));
@@ -9915,8 +12783,18 @@ Colibri.UI.TableHeaderCell = class extends Colibri.UI.Component {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TableCell = class extends Colibri.UI.Component {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('td'));
@@ -9987,8 +12865,18 @@ Colibri.UI.TableCell = class extends Colibri.UI.Component {
 }
 
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.PaneSwitcher = class extends Colibri.UI.Pane {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container);
@@ -10013,6 +12901,7 @@ Colibri.UI.PaneSwitcher = class extends Colibri.UI.Pane {
         this._value = value;
         this._showValue();
     }
+    /** @private */
     _showValue() {
         
         this.ForEach((name, component) => component.Disconnect())
@@ -10027,8 +12916,18 @@ Colibri.UI.AddTemplate('Colibri.UI.PaneGrid',
 '    ' + 
 '</div>' + 
 '');
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.PaneGrid = class extends Colibri.UI.Component {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Colibri.UI.Templates['Colibri.UI.PaneGrid']);
@@ -10081,13 +12980,24 @@ Colibri.UI.PaneGrid = class extends Colibri.UI.Component {
     set gap(value) {
         this._element.css('gap', value);
     }
-    _showGap() {
-        
-    }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Window = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|Element} element element to create in
+     * @param {string} title title of window
+     * @param {number|null} width width of window
+     * @param {number|null} height height of window
+     */
     constructor(name, container, element, title, width, height) {
         super(name, container, Element.fromHtml('<div><div class="app-component-window-container"><div class="app-component-window-title"><span></span><div class="minimize-button"></div><div class="close-button"></div></div><div class="app-component-window-content"></div><div class="app-component-window-minimized-content"></div><div class="app-component-window-footer"></div></div></div>')[0]);
 
@@ -10145,7 +13055,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
 
     }
 
-
+    /** @private */
     _movingHandler(e) {
         const windowElement = e.currentTarget.closest('.app-component-window');
         const windowContainer = windowElement.querySelector('.app-component-window-container');
@@ -10156,6 +13066,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         windowContainer.css('top', (e.pageY - point.top - parseInt(windowContainer.css('margin-top'))) + 'px');
     }
 
+    /** @private */
     _movingStartHandler(e) {
         
         if(e.target.is('button')) {
@@ -10170,6 +13081,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         windowElement.tag('movingPoint', {left: e.layerX, top: e.layerY});
     }
 
+    /** @private */
     _movingStopHandler(e) {
         const windowElement = e.currentTarget.closest('.app-component-window');
         const windowComponent = windowElement.tag('component');
@@ -10178,6 +13090,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         windowElement.removeEventListener('mouseup', windowComponent._movingStopHandler);
     }
 
+    /** @private */
     _setMovableEvents(value) {
         if(value) {
             this._titleContainer.addEventListener('mousedown', this._movingStartHandler);
@@ -10187,6 +13100,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('WindowMinimizing', false, 'Поднимается когда окно минимизируется');
@@ -10194,6 +13108,11 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         this.RegisterEvent('WindowContentRendered', false, 'Когда содержание окна отрисовалось');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __CloseClicked(event, args) {
         
         if(this._minimizable === true && this._state === 'minimized') {
@@ -10212,16 +13131,25 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         
     }
 
+    /** @private */
     __getMinimizedContent() {
         return Promise.resolve(null);
     }
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __MinimizeClicked(event, args) {
         
         this.MinimizeToggle();
 
     }
 
+    /**
+     * Toggle minimize state
+     */
     MinimizeToggle() {
         const content = this._minimizedGetContentMethod(this);
         if(content) {
@@ -10249,6 +13177,11 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __MouseUp(event, args) {
         const domEvent = args.domEvent;
         domEvent.stopPropagation();
@@ -10256,6 +13189,11 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         return false;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __MouseDown(event, args) {
         const domEvent = args.domEvent;
         if (domEvent.target == this._element && !Colibri.UI.Resizing && this._closableOnShadow) {
@@ -10263,6 +13201,11 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __KeyDown(event, args) {
         const domEvent = args.domEvent;
         if(domEvent.code === 'Escape') {
@@ -10273,6 +13216,9 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     }
 
 
+    /**
+     * Start tab index routine
+     */
     StartTabIndexRoutine() {
         const firstInput = this._element.querySelector('input,textarea,select');
         if(firstInput) {
@@ -10280,49 +13226,93 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Element object
+     * @type {Element}
+     * @readonly
+     */
     get element() {
         return this._element;
     }
 
+    /**
+     * Container object
+     * @type {Element}
+     * @readonly
+     */
     get container() {
         return this._content;
     }
 
+    /**
+     * Footer element
+     * @type {Element}
+     * @readonly
+     */
     get footer() {
         return this._footer;
     }
 
+    /**
+     * Header container element
+     * @type {Element}
+     * @readonly
+     */
     get header() {
         return this._titleContainer.querySelector('span');
     }
 
+    /**
+     * Window content string
+     * @type {string}
+     */
     get content() {
         return this._content.innerHTML;
     }
 
+    /**
+     * Window content string
+     * @type {string}
+     */
     set content(value) {
         return this._content.innerHTML = value;
     }
 
+    /**
+     * Is window movable
+     * @type {boolean}
+     */
     get movable() {
         return this._movable;
     }
 
+    /**
+     * Is window movable
+     * @type {boolean}
+     */
     set movable(value) {
         this._movable = value;
         this._setMovableEvents(value);
     }
 
+    /**
+     * Is window currently moving
+     * @type {boolean}
+     */
     set moving(value) {
         this._moving = value;
     }
 
+    /**
+     * Is window currently moving
+     * @type {boolean}
+     */
     get moving() {
         return this._moving;
     }
 
     /**
-     * Ширина компонента
+     * Window width
      * @type {number}
      */
     get width() {
@@ -10330,6 +13320,10 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         return bounds.outerWidth;
     }
 
+    /**
+     * Window width
+     * @type {number}
+     */
     set width(value) {
         if(value === null) {
             this._element.querySelector('.app-component-window-content').css('width', null);    
@@ -10345,7 +13339,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     }
 
     /**
-     * Ширина компонента
+     * Window container height
      * @type {number}
      */
     get containerWidth() {
@@ -10353,6 +13347,10 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         return bounds.outerWidth;
     }
 
+    /**
+     * Window container height
+     * @type {number}
+     */
     set containerWidth(value) {
         if(value === null) {
             this._element.querySelector('.app-component-window-container').css('width', null);    
@@ -10364,7 +13362,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     }
 
     /**
-     * Высота компонента
+     * Window height
      * @type {number}
      */
     get height() {
@@ -10372,6 +13370,10 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         return bounds.outerHeight;
     }
 
+    /**
+     * Window height
+     * @type {number}
+     */
     set height(value) {
         if(value === null) {
             this._element.querySelector('.app-component-window-content').css('height', null);    
@@ -10383,13 +13385,17 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     }
 
     /**
-     * Заголовок окна
-     * @type {number}
+     * Window title
+     * @type {string}
      */
     get title() {
         return this._element.querySelector('.app-component-window-title > span').innerHTML;
     }
 
+    /**
+     * Window title
+     * @type {string}
+     */
     set title(value) {
         this._element.querySelector('.app-component-window-title > span').innerHTML = value;
         if(!value) {
@@ -10400,23 +13406,43 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Is window closable
+     * @type {boolean}
+     */
     get closable() {
         return this._closable;
     }
 
+    /**
+     * Is window closable
+     * @type {boolean}
+     */
     set closable(value) {
         this._closable = value;
         this.Children('closebutton').shown = this._closable;
     }
 
+    /**
+     * Is window closed when clicked on shadow
+     * @type {boolean}
+     */
     get closableOnShadow() {
         return this._closableOnShadow;
     }
 
+    /**
+     * Is window closed when clicked on shadow
+     * @type {boolean}
+     */
     set closableOnShadow(value) {
         this._closableOnShadow = value;
     }
 
+    /**
+     * Show/Hide window
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         if(value) {
@@ -10428,6 +13454,10 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         this.StartTabIndexRoutine();
     }
 
+    /**
+     * Show/Hide window
+     * @type {boolean}
+     */
     get shown() {
         return super.shown;
     }
@@ -10447,6 +13477,12 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         this._titleContainer.css('display', value ? 'block' : 'none');
     }
 
+    /**
+     * Adds button to footer
+     * @param {string} title button title
+     * @param {string} name button name
+     * @returns {Colibri.UI.Button}
+     */
     AddButton(title, name) {
         this._footer.hideElement();
         this._footer.showElement();
@@ -10477,6 +13513,7 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
         this._minimizable = value;
         this._showMinimizable();
     }
+    /** @private */
     _showMinimizable() {
         this.Children('minimizebutton').shown = this._minimizable;
         if(!this._minimizable) {
@@ -10490,14 +13527,14 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     }
 
     /**
-     * Позиция (правый нижний угол) при минимизации
+     * Right bottom corner of window when minimized
      * @type {object<integer, integer>} 
      */
     get minimizedPosition() {
         return this._minimizedPosition;
     }
     /**
-     * Позиция (правый нижний угол) при минимизации
+     * Right bottom corner of window when minimized
      * @type {object<integer, integer>} 
      */
     set minimizedPosition(value) {
@@ -10505,14 +13542,14 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     }
 
     /**
-     * Размер при минимизации
+     * Minimized size
      * @type {object(integer, integer)}
      */
     get minimizedSize() {
         return this._minimizedSize;
     }
     /**
-     * Размер при минимизации
+     * Minimized size
      * @type {object(integer, integer)}
      */
     set minimizedSize(value) {
@@ -10520,14 +13557,14 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     }
 
     /**
-     * Получение содержания минимизурованного окна
+     * Method to get content of minimized window
      * @type {Function}
      */
     get minimizedGetContentMethod() {
         return this._minimizedGetContentMethod;
     }
     /**
-     * Получение содержания минимизурованного окна
+     * Method to get content of minimized window
      * @type {Function}
      */
     set minimizedGetContentMethod(value) {
@@ -10548,8 +13585,22 @@ Colibri.UI.AddTemplate('Colibri.UI.ModelessWindow',
 '    <div class="modeless-window-footer"></div>' + 
 '</div>' + 
 '');
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {string|Element} element element to create in
+     * @param {string} title title of window
+     * @param {number|null} width width of window
+     * @param {number|null} height height of window
+     */
     constructor(name, container, element, title, width, height) {
         super(name, container, Colibri.UI.Templates['Colibri.UI.ModelessWindow']);
         this.AddClass('app-component-modeless-window');
@@ -10579,13 +13630,14 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
         this._handleEvents();
     }
 
-
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('WindowClosed', false, 'Поднимается, когда окно закрылось');
         this.RegisterEvent('WindowContentRendered', false, 'Когда содержание окна отрисовалось');
     }
 
+    /** @protected */
     _handleEvents() {
         this._getCloseButton().AddHandler('Clicked', (event, args) => this.__close(event, args));
 
@@ -10602,9 +13654,13 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Закрыть окно
      * @private
      */
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __close(event, args) {
         if (this._closable) {
             this.shown = false;
@@ -10615,8 +13671,6 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Запомнить позицию мыши и окна, когда начали перетаскивать
-     * @param {MouseEvent} event
      * @private
      */
     __dragStart(event) {
@@ -10634,8 +13688,6 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Обновить позицию окна после каждого перемещения мыши
-     * @param {MouseEvent} event
      * @private
      */
     __move(event) {
@@ -10651,7 +13703,6 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Удалить обработчики по окончании перетаскивания
      * @private
      */
     __dragStop() {
@@ -10664,7 +13715,6 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Обновить переменные css
      * @private
      */
     _updateStyleVariables() {
@@ -10674,8 +13724,6 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Показать/скрыть скролл на странице
-     * @param {boolean} value
      * @private
      */
     _toggleBodyScroll(value) {
@@ -10688,22 +13736,27 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Закрыть окно
+     * When window closed
      */
     close() {
         this._getCloseButton().Dispatch('Clicked');
     }
 
     /**
-     * "Приклеено" ли окно (по умолчанию становится в центр контейнера)
+     * Is window sticky
      * @type {boolean}
      */
     get sticky() {
         return this._sticky;
     }
+    /**
+     * Is window sticky
+     * @type {boolean}
+     */
     set sticky(value) {
         return this._setSticky(value);
     }
+    /** @private */
     _setSticky(value) {
         this._sticky = (value === true || value === 'true');
 
@@ -10717,16 +13770,20 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Положение окна относительно контейнера по оси X
-     * 3 возможных положения: слева, справа, по центру
-     * @type {string|null}
+     * Sticky X position
+     * @type {left,right,center}
      */
     get stickyX() {
         return this._stickyX;
     }
+    /**
+     * Sticky position
+     * @type {left,right,center}
+     */
     set stickyX(value) {
         this._stickToX(value);
     }
+    /** @private */
     _stickToX(value) {
         this._stickyX = value;
 
@@ -10749,16 +13806,20 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Положение окна относительно контейнера по оси Y
-     * 3 возможных положения: сверху, снизу, по центру
-     * @type {string|null}
-     */
+     * Sticky Y position
+     * @type {top,bottom,center}
+     */    
     get stickyY() {
         return this._stickyY;
     }
+    /**
+     * Sticky Y position
+     * @type {top,bottom,center}
+     */    
     set stickyY(value) {
         this._stickToY(value);
     }
+    /** @private */
     _stickToY(value) {
         this._stickyY = value;
 
@@ -10781,16 +13842,22 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Точка, начиная от которой окно займёт всю доступную ширину в зависимости от stickyX
-     * если stickyX - центр, займёт такую ширину, чтобы окно оказалось по центру
+     * The point from which the window will occupy the entire available width depending on stickyX 
+     * if stickyX is the center, it will occupy such a width so that the window is centered
      * @type {string|number|null}
      */
     get startPointX() {
         return this._startPointX;
     }
+    /**
+     * The point from which the window will occupy the entire available width depending on stickyX 
+     * if stickyX is the center, it will occupy such a width so that the window is centered
+     * @type {string|number|null}
+     */
     set startPointX(value) {
         this._setStartPointX(value);
     }
+    /** @private */
     _setStartPointX(value) {
         if (![null, false, undefined].includes(value)) {
 
@@ -10823,16 +13890,22 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Точка, начиная от которой окно займёт всю доступную высоту в зависимости от stickyY
-     * если stickyY - центр, займёт такую высоту, чтобы окно оказалось по центру
+     * The point from which the window will occupy the entire available height depending on stickyY
+     * if stickyY is the center, it will take such a height so that the window is centered
      * @type {string|number|null}
      */
     get startPointY() {
         return this._startPointY;
     }
+    /**
+     * The point from which the window will occupy the entire available height depending on stickyY
+     * if stickyY is the center, it will take such a height so that the window is centered
+     * @type {string|number|null}
+     */
     set startPointY(value) {
         this._setStartPointY(value);
     }
+    /** @private */
     _setStartPointY(value) {
         if (![null, false, undefined].includes(value)) {
 
@@ -10865,33 +13938,49 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * Можно ли закрыть окно
+     * Is window can be closed
      * @type {boolean}
      */
     get closable() {
         return this._closable;
     }
+    /**
+     * Is window can be closed
+     * @type {boolean}
+     */
     set closable(value) {
         this._setClosable(value);
     }
+    /** @private */
     _setClosable(value) {
         this._closable = (value === true || value === 'true');
         this._getCloseButton().shown = this._closable;
     }
 
     /**
-     * Удалять ли окно из DOM при закрытии
+     * Remove window from DOM when closed
      * @type {boolean}
      */
     get disposeOnClose() {
         return this._disposeOnClose;
     }
+    /**
+     * Remove window from DOM when closed
+     * @type {boolean}
+     */
     set disposeOnClose(value) {
         this._disposeOnClose = (value === true || value === 'true');
     }
 
     /**
-     * Ширина компонента
+     * Content width
+     * @type {number}
+     */
+    get width() {
+        return super.width;
+    }
+    /**
+     * Content width
      * @type {number}
      */
     set width(value) {
@@ -10899,13 +13988,21 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
             this._setWidth(value);
         }
     }
+    /** @private */
     _setWidth(value) {
         super.width = value;
         this._updateStyleVariables();
     }
 
     /**
-     * Высота компонента
+     * Content height
+     * @type {number}
+     */
+    get height() {
+        return super.height;
+    }
+    /**
+     * Content height
      * @type {number}
      */
     set height(value) {
@@ -10913,21 +14010,27 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
             this._setHeight(value);
         }
     }
+    /** @private */
     _setHeight(value) {
         super.height = value;
         this._updateStyleVariables();
     }
 
     /**
-     * Содержимое заголовка окна
+     * Window title
      * @type {string|Element}
      */
     get title() {
         return this._getHeader().html();
     }
+    /**
+     * Window title
+     * @type {string|Element}
+     */
     set title(value) {
         this._setTitle(value);
     }
+    /** @private */
     _setTitle(value) {
         if (value) {
             this._getHeader().html(value);
@@ -10940,41 +14043,42 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * DOM элемент header
-     * @return {Element}
+     * header DOM element 
+     * @type {Element}
      */
     get header() {
         return this._getHeader();
     }
+    /** @private */
     _getHeader() {
         return this._element.querySelector('.modeless-window-header-container > .modeless-window-header');
     }
 
     /**
-     * DOM элемент container
-     * @return {Element}
+     * Container DOM element
+     * @type {Element}
      */
     get container() {
         return this._getContainer();
     }
+    /** @private */
     _getContainer() {
         return this._element.querySelector('.modeless-window-container');
     }
 
     /**
-     * DOM элемент footer
-     * @return {Element}
+     * Footer DOM element
+     * @type {Element}
      */
     get footer() {
         return this._getFooter();
     }
+    /** @private */
     _getFooter() {
         return this._element.querySelector('.modeless-window-footer');
     }
 
     /**
-     * Кнопка закрытия окна (компонент)
-     * @return {Colibri.UI.Component}
      * @private
      */
     _getCloseButton() {
@@ -10982,8 +14086,15 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 
     /**
-     * При отображении поместить над всеми остальными элементами и обновить переменные css
-     * @param {boolean} value
+     * Show/Hide component
+     * @type {boolean}
+     */
+    get shown() {
+        return super.shown;
+    }
+    /**
+     * Show/Hide component
+     * @type {boolean}
      */
     set shown(value) {
         this._element.style.visibility = 'hidden';
@@ -11001,7 +14112,11 @@ Colibri.UI.ModelessWindow = class extends Colibri.UI.Component {
     }
 }
 /**
- * Класс ГРИД
+ * Grid component
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
  */
 Colibri.UI.Grid = class extends Colibri.UI.Pane {
 
@@ -11016,10 +14131,10 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
     static SortDesc = 'desc';
 
     /**
-     * Конструктор
-     * @param {string} name название компонента
-     * @param {Element|Colibri.UI.Component} container контейнер
-     * @param {string|Element} element содержание
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {string|Element} element element to create in
      */
     constructor(name, container, element) {
         super(name, container);
@@ -11539,6 +14654,11 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
      * @param {Object} args 
      * @returns 
      */
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __processKeydown(event, args) {
 
         const e = args.domEvent;
@@ -11708,6 +14828,11 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickedProcessing(event, args) {
         const   target = args.domEvent.target,
                 cell = target.closest('.app-ui-row-cell')?.tag('component');
@@ -11923,9 +15048,8 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
 
     }
 
-    /**
-     * Регистрация событий
-     */
+
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
 
@@ -12266,10 +15390,18 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
 }
 
 /**
- * Класс заголовка таблицы
+ * Grid header component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Grid
  */
 Colibri.UI.Grid.Header = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('thead'));
 
@@ -12280,6 +15412,7 @@ Colibri.UI.Grid.Header = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ColumnAdded', false, 'Поднимается, когда добавляется колонка');
@@ -12441,7 +15574,10 @@ Colibri.UI.Grid.Header = class extends Colibri.UI.Component {
 
 }
 /**
- * Класс списка колонок
+ * Grid header coluumns component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Grid
  */
 Colibri.UI.Grid.Columns = class extends Colibri.UI.Component {
 
@@ -12451,6 +15587,11 @@ Colibri.UI.Grid.Columns = class extends Colibri.UI.Component {
         this.AddHandler('ChildAdded', (event, args) => this.__thisChildAdded(event, args));
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisChildAdded(event, args) {
         args.component.AddHandler('ColumnStickyChange', (event, args) => {
             this.Dispatch('ColumnStickyChange', args);
@@ -12465,6 +15606,7 @@ Colibri.UI.Grid.Columns = class extends Colibri.UI.Component {
         });
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ColumnAdded', false, 'Поднимается, когда добавляется колонка');
@@ -12512,10 +15654,17 @@ Colibri.UI.Grid.Columns = class extends Colibri.UI.Component {
     }
 }
 /**
- * Класс колонки
+ * Grid header column component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Grid
  */
 Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
-
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container, element) {
         super(name, container, Element.create('td'));
         this.AddClass('app-ui-column');
@@ -12539,6 +15688,7 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ColumnStickyChange', false, 'Поднимается, когда колонка меняет липкость');
@@ -12911,10 +16061,17 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
 
 }
 /**
- * Класс группы строк
+ * Grid rows group component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Grid
  */
 Colibri.UI.Grid.Rows = class extends Colibri.UI.Component {
-
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('tbody'));
 
@@ -12972,6 +16129,7 @@ Colibri.UI.Grid.Rows = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('RowAdded', false, 'Поднимается, когда добавляется строка');
@@ -13322,10 +16480,18 @@ Colibri.UI.Grid.Rows = class extends Colibri.UI.Component {
 
 }
 /**
- * Класс строки
+ * Grid row component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Grid
  */
 Colibri.UI.Grid.Row = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('tr'));
         this.AddClass('app-ui-row');
@@ -13373,6 +16539,7 @@ Colibri.UI.Grid.Row = class extends Colibri.UI.Component {
         super.Dispose();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('RowStickyChange', false, 'Поднимается, когда строка меняет липкость');
@@ -13719,10 +16886,18 @@ Colibri.UI.Grid.Row = class extends Colibri.UI.Component {
 
 }
 /**
- * Класс ячейки
+ * Grid cell component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Grid
  */
 Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('td'));
 
@@ -13755,6 +16930,7 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
         }
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('CellClicked', false, 'Поднимается, когда щелкнули по ячейке');
@@ -14226,8 +17402,21 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
     
 
 }
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.List = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     * @param {Element|string} element element to create in
+     * @param {boolean} multiple is list has multiple selection 
+     */
     constructor(name, container, element, multiple) {
         super(name, container, element);
         this.AddClass('app-component-list');
@@ -14266,6 +17455,7 @@ Colibri.UI.List = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('SelectionChanged', false, 'Поднимается, изменилось выделение');
@@ -14278,6 +17468,12 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         this.RegisterEvent('ItemEventHandled', false, 'Поднимается, какое то событие рендерера произошло');
     }
 
+    /**
+     * Adds a new group to list
+     * @param {string} name name of group
+     * @param {string} title title of group
+     * @returns Colibri.UI.List.Group
+     */
     AddGroup(name, title) {
         const group = new Colibri.UI.List.Group(name, this);
         group.label.value = title;
@@ -14286,6 +17482,11 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         return group;
     }
 
+    /**
+     * Search for item
+     * @param {Function|string} searchingItemIdOrCompareMethod item id or compare method
+     * @returns {Colibri.UI.List.Item}
+     */
     FindItem(searchingItemIdOrCompareMethod) {
         
         let found = null;
@@ -14302,18 +17503,22 @@ Colibri.UI.List = class extends Colibri.UI.Component {
 
                 if(condition) {
                     found = item;
-                    return false;
+                    return null;
                 }
 
             });
             if(found) {
-                return false;
+                return null;
             }
         });
 
         return found;
     }
 
+    /**
+     * Unselect items
+     * @param {Colibri.UI.List.Item[]} selected items to unselect
+     */
     UnselectItem(selected) {
         if(!this._multiple) {
             this.ClearSelection(false);
@@ -14334,7 +17539,7 @@ Colibri.UI.List = class extends Colibri.UI.Component {
     }
 
     /**
-     * Устанавливает выбор на пункт
+     * Select the item
      * @param {Colibri.UI.List.Item} selected
      */
     SelectItem(selected) {
@@ -14368,7 +17573,7 @@ Colibri.UI.List = class extends Colibri.UI.Component {
     }
 
     /**
-     * Устанавливает выбор на пункт
+     * Select the item
      * @deprecated
      * @param {Colibri.UI.List.Item} selected
      */
@@ -14376,6 +17581,10 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         return this.SelectItem(selected);
     }
 
+    /**
+     * Selected index
+     * @type {number}
+     */
     get selectedIndex() {
         
         if(this._selected.length == 0) {
@@ -14388,6 +17597,10 @@ Colibri.UI.List = class extends Colibri.UI.Component {
 
     }
     
+    /**
+     * Selected index
+     * @type {number}
+     */
     set selectedIndex(value) {
 
         const currentSelection = JSON.stringify(this.selectedIndex);
@@ -14421,7 +17634,10 @@ Colibri.UI.List = class extends Colibri.UI.Component {
 
     }
 
-    /** @type {Object} */
+    /** 
+     * Selected Item value
+     * @type {Object} 
+     */
     get selectedValue() {
         let values = [];
         this._selected.forEach((item) => {
@@ -14430,6 +17646,10 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         return this._multiple ? values : values.pop();
     }
 
+    /** 
+     * Selected Item value
+     * @type {Object} 
+     */
     set selectedValue(value) {
 
         const currentSelection = JSON.stringify(this.selectedIndex);
@@ -14458,13 +17678,20 @@ Colibri.UI.List = class extends Colibri.UI.Component {
     }
 
 
-    /** @type {Colibri.UI.List.Item} */
+    /**
+     * Selected item 
+     * @type {Colibri.UI.List.Item} 
+     */
     get selected() {
         if (!this._multiple) {
             return this._selected[0];
         }
         return this._selected;
     }
+    /**
+     * Selected item 
+     * @type {Colibri.UI.List.Item} 
+     */
     set selected(value) {
         // value - Colibri.UI.Item
         const currentSelection = JSON.stringify(this.selectedIndex);
@@ -14476,6 +17703,9 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Show selection, ensures visibility of selected item
+     */
     ShowSelection() {
         
         if(this._selected.length > 0) {
@@ -14484,14 +17714,25 @@ Colibri.UI.List = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Is list can select multiple items
+     * @type {boolean}
+     */
     get multiple() {
         return this._multiple;
     }
 
+    /**
+     * Is list can select multiple items
+     * @type {boolean}
+     */
     set multiple(value) {
         this._multiple = value;
     }
 
+    /**
+     * Removes all groups from list
+     */
     ClearAllGroups() {
         this.ForEach((name, component) => {
             if(component instanceof Colibri.UI.List.Group) {
@@ -14500,6 +17741,10 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         })
     }
 
+    /**
+     * Clears selection
+     * @param {boolean} fireAnEvent fire the SelectionChanged event
+     */
     ClearSelection(fireAnEvent = true) {
         this._selected.forEach((item) => {
             item.selected = false;
@@ -14510,18 +17755,28 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _createContextMenuButton() {
         // Do nothing
     }
 
+    /** @protected */
     _removeContextMenuButton() {
         // Do nothing
     }
 
+    /**
+     * Items of list
+     * @type {Array}
+     */
     get value() {
-
+        return [];
     }
 
+    /**
+     * Items of list
+     * @type {Array}
+     */
     set value(data) {
 
         this.ClearSelection(false);
@@ -14533,9 +17788,15 @@ Colibri.UI.List = class extends Colibri.UI.Component {
 
         this.Retreive();
 
-    }
+    } 
 
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
         try {
             this.value = data;
         }
@@ -14545,14 +17806,14 @@ Colibri.UI.List = class extends Colibri.UI.Component {
     }
 
     /**
-     * Компонент отрисовщик
+     * Renderer component
      * @type {string|Colibri.UI.Component|Function}
      */
     get rendererComponent() {
         return this._rendererComponent;
     }
     /**
-     * Компонент отрисовщик
+     * Renderer component
      * @type {string|Colibri.UI.Component|Function}
      */
     set rendererComponent(value) {
@@ -14560,14 +17821,14 @@ Colibri.UI.List = class extends Colibri.UI.Component {
     }
 
     /**
-     * Атрибуты для передачи в компонент отрисовщик
+     * Renderer component attributes
      * @type {string|Object}
      */
     get rendererAttrs() {
         return this._rendererAttrs;
     }
     /**
-     * Атрибуты для передачи в компонент отрисовщик
+     * Renderer component attributes
      * @type {string|Object}
      */
     set rendererAttrs(value) {
@@ -14621,6 +17882,11 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __searchBoxChanged(event, args) {
         const f = this._searchFilterCallback;
         this.ForEach((name, component) => {
@@ -14677,20 +17943,23 @@ Colibri.UI.List = class extends Colibri.UI.Component {
     }
 
     /**
-     * 
-     * @type {}
+     * Filter callback
+     * @type {Function}
      */
     get searchFilterCallback() {
         return this._searchFilterCallback;
     }
     /**
-     * 
-     * @type {}
+     * Filter callback
+     * @type {Function}
      */
     set searchFilterCallback(value) {
         this._searchFilterCallback = value;
     }
 
+    /**
+     * Sets the focus on searchbox
+     */
     FocusOnSearchBox() {
         if(!this._searchBox) {
             return;
@@ -14701,7 +17970,17 @@ Colibri.UI.List = class extends Colibri.UI.Component {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI.List
+ */
 Colibri.UI.List.SearchBox = class extends Colibri.UI.Pane {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-component-list-searchbox');
@@ -14712,41 +17991,45 @@ Colibri.UI.List.SearchBox = class extends Colibri.UI.Pane {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Когда изменился поиск');
     }
 
     /**
-     * 
-     * @type {}
+     * Searchbox has icon
+     * @type {boolean}
      */
     get hasIcon() {
         return this._input.hasIcon;
     }
     /**
-     * 
-     * @type {}
+     * Searchbox has icon
+     * @type {boolean}
      */
     set hasIcon(value) {
         this._input.hasIcon = value;
     }
 
     /**
-     * 
-     * @type {}
+     * Searchbox placeholder
+     * @type {string}
      */
     get placeholder() {
         return this._input.placeholder;
     }
     /**
-     * 
-     * @type {}
+     * Searchbox placeholder
+     * @type {string}
      */
     set placeholder(value) {
         this._input.placeholder = value;
     }
 
+    /**
+     * Set the focus on searchbox
+     */
     Focus() {
         this._input.Focus();
     }
@@ -14768,8 +18051,18 @@ Colibri.UI.List.SearchBox = class extends Colibri.UI.Pane {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.List
+ */
 Colibri.UI.List.Group = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         super(name, container);
 
@@ -14787,10 +18080,17 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * Generates an ID for item
+     * @static
+     * @param {object} itemData data of item
+     * @returns string
+     */
     static CreateKey(itemData) {
         return itemData?.__id ?? itemData?.id ?? String.MD5(JSON.stringify(Object.sortPropertiesRecursive(itemData))); 
     }
 
+    /** @protected */
     _handlerEvents() {
 
         this.AddHandler('ContextMenuIconClicked', (event, args) => this.parent.Dispatch('ContextMenuIconClicked', Object.assign({item: args.item}, args)));
@@ -14803,6 +18103,10 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         });
     }
 
+    /**
+     * Cycles for each children
+     * @param {Function} handler method to execute for each child component
+     */
     ForEach(handler) {
         this._div.ForEach(handler);
     }
@@ -14847,6 +18151,11 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Searches for index by key
+     * @param {string} key key to search for
+     * @returns {number}
+     */
     FindByKey(key) {
         return this._div.indexOf((item) => {
             const itemKey = Colibri.UI.List.Group.CreateKey(item.value); 
@@ -14854,22 +18163,43 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         });
     }
 
+    /**
+     * Childs
+     * @type {Array}
+     * @readonly
+     */
     get children() {
         return this._div.children;
     }
 
+    /**
+     * Label element
+     * @type {Element}
+     */
     get label() {
         return this._span;
     }
 
+    /**
+     * Label element
+     * @type {Element}
+     */
     set label(value) {
         this._span.value = value;
     }
 
+    /**
+     * Is group expandable
+     * @type {boolean}
+     */    
     get expandable() {
         return this.ContainsClass('app-component-expandable');
     }
 
+    /**
+     * Is group expandable
+     * @type {boolean}
+     */    
     set expandable(value) {
         if (value) {
             this.AddClass('app-component-expandable');
@@ -14878,10 +18208,18 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Is group expanded
+     * @type {boolean}
+     */    
     get expanded() {
         return !this.ContainsClass('app-component-collapsed')
     }
 
+    /**
+     * Is group expanded
+     * @type {boolean}
+     */    
     set expanded(value) {
         if (this.ContainsClass('app-component-collapsed')) {
             this.Expand();
@@ -14890,10 +18228,18 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Value array
+     * @type {Array}
+     */    
     get value() {
         return this._div.Map((name, item, index) => item.value);
     }
 
+    /**
+     * Value array
+     * @type {Array}
+     */    
     set value(value) {
 
         this.parent.ClearSelection(false);
@@ -14961,6 +18307,9 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         return this.emptyMessage;
     }
 
+    /**
+     * Expand group
+     */
     Expand() {
         if (this.expandable) {
             this.RemoveClass('app-component-collapsed');
@@ -14970,6 +18319,9 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Collapse group
+     */
     Collapse() {
         if (this.expandable) {
             this.AddClass('app-component-collapsed');
@@ -14979,23 +18331,35 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _createContextMenuButton() {
         // Do nothing
     }
 
+    /** @protected */
     _removeContextMenuButton() {
         // Do nothing
     }
 
+    /**
+     * Context menu items
+     * @type {Array}
+     */
     get contextmenu() {
         return this.parent.contextmenu;
     }
 
+    /**
+     * Context menu items
+     * @type {Array}
+     */
     set contextmenu(items) {
         this.parent.contextmenu = items;
     }
 
-
+    /**
+     * Clear items
+     */
     Clear() {
         this._div.Clear();
     }
@@ -15015,8 +18379,18 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.List
+ */
 Colibri.UI.List.Item = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         super(name, container);
 
@@ -15033,11 +18407,18 @@ Colibri.UI.List.Item = class extends Colibri.UI.Component {
     }
 
 
-    /** @type {boolean} */
+    /**
+     * Is item selected 
+     * @type {boolean} 
+     */
     get selected() {
         return this._element.is('.app-component-selected');
     }
 
+    /**
+     * Is item selected 
+     * @type {boolean} 
+     */
     set selected(value) {
         if (value) {
             this.AddClass('app-component-selected');
@@ -15047,14 +18428,29 @@ Colibri.UI.List.Item = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __ItemSelected(event, args) {
         this.list.Dispatch('ItemClicked', Object.assign(args, {item: this, domEvent: args.domEvent}));
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __ItemDblSelected(event, args) {
         this.list.Dispatch('ItemDoubleClicked', {item: this, domEvent: args.domEvent});
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __ItemMouseDown(event, args) {
         if(this.list) {
             this.list.selected = this;
@@ -15062,11 +18458,18 @@ Colibri.UI.List.Item = class extends Colibri.UI.Component {
         }
     }
 
-    /** @type {object} */
+    /** 
+     * Value object
+     * @type {object}
+     */
     get value() {
         return this._itemData;
     }
 
+    /** 
+     * Value object
+     * @type {object}
+     */
     set value(value) {
 
         const oldKey = String.MD5(JSON.stringify(Object.sortPropertiesRecursive(this._itemData)));
@@ -15116,10 +18519,18 @@ Colibri.UI.List.Item = class extends Colibri.UI.Component {
         this._element.tag(data);
     }
 
+    /** 
+     * Context menu items
+     * @type {Array}
+     */
     get contextmenu() {
         return this.group.contextmenu;
     }
 
+    /** 
+     * Context menu items
+     * @type {Array}
+     */
     set contextmenu(items) {
         this.group.contextmenu = items;
     }
@@ -15139,21 +18550,42 @@ Colibri.UI.List.Item = class extends Colibri.UI.Component {
         this._key = value;
     }
 
+    /**
+     * List associated by item
+     * @type {Colibri.UI.List}
+     * @readonly
+     */
     get list() {
         return this.group?.parent ?? null;
     }
 
+    /**
+     * List group associated by item
+     * @type {Colibri.UI.List.Group}
+     * @readonly
+     */
     get group() {
         return this.parent?.parent ?? null;
     }
 
 }
 
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Tree = class extends Colibri.UI.Component {
 
     /** @type {Colibri.UI.TreeNode|null} */
     _selected = null;
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
 
@@ -15165,6 +18597,7 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         this._handleEvents();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('NodeExpanded', false, 'Поднимается, когда ветка дерева раскрывается');
@@ -15175,6 +18608,7 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         this.RegisterEvent('CheckChanged', false, 'When node checkbox is changed');
     }
 
+    /** @protected */
     _handleEvents() {
         this.AddHandler('Clicked', (sender, args) => {
             this.ClearSelection();
@@ -15182,11 +18616,19 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         });
     }
 
-    /** @type {Colibri.UI.TreeNodes} */
+    /** 
+     * Tree nodes object
+     * @type {Colibri.UI.TreeNodes} 
+     */
     get nodes() {
         return this._nodes;
     }
 
+    /**
+     * Searches for nodes
+     * @param {string} term term to search in nodes
+     * @param {boolean} asAjar return nodes ajar
+     */
     Search(term, asAjar = false) {
         if(!term) {
             this.allNodes.forEach((node) => node.Show());    
@@ -15213,18 +18655,27 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * Expand all nodes
+     */
     ExpandAll() {
         this.nodes.ForEach((nodeName, node) => {
             node.ExpandAll();
         })
     }
 
+    /**
+     * Collapse all nodes
+     */
     CollapseAll() {
         this.nodes.ForEach((nodeName, node) => {
             node.CollapseAll();
         })
     }
 
+    /**
+     * Select node
+     */
     Select(node) {
         this.ClearSelection();
         this._selected = node;
@@ -15234,18 +18685,25 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         this.Dispatch('SelectionChanged', {node: node});
     }
 
+    /**
+     * Clear selection on all nodes
+     */
     ClearSelection() {
         this._element.querySelectorAll('.selected').forEach(selected => selected.classList.remove('selected'));
         this._selected = null;
     }
 
-    /** @type {Colibri.UI.TreeNode} */
+    /** 
+     * Selected node
+     * @type {Colibri.UI.TreeNode} 
+     */
     get selected() {
         return this._selected;
     }
 
-    /**
-     * @param {Colibri.UI.TreeNode} node
+    /** 
+     * Selected node
+     * @type {Colibri.UI.TreeNode} 
      */
     set selected(node) {
         if(typeof node === 'string') {
@@ -15276,12 +18734,18 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
     }
 
     /**
-     * @returns {Set}
+     * All nodes set
+     * @type {Set}
      */
     get allNodes() {
         return this._allNodes;
     }
 
+    /**
+     * Returns node by name or null
+     * @param {string} name name of node
+     * @returns {Colibri.UI.TreeNode|null}
+     */
     FindNode(name) {
         for(const node of this._allNodes) {
             if(node.name == name) {
@@ -15291,6 +18755,11 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         return null;
     }
 
+    /**
+     * Returns node by path or null
+     * @param {string} nodePath nodePath of node
+     * @returns {Colibri.UI.TreeNode|null}
+     */
     FindByPath(nodePath) {
         nodePath = nodePath.split('/');
         let parent = this;
@@ -15303,15 +18772,24 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         return parent;
     }
 
+    /**
+     * Is tree has context menu
+     * @type {boolean}
+     */
     get hasTreeContextMenu() {
         return this._hasTreeContextMenu;
     }
 
+    /**
+     * Is tree has context menu
+     * @type {boolean}
+     */
     set hasTreeContextMenu(value) {
         this._hasTreeContextMenu = value === true || value === 'true';
         this._createContextMenuButton();
     }
 
+    /** @private */
     _createContextMenuButton() {
         if(!this._hasTreeContextMenu || !this._hasContextMenu || this.Children(this._name + '-contextmenu-icon-parent')) {
             return;
@@ -15337,6 +18815,7 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _removeContextMenuButton() {
         if(this._hasTreeContextMenu && this._hasContextMenu && this.Children(this._name + '-contextmenu-icon-parent')) {
             this.Children(this._name + '-contextmenu-icon-parent').Dispose();
@@ -15344,32 +18823,56 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         }
     }
 
-    
+    /**
+     * Is tree is dropable
+     * @type {boolean}
+     */
     get dropable() {
         return this._dropable;
     }
 
+    /**
+     * Is tree is dropable
+     * @type {boolean}
+     */
     set dropable(value) {
         this._dropable = value;
     }
 
-    
+    /**
+     * Is tree is draggable
+     * @type {boolean}
+     */    
     get draggable() {
         return this._draggable;
     }
 
+    /**
+     * Is tree is draggable
+     * @type {boolean}
+     */    
     set draggable(value) {
         this._draggable = value;
     }
 
+    /**
+     * Is tree is sortable
+     * @type {boolean}
+     */    
     get sorting() {
         return this._sorting;
     }
+
+    /**
+     * Is tree is sortable
+     * @type {boolean}
+     */    
     set sorting(value) {
         this._sorting = value;
         this._setSorting();
     }
 
+    /** @private */
     _setSorting() {
         if(this._sorting) {
             this.AddClass('-sortable');
@@ -15426,10 +18929,11 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         this._multiple = value;
         this._showMultiple();
     }
+
+    /** @private */
     _showMultiple() {
         Array.from(this.allNodes).map(node => node.multiple = this._multiple);
     }
-
 
     /**
      * Remove hidden nodes
@@ -15446,8 +18950,11 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
         this._removeHiddenNodes = value;
     }
 
-    // sets thrid or full state of parent checks
-    _performCheckState(node) {
+    /**
+     * sets thrid or full state of parent checks  
+     * @param {Colibri.UI.TreeNode} node node to check
+     */
+    PerformCheckState(node) {
         
         this._allNodes.forEach((n, index) => {
 
@@ -15469,8 +18976,19 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
 
 }
 
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TreeNode = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container) {
         super(name, container, Element.fromHtml('<div><div><dd drop="before"></dd><em class="expander"></em><em class="check"></em><em class="icon none"></em><span></span><input type="text" /><dd drop="after"></dd><span class="node-tip"></span></div></div>')[0]);
         this._nodes = new Colibri.UI.TreeNodes('nodes', this, container.tree);
@@ -15493,6 +19011,7 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _createContextMenuButton() {
         if(!this._hasContextMenu || this.Children(this._name + '-contextmenu-icon-parent')) {
             return;
@@ -15520,6 +19039,7 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         
     }
 
+    /** @protected */
     _removeContextMenuButton() {
         if(this._hasContextMenu && this.Children(this._name + '-contextmenu-icon-parent')) {
             this.Children(this._name + '-contextmenu-icon-parent').Dispose();
@@ -15527,6 +19047,7 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Expanded', false, 'When node is expanded');
@@ -15534,7 +19055,7 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         this.RegisterEvent('CheckChanged', false, 'When multiple check changed');
     }
 
-
+    /** @protected */
     _handleEvents() {
         this.AddHandler('Clicked', (sender, args) => {
             if(this._element.querySelector('div>em.expander') === args.domEvent.target) {
@@ -15568,10 +19089,14 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _bindHtmlEvents() {
         super._bindHtmlEvents();
     }
 
+    /**
+     * Ensures node is visible
+     */
     EnsureVisible() {
         let parent = this.parentNode;
         while(parent) {
@@ -15581,6 +19106,9 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         super.EnsureVisible();
     }
 
+    /**
+     * Disposes the node and its children
+     */
     Dispose() {
         
         try {
@@ -15616,10 +19144,18 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         this._tipSpan.html(value);
     }
 
+    /**
+     * Node is expanded
+     * @type {boolean}
+     */
     get expanded() {
         return this._element.classList.contains('expanded');
     }
 
+    /**
+     * Node is expanded
+     * @type {boolean}
+     */
     set expanded(value) {
         if(value) {
             this._element.classList.add('expanded');
@@ -15637,22 +19173,42 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Node is expanded
+     * @type {Colibri.UI.TreeNodes}
+     */
     get nodes() {
         return this._nodes;
     }
 
+    /**
+     * Node text
+     * @type {string}
+     */
     get text() {
         return this._text.html();
     }
 
+    /**
+     * Node text
+     * @type {string}
+     */
     set text(value) {
         this._text.html(value);
     }
 
+    /**
+     * Node is leaf
+     * @type {boolean}
+     */
     get isLeaf() {
         return this._element.classList.contains('is-leaf');
     }
 
+    /**
+     * Node is leaf
+     * @type {boolean}
+     */
     set isLeaf(value) {
         if (value) {
             if(this._multiple && this._checkBox) {
@@ -15667,22 +19223,34 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Node icon
+     * @type {string}
+     */
     get icon() {
         return this._element.querySelector('div em.icon').html();
     }
 
+    /**
+     * Node icon
+     * @type {string}
+     */
     set icon(value) {
         this._element.querySelector('div em.icon').html(value);
     }
 
+    /**
+     * Node is selected
+     * @type {boolean}
+     */
     get selected() {
         this._element.querySelector('div').classList.add('selected');
     }
 
-    get path() {
-        return super.path.replaceAll('nodes/', '');
-    }
-
+    /**
+     * Node is selected
+     * @type {boolean}
+     */
     set selected(value) {
         if(value) {
             this._element.querySelector('div').classList.add('selected');
@@ -15692,10 +19260,27 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Node path
+     * @type {string}
+     * @readonly
+     */
+    get path() {
+        return super.path.replaceAll('nodes/', '');
+    }
+
+    /**
+     * Parent node
+     * @type {Colibri.UI.TreeNode}
+     */
     get parentNode() {
         return this?.parent?.parent ?? null;
     }
 
+    /**
+     * Parent node
+     * @type {Colibri.UI.TreeNode}
+     */
     set parentNode(value) {
         const node = this.parentNode;
         
@@ -15708,6 +19293,11 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         node.isLeaf = node.nodes.children == 0;
     }
 
+    /**
+     * Searches for node with search method
+     * @param {Function} method method to compare node
+     * @returns {Colibri.UI.TreeNode}
+     */
     FindParent(method) {
         let p = this;
         while(p instanceof Colibri.UI.TreeNode) {
@@ -15719,33 +19309,55 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         return null;
     }
 
+    /**
+     * Move to new parent node
+     * @param {Colibri.UI.TreeNode} parent new parent node
+     */
     MoveTo(parent) {
         this.parentNode = parent;
     }
 
+    /**
+     * Expand node
+     */
     Expand() {
         this.expanded = true;
     }
 
+    /**
+     * Collapse node
+     */
     Collapse() {
         this.expanded = false;
     }
 
+    /**
+     * Expand all child nodes
+     */
     ExpandAll() {
         this.Expand();
         this.nodes.Expand();
     }
 
+    /**
+     * Collapse all child nodes
+     */
     CollapseAll() {
         this.Collapse();
         this.nodes.Collapse();
     }
 
+    /**
+     * Run editor of node
+     */
     Edit() {
         this.tree.selected = this;
         this.__nodeEditableStart(null, null);
     }
 
+    /**
+     * Shows all child nodes and itself
+     */
     ShowAll() {
         this.Show();
         const childs = this.Children();
@@ -15754,6 +19366,9 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         }        
     }
 
+    /**
+     * Hides all child nodes and itself
+     */
     HideAll() {
         this.Hide();
         const childs = this.Children();
@@ -15762,18 +19377,36 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
         }        
     }
 
+    /**
+     * Tree component
+     * @type {Colibri.UI.Tree}
+     * @readonly
+     */
     get tree() {
         return this?.parent?.tree;
     }
 
+    /**
+     * Is node editable
+     * @type {boolean}
+     */
     get editable() {
         return this._editable;
     }
 
+    /**
+     * Is node editable
+     * @type {boolean}
+     */
     set editable(value) {
         this._editable = value;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __nodeEditableStart(event, args) {
         if(!this._editable) {
             return true;
@@ -15860,32 +19493,53 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
                     node.checkBox.checked = this._checkBox.checked;
                 });
             }
-            this.tree._performCheckState(this);
+            this.tree.PerformCheckState(this);
         }
     }
 
+    /**
+     * Checkbox of node
+     * @type {Colibri.UI.Checkbox}
+     * @readonly
+     */
     get checkBox() {
         return this._checkBox;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __checkChanged(event, args) {
         if(!this.isLeaf) {
             this.nodes.ForEach((name, node) => {
                 node.checkBox.checked = this._checkBox.checked;
             });
         }
-        this.tree._performCheckState(this);
+        this.tree.PerformCheckState(this);
         this.tree.Dispatch('CheckChanged', args);
     }
 
 
 }
 
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
 
     /** @type {Colibri.UI.Tree} */
     _tree = null;
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {HTMLElement|Colibri.UI.Component} container container of component 
+     */
     constructor(name, container, tree) {
         super(name, container, Element.create('div'));
         this._tree = tree;
@@ -15896,6 +19550,12 @@ Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Adds a new node to nodes collection 
+     * @param {string} name name of new node
+     * @param {number} index index of new node
+     * @returns {Colibri.UI.TreeNode}
+     */
     Add(name, index) {
         let node = null;
         if(name instanceof Colibri.UI.TreeNode) {
@@ -15922,6 +19582,11 @@ Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
         return node;
     }
 
+    /**
+     * Move node before relation node
+     * @param {Colibri.UI.TreeNode} node node to move
+     * @param {Colibri.UI.TreeNode} relation node for moving relation
+     */
     Move(node, relation) {
 
         let index = relation;
@@ -15940,6 +19605,9 @@ Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Dispose nodes collection
+     */
     Dispose() {
         if(this.parent instanceof Colibri.UI.TreeNode) {
             this.parent.isLeaf = true;
@@ -15950,16 +19618,27 @@ Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
         super.Dispose();
     }
 
+    /**
+     * Tree related to nodes collection
+     * @type {Colibri.UI.Tree}
+     * @readonly
+     */
     get tree() {
         return this._tree;
     }
 
+    /**
+     * Expand nodes
+     */
     Expand() {
         this.ForEach((nodeName, node) => {
             node.ExpandAll();
         })
     }
 
+    /**
+     * Collapse nodes
+     */
     Collapse() {
         this.ForEach((nodeName, node) => {
             node.Collapse();
@@ -16013,6 +19692,10 @@ Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * Is all nodes checked
+     * @readonly
+     */
     get allNodesChecked() {
 
         let checked = 0;
@@ -16025,6 +19708,11 @@ Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
         return checked === this.children;
 
     }
+
+    /**
+     * Is all nodes unchecked
+     * @readonly
+     */
     get allNodesUnChecked() {
 
         let checked = 0;
@@ -16042,8 +19730,16 @@ Colibri.UI.TreeNodes = class extends Colibri.UI.Component {
 
 
 
+/**
+ * @class
+ * @extends Colibri.UI.Renderer
+ * @memberof Colibri.UI.Tree
+ */
 Colibri.UI.Tree.JsonRenderer = class extends Colibri.UI.Renderer {
 
+    /**
+     * Render data in renderer as nodes
+     */
     Render() {
 
         this._data = Object.values(this._data);
@@ -16066,9 +19762,16 @@ Colibri.UI.Tree.JsonRenderer = class extends Colibri.UI.Renderer {
 
     }
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.Renderer
+ * @memberof Colibri.UI.List
+ */
 Colibri.UI.List.JsonRenderer = class extends Colibri.UI.Renderer {
 
+    /**
+     * Render data in renderer as list items
+     */
     Render() {
 
         this._data = Object.values(this._data);
@@ -16086,8 +19789,18 @@ Colibri.UI.List.JsonRenderer = class extends Colibri.UI.Renderer {
     }
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Color = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-color-component');
@@ -16129,18 +19842,25 @@ Colibri.UI.Color = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _updateUIComponents() {
         this._colorGrad.value = this._value.hue;
         this._colorSelectedColorGrad.value = this._value;
         this._colorOpacityGrad.value = this._value.alpha;
     }
 
+    /** @private */
     _showValue() {
         this._colorHex.value = this._value.hex;
         this._colorSelected.css('background-color', this._colorHex.value);
         this.Dispatch('Changed');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __lineValueChanged(event, args) {
         const alpha = this._value.alpha;
         this._colorSelectedColorGrad.color = this._colorGrad.value;
@@ -16149,6 +19869,11 @@ Colibri.UI.Color = class extends Colibri.UI.Component {
         this._showValue();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __blockValueChanged(event, args) {
         const alpha = this._value.alpha;
         this._value = this._colorSelectedColorGrad.value;
@@ -16156,19 +19881,35 @@ Colibri.UI.Color = class extends Colibri.UI.Component {
         this._showValue();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __opacityValueChanged(event, args) {
         this._value.alpha = this._colorOpacityGrad.value;
         this._showValue();
     }
 
+    /**
+     * Focus on component hex input
+     */
     Focus() {
         this._colorHex.focus();
     }
     
+    /**
+     * Is component readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._colorHex.attr('readonly') === 'readonly';
     }
 
+    /**
+     * Is component readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         if(value === true || value === 'true') {
             this._colorHex.attr('readonly', 'readonly');
@@ -16178,14 +19919,26 @@ Colibri.UI.Color = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Component placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._colorHex.attr('placeholder');
     }
 
+    /**
+     * Component placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._colorHex.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
+    /**
+     * Component value
+     * @type {string}
+     */
     get value() {
         let value = this._value;
         if(this._fieldData?.params?.emptyAsNull && !value) {
@@ -16197,6 +19950,10 @@ Colibri.UI.Color = class extends Colibri.UI.Component {
         return value;
     }
 
+    /**
+     * Component value
+     * @type {string}
+     */
     set value(value) {
         if(typeof value == 'string') {
             this._value = Colibri.UI.Rgb.Create().fromHex(value);
@@ -16213,12 +19970,19 @@ Colibri.UI.Color = class extends Colibri.UI.Component {
         this._updateUIComponents();
         this._showValue();
     }
-
     
+    /**
+     * Is component enabled
+     * @type {boolean}
+     */
     get enabled() {
         return this._colorHex.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Is component enabled
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('app-component-disabled');
@@ -16231,21 +19995,35 @@ Colibri.UI.Color = class extends Colibri.UI.Component {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._colorHex && this._colorHex.attr('tabIndex');
     }
+
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._colorHex && this._colorHex.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Color.Line = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-color-line-component');
@@ -16277,6 +20055,11 @@ Colibri.UI.Color.Line = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __keyDown(event, args) {
         if(['ArrowLeft', 'ArrowRight'].indexOf(args.domEvent.code) !== -1) {
             if(args.domEvent.code == 'ArrowLeft') {
@@ -16288,15 +20071,23 @@ Colibri.UI.Color.Line = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Component width
+     * @type {number}
+     */
     set width(value) {
         super.width = value;
         this._renderGradient();
     }
+    /**
+     * Component width
+     * @type {number}
+     */
     set height(value) {
         super.height = value;
         this._renderGradient();
     }
-
+    /** @private */
     _setNewValue(left) {
         left += 5;
         const bounds = this._element.bounds();
@@ -16309,6 +20100,7 @@ Colibri.UI.Color.Line = class extends Colibri.UI.Component {
         this.Dispatch('Changed', {value: this.value}); 
     }
 
+    /** @private */
     _showValue() {
         let t = this.value;
         const bounds = this._element.bounds();
@@ -16320,6 +20112,7 @@ Colibri.UI.Color.Line = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _renderGradient() {
         const bounds = this._element.bounds(); 
 		const canva = this._canvas.container.getContext("2d");
@@ -16334,6 +20127,11 @@ Colibri.UI.Color.Line = class extends Colibri.UI.Component {
 		canva.fillRect(0, 0, bounds.outerWidth + 100, bounds.outerHeight * 100);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __lineClicked(event, args) {
         const bounds = this._element.bounds();
         const e = args.domEvent;
@@ -16342,10 +20140,17 @@ Colibri.UI.Color.Line = class extends Colibri.UI.Component {
         this._setNewValue(left);
     }
     
-
+    /**
+     * Component value
+     * @type {string}
+     */
     get value() {
         return this._value;
     }
+    /**
+     * Component value
+     * @type {string}
+     */
     set value(value) {
         if(value <= 0) {
             value = 0;
@@ -16359,8 +20164,18 @@ Colibri.UI.Color.Line = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Color.Block = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.fromHtml('<div><div class="grad"></div></div>')[0]);
         this.AddClass('app-color-block-component');
@@ -16379,6 +20194,7 @@ Colibri.UI.Color.Block = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _setNewColor(left, top) {
         this._setPoint(left, top);
 
@@ -16397,6 +20213,11 @@ Colibri.UI.Color.Block = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __blockClicked(event, args) {
         const bounds = this._element.bounds();
         const pointBounds = this._pointer.container.bounds();
@@ -16406,6 +20227,7 @@ Colibri.UI.Color.Block = class extends Colibri.UI.Component {
         this._setNewColor(left, top);     
     }
 
+    /** @private */
     _setPoint(left = null, top = null) {
         const bounds = this._element.bounds();
         const pointBounds = this._pointer.container.bounds();
@@ -16417,10 +20239,22 @@ Colibri.UI.Color.Block = class extends Colibri.UI.Component {
         this._pointer.styles = {left: (left) + 'px', top: (top) + 'px'};
     }
 
-    
+    /** @private */
     _showColor() {
         this.styles = {backgroundImage: 'linear-gradient(to right, #ffffff, ' + this._color + ')'};
     }
+
+    /**
+     * Color of block
+     * @type {Colibri.UI.Rgb|string|{r,g,b,a}}
+     */
+    get color() {
+        // do nothing
+    }
+    /**
+     * Color of block
+     * @type {Colibri.UI.Rgb|string|{r,g,b,a}}
+     */
     set color(value) {
         if(value instanceof Colibri.UI.Rgb) {
             value = value.hex;
@@ -16437,6 +20271,10 @@ Colibri.UI.Color.Block = class extends Colibri.UI.Component {
         this._showColor();
     }
 
+    /**
+     * Value
+     * @type {string|number}
+     */
     set value(value) {
         if(typeof value == 'string') {
             value = Colibri.UI.Rgb.Create().fromHex(value);
@@ -16452,12 +20290,27 @@ Colibri.UI.Color.Block = class extends Colibri.UI.Component {
         this._setPoint();
     }
 
+    /**
+     * Value
+     * @type {Colibri.UI.Rgb}
+     */
     get value() {
         return Colibri.UI.Rgb.Create().fromHSV(this._hue, this._S, this._V);
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Color.Alpha = class extends Colibri.UI.Component {
+
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-color-alpha-component');
@@ -16479,6 +20332,7 @@ Colibri.UI.Color.Alpha = class extends Colibri.UI.Component {
         
     }
 
+    /** @private */
     _setNewValue(top) {
         const bounds = this._element.bounds();
         const trackbounds = this._pointer.container.bounds();
@@ -16491,6 +20345,11 @@ Colibri.UI.Color.Alpha = class extends Colibri.UI.Component {
         this.Dispatch('Changed');          
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __keyDown(event, args) {
         if(['ArrowUp', 'ArrowDown'].indexOf(args.domEvent.code) !== -1) {
             if(args.domEvent.code == 'ArrowUp') {
@@ -16506,6 +20365,11 @@ Colibri.UI.Color.Alpha = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __lineClicked(event, args) {
         const bounds = this._element.bounds();
         const trackbounds = this._pointer.container.bounds();
@@ -16515,6 +20379,7 @@ Colibri.UI.Color.Alpha = class extends Colibri.UI.Component {
         this._setNewValue(top);
     }
 
+    /** @private */
     _setTrackPosition() {
         const bounds = this._element.bounds()
         const topPercent = this._value * 100 / 255;
@@ -16522,18 +20387,38 @@ Colibri.UI.Color.Alpha = class extends Colibri.UI.Component {
         this._pointer.styles = {top: top + 'px'};
     }
     
+    /**
+     * Alpha value
+     * @type {number}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Alpha value
+     * @type {number}
+     */
     set value(value) {
         this._value = value;
         this._setTrackPosition();
     }
 
 }
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Input = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {Element|string} element to create in
+     */
     constructor(name, container, element) {
         super(name, container, Element.create('div', {class: 'app-ui-component'}));
 
@@ -16601,7 +20486,6 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         });
 
         this._input.addEventListener('focus', (e) => this.Dispatch('ReceiveFocus', { domEvent: e }));
-        this._input.addEventListener('blur', (e) => this.Dispatch('LoosedFocus', { domEvent: e }));
 
         this._input.addEventListener('mousedown', (e) => {
             e.target.focus();
@@ -16638,6 +20522,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('KeyUp', false, 'Поднимается, когда клавиша поднята');
@@ -16648,14 +20533,18 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /**
-     * Ставит фокус на компоменту
-     * @returns {Colibri.UI.Component}
+     * Focus on component
+     * @returns this
      */
     Focus() {
         this._input.focus();
         return this;
     }
 
+    /**
+     * Select content of input
+     * @returns this
+     */
     Select() {
         if(!this.readonly) {
             this._input.select();
@@ -16664,13 +20553,15 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {Boolean} 
+     * Show/Hide loading
+     * @type {boolean} 
      */
     get loading() {
         return this.Children('loadingicon').shown;
     }
     /** 
-     * @type {Boolean} 
+     * Show/Hide loading
+     * @type {boolean} 
      */
     set loading(value) {
         value = this._convertProperty('Boolean', value);
@@ -16679,7 +20570,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         }
         this.Children('loadingicon').shown = value;
     }
-
+    /** @private */
     _hideLoading() {
         if(this.icon) {
             this.icon.shown = true;
@@ -16688,13 +20579,15 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {Number} 
+     * Max length in chars of input
+     * @type {number} 
      */
     get maxlength() {
         return this._input.attr('maxlength');
     }
     /** 
-     * @type {Number} 
+     * Max length in chars of input
+     * @type {number} 
      */
     set maxlength(value) {
         value = this._convertProperty('Number', value);
@@ -16702,13 +20595,15 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {String} 
+     * Type of input
+     * @type {string} 
      */
     get type() {
         return this._input.attr('type');
     }
     /** 
-     * @type {String} 
+     * Type of input
+     * @type {string} 
      */
     set type(value) {
         value = this._convertProperty('String', value);
@@ -16716,7 +20611,8 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {String} 
+     * Input placeholder
+     * @type {string} 
      */
     get placeholder() {
         try {
@@ -16727,7 +20623,8 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         }
     }
     /** 
-     * @type {String} 
+     * Input placeholder
+     * @type {string} 
      */
     set placeholder(value) {
         value = this._convertProperty('String', value);
@@ -16735,13 +20632,15 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {String} 
+     * Input icon
+     * @type {string} 
      */
     get icon() {
         return this.Children('icon').html;
     }
     /** 
-     * @type {String} 
+     * Input icon
+     * @type {string} 
      */
     set icon(value) {
         value = this._convertProperty('String', value);
@@ -16756,13 +20655,15 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {String} 
+     * Input value
+     * @type {string} 
      */
     get value() {
         return this._input.value;
     }
     /** 
-     * @type {String} 
+     * Input value
+     * @type {string} 
      */
     set value(value) { 
         value = this._convertProperty('String', value);
@@ -16773,13 +20674,15 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {Boolean} 
+     * Input is readonly
+     * @type {boolean} 
      */
     get readonly() {
         return this._input.is(':scope[readonly]');
     }
     /** 
-     * @type {Boolean} 
+     * Input is readonly
+     * @type {boolean} 
      */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
@@ -16793,21 +20696,24 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /** 
-     * @type {Boolean} 
+     * Input has icon
+     * @type {boolean} 
      */
     set hasIcon(value) {
         value = this._convertProperty('Boolean', value);
         this.Children('icon').shown = value;
     }
     /** 
-     * @type {Boolean} 
+     * Input has icon
+     * @type {boolean} 
      */
     get hasIcon() {
         return this.Children('icon').shown;
     }
 
     /** 
-     * @type {Boolean} 
+     * Input has clear icon
+     * @type {boolean} 
      */
     set hasClearIcon(value) {
         value = this._convertProperty('Boolean', value);
@@ -16815,17 +20721,24 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         this.Children('clear').shown = value;
     }
     /** 
-     * @type {Boolean} 
+     * Input has clear icon
+     * @type {boolean} 
      */
     get hasClearIcon() {
         return this._hasClearIcon;
     }
 
-    /** @type {Boolean} */
+    /** 
+     * Enable/disable input
+     * @type {Boolean} 
+     */
     get enabled() {
         return super.enabled;
     }
-    /** @type {Boolean} */
+    /** 
+     * Enable/disable input
+     * @type {Boolean} 
+     */
     set enabled(val) {
         val = this._convertProperty('Boolean', val);
         super.enabled = val;
@@ -16833,14 +20746,14 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /**
-     * Индекс табуляции
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input.attr('tabIndex');
     }
     /**
-     * Индекс табуляции
+     * Tab index
      * @type {number}
      */
     set tabIndex(value) {
@@ -16848,14 +20761,20 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 
-    /** @type {string} */
+    /**
+     * Mask string 
+     * @type {string}
+     */
     get mask() {
         if(this._masker) {
             return this._masker.opts.pattern;
         }
         return null;
     }
-    /** @type {string} */
+    /**
+     * Mask string 
+     * @type {string}
+     */
     set mask(value) {
         value = this._convertProperty('String', value);
         this._masker = new Colibri.UI.Utilities.Mask([this._input]);
@@ -16863,21 +20782,21 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
     /**
-     * Подсказки
+     * Suggestions array
      * @type {Array}
      */
     get suggestions() {
         return this._suggestions;
     }
     /**
-     * Подсказки
+     * Suggestions array
      * @type {Array}
      */
     set suggestions(value) {
         value = this._convertProperty('Array', value);
         this._suggestions = value;
     }
-
+    /** @private */
     _createPopup(values) {
         const popup = new Colibri.UI.PopupList('select-popup', document.body, this._multiple, this.__render, this._titleField, this._valueField, this._groupField);
         popup.parent = this;
@@ -16891,7 +20810,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         });
         return popup;
     }
-
+    /** @private */
     _showSuggestions() {
         if(this._suggestions && this._suggestions.length > 0) {
             if(!this._popup) {
@@ -16926,8 +20845,18 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TextArea = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div', {class: 'app-ui-component'}));
 
@@ -16972,6 +20901,7 @@ Colibri.UI.TextArea = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('KeyUp', false, 'Поднимается, когда клавиша поднята');
@@ -16981,24 +20911,33 @@ Colibri.UI.TextArea = class extends Colibri.UI.Component {
     }
 
     /**
-     * Ставит фокус на компоменту
-     * @returns {Colibri.UI.Component}
+     * Focus on component
+     * @returns this
      */
      Focus() {
         this._input.focus();
-        //this._input.select();
         return this;
     }
 
-    /** @type {integer} */
+    /**
+     * Maximum length in chars of component 
+     * @type {number} 
+     */
     get maxlength() {
         return this._input.attr('maxlength');
     }
+    /**
+     * Maximum length in chars of component 
+     * @type {number} 
+     */
     set maxlength(value) {
         this._input.attr('maxlength', value);
     }
 
-    /** @type {string} */
+    /**
+     * Textarea placeholder 
+     * @type {string} 
+     */
     get placeholder() {
         try {
             return this._input.attr('placeholder');
@@ -17007,26 +20946,41 @@ Colibri.UI.TextArea = class extends Colibri.UI.Component {
             return '';
         }
     }
+    /**
+     * Textarea placeholder 
+     * @type {string} 
+     */
     set placeholder(value) {
         this._input.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
-    /** @type {string} */
+    /**
+     * Value string 
+     * @type {string} 
+     */
     get value() {
         return this._input.value;
     }
+    /**
+     * Value string 
+     * @type {string} 
+     */
     set value(value) {
         this._input.value = value;
         this.Children('clear').shown = this._input.value.length > 0;
     }
 
     /**
-     * Элемент только для чтения
+     * Is textarea readonly
      * @type {boolean}
      */
     get readonly() {
         return this._input.is(':scope[readonly]');
     }
+    /**
+     * Is textarea readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._input.attr('readonly', value);
         this.Dispatch('ReadonlyStateChanged');
@@ -17034,52 +20988,23 @@ Colibri.UI.TextArea = class extends Colibri.UI.Component {
 
 }
 /**
- *
- * Класс выпадашка
- *
- * @example
- *
- * ! Создание компонента
- * const select = new Colibri.UI.Select('select', document.body);
- *
- * ! деалем компонент с мультивыбором
- * select.dropdown.list.multiple = true;
- *
- * ! если хотим нарисовать содержание элемента сами (пункта в списке)
- * const renderItem = (data) => data.id + ' - ' + data.title;
- *
- * ! создаем группу - группа обязательно должна быть
- * const group1 = select.dropdown.list.AddGroup('group1', 'title_group');
- *
- * ! добавляем
- * group1.AddItem({ title: '...', id: '', __render: renderItem});
- *
- * ! создаем опции внизу, под списком
- * const option1 = select.dropdown.options.AddOption('reference', 'Справочник');
- * const option2 = select.dropdown.options.AddOption('reference2', 'Справочник');
- *
- * ! получаем событие изменение списка
- * select.AddHandler('SelectionChanged', (event, args) => { наш код, args.selected - выбранное });
- *
- * ! получаем инфу, если клинкнули на опцию
- * select.dropdown.AddHandler('OptionClicked', (event, args) => { наш код, args.option - название опции  });
- *
- * ! если хотим свой дропдаун
- * const select = new Colibri.UI.Select('select', document.body, dropdownComponent);
- * ! dropdownComponent - компонент, наследованный от Colibri.UI.Select.Dropdown,
- * ! должен переопределять свойство selected
- * ! должен поднимать событие SelectionChanged - this.Dispatch('SelectionChanged', args);
- *
- */
-
-/**
- * Komponent выпадашка
- * @type {Colibri.UI.Select}
+ * Component select box
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Input
+ * @memberof Colibri.UI
  */
 Colibri.UI.Select = class extends Colibri.UI.Input {
 
+    /** @type {Colibri.UI.Select.Dropdown} */
     _dropdown = null;
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @params {Colibri.UI.Component} dropdown dropdown component
+     */
     constructor(name, container, dropdown) {
         super(name, container);
         this.AddClass('app-component-select');
@@ -17131,12 +21056,17 @@ Colibri.UI.Select = class extends Colibri.UI.Input {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('OptionClicked', false, 'Поднимается, когда кликаем по опции');
         this.RegisterEvent('SelectionChanged', false, 'Поднимается, когда кликаем по элементу списка');
     }
 
+    /**
+     * Generate selection text
+     * @returns {string}
+     */
     GenerateSelectionText() {
         const selected = this.dropdown.selected;
         if (!Array.isArray(selected)) {
@@ -17150,23 +21080,44 @@ Colibri.UI.Select = class extends Colibri.UI.Input {
         }
     }
 
+    /**
+     * Handle selection is changed
+     */
     HandleSelectionChanged() {
         this.value = this.GenerateSelectionText();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __DropdownSelectionChanged(event, args) {
         this.HandleSelectionChanged();
         this.Dispatch('SelectionChanged', args);
     }
 
+    /**
+     * Select icon
+     * @type {Element}
+     * @readonly
+     */
     get icon() {
         return this.Children('icon');
     }
 
+    /**
+     * Dropdown of Select component
+     * @type {Colibri.UI.Select.Dropdown}
+     */
     get dropdown() {
         return this._dropdown;
     }
 
+    /**
+     * Dropdown of Select component
+     * @type {Colibri.UI.Select.Dropdown}
+     */
     set dropdown(value) {
         this._dropdown = value;
         this._dropdown.AddHandler('SelectionChanged', (event, args) => this.__DropdownSelectionChanged(event, args));
@@ -17175,24 +21126,42 @@ Colibri.UI.Select = class extends Colibri.UI.Input {
 };
 
 /**
- * Компонент выпадашка выпадашки
- * @type {Colibri.UI.Select.Dropdown}
+ * Component select box dropdown
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI.Select
  */
 Colibri.UI.Select.Dropdown = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @params {boolean} resizable dropdown is component
+     */
     constructor(name, container, resizable) {
         super(name, container, Element.create('div'), resizable);
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('SelectionChanged', false, 'Поднимается, когда меняется выбранный элемент');
     }
 
+    /**
+     * Filters an items (do nothing)
+     * @param {string} term term to filter
+     */
     FilterItems(term) {
         // Do nothing
     }
 
+    /**
+     * Selected items
+     * @type {Array}
+     * @readonly
+     */
     get selected() {
         return [];
     }
@@ -17200,11 +21169,21 @@ Colibri.UI.Select.Dropdown = class extends Colibri.UI.Pane {
 };
 
 /**
- * Компонент выпадашка по умолчанию
- * @type {Colibri.UI.Select.DefaultDropdown}
+ * Default dropdown component
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Select.Dropdown
+ * @memberof Colibri.UI.Select
  */
 Colibri.UI.Select.DefaultDropdown = class extends Colibri.UI.Select.Dropdown {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @params {boolean} resizable dropdown is component
+     * @params {boolean} multiple is component multiple selection 
+     */
     constructor(name, container, resizable, multiple) {
         super(name, container, resizable);
 
@@ -17220,16 +21199,22 @@ Colibri.UI.Select.DefaultDropdown = class extends Colibri.UI.Select.Dropdown {
         this._handleEvents();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('OptionClicked', false, 'Поднимается, когда кликаем по опции');
         this.RegisterEvent('SelectionChanged', false, 'Поднимается, когда кликаем по элементу списка');
     }
 
+    /**
+     * Filters item array
+     * @param {string} searchText filter term
+     */
     FilterItems(searchText) {
         this._emptySearchResult.shown = this._recursiveForEach(this.list, searchText) === 0;
     }
 
+    /** @private */
     _recursiveForEach(component, searchText) {
         let totalCountValidItem = 0;
         component.ForEach((name, obj) => {
@@ -17250,19 +21235,35 @@ Colibri.UI.Select.DefaultDropdown = class extends Colibri.UI.Select.Dropdown {
         return totalCountValidItem;
     }
 
+    /** @protected */
     _handleEvents() {
         this.list.AddHandler('SelectionChanged', (event, args) => { return this.Dispatch('SelectionChanged', args) });
         this.options.AddHandler('OptionClicked', (event, args) => { return this.Dispatch('OptionClicked', args) });
     }
 
+    /**
+     * List container
+     * @type {Colibri.UI.List}
+     * @readonly
+     */
     get list() {
         return this.Children('default-dropdown-list');
     }
 
+    /**
+     * Options container
+     * @type {Colibri.UI.Select.DefaultDropdown.Options}
+     * @readonly
+     */
     get options() {
         return this.Children('default-dropdown-options');
     }
 
+    /**
+     * Selected item
+     * @type {Colibri.UI.ListItem}
+     * @readonly
+     */
     get selected() {
         return this.list.selected;
     }
@@ -17270,16 +21271,24 @@ Colibri.UI.Select.DefaultDropdown = class extends Colibri.UI.Select.Dropdown {
 };
 
 /**
- * Компонент опции в выпадашке по умолчанию
- * @type {Colibri.UI.Select.DefaultDropdown.Options}
+ * Default dropdown options component
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI.Select.DefaultDropdown
  */
 Colibri.UI.Select.DefaultDropdown.Options = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this._handleEvents();
     }
 
+    /** @protected */
     _handleEvents() {
         this.AddHandler('Clicked', (event, args) => {
             if(args.domEvent.target.is('[data-option-name]')) {
@@ -17288,11 +21297,18 @@ Colibri.UI.Select.DefaultDropdown.Options = class extends Colibri.UI.Pane {
         });
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('OptionClicked', false, 'Поднимается, когда кликаем по опции');
     }
 
+    /**
+     * Adds and option
+     * @param {string} name name of option
+     * @param {string} title title of option
+     * @returns {Element}
+     */
     AddOption(name, title) {
         this.shown = true;
         const newOption = Element.create("a", {
@@ -17306,6 +21322,10 @@ Colibri.UI.Select.DefaultDropdown.Options = class extends Colibri.UI.Pane {
         return newOption;
     }
 
+    /**
+     * Removes an option
+     * @param {string} name name of option
+     */
     RemoveOption(name) {
         this._element.querySelector('[data-option-name="' + name + '"]').remove();
         if(this._element.querySelectorAll('[data-option-name]').length === 0) {
@@ -17317,51 +21337,105 @@ Colibri.UI.Select.DefaultDropdown.Options = class extends Colibri.UI.Pane {
 
 
 
+/**
+ * Badge component
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Badge = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container) {
         super(name, container, Element.create('span'));
         this.AddClass('app-component-badge');
 
     }
 
+    /**
+     * Background color of badge
+     * @type {string}
+     */
     get backgroundColor() {
         return this._element.style.backgroundColor;
     }
 
+    /**
+     * Background color of badge
+     * @type {string}
+     */
     set backgroundColor(value) {
         this._element.style.backgroundColor = value;
     }
 
+    /**
+     * Text color of badge
+     * @type {string}
+     */
     get textColor() {
         return this._element.style.color;
     }
 
+    /**
+     * Text color of badge
+     * @type {string}
+     */
     set textColor(value) {
         this._element.style.color = value;
     }
 
 }
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Chart = class extends Colibri.UI.Component {
 
+    /** Horizontal orientation */
     static OrientationHorizontal = 'horizontal';
+    /** Vertical orientation */
     static OrientationVertical = 'vertical';
 
+    /** @type {string} */
     _orientation = Colibri.UI.Split.OrientationHorizontal;
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-component-chart');
     }
 
+    /**
+     * Orientation of chart
+     * @type {string}
+     */
     get orientation() {
         return this._orientation;
     }
+    /**
+     * Orientation of chart
+     * @type {string}
+     */
     set orientation(value) {
         this._orientation = value;
         this.AddClass('app-component-chart-' + this._orientation);
     }
 
+    /**
+     * Adds a bar chart
+     * @param {string} name name of chart
+     * @returns {Colibri.UI.Chart.Barchart}
+     */
     AddBarchart(name) {
         let barchart = new Colibri.UI.Chart.Barchart(name, this);
         barchart._orientation = this._orientation;
@@ -17369,7 +21443,18 @@ Colibri.UI.Chart = class extends Colibri.UI.Component {
     }
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Chart
+ */
 Colibri.UI.Chart.Barchart = class extends Colibri.UI.Component {
+
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
 
@@ -17390,32 +21475,67 @@ Colibri.UI.Chart.Barchart = class extends Colibri.UI.Component {
         this._textValue.AddClass('barchart-text-value');
     }
 
+    /**
+     * Title of chart
+     * @type {string}
+     */
     get title() {
         return this._title;
     }
 
+    /**
+     * Title of chart
+     * @type {string}
+     */
     set title(value) {
         this._title.value = value;
     }
 
+    /**
+     * Chart value
+     * @type {number}
+     */
     set value(value) {
         return this._barchart._element.css('width', value + '%');
     }
 
+    /**
+     * Chart value
+     * @type {number}
+     */
     get value() {
         return this._barchart._element.css('width');
     }
 
+    /**
+     * Text value
+     * @type {string}
+     */
     get textValue() {
         return this._textValue;
     }
 
+    /**
+     * Text value
+     * @type {string}
+     */
     set textValue(value) {
         this._textValue.value = value;
     }
+    
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Checkbox = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('span'));
         this.AddClass('app-component-checkbox');
@@ -17431,11 +21551,13 @@ Colibri.UI.Checkbox = class extends Colibri.UI.Component {
         this._handleEvents();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Поднимается, когда изменил состояние');
     }
 
+    /** @protected */
     _handleEvents() {
         this.AddHandler('Clicked', (event, args) => {
             if (!this._readonly && this._enabled) {
@@ -17460,7 +21582,7 @@ Colibri.UI.Checkbox = class extends Colibri.UI.Component {
     }
 
     /**
-     * Нарисовать инпут
+     * Render input
      * @private
      */
     _renderInput() {
@@ -17473,13 +21595,16 @@ Colibri.UI.Checkbox = class extends Colibri.UI.Component {
     }
 
     /**
-     * Установить нужную иконку
+     * Set icon
      * @private
      */
     _setIcon() {
         this._checkIcon.value = (this._hasThirdState && this._thirdState) ? Colibri.UI.MinusIcon : Colibri.UI.AltCheckMarkIcon;
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
     }
@@ -17498,10 +21623,8 @@ Colibri.UI.Checkbox = class extends Colibri.UI.Component {
     set checked(value) {
         this._setChecked(value);
     }
+    /** @private */
     _setChecked(value) {
-        // if (this._readonly || !this._enabled) {
-        //     return;
-        // }
         value = value === true || value === 'true';
         this._input.checked = value;
         if (value) {
@@ -17591,6 +21714,7 @@ Colibri.UI.Checkbox = class extends Colibri.UI.Component {
         this._setPlaceholder(value ? value[Lang.Current] ?? value : '');
     }
     
+    /** @private */
     _setPlaceholder(value) {
         if(!value) {
             this._placeholder && this._placeholder.Dispose();
@@ -17632,8 +21756,19 @@ Colibri.UI.Checkbox = class extends Colibri.UI.Component {
 
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Radio = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {string} fieldName name of field to generate
+     */
     constructor(name, container, fieldName) {
         super(name, container, Element.create('span'));
         this.AddClass('app-component-radio');
@@ -17647,11 +21782,13 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
         this._handleEvents();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Поднимается, когда изменил состояние');
     }
 
+    /** @protected */
     _handleEvents() {
         this.AddHandler('Clicked', (event, args) => {
             if (!this._readonly && this._enabled) {
@@ -17677,7 +21814,7 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
     }
 
     /**
-     * Нарисовать инпут
+     * Render input
      * @private
      */
     _renderInput() {
@@ -17691,32 +21828,36 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
     }
 
     /**
-     * Установить нужную иконку
+     * Set the icon
      * @private
      */
     _setIcon() {
         this._checkIcon.value = Colibri.UI.AltRadioMarkIcon;
     }
 
+    /**
+     * Focus on input
+     */
     Focus() {
         this._input.focus();
     }
 
     /**
-     * Чекбокс отмечен
+     * Checkbox is checked
      * @type {boolean}
      */
     get checked() {
         return this._input.checked;
     }
+    /**
+     * Checkbox is checked
+     * @type {boolean}
+     */
     set checked(value) {
         this._setChecked(value);
     }
+    /** @private */
     _setChecked(value, process = true) {
-        // if (this._readonly || !this._enabled) {
-        //     return;
-        // }
-
         this._input.checked = value;
         if (value) {
             this.AddClass('-checked');
@@ -17730,6 +21871,7 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _unsetAllByGroup() {
         document.querySelectorAll('input[type=radio][name="' + this._fieldName + '"]').forEach(el => {
             if(el != this._input) {
@@ -17740,7 +21882,7 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
     }
 
     /**
-     * Элемент выключен
+     * Enable/Disable component
      * @type {boolean}
      */
     set enabled(value) {
@@ -17748,29 +21890,45 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
         this._input.disabled = !this._enabled;
         super.enabled = value;
     }
+    /**
+     * Enable/Disable component
+     * @type {boolean}
+     */
     get enabled() {
         return this._enabled;
     }
 
     /**
-     * Только для чтения
+     * Is checkbox readonly
      * @type {boolean}
      */
     get readonly() {
         return this._readonly;
     }
+    /**
+     * Is checkbox readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._readonly = (value === true || value === 'true');
         super.readonly = this._readonly;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._placeholder?.value;
     }
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._setPlaceholder(value ? value[Lang.Current] ?? value : '');
     }
-    
+    /** @private */
     _setPlaceholder(value) {
         if(!value) {
             this._placeholder.Dispose();
@@ -17783,8 +21941,7 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
@@ -17796,6 +21953,10 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
         }
         
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._placeholder) {
             this._placeholder.tabIndex = value === true ? Colibri.UI.tabIndex++ : value;
@@ -17805,10 +21966,19 @@ Colibri.UI.Radio = class extends Colibri.UI.Component {
         }
     }
 
-
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Input
+ */
 Colibri.UI.Input.File = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.fromHtml('<button type="button"><input type="file"></input><span class="app-component-input-type-file-text"></span></button>')[0]);
         this.AddClass('app-component-input-type-file');
@@ -17821,11 +21991,13 @@ Colibri.UI.Input.File = class extends Colibri.UI.Component {
         this._element.querySelector('.app-component-input-type-file-text').html(this.__title());
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('InputFileChanged', false, 'Изменён выбранный файл/файлы');
     }
 
+    /** @protected */
     _handleEvents() {
         this.AddHandler('Clicked', (sender, args) => {
             this._input.click();
@@ -17841,27 +22013,49 @@ Colibri.UI.Input.File = class extends Colibri.UI.Component {
         });
     }
 
+    /** @private */
     __title() {
         return this.multiple ? '' : '';
     }
 
+    /**
+     * Container element
+     * @type {Element}
+     * @readonly
+     */
     get container() {
         return this._element.querySelector('.app-component-input-type-file-text');
     }
 
+    /**
+     * Title string
+     * @type {string}
+     */
     get title() {
         return this._element.querySelector('.app-component-input-type-file-text').html();
     }
 
+    /**
+     * Title string
+     * @type {string}
+     */
     set title(value) {
         this._title = value;
         this._element.querySelector('.app-component-input-type-file-text').html(value || this.__title());
     }
 
+    /**
+     * Is multiple file can be selected
+     * @type {boolean}
+     */
     get multiple() {
         return this._input.getAttribute('multiple');
     }
 
+    /**
+     * Is multiple file can be selected
+     * @type {boolean}
+     */
     set multiple(value) {
         if (value) {
             this._input.setAttribute('multiple', 'true');
@@ -17873,6 +22067,10 @@ Colibri.UI.Input.File = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Get the selected files
+     * @returns {Array}
+     */
     Files() {
         if (this._input.hasAttribute('multiple')) {
             return this._inputFiles;
@@ -17881,14 +22079,28 @@ Colibri.UI.Input.File = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Clears data in component, files and selection of input
+     */
     ClearData() {
         this._input.value = null;
         this._inputFiles = [];
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Window
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ImageViewWindow = class extends Colibri.UI.Window {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {string} title title of window
+     */
     constructor(name, container, title) {
         super(name, container, '<div><div class="content-container"><div class="text-description-before"></div><img class="image-container" src="#" alt="#"></img><div class="text-description-after"></div></div><div class="buttons-container"><button class="app-component-image-view-window-close-button">Закрыть</button></div></div>', title);
         this.AddClass('app-component-image-view-window');
@@ -17901,11 +22113,13 @@ Colibri.UI.ImageViewWindow = class extends Colibri.UI.Window {
         this._handleEvents();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ClickedCloseButton', false, 'Поднимается когда нажали на кнопку закрыть!');
     }
 
+    /** @protected */
     _handleEvents() {
         this._closeButton.addEventListener('click', (event) => {
             this.Dispatch('ClickedCloseButton', {});
@@ -17913,41 +22127,83 @@ Colibri.UI.ImageViewWindow = class extends Colibri.UI.Window {
         });
     }
 
+    /**
+     * Source of image
+     * @type {string}
+     */
     get source() {
         return this._img.attr('src');
     }
 
+    /**
+     * Source of image
+     * @type {string}
+     */
     set source(value) {
         this._img.attr('src', value);
     }
 
+    /**
+     * Alternate text
+     * @type {string}
+     */
     get alternativeText() {
         return this._img.attr('alt');
     }
 
+    /**
+     * Alternate text
+     * @type {string}
+     */
     set alternativeText(value) {
         this._img.attr('alt', value);
     }
 
+    /**
+     * Description of before image
+     * @type {string}
+     */
     get textDescriptionBefore() {
         return this._textDescriptionBefore.innerHTML;
     }
 
+    /**
+     * Description of before image
+     * @type {string}
+     */
     set textDescriptionBefore(value) {
         this._textDescriptionBefore.innerHTML = value;
     }
 
+    /**
+     * Description of after image
+     * @type {string}
+     */
     get textDescriptionAfter() {
         return this._textDescriptionAfter.innerHTML;
     }
 
+    /**
+     * Description of after image
+     * @type {string}
+     */
     set textDescriptionAfter(value) {
         this._textDescriptionAfter.innerHTML = value;
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ProgressBar = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(name, container, Element.fromHtml('<div><div class="app-progress-bar-container-component"><div class="app-progress-bar-progress-component"></div></div></div>')[0]);
         this.AddClass('app-progress-bar-component');
@@ -17959,6 +22215,7 @@ Colibri.UI.ProgressBar = class extends Colibri.UI.Component {
         this._progress.style.width = '0%';
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ProgressIsZero', false, 'Поднимается когда прогресс равен 0');
@@ -17968,10 +22225,18 @@ Colibri.UI.ProgressBar = class extends Colibri.UI.Component {
         this.RegisterEvent('ProgressChanged', false, 'Поднимается когда прогресс изменился');
     }
 
+    /**
+     * Progress value
+     * @type {number}
+     */
     get progress() {
         return parseInt(this._progress.style.width);
     }
 
+    /**
+     * Progress value
+     * @type {number}
+     */
     set progress(value) {
         this._progress.style.width = value + '%';
 
@@ -18009,6 +22274,11 @@ Colibri.UI.ProgressBar = class extends Colibri.UI.Component {
         this._progress.css('background', value);
     }
 
+    /**
+     * Starts a timer
+     * @param {number} timer timer of progress bar
+     * @param {number} speed speed
+     */
     Start(timer, speed) {
         this._progressiveIterator = 100;
         if(this._intervalId != -1) {
@@ -18023,11 +22293,17 @@ Colibri.UI.ProgressBar = class extends Colibri.UI.Component {
         }, timer);
     }
 
+    /**
+     * Pauses the timer
+     */
     Pause() {
         clearInterval(this._intervalId);
         this._intervalId = -1;
     }
 
+    /**
+     * Stop the timer
+     */
     Stop() {
         this.progress = 100;
         clearInterval(this._intervalId);
@@ -18035,8 +22311,20 @@ Colibri.UI.ProgressBar = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * Button group
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs 
+     */
     constructor(name, container, element) {
         super(name, container, element || Element.create('div'));
         this.AddClass('app-buttongroup-component');
@@ -18044,24 +22332,28 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
         this._selectedButton = null;
 
         this.AddHandler('Clicked', (event, args) => this.__thisClicked(event, args));
-        
-        // this.AddHandler('ChildsProcessed', (event, args) => {
-        //     this.ForEach((name, button) => {
-        //         button.AddHandler('Clicked', (event, args) => this.SelectButton(button));
-        //     });
-        // });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisClicked(event, args) {
         const button = args.domEvent.target.tag('component').Closest(component => component.parent instanceof Colibri.UI.ButtonGroup);
         this.SelectButton(button);
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Поднимается, когда изменилась выбранная кнопка');
     }
 
+    /**
+     * Select the button by index or name
+     * @param {string|number} button button index or name
+     */
     SelectButton(button) {
         if(typeof button == 'string' || typeof button == 'number') {
             button = this.Children(button);
@@ -18084,7 +22376,12 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
 
     }
     
-
+    /**
+     * Adds a button to group
+     * @param {string} name name of button
+     * @param {string} title title of button
+     * @returns {Colibri.UI.Button}
+     */
     AddButton(name, title) {
         if(this.Children(name)) {
             return this.Children(name);
@@ -18092,20 +22389,29 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
         const button = new Colibri.UI.Button(name, this);
         button.value = (title[Lang.Current] ?? title);
         button.shown = true;
-        // button.AddHandler('Clicked', (event, args) => {
-        //     this.SelectButton(button);
-        // });
         return button;
     }
 
+    /**
+     * Selected button
+     * @type {Colibri.UI.Button}
+     */
     get selected() {
         return this._selectedButton;
     }
 
+    /**
+     * Selected button
+     * @type {Colibri.UI.Button}
+     */
     set selected(value) {
         this.SelectButton(value);
     }
 
+    /**
+     * Selected button index
+     * @type {number}
+     */
     set selectedIndex(index) {
         const button = this.Children(index);
         if(button) {
@@ -18113,26 +22419,45 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Selected button index
+     * @type {number}
+     */
     get selectedIndex() {
         return this._selectedButton ? this._selectedButton.childIndex : null;
     }
 
+    /**
+     * Disables all buttons
+     */
     DisableAllButtons() {
         const childs = this.Children();
         for(const child of childs) {
             child.enabled = false;
         }
-        // this.ForEach((name, component) => component.enabled = false);
     }
 
+    /**
+     * Enables button by index or name
+     * @param {string|number} name button index or number
+     */
     EnableButton(name) {
         this.Children(name).enabled = true;
     }
 
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ToggleBox = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
 
@@ -18150,11 +22475,13 @@ Colibri.UI.ToggleBox = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Когда изменилось состояние переключателя');
     }
 
+    /** @private */
     _showState() {
         if(this._input.checked) {
             this.AddClass('-selected');
@@ -18164,6 +22491,7 @@ Colibri.UI.ToggleBox = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _registerEventHandlers() {
         super._registerEventHandlers();
  
@@ -18173,6 +22501,9 @@ Colibri.UI.ToggleBox = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Toggle the box
+     */
     Toggle() {
         if(!this.enabled) {
             return;
@@ -18182,36 +22513,62 @@ Colibri.UI.ToggleBox = class extends Colibri.UI.Component {
         this.Dispatch('Changed', {state: this._input.checked});
     }
 
+    /**
+     * Checked
+     * @type {boolean}
+     */
     get checked() {
         return this._input.checked;
     }
 
+    /**
+     * Checked
+     * @type {boolean}
+     */
     set checked(value) {
         this._input.checked = value === 'true' || value === true;
         this._showState();
     }
 
+    /**
+     * Label
+     * @type {string}
+     */
     get label() {
         return this._element.querySelector('.text').html();
     } 
 
+    /**
+     * Label
+     * @type {string}
+     */
     set label(value) {
         this._element.querySelector('.text').html(value);
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
 
+    /** Left bottom */
     static LB = 'lb';
+    /** Right bottom */
     static RB = 'rb';
+    /** Left top */
     static LT = 'lt';
+    /** Right top */
     static RT = 'rt'; 
 
     /**
-     * 
+     * @constructor
      * @param {string} name Coponent name
      * @param {*} container Component container|parenbt
      * @param {Array} orientation coords on container to point to, and orientation around the container, example: rt, rb; rt - container coords, rb - orientation
+     * @param {Array<{title,name,icon}>} items context menu items
      */
     constructor(name, container, orientation = [Colibri.UI.ContextMenu.RT, Colibri.UI.ContextMenu.RB], point = null, items = []) {
         super(name, container, Element.create('div'));
@@ -18234,14 +22591,23 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
         this.value = items;
     }
 
+    /**
+     * Orientation 
+     * @type {string}
+     */
     get orientation() {
         return this._orientation;
     }
 
+    /**
+     * Orientation 
+     * @type {string}
+     */
     set orientation(value) {
         this._orientation = value;
     }
 
+    /** @private */
     _addItem(item) {
         if(item.name === 'separator' || item.name == '-') {
             const itemObject = new Colibri.UI.Hr('separator-' + Date.Mc(), this);
@@ -18303,12 +22669,14 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _renderItems() {
         this._items.forEach((item) => {
             this._addItem(item);
         });
     }
 
+    /** @private */
     _findParent() {
         if(this.parent) {
             const iconParent = this.parent.Children(this.parent.name + '-contextmenu-icon-parent') ?? this.parent;
@@ -18318,6 +22686,7 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _findPointOnParent() {
         const parent = this._findParent();
         const ori = this._orientation[0];
@@ -18351,6 +22720,7 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _getOrientationPoint(pointOnParent) {
         const ori = this._orientation[1];
         const thisBounds = this._element.bounds(true, true);
@@ -18383,6 +22753,7 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _setPosition() {
 
         const pointOnParent = this._point || this._findPointOnParent();
@@ -18391,6 +22762,7 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _checkPosition() {
         const thisBounds = this.container.bounds(true, true);
 
@@ -18403,8 +22775,6 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
             
         }
         if(thisBounds.left + thisBounds.outerWidth > window.innerWidth) {
-            // надо двинуть точку на паренте и относительную ориентацию
-            // справа на лево, или слева на право
             orientation[0] = orientation[0].replaceAll('r', 'l');
             orientation[1] = orientation[1].replaceAll('r', 'l');
         }
@@ -18416,15 +22786,34 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Value array
+     * @type {Array}
+     */
     get value() {
         return this._items;
     }
 
+    /**
+     * Value array
+     * @type {Array}
+     */
     set value(items) {
         this._items = items;
         this._renderItems();
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
+    get shown() {
+        return super.shown;
+    }
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         
@@ -18439,6 +22828,11 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Show context menu
+     * @param {Array} menu menu items
+     * @param {Colibri.UI.Component} parent parent component
+     */
     Show(menu, parent = null) {
         if(parent) {
             this.parent = parent;
@@ -18447,6 +22841,9 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
         this.shown = true;
     }
 
+    /**
+     * Dispose the component
+     */
     Dispose() {
         const shadow = this._element.next();
         if(shadow && shadow.classList.contains('app-component-shadow-div')) {
@@ -18456,8 +22853,18 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Notices = class extends Colibri.UI.Pane {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-notices-component');
@@ -18468,8 +22875,8 @@ Colibri.UI.Notices = class extends Colibri.UI.Pane {
     }
 
     /**
-     * Добавить сообщение
-     * @param {Colibri.UI.Notice} noticeData сообщение 
+     * Add the notice
+     * @param {Colibri.UI.Notice} noticeData notice data 
      * @returns {Colibri.UI.Notice}
      */
     Add(noticeData) {
@@ -18522,17 +22929,32 @@ Colibri.UI.Notices = class extends Colibri.UI.Pane {
 
 }
 
+/**
+ * @class
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Notice = class {
 
+    /** Error message */
     static Error = 'error';
+    /** Success message */
     static Success = 'success';
+    /** Warning message */
     static Warning = 'warning';
+    /** White message */
     static White = 'white';
 
+    /** @type {object} */
     _exception = null;
 
+    /**
+     * @constructor
+     * @param {string|object} title title of message
+     * @param {string} severity message severity
+     * @param {number} timeout timeout to hide
+     */
     constructor(title, severity = Colibri.UI.Notice.Error, timeout = 3000) {
-        if(typeof title === 'object' && !!title.code && !!title.message) {
+        if(Object.isObject(title) && !!title.code && !!title.message) {
             // error object
             this._exception = title;
             title = this._exception.message;
@@ -18542,26 +22964,60 @@ Colibri.UI.Notice = class {
         this._timeout = timeout;
     }
 
+    /**
+     * Message title
+     * @type {string}
+     * @readonly
+     */
     get title() {
         return this._title;
     }
 
+    /**
+     * Message severity
+     * @type {string}
+     * @readonly
+     */
     get severity() {
         return this._severity;
     }
 
+    /**
+     * Timeout for hide
+     * @type {number}
+     * @readonly
+     */
     get timeout() {
         return this._timeout;
     }
 
+    /**
+     * Class name
+     * @type {string}
+     * @readonly
+     */
     get className() {
         return 'app-notice-' + this.severity + '-component';
     }
 
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.List
+ * @memberof Colibri.UI
+ */
 Colibri.UI.PopupList = class extends Colibri.UI.List {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {boolean} multiple is selection must be multiple
+     * @param {string} titleField title field for show
+     * @param {string} valueField value field to return in value property
+     * @param {string|null} groupField field to group in list
+     * @param {boolean} can select group
+     */
     constructor(name, container, multiple, __render, titleField = 'title', valueField = 'value', groupField = null, canSelectGroup = false) {
         super(name, container, null, multiple);
         this.AddClass('app-component-popup-list-component');
@@ -18592,10 +23048,15 @@ Colibri.UI.PopupList = class extends Colibri.UI.List {
 
     }
 
+    /** @private */
     __popupBounds() {
         return this.parent.container.bounds();
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         this.container.hideShowProcess(() => {
@@ -18620,10 +23081,15 @@ Colibri.UI.PopupList = class extends Colibri.UI.List {
         });
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     get shown() {
         return super.shown;
     }
 
+    /** @protected */
     __renderItemContent(itemData, item) {
         let html = '';
 
@@ -18647,6 +23113,11 @@ Colibri.UI.PopupList = class extends Colibri.UI.List {
         return html;
     }
 
+    /**
+     * Fill the items
+     * @param {Array} value items
+     * @param {Array} selectedValues Selected items
+     */
     FillItems(value, selectedValues = null) {
 
         this.ClearAllGroups();
@@ -18728,29 +23199,34 @@ Colibri.UI.PopupList = class extends Colibri.UI.List {
 
     }
 
-
-
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Selector = class extends Colibri.UI.Component {
 
+    /** @type {boolean} */
     _skipLooseFocus;
+    /** @type {boolean} */
     _itemSelected;
 
     /**
-     * Конструктор
-     * @param {string} name название компонента
-     * @param {Element|string|Colibri.UI.Component} container 
-     * @param {boolean} multiple мультивыбор 
-     * @param {boolean} readonly только для чтения 
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|string|Colibri.UI.Component} container component container 
+     * @param {boolean} multiple is multiple selection
+     * @param {boolean} readonly only for read
      * @param {boolean} searchable can search in items 
-     * @param {string[]|null} values значения 
-     * @param {string|number|null} defaultValue значение по умолчанию 
-     * @param {string} titleField название поля для отображения 
-     * @param {string} valueField название поля для значения 
-     * @param {Function|null} __render метод отрисовки
-     * @param {boolean} allowEmpty разрешено пустое значение
-     * @param {boolean} clearIcon показать clearIcon
+     * @param {string[]|null} values values to show in select box 
+     * @param {string|number|null} defaultValue default value for selection 
+     * @param {string} titleField name of title field
+     * @param {string} valueField name of value field 
+     * @param {Function|null} __render method for render items
+     * @param {boolean} allowEmpty is allowed empty values
+     * @param {boolean} clearIcon show clear icon
      */
     constructor(name, container, multiple = false, readonly = true, searchable = true, values = [], defaultValue = null, titleField = 'title', valueField = 'value', groupField = null, __render = null, allowEmpty = true, clearIcon = false, canSelectGroup = false) {
         super(name, container, Element.create('div'));
@@ -18791,6 +23267,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         this._handleEvents();
     }
 
+    /** @private */
     _inprooveValues() {
         let v = [];
         for(let vv of this._values) {
@@ -18802,19 +23279,20 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         this._values = v;
     }
 
-    /**
-     * Регистрация событий
-     */
+
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
 
         this.RegisterEvent('Changed', false, 'Когда выбор изменился');
     }
 
+    /** @private */
     __preventScrolling(e) {
         e.preventDefault();
     }
     
+    /** @private */
     _changeBodyScroll() {
 
         let wnd = this._element.closest('.app-component-window');
@@ -18827,9 +23305,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         }
     }
 
-    /**
-     * Регистрация обработчиков событий
-     */
+    /** @protected */
     _handleEvents() {
 
         this._input.AddHandler('KeyUp', (event, args) => this.Dispatch('KeyUp', args));
@@ -18902,6 +23378,11 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __Filled(event, args) {
         this._itemSelected = false;
         this.__BeforeFilled().then((searchAllreadyPerformed = false) => {
@@ -18925,10 +23406,16 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         return false;
     }
 
+    /** @public */
     async __BeforeFilled() {
         return true;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __Cleared(event, args) {
         const values = this._search(!this.searchable ? '' : this._input.value);
         this._setValue(null);
@@ -18947,6 +23434,11 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         return false;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __Clicked(event, args) { 
         this.Focus();
         if(this.enabled) {
@@ -18957,6 +23449,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         return false;
     }
 
+    /** @private */
     _removePopup() {
         if(this._popup) {
             this._popup.shown = false;
@@ -18969,6 +23462,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _hidePopup() {
         this._removePopup();
         this._input.SendToBack();
@@ -18976,8 +23470,9 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Показать выпадащий список
-     * @param {array} values массив значений
+     * Show dropdown
+     * @private
+     * @param {Array} values values to show
      */
     _showPopup(values) {
 
@@ -19005,6 +23500,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     __moveSelection(positionDelta) {
         if(!this._popup?.selected) {
             this._popup.selectedIndex = 0;
@@ -19016,8 +23512,8 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Выбранное значение
-     * @return array|Object|boolean
+     * Selected value
+     * @return {Array|Object|boolean}
      */
     get value() {
         if (!this._multiple) {
@@ -19027,8 +23523,8 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Установить выбранное значение
-     * @param {*} value
+     * Selected value
+     * @return {Array|Object|boolean}
      */
     set value(value) {
         this._setValue(value);
@@ -19036,23 +23532,22 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * @type {Boolean}
+     * Is multiple
+     * @type {boolean}
      */
     set multiple(value) {
         this._multiple = value === 'true' || value === true;
     }
     /**
-     * @type {Boolean}
+     * Is multiple
+     * @type {boolean}
      */
     get multiple() {
         return this._multiple;
     }
 
 
-    /**
-     * Установить выбранное значение
-     * @param {*} value
-     */
+    /** @private */
     _setValue(value) {
         if (value === null || value === false) {
             this._value = [];
@@ -19101,8 +23596,8 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Выбрать значение
-     * @param {string|number} value значение
+     * Search for value
+     * @param {string|number} value value
      * @returns string
      */
     _findValue(value) {
@@ -19126,7 +23621,8 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Отобразить значения
+     * Render values
+     * @private
      */
     _renderValue(renderValue = true) {
         if (!this.multiple) {
@@ -19191,7 +23687,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Поставить фокус
+     * Set focus on selector
      */
     Focus() {
         if(this._input?.readonly) {
@@ -19202,21 +23698,25 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Is selector has values
+     * @returns {boolean}
+     */
     HaveValues() {
         const values = this.values;
         return !!(values && Object.values(values).length);
     }
 
     /**
-     * Свойство только для чтения
-     * @type {Boolean}
+     * Readonly
+     * @type {boolean}
      */
     get readonly() {
         return this._readonly;
     }
     /**
-     * Свойство только для чтения
-     * @type {Boolean}
+     * Readonly
+     * @type {boolean}
      */
     set readonly(value) {
         this._readonly = value === true || value === 'true';
@@ -19237,14 +23737,14 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
 
     /**
      * Can search in items
-     * @type {Boolean}
+     * @type {boolean}
      */
     get searchable() {
         return this._searchable;
     }
     /**
      * Can search in items
-     * @type {Boolean}
+     * @type {boolean}
      */
     set searchable(value) {
         this._searchable = value === true || value === 'true';
@@ -19260,15 +23760,15 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Текст для отображения вместо значения
-     * @type {String}
+     * Selector placeholder 
+     * @type {string}
      */
     get placeholder() {
         return this._placeholder;
     }
     /**
-     * Текст для отображения вместо значения
-     * @type {String}
+     * Selector placeholder
+     * @type {string}
      */
     set placeholder(value) {
         this._placeholder = value ? value[Lang.Current] ?? value : '';
@@ -19276,21 +23776,31 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         this._renderValue(false);
     }
 
+    /**
+     * Selector placeholder 
+     * @type {Object}
+     */
     get placeholderinfo() {
         return this._placeholderinfo;
     }
+    /**
+     * Selector placeholder 
+     * @type {Object}
+     */
     set placeholderinfo(value) {
         this._placeholderinfo = value;
         this._renderValue(false);
     }
 
     /**
+     * Empty placeholder generate method
      * @type {Function}
      */
     get placeholderempty() {
         return this._placeholderempty;
     }
     /**
+     * Empty placeholder generate method
      * @type {Function}
      */
     set placeholderempty(value) {
@@ -19298,15 +23808,15 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Вкючено/выключено
-     * @type {Boolean}
+     * Enable/Disable
+     * @type {boolean}
      */
     get enabled() {
         return this._input.enabled;
     }
     /**
-     * Вкючено/выключено
-     * @type {Boolean}
+     * Enable/Disable
+     * @type {boolean}
      */
     set enabled(value) {
         if(value) {
@@ -19319,14 +23829,14 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Список значений
+     * Array of values to show
      * @type {Array}
      */
     get values() {
         return this._values;
     }
     /**
-     * Список значений
+     * Array of values to show
      * @type {Array}
      */
     set values(value) {
@@ -19335,9 +23845,9 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Найти значения для отображения в селекторе
-     * @param {string} searchString строка поиска
-     * @return {array} массив подходящих значений
+     * Search for items to show in selector
+     * @param {string} searchString search string
+     * @return {Array}
      *  */
     _search(searchString) {
         if (!searchString) {
@@ -19361,28 +23871,30 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * @type {Any}
+     * Config of popup
+     * @type {*}
      */
     get popupconfig() {
         return this._popupconfig;
     }
     /**
-     * @type {Any}
+     * Config of popup
+     * @type {*}
      */
     set popupconfig(value) {
         this._popupconfig = value;
     }
 
     /**
-     * Индекс табуляции
-     * @type {Number}
+     * Tab index
+     * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
     /**
-     * Индекс табуляции
-     * @type {Number}
+     * Tab index
+     * @type {number}
      */
     set tabIndex(value) {
         if (this._input) {
@@ -19390,6 +23902,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _createPopup(values) {
         const popup = new Colibri.UI.PopupList(this.name + '-select-popup', document.body, this._multiple, this.__render, this._titleField, this._valueField, this._groupField, this._canSelectGroup);
         popup.parent = this;
@@ -19403,6 +23916,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         return popup;
     }
 
+    /** @private */
     _registerPopupEventHandlers(popup) {
         // сначала происходит SelectionChanged потом ItemClicked, странность, но так сделано
         // SelectionChanged появляется внутри списка, и не связан с значением по умолчанию в селекторе
@@ -19447,15 +23961,15 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
     }
 
     /**
-     * Можно ли выбирать группу
-     * @type {Boolean}
+     * Groups can be selected
+     * @type {boolean}
      */
     get canSelectGroup() {
         return this._canSelectGroup;
     }
     /**
-     * Можно ли выбирать группу
-     * @type {Boolean}
+     * Groups can be selected
+     * @type {boolean}
      */
     set canSelectGroup(value) {
         this._canSelectGroup = value;
@@ -19509,14 +24023,14 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
 
     /**
      * Tooltip string
-     * @type {String}
+     * @type {string}
      */
     get showToolTip() {
         return this._showToolTip;
     }
     /**
      * Tooltip string
-     * @type {String}
+     * @type {string}
      */
     set showToolTip(value) {
         this._showToolTip = value === true || value === 'true';
@@ -19526,9 +24040,18 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
 }
 
 
-
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.DateSelector = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(name, container, Element.create('div'));
 
@@ -19609,6 +24132,7 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Когда значение изменилось');
@@ -19616,6 +24140,7 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         this.RegisterEvent('PopupClosed', false, 'Попап закрыт');
     }
 
+    /** @private */
     _showValue() {
 
         try {
@@ -19635,6 +24160,9 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Open selector
+     */
     Open() {
         if(!this._popup) {
             this._popup = new Colibri.UI.DateSelectorPopup('popup', document.body);
@@ -19652,6 +24180,9 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Close selector
+     */
     Close() {
         
         this.ToggleView(false);
@@ -19664,6 +24195,9 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         this.Dispatch('PopupClosed', {});
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         if(!this.enabled) {
             return;
@@ -19672,6 +24206,10 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         this._hiddenElement.focus();
     }
 
+    /**
+     * Toggle view of input
+     * @param {boolean} view toggle view of input
+     */
     ToggleView(view) {
 
         if(!view) {
@@ -19690,30 +24228,58 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._viewElement.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._viewElement.attr('placeholder');
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         this._viewElement.attr('disabled', value ? null: 'disabled');
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._viewElement.attr('disabled') !== 'disabled';
     }
 
+    /**
+     * Is component readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._viewElement.attr('readonly', value ? 'readonly' : null);
     }
 
+    /**
+     * Is component readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._viewElement.attr('readonly') !== 'readonly';
     }
 
+    /**
+     * Date value
+     * @type {Date|string}
+     */
     set value(value) {
         const oldValue = this._hiddenElement.value;
         if(!value) {
@@ -19731,6 +24297,10 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Date value
+     * @type {Date|string}
+     */
     get value() {
         if(typeof this._hiddenElement.value == 'string') {
             return new Date(this._hiddenElement.value);
@@ -19743,37 +24313,67 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Format of date
+     * @type {string}
+     */
     get format() {
         return this._format;
     }
 
+    /**
+     * Format of date
+     * @type {string}
+     */
     set format(value) {
         this._format = value;
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return this._viewElement.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         this._viewElement.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
         this._hiddenElement.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 
+    /**
+     * Has icon
+     * @type {boolean}
+     */
     get hasIcon() {
         return this._icon.shown;
     }
+    /**
+     * Has icon
+     * @type {boolean}
+     */
     set hasIcon(value) {
         this._icon.shown = value;
     }
 
 }
+
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */        
     constructor(name, container) {
         super(name, container);
 
@@ -19892,6 +24492,10 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
 
     }
 
+    /**
+     * Show/Hide
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         this.container.hideShowProcess(() => {
@@ -19912,15 +24516,34 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
             }    
         });
     }
+    /**
+     * Show/Hide
+     * @type {boolean}
+     */
+    get shown() {
+        return super.shown;
+    }
 
+    /**
+     * Mode
+     * @type {datepicker,monthpicker,yearpicker}
+     */
     set mode(value) {
         this._mode = value;
     }
 
+    /**
+     * Mode
+     * @type {datepicker,monthpicker,yearpicker}
+     */
     get mode() {
         return this._mode;
     }
 
+    /**
+     * Date value
+     * @type {Date}
+     */
     get value() {
 
         let value = this._value;
@@ -19931,6 +24554,10 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
         return value;
     }
 
+    /**
+     * Date value
+     * @type {Date}
+     */
     set value(value) {
         this._value = value.copy();
         this._show();
@@ -19939,6 +24566,9 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
         this._monthPicker.Render();
     }
 
+    /**
+     * Toggle mode
+     */
     ToggleMode() {
         if (this.mode == 'datepicker') {
             this.mode = 'monthpicker';
@@ -19948,6 +24578,9 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
         this._show();
     }
 
+    /**
+     * Toggle mode to back
+     */
     ToggleModeBack() {
         if (this.mode == 'yearpicker') {
             this.mode = 'monthpicker';
@@ -19957,6 +24590,10 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
         this._show();
     }
 
+    /**
+     * Show selected mode
+     * @private
+     */
     _show() {
         if (this.mode == 'datepicker') {
             this._datePicker.shown = true;
@@ -19977,6 +24614,7 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
         }
     }
 
+    /** @private */
     _showPickerTitle() {
 
         let value = this.value.copy();
@@ -19995,8 +24633,18 @@ Colibri.UI.DateSelectorPopup = class extends Colibri.UI.Pane {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.DatePicker = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(name, container);
 
@@ -20004,11 +24652,16 @@ Colibri.UI.DatePicker = class extends Colibri.UI.Pane {
 
     }
 
+    /**
+     * Render the component
+     * @protected
+     */
     Render() {
         this._renderContent();
         this._bind();
     }
 
+    /** @private */
     _renderContent() {
 
         this._element.html('');
@@ -20072,6 +24725,7 @@ Colibri.UI.DatePicker = class extends Colibri.UI.Pane {
         tfoot.append(Element.fromHtml('<td colspan="7" data-today="today" data-value="' + (today.getTime()) + '">Այսոր</td>'));
     }
 
+    /** @private */
     _bind() {
         this._element.querySelectorAll('td').forEach((td) => {
             td.addEventListener('mousedown', (e) => {
@@ -20091,8 +24745,18 @@ Colibri.UI.DatePicker = class extends Colibri.UI.Pane {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.MonthPicker = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(name, container);
 
@@ -20100,11 +24764,15 @@ Colibri.UI.MonthPicker = class extends Colibri.UI.Pane {
 
     }
 
+    /**
+     * Render the component
+     */
     Render() {
         this._renderContent();
         this._bind();
     }
 
+    /** @private */
     _renderContent() {
 
         this._element.html('');
@@ -20147,6 +24815,7 @@ Colibri.UI.MonthPicker = class extends Colibri.UI.Pane {
 
     }
 
+    /** @private */
     _bind() {
         this._element.querySelectorAll('td').forEach((td) => {
             td.addEventListener('mousedown', (e) => {
@@ -20162,23 +24831,33 @@ Colibri.UI.MonthPicker = class extends Colibri.UI.Pane {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.YearPicker = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(name, container);
-
         this.AddClass('app-month-picker-component');
-
         this.Render();
-
-
     }
 
+    /**
+     * Render the component
+     */
     Render() {
         this._renderContent();
         this._bind();
     }
 
+    /** @private */
     _renderContent() {
 
         this._element.html('');
@@ -20221,6 +24900,7 @@ Colibri.UI.YearPicker = class extends Colibri.UI.Pane {
 
     }
 
+    /** @private */
     _bind() {
         this._element.querySelectorAll('td').forEach((td) => {
             td.addEventListener('mousedown', (e) => {
@@ -20234,6 +24914,11 @@ Colibri.UI.YearPicker = class extends Colibri.UI.Pane {
         })
     }
 
+    /**
+     * Start year
+     * @type {number}
+     * @readonly
+     */
     get startYear() {
         let dt = this.parent.value.copy()
         let currentYear = dt.getFullYear();
@@ -20241,9 +24926,18 @@ Colibri.UI.YearPicker = class extends Colibri.UI.Pane {
     }
 
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.Selector
+ * @memberof Colibri.UI
+ */
 Colibri.UI.MonthSelector = class extends Colibri.UI.Selector {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(name, container, false, false, false, [
             {title: '', value: '01'},
@@ -20268,9 +24962,20 @@ Colibri.UI.MonthSelector = class extends Colibri.UI.Selector {
 }
 
 
-
+/**
+ * @class
+ * @extends Colibri.UI.Selector
+ * @memberof Colibri.UI
+ */
 Colibri.UI.YearSelector = class extends Colibri.UI.Selector {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {number} startYear year to start enumeration
+     * @param {number} endYear year to end enumeration
+     */    
     constructor(name, container, startYear, endYear) {
         super(
             name, 
@@ -20289,7 +24994,18 @@ Colibri.UI.YearSelector = class extends Colibri.UI.Selector {
 }
 
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Switcher = class extends Colibri.UI.Component {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {*} data data to swith
+     */    
     constructor(name, container, data) {
         super(name, container, Element.create('div'));
 
@@ -20336,6 +25052,7 @@ Colibri.UI.Switcher = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         this.RegisterEvent('Changed', false, 'Поднимается когда происходи изменение');
         this.RegisterEvent('ButtonClicked', false, 'Поднимается когда происходит нажатие на кнопку пред/след');
@@ -20386,6 +25103,7 @@ Colibri.UI.Switcher = class extends Colibri.UI.Component {
         this._showItemIndex();
     }
 
+    /** @private */
     _showItemIndex() {
         if(!this._items) {
             return ;
@@ -20435,6 +25153,7 @@ Colibri.UI.Switcher = class extends Colibri.UI.Component {
         this._items = value;
         this._showValue();
     }
+    /** @private */
     _showValue() {
         this.itemIndex = 0;
     }
@@ -20490,7 +25209,19 @@ Colibri.UI.Switcher = class extends Colibri.UI.Component {
     
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.FilesDragAndDrop = class extends Colibri.UI.Component {
+    
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {boolean} multiple can drop multiple files
+     */    
     constructor(name, container, multiple = false) {
         super(name, container, Element.create('div'));
         this.AddClass('app-component-files-drag-and-drop');
@@ -20508,11 +25239,13 @@ Colibri.UI.FilesDragAndDrop = class extends Colibri.UI.Component {
         this._handleEvents();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('InputFileChosen', false, 'Выбран файл/файлы');
     }
 
+    /** @protected */
     _handleEvents() {
         this._innerInput.addEventListener('change', (event) => {
             this._dropContainer.Dispatch('Drop', {domEvent: event, inputFiles: this._innerInput.files});
@@ -20550,7 +25283,7 @@ Colibri.UI.FilesDragAndDrop = class extends Colibri.UI.Component {
     }
 
     /**
-     * Выбрать файлы
+     * Choose file
      * @param {FileList|DataTransferItemList} filesList
      * @private
      */
@@ -20568,7 +25301,7 @@ Colibri.UI.FilesDragAndDrop = class extends Colibri.UI.Component {
     }
 
     /**
-     * Нарисовать drag-and-drop область
+     * Render drop container
      * @private
      */
     _renderDropContainer() {
@@ -20591,71 +25324,69 @@ Colibri.UI.FilesDragAndDrop = class extends Colibri.UI.Component {
     }
 
     /**
-     * drag-and-drop контейнер
+     * Drop container
+     * @type {Element}
      */
     get dropContainer() {
         return this._dropContainer;
     }
 
     /**
-     * Лэйбл с допустимыми расширениями
+     * Label
+     * @type {string}
      */
     get extensionsLabel() {
         return this._extensionsLabel;
     }
 
     /**
-     * Отображаемый текст
-     * @return {string}
+     * Title text
+     * @type {string}
      */
     get title() {
         return this._title.value;
     }
 
     /**
-     * Отображаемый текст
-     * @param {string} value
+     * Title text
+     * @type {string}
      */
     set title(value) {
         this._setTitle(value);
     }
 
     /**
-     * Текст ошибки валидации
-     * @param {string} value
+     * Error text
+     * @type {string}
      */
     set errorMessage(value) {
         this._errorMessage = value;
     }
 
     /**
-     * Текст ошибки валидации
-     * @return {string}
+     * Error text
+     * @type {string}
      */
     get errorMessage() {
         return this._errorMessage;
     }
 
-    /**
-     * Изменить отображаемый текст на новый, либо по умолчанию
-     * @param {string} value
-     * @private
-     */
+    /** @private */
     _setTitle(value) {
         this._title.value = value ?? (this._multiple ? '' : '');
     }
 
     /**
-     * Возможность загрузить больше одного файла
-     * @return {boolean}
+     * Multiple file selection mode
+     * @type {boolean}
      */
     get multiple() {
         return this._multiple;
     }
 
     /**
-     * Возможность загрузить больше одного файла
-     * @param {boolean} value
+     * Multiple file selection mode
+     * @type {boolean}
      */
     set multiple(value) {
         if (value === true || value === 'true') {
@@ -20670,8 +25401,8 @@ Colibri.UI.FilesDragAndDrop = class extends Colibri.UI.Component {
     }
 
     /**
-     * Показать элемент (обновить отображаемый текст и отобразить все вложенные элементы)
-     * @param {boolean|string} value
+     * Show/Hide component
+     * @type {boolean}
      */
     set shown(value) {
         super.shown = value === 'true' || value === true;
@@ -20691,8 +25422,26 @@ Colibri.UI.FilesDragAndDrop = class extends Colibri.UI.Component {
             this._extensionsLabel.shown = true;
         }
     }
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
+    get shown() {
+        return super.shown;
+    }
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.MassActionsMenu = class extends Colibri.UI.Component {
+    
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-mass-actions-menu-component');
@@ -20703,19 +25452,13 @@ Colibri.UI.MassActionsMenu = class extends Colibri.UI.Component {
         this._renderMenuPanel();
     }
 
-    /**
-     * Регистрация событий
-     * @protected
-     */
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('ActionClicked', false, 'Когда кликнули по кнопке в меню');
     }
 
-    /**
-     * Нарисовать меню с контейнером для кнопок
-     * @private
-     */
+    /** @private */
     _renderMenuPanel() {
         this._actionsContainer = new Colibri.UI.Pane(this.name + '-actions-container', this);
         this._selectedItemsCounter = new Colibri.UI.Pane(this.name + '-selected-counter', this);
@@ -20725,10 +25468,7 @@ Colibri.UI.MassActionsMenu = class extends Colibri.UI.Component {
         this._selectedItemsCounter.shown = true;
     }
 
-    /**
-     * Нарисовать кнопки
-     * @private
-     */
+    /** @private */
     _renderActions() {
         this._actionsContainer.Clear();
         this._actions.forEach((action) => {
@@ -20757,24 +25497,32 @@ Colibri.UI.MassActionsMenu = class extends Colibri.UI.Component {
     }
 
     /**
-     * Список экшенов (кнопок) в меню
-     * @type {array}
+     * Action menu items
+     * @type {Array}
      */
     get actions() {
         return this._actions;
     }
+    /**
+     * Action menu items
+     * @type {Array}
+     */
     set actions(value) {
         this._actions = value;
         this._renderActions();
     }
 
     /**
-     * Список выбранных объектов
-     * @type {array}
+     * Selected items
+     * @type {Array}
      */
     get selectedItems() {
         return this._selectedItems;
     }
+    /**
+     * Selected items
+     * @type {Array}
+     */
     set selectedItems(value) {
         this._selectedItems = value;
         this._selectedItemsCounter.value = ''.replaceAll('%s', this._selectedItems.length);
@@ -20785,27 +25533,42 @@ Colibri.UI.MassActionsMenu = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Disposes the object
+     */
     Dispose() {
         this.shown = false;
         Colibri.Common.Delay(300).then(() => super.Dispose());
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ToolTip = class extends Colibri.UI.Component {
 
+    /** Left bottom */
     static LB = 'lb';
+    /** Left top */
     static LT = 'lt';
+    /** Left middle */
     static LM = 'lm';
+    /** Right bottom */
     static RB = 'rb';
+    /** Right top */
     static RT = 'rt';
+    /** Right middle */
     static RM = 'rm';
 
     /**
-     * 
+     * @constructor
      * @param {string} name Coponent name
      * @param {*} container Component container|parenbt
-     * @param {Array} orientation coords on container to point to, and orientation around the container, example: rt, rb; 
-     *                rt - container coords, rb - orientation
+     * @param {Array} orientation coords on container to point to, and orientation around the container, example: rt, rb; rt - container coords, rb - orientation
+     * @param {{left, top}|null} point point to show tooltip
+     * @param {boolean} permanent is tooltip shows permanently 
      */
     constructor(name, container, orientation = [Colibri.UI.ToolTip.RT, Colibri.UI.ToolTip.RB], point = null, permanent = false) {
         super(name, container, Element.create('div'));
@@ -20827,29 +25590,49 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisShadowClicked(event, args) {
         if(!this._permanent) {
             this.shown = false;
         }
     }
 
+    /**
+     * Container element
+     * @type {Element}
+     * @readonly
+     */
     get container() {
         return this._contentContainer.container;
     } 
 
+    /**
+     * Orientation
+     * @type {Array<string>}
+     */
     get orientation() {
         return this._orientation;
     }
 
+    /**
+     * Orientation
+     * @type {Array<string>}
+     */
     set orientation(value) {
         this._orientation = value;
         this._element.data('orientation', value);
     }
 
+    /** @private */
     _findParent() {
         return this.parent ?? null;
     }
 
+    /** @private */
     _findPointOnParent() {
         const parent = this._findParent();
         const ori = this._orientation[0];
@@ -20899,6 +25682,7 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _getOrientationPoint(pointOnParent) {
         const ori = this._orientation[1];
         const thisBounds = this._element.bounds(true, true);
@@ -20943,6 +25727,7 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _setPosition() {
 
         const pointOnParent = this._point || this._findPointOnParent();
@@ -20951,6 +25736,7 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
 
     }
 
+    /** @private */
     _checkPosition() {
         const thisBounds = this._element.bounds(true, true);
 
@@ -20976,9 +25762,17 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     get shown() {
         return super.shown;
     }
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         
@@ -20993,6 +25787,10 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Show tooltip on component
+     * @param {Colibri.UI.Component} parent parent component
+     */
     Show(parent = null) {
         if(parent) {
             this.parent = parent;
@@ -21032,6 +25830,7 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
         this._permanent = value;
         this._showPermanent();
     }
+    /** @private */
     _showPermanent() {
         if(this._permanent && !this.shown) {
             this.shown = true;
@@ -21040,9 +25839,18 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
     }
 
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.Selector
+ * @memberof Colibri.UI
+ */
 Colibri.UI.FontFamilySelector = class extends Colibri.UI.Selector {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         super(
             name, 
@@ -21062,23 +25870,32 @@ Colibri.UI.FontFamilySelector = class extends Colibri.UI.Selector {
 }
 
 
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Chooser = class extends Colibri.UI.Component {
 
+    /** @type {boolean} */
     _skipLooseFocus;
+    /** @type {boolean} */
     _itemSelected;
+
     /**
-     * Конструктор
-     * @param {string} name название компонента
-     * @param {Element|string|Colibri.UI.Component} container 
-     * @param {boolean} multiple мультивыбор 
-     * @param {boolean} readonly только для чтения 
-     * @param {string[]|null} values значения 
-     * @param {string|number|null} defaultValue значение по умолчанию 
-     * @param {string} titleField название поля для отображения 
-     * @param {string} valueField название поля для значения 
-     * @param {Function|null} __render метод отрисовки
-     * @param {boolean} allowEmpty разрешено пустое значение
-     * @param {boolean} clearIcon показать clearIcon
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|string|Colibri.UI.Component} container component container 
+     * @param {boolean} multiple is multiselectable
+     * @param {boolean} readonly only for read
+     * @param {string[]|null} values values to show
+     * @param {string|number|null} defaultValue default value 
+     * @param {string} titleField name of title field 
+     * @param {string} valueField name of value field 
+     * @param {Function|null} __render render items method
+     * @param {boolean} allowEmpty is empty values allowed
+     * @param {boolean} clearIcon show clear icon
      */
     constructor(name, container, multiple = false, readonly = true, placeholder = '', selector = null, defaultValue = null, allowEmpty = true, clearIcon = false) {
         super(name, container, Element.create('div'));
@@ -21125,9 +25942,8 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         this._handleEvents();
     }
 
-    /**
-     * Регистрация событий
-     */
+
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
 
@@ -21135,6 +25951,9 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         this.RegisterEvent('ChooserClicked', false, 'Когда нажали на кнопку выбора');
     }
 
+    /**
+     * Show chooser window
+     */
     ShowChooser() {
         if(this._chooser) {
             const component = this._chooser;
@@ -21154,9 +25973,7 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         return false; 
     }
 
-    /**
-     * Регистрация обработчиков событий
-     */
+    /** @protected */
     _handleEvents() {
 
         this._input.AddHandler('KeyUp', (event, args) => this.Dispatch('KeyUp', args));
@@ -21189,12 +26006,19 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
 
     }
 
-    
+    /**
+     * @public
+     */
     async __BeforeFilled() {
         return true;
     }
 
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __Filled(event, args) {
         this._itemSelected = false;
         this.__BeforeFilled().then((ret) => {
@@ -21212,6 +26036,11 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         return false;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __Cleared(event, args) {
         this._setValue(null);
         this.Dispatch('Changed', args);
@@ -21223,33 +26052,48 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
     }
 
     /**
-     * Выбранное значение
-     * @return array|Object|boolean
+     * Choosed value
+     * @type {Array|Object|boolean}
      */
     get value() {
         return this._value;
     }
 
     /**
-     * Установить выбранное значение
-     * @param {*} value
+     * Choosed value
+     * @type {Array|Object|boolean}
      */
     set value(value) {
         this._setValue(value);
         this._renderValue();
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     get valueObject() {
         return this._valueObject;
     }
+    /**
+     * Value object
+     * @type {object}
+     */
     set valueObject(value) {
         this._valueObject = value;
     }
 
+    /**
+     * Is multiple selection
+     * @type {boolean}
+     */
     set multiple(value) {
         this._multiple = value === 'true' || value === true;
     }
-
+    /**
+     * Is multiple selection
+     * @type {boolean}
+     */
     get multiple() {
         return this._multiple;
     }
@@ -21269,15 +26113,12 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         this._openButton = value;
         this._showOpenButton();
     }
+    /** @private */
     _showOpenButton() {
         this._arrow.css('display', this._openButton ? 'block' : 'none');
     }
 
-
-    /**
-     * Установить выбранное значение
-     * @param {Object|Array} value
-     */
+    /** @private */
     _setValue(value) {
 
         if( value && this.multiple && !Array.isArray(value) ) {
@@ -21286,9 +26127,7 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         this._value = value;
     }
 
-    /**
-     * Отобразить значения
-     */
+    /** @private */
     _renderValue() {
 
         const set = () => {
@@ -21329,18 +26168,23 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
     }
 
     /**
-     * Поставить фокус
+     * Focus on component
      */
     Focus() {
         this._input.Focus();
     }
 
     /**
-     * Свойство только для чтения
+     * Readonly
+     * @type {boolean}
      */
     get readonly() {
         return !!this._readonly;
     }
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         if(value === true || value === 'true') {
             this.AddClass('app-component-readonly');
@@ -21353,11 +26197,16 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
     }
 
     /**
-     * Текст для отображения вместо значения
+     * Placeholder text
+     * @type {string}
      */
     get placeholder() {
         return this._placeholder;
     }
+    /**
+     * Placeholder text
+     * @type {string}
+     */
     set placeholder(value) {
         this._placeholder = Lang ? Lang.Translate(value) : value;
         this._input.placeholder = this._placeholder;
@@ -21365,11 +26214,16 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
     }
 
     /**
-     * Вкючено/выключено
+     * Enable/Disable component
+     * @type {boolean}
      */
     get enabled() {
         return this._input.enabled;
     }
+    /**
+     * Enable/Disable component
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('app-component-disabled');
@@ -21382,13 +26236,16 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
 
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value;
@@ -21396,11 +26253,16 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
     }
 
     /**
-     * Список значений
+     * Values array
+     * @type {Array}
      */
     get values() {
         return this._values;
     }
+    /**
+     * Values array
+     * @type {Array}
+     */
     set values(value) {
         this._values = value;
         this._renderValue();
@@ -21408,19 +26270,42 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
 
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Window
+ * @memberof Colibri.UI.Chooser
+ */
 Colibri.UI.Chooser.ChooseWindow = class extends Colibri.UI.Window {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|string|Colibri.UI.Component} container component container 
+     * @param {Element|string} element child elements 
+     * @param {string} title title of window
+     * @param {number} width window width
+     * @param {number} height window height
+     */
     constructor(name, container, element, title, width, height) {
         super(name, container, element, title, width, height);
     }
 
+    /** @protected */
     _registerEvents() {
         this.RegisterEvent('Choosed', false, 'Когда выбор сделан');
     }
 
+    /**
+     * Params
+     * @type {object}
+     */
     get params() {
         return this._params;
     }
+    /**
+     * Params
+     * @type {object}
+     */
     set params(value) {
         this._params = value;
     }
@@ -21428,8 +26313,18 @@ Colibri.UI.Chooser.ChooseWindow = class extends Colibri.UI.Window {
 }
 
 
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.GoogleChart = class extends Colibri.UI.Pane {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container);
@@ -21467,6 +26362,11 @@ Colibri.UI.GoogleChart = class extends Colibri.UI.Pane {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisGoogleChartsLoaded(event, args) {
 
         if(!this._type) {
@@ -21481,6 +26381,7 @@ Colibri.UI.GoogleChart = class extends Colibri.UI.Pane {
 
     }
 
+    /** @private */
     _generateChart() {
         if(!this._chartsIsLoaded) {
             return;
@@ -21514,6 +26415,7 @@ Colibri.UI.GoogleChart = class extends Colibri.UI.Pane {
         });
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('GoogleChartsLoaded', false, 'Когда загрузка завершена');
@@ -21611,21 +26513,39 @@ Colibri.UI.GoogleChart = class extends Colibri.UI.Pane {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Note = class extends Colibri.UI.Pane {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container);
         this.AddClass('app-component-note');
 
-
-
     }
 
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Popup = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {*} element element to create in
+     */    
     constructor(name, container, element) {
         super(name, container, element);
         this.AddClass('app-popup-component');
@@ -21693,6 +26613,10 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
         this._positionOnParent = value;
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     set shown(value) {
         value = value === true || value === 'true';
         super.shown = value;
@@ -21756,6 +26680,10 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
         }
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     get shown() {
         return super.shown;
     }
@@ -21775,6 +26703,11 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
         this._align = value;
     }
 
+    /**
+     * Show popup
+     * @param {Colibri.UI.Component} parent parent of popup
+     * @param {boolean} connectToBody connect to body
+     */
     Show(parent, connectToBody = false) {
         this._connectToBody = connectToBody;
         if(parent) {
@@ -21791,9 +26724,19 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
     
 }
 
-
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.SlideDown = class extends Colibri.UI.Pane {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {*} element element to create in
+     */    
     constructor(name, container, element) {
         super(name, container, element);
         this.AddClass('app-component-slidedown-component');
@@ -21805,10 +26748,18 @@ Colibri.UI.SlideDown = class extends Colibri.UI.Pane {
 
     }
 
+    /**
+     * Toggle component
+     */
     Toggle() {
         this.__handlerClicked();    
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __handlerClicked(event, args) {
         if(this.shown) {
             this.shown = false;
@@ -21852,9 +26803,19 @@ Colibri.UI.SlideDown = class extends Colibri.UI.Pane {
 
 }
 
-
+/**
+ * @class
+ * @extends Colibri.UI.FlexBox
+ * @memberof Colibri.UI
+ */
 Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {Array} values values to show
+     */    
     constructor(name, container, values = null) {
         super(name, container);
         this.AddClass('app-component-year-quarter-selector');
@@ -21883,11 +26844,17 @@ Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
 
     }
     
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Когда значение изменилось');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __yearSelectorChanged(event, args) {
         const selectedYear = this._yearSelector.value.value;
         
@@ -21908,6 +26875,11 @@ Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
         this.Dispatch('Changed', Object.assign(args, {value: this._value}));
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __quarterSelectorChanged(event, args) {
         this._value = {year: this._yearSelector.value.value, quarter: this._quarterSelector.value.value};
         this.Dispatch('Changed', Object.assign(args, {value: this._value}));
@@ -21958,7 +26930,7 @@ Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
         this._values = value;
         this._showValues();
     }
-
+    /** @private */
     _showValues() {
         
         if(!this._values) {
@@ -22003,6 +26975,7 @@ Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
         this._value = value;
         this._showValue();
     }
+    /** @private */
     _showValue() {
         
         if(typeof value === 'string') {
@@ -22022,8 +26995,18 @@ Colibri.UI.AddTemplate('Colibri.UI.SimplePieChart',
 '' + 
 '</div>' + 
 '');
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.SimplePieChart = class extends Colibri.UI.Pane {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */    
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Colibri.UI.Templates['Colibri.UI.SimplePieChart']);
@@ -22048,14 +27031,25 @@ Colibri.UI.SimplePieChart = class extends Colibri.UI.Pane {
         this._value = value;
         this._showValue();
     }
+    /** @private */
     _showValue() {
         this._element.css('--p', this._value);
     }
 
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.FlexBox
+ * @memberof Colibri.UI
+ */
 Colibri.UI.YearMonthSelector = class extends Colibri.UI.FlexBox {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {Array} values values to show
+     */    
     constructor(name, container, values = null) {
         super(name, container);
         this.AddClass('app-component-year-month-selector');
@@ -22071,11 +27065,17 @@ Colibri.UI.YearMonthSelector = class extends Colibri.UI.FlexBox {
 
     }
     
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Когда значение изменилось');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __selectorChanged(event, args) {
         this.Dispatch('Changed', Object.assign(args, {value: this._selector.value.value}));
     }
@@ -22110,7 +27110,7 @@ Colibri.UI.YearMonthSelector = class extends Colibri.UI.FlexBox {
         this._values = value;
         this._showValues();
     }
-
+    /** @private */
     _showValues() {
         
         if(!this._values) {
@@ -22142,6 +27142,7 @@ Colibri.UI.YearMonthSelector = class extends Colibri.UI.FlexBox {
         this._value = value;
         this._showValue();
     }
+    /** @private */
     _showValue() {
         
         if(typeof value === 'string') {
@@ -22155,9 +27156,18 @@ Colibri.UI.YearMonthSelector = class extends Colibri.UI.FlexBox {
 }
 
 
-
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('form'));
         this.AddClass('app-form-component');
@@ -22175,6 +27185,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Validated', false, 'Когда форма полностью валидирована');
@@ -22186,6 +27197,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         this.RegisterEvent('ActiveFieldChanged', false, 'Когда активное поле изменилось');
     }
 
+    /** @protected */
     _registerEventHandlers() {
         this.AddHandler('Changed', (event, args) => {
             this._hideAndShow();
@@ -22193,6 +27205,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         });
     }
 
+    /** @protected */
     _setFilledMark() {
         Object.forEach(this._fields, (name, fieldData) => {
             const fieldComponent = this.Children(name);
@@ -22200,6 +27213,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         });
     }
 
+    /** @protected */
     _calcRuntimeValues(rootValue = null) {
         if(this._calculating) {
             return;
@@ -22225,6 +27239,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         this._calculating = false;
     }
 
+    /** @protected */
     _hideAndShow() {
 
         const data = this.value;
@@ -22286,10 +27301,25 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Download attribute
+     * @type {string|boolean}
+     */
     set download(value) {
         this._download = value;
     }
+    /**
+     * Download attribute
+     * @type {string|boolean}
+     */
+    get download() {
+        return this._download;
+    }
 
+    /**
+     * Fields object
+     * @type {object}
+     */
     set fields(fields) {
         if(typeof fields == 'string') {
             fields = this._storage.Query(fields);
@@ -22300,10 +27330,19 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         this._hideAndShow();
         this._setFilledMark();
     }
+    /**
+     * Fields object
+     * @type {object}
+     */
     get fields() {
         return this._fields;
     }
 
+    /**
+     * Searches for field
+     * @param {string} name name of field to find
+     * @returns Colibri.UI.Forms.Field
+     */
     Fields(name = null) {
 
         if(name) {
@@ -22319,6 +27358,10 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         return ret;
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     set value(value) {
 
         this._value = Object.assign({}, value);
@@ -22373,6 +27416,10 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         this._setFilledMark();
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     get value() {
         let data = Object.assign({}, this._value);
         this.ForEach((name, component) => {
@@ -22391,13 +27438,25 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         return data;
     }
 
+    /**
+     * Message string
+     * @type {string}
+     */
     set message(value) {
         this._error && (this._error.value = value);
     }
+    /**
+     * Message string
+     * @type {string}
+     */
     get message() {
         return this._error?.value ?? '';
     }
 
+    /**
+     * Shuffle field names to prevent autofill
+     * @type {boolean}
+     */
     set shuffleFieldNames(value) {
         this._shuffleFieldNames = value === true || value === 'true';
         if(this._shuffleFieldNames) {
@@ -22405,10 +27464,15 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Shuffle field names to prevent autofill
+     * @type {boolean}
+     */
     get shuffleFieldNames() {
         return this._shuffleFieldNames;
     }
 
+    /** @private */
     _prepareOneOf(data, field) {
         if(Object.isObject(data)) {
             Object.forEach(data, (n, v) => {
@@ -22431,6 +27495,11 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         return data;
     }
 
+    /**
+     * Searches for field in all debt
+     * @param {string} fieldName field name or path
+     * @returns {Colibri.UI.Forms.Field}
+     */
     FindField(fieldName) {
         let field = null,
             queryString = fieldName.split('/')
@@ -22455,6 +27524,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         return field;
     }
 
+    /** @private */
     _renderField(name, fieldData, value, shown = true) {
         const root = this.root || this;
         const component = Colibri.UI.Forms.Field.Create(name, this, fieldData, null, root);
@@ -22481,6 +27551,7 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         }
     }
 
+    /** @private */
     _renderFields(value) {
         
         let hasGroups = false;
@@ -22540,12 +27611,16 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         this.Dispatch('FieldsRendered');
     }
 
+    /** @private */
     __renderBoundedValues(values) {
         Object.forEach(values, (name, value) => {
             this.Children(name).value = value;
         });
     }
 
+    /**
+     * Focus on form (to the first component)
+     */
     Focus() {
         const firstComponent = this.Children('firstChild');
         if(firstComponent) {
@@ -22572,14 +27647,14 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
     }
 
     /**
-     * Активное поле
+     * Active field
      * @type {Colibri.UI.Form.Field}
      */
     get activeField() {
         return this._activeField;
     }
     /**
-     * Активное поле
+     * Active field
      * @type {Colibri.UI.Form.Field}
      */
     set activeField(value) {
@@ -22606,19 +27681,47 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
     }
 
 } 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
 
+    /**
+     * @static
+     * @type {object}
+     */
     static Components = {};
+    /**
+     * Registers field to show in backend when choosing component on storage field
+     * @param {string} name name of component
+     * @param {string} className class name of component
+     * @param {string} description component description
+     * @param {string} icon icon of component
+     */
     static RegisterFieldComponent(name, className, description, icon) {
         if(!icon) {
             icon = Colibri.UI.FieldIcons[className];
         }
         Colibri.UI.Forms.Field.Components[name] = {className, description, icon};
     }
+    /**
+     * Unregisters a field from backend list
+     * @param {string} name name of component
+     */
     static UnregisterFieldComponent(name) {
         delete Colibri.UI.Forms.Field.Components[name];
     }
 
+    /**
+     * Creates a new field object
+     * @param {string} name name of field
+     * @param {Colibri.UI.Component} container container of component
+     * @param {object} field field data
+     * @param {Colibri.UI.Forms.Field} parent parent field
+     * @param {Colibri.UI.Forms.Form} root form component
+     */
     static Create(name, container, field, parent, root = null) {
         if(!field.component && !field.type) {
             return ;
@@ -22687,6 +27790,14 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         return componentObject;
     }
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {object} fieldData fields object
+     * @param {Colibri.UI.Forms.Field} parent parent component
+     * @param {Colibri.UI.Forms.Form|Colibri.UI.Forms.Field} root component
+     */
     constructor(name, container, fieldData, parent, root) {
         super(name, container, Element.create('div'));
 
@@ -22697,6 +27808,7 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         this.AddClass('app-component-field');
 
         this._title = new Colibri.UI.TextSpan(this._name + '-title', this);
+        this._before = new Colibri.UI.Pane(this._name + '-before', this);
         this._content = new Colibri.UI.Pane(this._name + '-content', this);
         new Colibri.UI.Pane(this._name + '-container', this._content);
         new Colibri.UI.TextSpan(this._name + '-note', this._content);
@@ -22722,6 +27834,7 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         this.RenderFieldContainer();
 
         this.title = this._fieldData?.desc ? this._fieldData?.desc[Lang.Current] ?? this._fieldData?.desc ?? '' : '';
+        this.before = this._fieldData?.before ? this._fieldData.before[Lang.Current] ?? this._fieldData.before ?? '' : '';
         this.note = this._fieldData?.note ? this._fieldData?.note[Lang.Current] ?? this._fieldData?.note ?? '' : '';
         this.placeholder = this._fieldData?.placeholder ? this._fieldData?.placeholder[Lang.Current] ?? this._fieldData?.placeholder ?? '' : '';
 
@@ -22801,6 +27914,10 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Adds remove link on field
+     * @param {Function} callback handle click on remove link
+     */
     AddRemoveLink(callback) {
         this._removeLink = new Colibri.UI.Icon(this._name + '-remove', this);
         this._removeLink.AddClass('app-component-remove-field')
@@ -22815,6 +27932,11 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         });
     }
 
+    /**
+     * Adds up and down link on field
+     * @param {Function} upCallback handle click on up link
+     * @param {Function} downCallback handle click on down link
+     */
     AddUpDownLink(upCallback, downCallback) {
         this._upLink = new Colibri.UI.Icon(this._name + '-up', this);
         this._upLink.AddClass('app-component-up-field')
@@ -22838,6 +27960,7 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         });
     }
 
+    /** @protected */
     _registerEvents() { 
         super._registerEvents();  
         this.RegisterEvent('Validated', false, 'Прошла валидация')
@@ -22848,13 +27971,18 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         this.RegisterEvent('MessageClicked', false, 'Когда ткнули в ошибку')
     }
 
+    
     /**
-     * Обработка binding
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
      */
     __renderBoundedValues(data, path) {
         this.value = data;
     }
 
+    /** @private */
     _applyRuntimes() {
         let runtime = this._fieldData?.params?.runtime;
         if(runtime) {
@@ -22863,6 +27991,7 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _setFilledMark() {
         if(this instanceof Colibri.UI.Forms.Array) {
             this.itemsContainer.ForEach((name, component) => component instanceof Colibri.UI.Forms.Field && component._setFilledMark());
@@ -22884,24 +28013,40 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Validate field
+     */
     Validate() {
         this._validated = true;
     }
 
+    /** @protected */
     RenderFieldContainer() {
         throw new Error('');
     }
 
+    /**
+     * Reset validation results
+     */
     ResetValidation() {
         this.params && (this.params.validated = true);
         this.RemoveClass('app-validate-error');
         this.message = '';
     }
 
+    /**
+     * Message component
+     * @type {Colibri.UI.Component}
+     * @readonly
+     */
     get messageObject() {
         return this._content.Children(this._name + '-message');
     }
 
+    /**
+     * Message string
+     * @type {string}
+     */
     get message() {
         const message = this._content.Children(this._name + '-message');
         if(!message) {
@@ -22910,6 +28055,10 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         return message.value;
     }
 
+    /**
+     * Message string
+     * @type {string}
+     */
     set message(value) {
         const message = this._content.Children(this._name + '-message');
         if(!message) {
@@ -22919,13 +28068,26 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         message.value = value ? value[Lang.Current] ?? value : '';
     }
 
+    /**
+     * Title object
+     * @type {Colibri.UI.Component}
+     * @readonly
+     */
     get titleObject() {
         return this._content.Children(this._name + '-title');
     }
 
+    /**
+     * Title string
+     * @type {string}
+     */
     get title() {
         return this._title.value;
     }
+    /**
+     * Title string
+     * @type {string}
+     */
     set title(value) {
         if(typeof value === 'function') {
             value(this).then((v) => {
@@ -22948,100 +28110,219 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Before content
+     * @type {string}
+     */
+    get before() {
+        return this._before.value;
+    }
+    /**
+     * Before content
+     * @type {string}
+     */
+    set before(value) {
+        this._before.value = value;
+        this._before.shown = !!value;
+    }
+
+     /**
+     * Note object
+     * @type {Colibri.UI.Component}
+     * @readonly
+     */
     get noteObject() {
         return this._content.Children(this._name + '-note');
     }
 
+    /**
+     * Note string
+     * @type {string}
+     */
     get note() {
         return this._content.Children(this._name + '-note').value;
     }
+    /**
+     * Note string
+     * @type {string}
+     */
     set note(value) {
         this._content.Children(this._name + '-note').value = value ? value[Lang.Current] ?? value : '';
     }
 
+    /**
+     * Content container
+     * @type {Element}
+     * @readonly
+     */
     get contentContainer() {
         return this._content.Children(this._name + '-container');
     }
 
+    /**
+     * Content pane component
+     * @type {Colibri.UI.Component}
+     * @readonly
+     */
     get contentPane() {
         return this._content;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._fieldData;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(value) {
         this._fieldData = value;
     }
 
+    /**
+     * Field width
+     * @type {number}
+     */
     set inputWidth(value) {
         this._content.Children(this._name + '-container').width = value;
     }
 
+    /**
+     * Field width
+     * @type {number}
+     */
     get inputWidth() {
         return this._content.Children(this._name + '-container').width;
     }
 
+    /**
+     * Field root parent
+     * @type {Colibri.UI.Forms.Field|Colibri.UI.Forms.Form}
+     */
     get root() {
         return this._root;
     }
 
+    /**
+     * Field root parent
+     * @type {Colibri.UI.Forms.Field|Colibri.UI.Forms.Form}
+     */
     set root(value) {
         this._root = value;
     }
 
+    /**
+     * Field form
+     * @type {Colibri.UI.Forms.Form}
+     * @readonly
+     */
     get form() {
         const formElement = this._element.closest('.app-form-component');
         return formElement ? formElement.tag('component') : null;
     }
 
+    /**
+     * Field field
+     * @type {Colibri.UI.Forms.Field}
+     * @readonly
+     */
     get parentField() {
         return this._parentField;
     }
 
+    /**
+     * Original value, before change
+     * @type {*}
+     * @readonly
+     */
     get original() {
         return this._original;
     }
 
-
 }
 
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.HiddenField = class extends Colibri.UI.Component {
+    /**
+     * Creates a new field object
+     * @param {string} name name of field
+     * @param {Colibri.UI.Component} container container of component
+     * @param {object} fieldData field data
+     */
     constructor(name, container, fieldData) {
         super(name, container, Element.create('input', {type: 'hidden'}));
         this._fieldData = fieldData;
         this._validated = true;
     }
 
+    /**
+     * Value string
+     * @type {string}
+     */
     get value() {
         return this._element.value;
     }
 
+    /**
+     * Value string
+     * @type {string}
+     */
     set value(value) {
         this._element.value = value;
     }
 
+    /**
+     * Validate field
+     */
     Validate() {
         this._validated = true;
     }
 
+    /**
+     * Is field validated
+     * @type {boolean}
+     * @readonly
+     */
     get validated() {
         return this._validated;
     }
 
+    /**
+     * Return field object
+     * @type {object}
+     * @readonly
+     */
     get field() {
         return {};
     }
 
+    /**
+     * Reset validation results of field
+     */
     ResetValidation() {
         // Do nothing
     }
 
 }
-
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Text = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-text-field');
@@ -23118,30 +28399,47 @@ Colibri.UI.Forms.Text = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
         //this._input.select();
     }
 
+    /**
+     * Maximum length of value
+     * @type {number}
+     */
     set maxlength(value) {
         value = this._convertProperty('Number', value);
         this._input.attr('maxlength', value);
     }
-
+    /**
+     * Maximum length of value
+     * @type {number}
+     */
     get maxlength() {
         return this._input.attr('maxlength');
     }
 
-    
+    /**
+     * Is field readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.attr('readonly') === 'readonly';
     }
-
+    /**
+     * Is field readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -23151,11 +28449,17 @@ Colibri.UI.Forms.Text = class extends Colibri.UI.Forms.Field {
             this._input.attr('readonly', null);
         }
     }
-
+    /**
+     * Input placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.attr('placeholder');
     }
-
+    /**
+     * Input placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.attr('placeholder', value);
@@ -23167,6 +28471,10 @@ Colibri.UI.Forms.Text = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Input value
+     * @type {string}
+     */
     get value() {
         let value = this._input.value;
         if(this._fieldData?.params?.emptyAsNull && !value) {
@@ -23177,17 +28485,26 @@ Colibri.UI.Forms.Text = class extends Colibri.UI.Forms.Field {
         }
         return value;
     }
-
+    /**
+     * Input value
+     * @type {string}
+     */
     set value(value) {
         this._original = value;
         this._input.value = value ?? '';
     }
 
-    
+    /**
+     * Enable/Disable component
+     * @type {boolean}
+     */
     get enabled() {
         return this._input.attr('disabled') != 'disabled';
     }
-
+    /**
+     * Enable/Disable component
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -23201,26 +28518,37 @@ Colibri.UI.Forms.Text = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 
+    /**
+     * Icon on input
+     * @type {string}
+     */
     set icon(value) {
         this._icon = value;
         this._showIcon();
     }
+    /**
+     * Icon on input
+     * @type {string}
+     */
     get icon() {
         value = this._convertProperty('String', value);
         return this._icon;
     }
-
+    /** @private */
     _showIcon() {
         const contentContainer = this.contentContainer;
         if(!this._icon) {
@@ -23237,10 +28565,19 @@ Colibri.UI.Forms.Text = class extends Colibri.UI.Forms.Field {
 
     }
 }
+
 Colibri.UI.Forms.Field.RegisterFieldComponent('Text', 'Colibri.UI.Forms.Text', '');
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.TextArea = class extends Colibri.UI.Forms.Field {
-
+    
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-textarea-field');
@@ -23312,6 +28649,7 @@ Colibri.UI.Forms.TextArea = class extends Colibri.UI.Forms.Field {
         
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
@@ -23417,8 +28755,16 @@ Colibri.UI.Forms.TextArea = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('TextArea', 'Colibri.UI.Forms.TextArea', '');
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Bool = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-bool-field');
@@ -23455,28 +28801,47 @@ Colibri.UI.Forms.Bool = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
         this._input.select();
     }
 
+    /**
+     * Label for checkbox
+     * @type {string}
+     */
     get title() {
         return this._label.html();
     }
+    /**
+     * Label for checkbox
+     * @type {string}
+     */
     set title(value) {
         value = this._convertProperty('String', value);
         this._label.html(value);
     }
 
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.attr('readonly') === 'readonly';
     }
-
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -23487,18 +28852,34 @@ Colibri.UI.Forms.Bool = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     get placeholder() {
         return '';
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     set placeholder(value) {
-        // ничего не делаем
+        // do nothing
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     get value() {
         return this._input.is(':checked');
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
         
         if(value === null) {
@@ -23514,11 +28895,18 @@ Colibri.UI.Forms.Bool = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */    
     get enabled() {
         return this._input.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */    
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -23532,13 +28920,16 @@ Colibri.UI.Forms.Bool = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return this._input && this._input.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
@@ -23546,8 +28937,16 @@ Colibri.UI.Forms.Bool = class extends Colibri.UI.Forms.Field {
 
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Bool', 'Colibri.UI.Forms.Bool', '');
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-date-field');
@@ -23591,34 +28990,60 @@ Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
         }
 
     }
-
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.Focus();
     }
 
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.readonly;
     }
 
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input.readonly = value;
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.placeholder;
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.placeholder = value;
     }
 
+    /**
+     * Value
+     * @type {Date}
+     */
     get value() {
         let value = this._input.value;
         return (value?.toString() === 'Invalid Date' ? null : value.toShortDateString());
     }
 
+    /**
+     * Value
+     * @type {Date}
+     */
     set value(value) {
         if(typeof value == 'string') {
             value = new Date(value);
@@ -23626,11 +29051,18 @@ Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
         this._input.value = value;
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */   
     get enabled() {
         return this._input.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */   
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input.enabled = value;
@@ -23638,13 +29070,16 @@ Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value;
@@ -23652,8 +29087,16 @@ Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
     }
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Date', 'Colibri.UI.Forms.Date', '');
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
         
         this.AddClass('app-component-number-field');
@@ -23672,10 +29115,10 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         this._input.addEventListener('focus', (e) => this.Dispatch('ReceiveFocus', {domEvent: e}));
         this._input.addEventListener('blur', (e) => this.Dispatch('LoosedFocus', {domEvent: e}));
         this._input.addEventListener('change', (e) => {
-            if(this.max !== null && this._input.value > this.max) {
+            if(this.max !== null && parseFloat(this._input.value) > this.max) {
                 this._input.value = this.max;
             }
-            if(this.min !== null && this._input.value < this.min) {
+            if(this.min !== null && parseFloat(this._input.value) < this.min) {
                 this._input.value = this.min;
             }
             if(this._original != this._input.value) {
@@ -23738,20 +29181,31 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
-
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
         // this._input.select();
     }
 
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.attr('readonly') === 'readonly';
     }
 
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -23764,15 +29218,27 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.attr('placeholder');
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.attr('placeholder', value);
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     get value() {
         let value = this._input.value;
         if(this._fieldData?.params?.emptyAsNull && value === '') {
@@ -23781,6 +29247,10 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         return this._convertValue(value, false);
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     set value(value) {
         this._original = value;
         if(value === '' || value === null) {
@@ -23791,6 +29261,7 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /** @private */
     _convertValue(value, direction = true) {
         this._isShare = this._fieldData?.params?.isShare ?? false;
         if(direction) {
@@ -23806,7 +29277,7 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         
         if(value !== '' && value !== null && this._fieldData?.params?.decimal !== undefined) {
             try {
-                value = (value * 1.0).toFixed(this._fieldData?.params?.decimal);
+                value = (value * 1.0).toFixed(this._isShare && !direction ? 2 : this._fieldData?.params?.decimal);
             } catch(e) {
                 // console.log(e, value)
             }
@@ -23814,11 +29285,18 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
         return value;
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     get enabled() {
         return this._input.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -23832,13 +29310,16 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return this._input && this._input.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
@@ -23848,7 +29329,7 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
      * @type {Number}
      */
     get max() {
-        return this._input.attr('max');
+        return parseFloat(this._input.attr('max'));
     }
     /**
      * Maximum allowed value
@@ -23863,7 +29344,7 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
      * @type {Number}
      */
     get min() {
-        return this._input.attr('min');
+        return parseFloat(this._input.attr('min'));
     }
     /**
      * Minimum allowed value
@@ -23876,8 +29357,16 @@ Colibri.UI.Forms.Number = class extends Colibri.UI.Forms.Field {
 
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Number', 'Colibri.UI.Forms.Number', '')
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Email = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-email-field');
@@ -23945,19 +29434,31 @@ Colibri.UI.Forms.Email = class extends Colibri.UI.Forms.Field {
         
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
     }
 
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.attr('readonly') === 'readonly';
     }
 
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -23968,15 +29469,27 @@ Colibri.UI.Forms.Email = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.attr('placeholder');
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         let value = this._input.value;
         if(this._fieldData?.params?.emptyAsNull && !value) {
@@ -23988,25 +29501,44 @@ Colibri.UI.Forms.Email = class extends Colibri.UI.Forms.Field {
         return value.trimString();
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._original = (value ?? '').trimString();
         this._input.value = (value ?? '').trimString();
     }
 
+    /**
+     * Validation text
+     * @type {string}
+     */
     get validationText() {
         return this._validationText;
     }
 
+    /**
+     * Validation text
+     * @type {string}
+     */
     set validationText(value) {
         value = this._convertProperty('String', value);
         this._validationText = value;
     }
 
-
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     get enabled() {
         return this._input.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -24020,22 +29552,30 @@ Colibri.UI.Forms.Email = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return this._input && this._input.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Email', 'Colibri.UI.Forms.Email', '')
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
 
     /**
-     * Отрисовка содержания компонента поля 
+     * Render field component
      */
     RenderFieldContainer() {
 
@@ -24104,7 +29644,7 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Заново загрузить значения из хранилища
+     * Reload values to component
      */
     ReloadValues() {
         this.values = this._fieldData.values;
@@ -24125,6 +29665,7 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /** @protected */
     _getDependsValue(type = null) {
         if (this.root && this._fieldData?.lookup) {
 
@@ -24145,8 +29686,7 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Установить новое значение свойству lookup
-     * Загрузить значения селектора альтернативным способом, указанным в lookup
+     * Run lookup
      * @param {(Object|function)} value
      */
     _setLookup(value) {
@@ -24233,9 +29773,9 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Значения селектора
-     * @param {array} value
-     * */
+     * Values
+     * @param {Array} value
+     */
     set values(value) {
         value = this._convertProperty('Array', value);
         let required = this._fieldData?.params?.required;
@@ -24252,26 +29792,31 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Значения селектора
-     * @return {array} value
-     * */
+     * Values
+     * @param {Array} value
+     */
     get values() {
         return this._input.values;
     }
 
     /**
-     * Поставить фокус
+     * Focus on component
      */
     Focus() {
         this._input.Focus();
     }
 
     /**
-     * Только для чтения
+     * Field is readonly
+     * @type {boolean}
      */
     get readonly() {
         return this._input.readonly;
     }
+    /**
+     * Field is readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input.readonly = value;
@@ -24299,32 +29844,54 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Замещающий текст
+     * Field placeholder
+     * @type {string}
      */
     get placeholder() {
         return this._input.placeholder;
     }
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.placeholder = value;
     }
 
+    /**
+     * Field placeholder info
+     * @type {object}
+     */
     get placeholderinfo() {
         return this._input.placeholderinfo;
     }
+    /**
+     * Field placeholder info
+     * @type {object}
+     */
     set placeholderinfo(value) {
         this._input.placeholderinfo = value;
     }
 
+    /**
+     * Field empty placeholder generator 
+     * @type {Function}
+     */
     get placeholderempty() {
         return this._input.placeholderempty;
     }
+    /**
+     * Field empty placeholder generator 
+     * @type {Function}
+     */
     set placeholderempty(value) {
         this._input.placeholderempty = value;
     }
 
     /**
-     * Выбранное значение
+     * Value
+     * @type {*}
      */
     get value() {
         let value = this._lastValue || this._input.value;
@@ -24339,6 +29906,10 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
         }
         return value;
     }
+    /**
+     * Value
+     * @type {*}
+     */
     set value(value) {
         if(this.loading === true) {
             this._lastValue = value;
@@ -24348,11 +29919,16 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Включен/выключен
+     * Enable/Disable
+     * @type {boolean}
      */
     get enabled() {
         return this._input.enabled;
     }
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -24363,17 +29939,14 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
         }
         this._input.enabled = value;
     }
-
+    /** @private */
     _setEnabled() {
         if(!this.value && this._fieldData.default) {
             this.value = this._fieldData.default;
         }
     }
 
-    /**
-     * Если необходимо инициализировать данные из lookup
-     * @private
-     */
+    /** @private */
     _initializeValues() {
         if (this._fieldData.lookup) {
             this.loading = true;
@@ -24401,23 +29974,38 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value;
         }
     }
 
+    /**
+     * Popup configuration
+     * @type {object}
+     */
     set popupconfig(value) {
         this._input.popupconfig = value;
     }
+    /**
+     * Popup configuration
+     * @type {object}
+     */
+    get popupconfig() {
+        return this._input.popupconfig;
+    }
 
+    /** @private */
     _createSelector() {
 
         return new Colibri.UI.Selector(
@@ -24436,11 +30024,20 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
             ((this._fieldData.clearicon ?? this._fieldData?.params?.clearicon) === undefined ? false : (this._fieldData.clearicon ?? this._fieldData?.params?.clearicon))
         );
     }
+    
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Select', 'Colibri.UI.Forms.Select', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Label = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-label-field');
@@ -24467,26 +30064,38 @@ Colibri.UI.Forms.Label = class extends Colibri.UI.Forms.Field {
 
     }
 
-
+    /**
+     * Focus on component
+     */
     Focus() {
         // do nothing
     }
+    /**
+     * Value string
+     * @type {string}
+     */
     get value() {
         return this._input.html();
     }
-
+    /**
+     * Value string
+     * @type {string}
+     */
     set value(value) {
         this._input.html(value);
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return null;
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         // do nothing
     }
@@ -24494,19 +30103,20 @@ Colibri.UI.Forms.Label = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Label', 'Colibri.UI.Forms.Label', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-file-field');
         const contentContainer = this.contentContainer;
-
-        // this.AddHandler('Clicked', (event, args) => {
-        //     const value = args.item.value;
-        //     if(this._field && this._field.params && this._field.params.download) {
-        //         window.open(window.rpchandler + this._download + '?guid=' + value.file.guid);
-        //     }
-        // });
 
         this._value = null;
         this._valueData = null;
@@ -24548,6 +30158,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @private */
     _clicked(value) {
         if (this._value instanceof File) {
             this._value.download();
@@ -24557,6 +30168,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /** @protected */
     _handleEvents() {
 
         this.AddHandler('Clicked', (event, args) => this._clicked(args));
@@ -24592,10 +30204,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Нарисовать инпут и контейнер для отображения выбранного файла
-     * @private
-     */
+    /** @private */
     _renderInput() {
         if (!this._dropAreaEnabled) {
             this._input = new Colibri.UI.Input.File('input', this.contentContainer);
@@ -24625,10 +30234,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Отобразить выбранный файл
-     * @private
-     */
+    /** @private */
     _showFile() {
         if (this._dropAreaEnabled && this._value) {
             let file = this._value;
@@ -24655,10 +30261,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Очистить инпут от файла и ошибок
-     * @private
-     */
+    /** @private */
     _clearInput() {
         if (this._dropAreaEnabled) {
             this.RemoveClass('-file-chosen');
@@ -24672,10 +30275,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Показать ошибки валидации
-     * @private
-     */
+    /** @private */
     _showError() {
         if (this._dropAreaEnabled) {
             this._input.AddClass('-validation-error');
@@ -24687,11 +30287,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Собрать список разрешенных расширений в строку нужного формата
-     * @return {string}
-     * @private
-     */
+    /** @private */
     _extensionsToString() {
         let extensionsString = '';
 
@@ -24702,11 +30298,7 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
         return extensionsString;
     }
 
-    /**
-     * Валидация выбранного списка файлов
-     * @param {array} filesList
-     * @private
-     */
+    /** @private */
     _validate(filesList) {
         let error = false;
 
@@ -24746,23 +30338,23 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Поставить фокус
+     * Focus on component
      */
     Focus() {
         this._input.Focus();
     }
 
     /**
-     * Отображать ли drag-and-drop
-     * @return {boolean}
+     * Show drop container
+     * @type {boolean}
      */
     get dropAreaEnabled() {
         return this._dropAreaEnabled;
     }
 
     /**
-     * Отображать ли drag-and-drop
-     * @param {boolean|string} value
+     * Show drop container
+     * @type {boolean}
      */
     set dropAreaEnabled(value) {
         value = this._convertProperty('Boolean', value);
@@ -24770,12 +30362,16 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Значение поля (выбранный файл)
+     * Value
      * @type {File}
      */
     get value() {
         return this._value;
     }
+    /**
+     * Value
+     * @type {File}
+     */
     set value(value) {
         if(value instanceof File) {
             this._value = value;
@@ -24794,22 +30390,34 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Download the file
+     * @type {boolean}
+     */ 
     set download(value) {
         value = this._convertProperty('String', value);
         this._download = value;
     }
 
+    /**
+     * Download the file
+     * @type {boolean}
+     */ 
     get download() {
         return this._download;
     }
 
     /**
-     * Максимальное количество выбранных файлов
+     * Allowed extensions
      * @type {array|null}
      */
     get allowedExtensions() {
         return this._allowedExtensions;
     }
+    /**
+     * Allowed extensions
+     * @type {array|null}
+     */
     set allowedExtensions(value) {
         this._allowedExtensions = value;
         if (this._dropAreaEnabled) { 
@@ -24818,37 +30426,48 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Максимальный размер одного файла
+     * Max allowed file size
      * @type {number|null}
      */
     get maxFileSize() {
         return this._maxFileSize;
     }
+    /**
+     * Max allowed file size
+     * @type {number|null}
+     */
     set maxFileSize(value) {
         value = this._convertProperty('Number', value);
         this._maxFileSize = value;
     }
 
     /**
-     * Максимальное количество выбранных файлов
+     * Max allowed files
      * @type {number|null}
      */
     get maxCount() {
         return this._maxCount;
     }
+    /**
+     * Max allowed files
+     * @type {number|null}
+     */
     set maxCount(value) {
         value = this._convertProperty('Number', value);
         this._maxCount = value;
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
-     * @type {number}
+     * Tab index
+     * @type {number|boolean}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value === true ? Colibri.UI.tabIndex++ : value;
@@ -24857,8 +30476,16 @@ Colibri.UI.Forms.File = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('File', 'Colibri.UI.Forms.File', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-files-field');
@@ -24913,6 +30540,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _handleEvents() {
 
         this._files.AddHandler('ItemClicked', (event, args) => this._itemClicked(args.item.value));
@@ -24958,10 +30586,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Нарисовать список выбранных файлов
-     * @private
-     */
+    /** @private */
     _renderFilesList() {
         this._files = new Colibri.UI.List('list', this.contentContainer);
         this._filesGroup = this._files.AddGroup('group', '');
@@ -25052,10 +30677,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Нарисовать инпут
-     * @private
-     */
+    /** @private */
     _renderInput() {
         if (!this._dropAreaEnabled) {
             this._input = new Colibri.UI.Input.File('input', this.contentContainer);
@@ -25075,10 +30697,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         this._delDialog = this._fieldData.params?.deletedialog ?? false;
     }
 
-    /**
-     * Очистить инпут от ошибок
-     * @private
-     */
+    /** @private */
     _clearInput() {
         if (this._dropAreaEnabled) {
             this._input.errorMessages = [];
@@ -25086,10 +30705,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Показать ошибки валидации
-     * @private
-     */
+    /** @private */
     _showError() {
         this._errorMessages.forEach((message) => {
             App.Notices.Add({
@@ -25102,11 +30718,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         this._errorMessages = [];
     }
 
-    /**
-     * Собрать список разрешенных расширений в строку нужного формата
-     * @return {string}
-     * @private
-     */
+    /** @private */
     _extensionsToString() {
         let extensionsString = [];
 
@@ -25127,12 +30739,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         return extensionsString.join(' ');
     }
 
-    /**
-     * Валидация выбранного списка файлов
-     * @param {array} filesList
-     * @return {array} список файлов, прошедших проверку
-     * @private
-     */
+    /** @private */
     _validate(filesList) {
         let error = false;
         let validatedList = filesList;
@@ -25190,6 +30797,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         return validatedList;
     }
 
+    /** @private */
     _itemClicked(value) {
         if (value.file instanceof File) {
             value.file.download();
@@ -25199,6 +30807,9 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Rollback to the last selection
+     */
     Rollback() {
         if (this.lastValue !== undefined) {
             this._filesGroup.Clear();
@@ -25211,23 +30822,23 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Поставить фокус
+     * Focus on component
      */
     Focus() {
         this._input.Focus();
     }
 
     /**
-     * Отображать ли drag-and-drop
-     * @return {boolean}
+     * Show drop container
+     * @type {boolean}
      */
     get dropAreaEnabled() {
         return this._dropAreaEnabled;
     }
 
     /**
-     * Отображать ли drag-and-drop
-     * @param {boolean|string} value
+     * Show drop container
+     * @type {boolean}
      */
     set dropAreaEnabled(value) {
         value = this._convertProperty('Boolean', value);
@@ -25235,21 +30846,21 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Значение поля (выбранные файлы)
+     * Value array
      * @type {File[]}
      */
     get value() {
         return this._getValue();
     }
+    /**
+     * Value array
+     * @type {File[]}
+     */
     set value(value) {
         this._setValue(value);
     }
 
-    /**
-     * Значение поля (выбранные файлы)
-     * @type {File[]}
-     * @private
-     */
+    /** @private */
     _getValue() {
         let ret = [];
         this._filesGroup.ForEach((name, item) => {
@@ -25257,6 +30868,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         })
         return ret;
     }
+    /** @private */
     _setValue(value) {
         if(Array.isArray(value)) {
             this._filesGroup.value = [];
@@ -25272,6 +30884,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
         this._files.shown = this._filesGroup.value.length > 0;
 
     }
+    /** @private */
     _addValue(value) {
         if(Array.isArray(value)) {
             for(const file of value) {
@@ -25284,49 +30897,64 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Максимальное количество выбранных файлов
+     * Allowed extensions
      * @type {array|null}
      */
     get allowedExtensions() {
         return this._allowedExtensions;
     }
+    /**
+     * Allowed extensions
+     * @type {array|null}
+     */
     set allowedExtensions(value) {
         this._allowedExtensions = value;
         if (this._dropAreaEnabled) { this._input.extensionsLabel.value = this._extensionsToString(); }
     }
 
     /**
-     * Максимальный размер одного файла
+     * Maximum file size
      * @type {number|null}
      */
     get maxFileSize() {
         return this._maxFileSize;
     }
+    /**
+     * Maximum file size
+     * @type {number|null}
+     */
     set maxFileSize(value) {
         value = this._convertProperty('Number', value);
         this._maxFileSize = value;
     }
 
     /**
-     * Максимальное количество выбранных файлов
+     * Max files
      * @type {number|null}
      */
     get maxCount() {
         return this._maxCount;
     }
+    /**
+     * Max files
+     * @type {number|null}
+     */
     set maxCount(value) {
         value = this._convertProperty('Number', value);
         this._maxCount = value;
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     } 
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value === true ? Colibri.UI.tabIndex++ : value;
@@ -25335,8 +30963,16 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Files', 'Colibri.UI.Forms.Files', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Year = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-year-field');
@@ -25364,41 +31000,67 @@ Colibri.UI.Forms.Year = class extends Colibri.UI.Forms.Field {
 
     }
 
-
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.Focus();
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     get value() {
         return this._input.value.value;
     }
 
-    getValueTitle() {
-        return this._input.value.title;
-    }
-
+    /**
+     * Value
+     * @type {number}
+     */
     set value(value) {
         this._input.value = value;
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Get value title
+     * @returns {string}
+     */
+    getValueTitle() {
+        return this._input.value.title;
+    }
+
+    /**
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value === true ? Colibri.UI.tabIndex++ : value;
         }
     }
 }
+
 Colibri.UI.Forms.Field.RegisterFieldComponent('Year', 'Colibri.UI.Forms.Year', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.MonthYear = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-monthyear-field');
@@ -25432,18 +31094,33 @@ Colibri.UI.Forms.MonthYear = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._month.Focus()
     }
 
-    get value() {
-        return (this._year?.value?.value ?? '') + '-' + (this._month?.value?.value ?? '');
-    }
-
+    /**
+     * Get value title
+     * @returns {string}
+     */
     getValueTitle() {
         return this._month.value.title + ' ' + this._year.value.title;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
+    get value() {
+        return (this._year?.value?.value ?? '') + '-' + (this._month?.value?.value ?? '');
+    }
+
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
 
         const parts = value.split('-');
@@ -25452,10 +31129,18 @@ Colibri.UI.Forms.MonthYear = class extends Colibri.UI.Forms.Field {
         this._year.value = parts[1];
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._month.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._month.readonly = value;
@@ -25463,13 +31148,16 @@ Colibri.UI.Forms.MonthYear = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._month && this._month.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._month) {
             this._month.tabIndex = value === true ? Colibri.UI.tabIndex++ : value;
@@ -25478,8 +31166,16 @@ Colibri.UI.Forms.MonthYear = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('MonthYear', 'Colibri.UI.Forms.MonthYear', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Link = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-link-field');
@@ -25502,35 +31198,57 @@ Colibri.UI.Forms.Link = class extends Colibri.UI.Forms.Field {
 
     }
 
-
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
         this._input.select();
     }
+
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._input.html();
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._input.html(value);
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Link', 'Colibri.UI.Forms.Link', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.List = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-list-field');
@@ -25572,7 +31290,9 @@ Colibri.UI.Forms.List = class extends Colibri.UI.Forms.Field {
 
     } 
 
-    
+    /**
+     * Reload values to component
+     */
     ReloadValues() {
 
         let values = this._fieldData.values;
@@ -25587,14 +31307,25 @@ Colibri.UI.Forms.List = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._list.focus();
     }
 
+    /**
+     * Value
+     * @type {Object|string}
+     */
     get value() {
         return this._list.selectedValue;
     }
 
+    /**
+     * Value
+     * @type {Object|string}
+     */
     set value(value) {
         if(!Object.isObject(value)) {
             this._list.selectedValue = Array.findObject(this._fieldData.values, 'value', value);
@@ -25604,24 +31335,37 @@ Colibri.UI.Forms.List = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._list.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._list.tabIndex = value === true ? Colibri.UI.tabIndex++ : value;
     }
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('List', 'Colibri.UI.Forms.List', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
 
+    /** Eye Icon Opened */
     static EyeIconOpen = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.72784 10.616C1.61025 10.4299 1.55146 10.3368 1.51854 10.1932C1.49382 10.0853 1.49382 9.9152 1.51854 9.80734C1.55146 9.66375 1.61025 9.57065 1.72784 9.38445C2.69958 7.84579 5.59205 3.95605 10 3.95605C14.4079 3.95605 17.3004 7.84579 18.2722 9.38445C18.3897 9.57065 18.4485 9.66375 18.4815 9.80734C18.5062 9.9152 18.5062 10.0853 18.4815 10.1932C18.4485 10.3368 18.3897 10.4299 18.2722 10.616C17.3004 12.1547 14.4079 16.0444 10 16.0444C5.59205 16.0444 2.69958 12.1547 1.72784 10.616Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 12.5906C11.4306 12.5906 12.5904 11.4309 12.5904 10.0003C12.5904 8.56963 11.4306 7.40988 10 7.40988C8.56938 7.40988 7.40963 8.56963 7.40963 10.0003C7.40963 11.4309 8.56938 12.5906 10 12.5906Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    /** Eye Icon Closed */
     static EyeIconClose = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.91423 4.03514C9.26514 3.98326 9.62715 3.95543 10 3.95543C14.4079 3.95543 17.3004 7.84515 18.2721 9.38382C18.3898 9.57005 18.4486 9.66316 18.4815 9.80678C18.5062 9.91464 18.5062 10.0848 18.4814 10.1927C18.4485 10.3363 18.3893 10.43 18.2708 10.6175C18.0119 11.0273 17.6172 11.6031 17.0942 12.2277M5.44433 5.43628C3.57747 6.70268 2.31009 8.46212 1.72869 9.38249C1.61055 9.5695 1.55148 9.66301 1.51855 9.80661C1.49382 9.91447 1.49381 10.0846 1.51853 10.1925C1.55144 10.3361 1.61025 10.4292 1.72785 10.6154C2.69959 12.1541 5.59206 16.0438 10 16.0438C11.7773 16.0438 13.3083 15.4114 14.5663 14.5557M2.2289 2.22852L17.7711 17.7707M8.16833 8.16795C7.69957 8.63671 7.40963 9.2843 7.40963 9.99961C7.40963 11.4302 8.56938 12.59 10 12.59C10.7153 12.59 11.3629 12.3 11.8317 11.8313" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-password-field');
@@ -25697,6 +31441,7 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @private */
     _hidePasswordTip() {
         if(this._passwordTip) {
             Colibri.Common.Delay(2000).then(() => {
@@ -25705,6 +31450,7 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /** @private */
     _showPasswordTip(strength) {
         
         if(this._fieldData?.params?.tip) {
@@ -25752,6 +31498,7 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /** @private */
     _generatePassword(e) {
         const tipData = this._fieldData?.params?.tip;
         this.value = String.Password(16);
@@ -25767,6 +31514,10 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
         return false;
     }
 
+    /**
+     * Calculates password strength
+     * @returns {number}
+     */
     CalcPasswordStrength() {
         const pass = this.value;
         const requirements = this._fieldData?.params?.requirements || {digits: 8, strength: 40};
@@ -25807,19 +31558,31 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.attr('readonly') === 'readonly';
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -25830,15 +31593,27 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Placeholder text
+     * @type {string}
+     */
     get placeholder() {
         return this._input.attr('placeholder');
     }
 
+    /**
+     * Placeholder text
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.attr('placeholder', value);
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         let value = this._input.value;
         if(this._fieldData?.params?.emptyAsNull && !value) {
@@ -25847,16 +31622,27 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
         return value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._original = value;
         this._input.value = value ?? '';
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     get enabled() {
         return this._input.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -25870,17 +31656,21 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
 
+    /** @private */
     _showIcon() {
         const contentContainer = this.contentContainer;
         if(!this._icon) {
@@ -25897,15 +31687,24 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Icon
+     * @type {string}
+     */
     set icon(value) {
         value = this._convertProperty('String', value);
         this._icon = value;
         this._showIcon();
     }
+    /**
+     * Icon
+     * @type {string}
+     */
     get icon() {
         return this._icon;
     }
 
+    /** @private */
     _createEyeIcon() {
         const contentContainer = this.contentContainer;
         if(!this._eyeIcon) {
@@ -25931,16 +31730,27 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
         this.AddClass('-has-eye-icon');
     }
 
+    /**
+     * Eye Icon
+     * @type {string}
+     */
     get eyeIcon() {
         return this._eyeIcon;
     }
 
+    /**
+     * Eye Icon
+     * @type {string}
+     */
     set eyeIcon(value) {
         value = this._convertProperty('String', value);
         this._eyeIcon = value;
         this._createEyeIcon();
     }
 
+    /**
+     * Dispose component
+     */
     Dispose() {
         if(this._passwordTip) {
             this._passwordTip.Dispose();
@@ -25950,10 +31760,19 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
     }
 
 }
+
 Colibri.UI.Forms.Field.RegisterFieldComponent('Password', 'Colibri.UI.Forms.Password', '')
 
+/**
+ * @class
+ * @memberof Colibri.UI.Forms
+ * @extends Colibri.UI.Forms.Field
+ */
 Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-radio-field');
@@ -25977,7 +31796,9 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
 
     }
 
-
+    /**
+     * Focus on component
+     */
     Focus() {
         if(this._element.querySelector('input')) {
             this._element.querySelector('input').focus();
@@ -25986,16 +31807,25 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._value = value;
         this._showValue();
         this.Validate();
     }
 
+    /** @private */
     _showValue() {
 
         let value = this._value;
@@ -26026,7 +31856,8 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
         this._fieldData.values = value;
         this._loadValues();
     }
-    
+
+    /** @private */
     _loadValues() {
         const contentContainer = this.contentContainer;
         const ident = Date.Mc();
@@ -26071,21 +31902,34 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._input && this._input.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
     }
+    
 }
+
 Colibri.UI.Forms.Field.RegisterFieldComponent('Radio', 'Colibri.UI.Forms.Radio', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Period = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-period-field');
@@ -26134,23 +31978,42 @@ Colibri.UI.Forms.Period = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input1.Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input1.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input1.readonly = value;
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input2.placeholder ? [this._input1.placeholder, this._input2.placeholder] : this._input1.placeholder;
     }
 
+    /**
+     * Field placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         if(Array.isArray(value)) {
             value[0] = this._convertProperty('String', value[0]);
@@ -26164,22 +32027,37 @@ Colibri.UI.Forms.Period = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
         let input1 = this._input1.value != 'Invalid Date' ? this._input1.value.toShortDateString() : this._input1.value;
         let input2 = this._input2.value != 'Invalid Date' ? this._input2.value.toShortDateString() : this._input2.value;
         return [input1, input2];
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
         this._input1.value = value ? value[0] : null;
         this._input2.value = value ? value[1] : null;
     }
 
-
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */   
     get enabled() {
         return this._input1.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */   
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input1.enabled = value;
@@ -26187,13 +32065,16 @@ Colibri.UI.Forms.Period = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input1 && this._input1.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input1) {
             this._input1.tabIndex = value === true ? Colibri.UI.tabIndex++ : value;
@@ -26202,8 +32083,16 @@ Colibri.UI.Forms.Period = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Period', 'Colibri.UI.Forms.Period', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Checkbox = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-checkbox-field');
@@ -26235,6 +32124,7 @@ Colibri.UI.Forms.Checkbox = class extends Colibri.UI.Forms.Field {
         this._handleEvents();
     }
 
+    /** @protected */
     _handleEvents() {
         this._input.AddHandler('Changed', (event, args) => this.Dispatch('Changed', Object.assign(args || {}, {component: this})));
         this._input.AddHandler('Clicked', (event, args) => {
@@ -26253,14 +32143,25 @@ Colibri.UI.Forms.Checkbox = class extends Colibri.UI.Forms.Field {
         });
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input.readonly = value;
@@ -26271,31 +32172,50 @@ Colibri.UI.Forms.Checkbox = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     get value() {
         return this._input.checked;
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
         this._input.checked = value === 'true' || value === true || value === 1 || value === '1';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     get enabled() {
         return this._input.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input.enabled = value;
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value;
@@ -26304,8 +32224,16 @@ Colibri.UI.Forms.Checkbox = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Checkbox', 'Colibri.UI.Forms.Checkbox', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Passport = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
 	RenderFieldContainer() {
 
 		this.AddClass('app-component-passport-field');
@@ -26376,18 +32304,34 @@ Colibri.UI.Forms.Passport = class extends Colibri.UI.Forms.Field {
 
 	}
 
+	/**
+	 * Title string
+	 * @type {string}
+	 */
 	get title() {
 		return this.Children(this._name + '-title').value;
 	}
+	/**
+	 * Title string
+	 * @type {string}
+	 */
 	set title(value) {
         value = this._convertProperty('String', value);
 		this.Children(this._name + '-title').value = value;
 	}
 
+	/**
+     * Readonly
+     * @type {boolean}
+     */
 	get readonly() {
 		return this._input1.attr('readonly') === 'readonly';
 	}
 
+	/**
+     * Readonly
+     * @type {boolean}
+     */
 	set readonly(value) {
         value = this._convertProperty('Boolean', value);
 		if (value) {
@@ -26400,10 +32344,18 @@ Colibri.UI.Forms.Passport = class extends Colibri.UI.Forms.Field {
 		}
 	}
 
+	/**
+     * Placeholder
+     * @type {string}
+     */
 	get placeholder() {
 		return this._input1.attr('placeholder') + ' | ' + this._input2.attr('placeholder');
 	}
 
+	/**
+     * Placeholder
+     * @type {string}
+     */
 	set placeholder(value) {
 		if(Array.isArray(value)) {
 			this._input1.attr('placeholder', value[0][Lang.Current] ?? value[0]);
@@ -26420,6 +32372,10 @@ Colibri.UI.Forms.Passport = class extends Colibri.UI.Forms.Field {
 		}
 	}
 
+	/**
+     * Value
+     * @type {Array}
+     */
 	get value() {
 		return [
 			this._input1.value, 
@@ -26427,15 +32383,27 @@ Colibri.UI.Forms.Passport = class extends Colibri.UI.Forms.Field {
 		];
 	}
 
+	/**
+     * Value
+     * @type {Array}
+     */
 	set value(value) {
 		this._input1.value = value[0];
 		this._input2.value = value[0];
 	}
 
+	/**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
 	get enabled() {
 		return this._input1.attr('disabled') != 'disabled';
 	}
 
+	/**
+     * Enable/Disable
+     * @type {boolean}
+     */ 
 	set enabled(value) {
         value = this._convertProperty('Boolean', value);
 		if (value) {
@@ -26451,22 +32419,33 @@ Colibri.UI.Forms.Passport = class extends Colibri.UI.Forms.Field {
 	}
 
 	/**
-	 * Индекс табуляции
-	 * @todo проверить правильно ли получаю tabIndex и исправить
-	 * @type {number}
-	 */
+     * Tab index
+     * @type {number}
+     */
 	get tabIndex() {
 		return this._input1.attr('tabIndex');
 	}
+	/**
+     * Tab index
+     * @type {number}
+     */
 	set tabIndex(value) {
 		this._input1.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
 		this._input2.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value + 1);
 	}
 
+	/**
+     * Width of component
+     * @type {number}
+     */
 	set width(value) {
 		this._div1.width = value[0];
 		this._div2.width = value[0];
 	}
+	/**
+     * Width of component
+     * @type {number}
+     */
 	get width() {
 		return [
 			this._div1.width,
@@ -26480,8 +32459,16 @@ Colibri.UI.Forms.Field.RegisterFieldComponent('Passport', 'Colibri.UI.Forms.Pass
 
 
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.FileLabel = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-filelabel-field');
@@ -26521,36 +32508,57 @@ Colibri.UI.Forms.FileLabel = class extends Colibri.UI.Forms.Field {
 
     }
 
-
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.focus();
         this._input.select();
     }
 
+    /**
+     * Value
+     * @type {File|object|string}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {File|object|string}
+     */
     set value(value) {
         this._value = value;
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return null;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         // do nothing
     }
 
+    /**
+     * Placeholder text
+     * @type {string}
+     */
     get placeholder() {
         return this._placeholder.html();
     }
 
+    /**
+     * Placeholder text
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._placeholder.html(value);
@@ -26560,8 +32568,16 @@ Colibri.UI.Forms.FileLabel = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('FileLabel', 'Colibri.UI.Forms.FileLabel', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.DateTime = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-datetime-field');
@@ -26608,28 +32624,51 @@ Colibri.UI.Forms.DateTime = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input.readonly = value;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.placeholder;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.placeholder = value;
     }
 
+    /**
+     * Value
+     * @type {Date|string}
+     */
     get value() {
         let value = this._input.value;
         let timeValue = this._time.value;
@@ -26638,6 +32677,10 @@ Colibri.UI.Forms.DateTime = class extends Colibri.UI.Forms.Field {
         return value ? value + ' ' + timeValue : null;
     }
 
+    /**
+     * Value
+     * @type {Date|string}
+     */
     set value(value) {
         if(typeof value == 'string') {
             value = new Date(value);
@@ -26646,24 +32689,34 @@ Colibri.UI.Forms.DateTime = class extends Colibri.UI.Forms.Field {
         this._time.value = value instanceof Date ? value.toTimeString() : '';
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._input.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input.enabled = value;
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value;
@@ -26671,8 +32724,16 @@ Colibri.UI.Forms.DateTime = class extends Colibri.UI.Forms.Field {
     }
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('DateTime', 'Colibri.UI.Forms.DateTime', '');
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Color = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-color-field');
@@ -26719,6 +32780,7 @@ Colibri.UI.Forms.Color = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @private */
     _showPopup() {
         
         this._colorPopup = new Colibri.UI.Color(this.name + '_color', document.body);
@@ -26742,38 +32804,67 @@ Colibri.UI.Forms.Color = class extends Colibri.UI.Forms.Field {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __buttonClicked(event, args) {
         this._showPopup();
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.Focus();
     }
     
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input.readonly = value;
         this._button.enabled = !value;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.placeholder;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.placeholder = value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         let value = this._input.value;
         if(this._fieldData?.params?.emptyAsNull && !value) {
@@ -26785,16 +32876,27 @@ Colibri.UI.Forms.Color = class extends Colibri.UI.Forms.Field {
         return value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._input.value = value ?? '';
         this._color.styles = {backgroundColor: this._input.value};
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._input.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input.enabled = value;
@@ -26802,23 +32904,34 @@ Colibri.UI.Forms.Color = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._input && (this._input.tabIndex = value === true ? Colibri.UI.tabIndex++ : value);
     }
 
-
 }
+
 Colibri.UI.Forms.Field.RegisterFieldComponent('Color', 'Colibri.UI.Forms.Color', '');
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.FontFamily = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-color-field');
@@ -26849,34 +32962,57 @@ Colibri.UI.Forms.FontFamily = class extends Colibri.UI.Forms.Field {
 
     }
 
-
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input.Focus();
     }
     
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input.readonly = value
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.placeholder;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.placeholder = value ? value[Lang.Current] ?? value : '';
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         let value = this._input.value;
         if(this._fieldData?.params?.emptyAsNull && !value) {
@@ -26888,28 +33024,42 @@ Colibri.UI.Forms.FontFamily = class extends Colibri.UI.Forms.Field {
         return value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._input.value = value ?? '';
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._input.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input.enabled = value
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._input && (this._input.tabIndex = value === true ? Colibri.UI.tabIndex++ : value);
     }
@@ -26918,10 +33068,15 @@ Colibri.UI.Forms.FontFamily = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('FontFamily', 'Colibri.UI.Forms.FontFamily', '');
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
 
     /**
-     * Отрисовка содержания компонента поля 
+     * Render field component
      */
     RenderFieldContainer() {
 
@@ -26984,6 +33139,11 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnNote(event, args) {
         if(!this.readonly) {
             this._input.ShowChooser();
@@ -26991,18 +33151,23 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Поставить фокус
+     * Focus on component
      */
     Focus() {
         this._input.Focus();
     }
 
     /**
-     * Только для чтения
+     * Readonly
+     * @type {boolean}
      */
     get readonly() {
         return this._input.readonly;
     }
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -27014,32 +33179,54 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Замещающий текст
+     * Placeholder
+     * @type {string}
      */
     get placeholder() {
         return this._input.placeholder;
     }
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._input.placeholder = value;
     }
 
+    /**
+     * Placeholder info
+     * @type {object}
+     */
     get placeholderinfo() {
         return this._input.placeholderinfo;
     }
+    /**
+     * Placeholder info
+     * @type {object}
+     */
     set placeholderinfo(value) {
         this._input.placeholderinfo = value;
     }
 
+    /**
+     * Empty placeholder generator
+     * @type {Function}
+     */
     get placeholderempty() {
         return this._input.placeholderempty;
     }
+    /**
+     * Empty placeholder generator
+     * @type {Function}
+     */
     set placeholderempty(value) {
         this._input.placeholderempty = value;
     }
 
     /**
-     * Выбранное значение
+     * Value
+     * @type {object|string}
      */
     get value() {
         let value = this._input.value ?? null;
@@ -27057,14 +33244,18 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
         }
         return value;
     }
+    /**
+     * Value
+     * @type {object|string}
+     */
     set value(value) {
         this._input.value = value;
     }
 
     /**
-     * Значения селектора
-     * @param {array} value
-     * */
+     * Values
+     * @type {Array}
+     */
     set values(value) {
         let required = this._fieldData?.params?.required;
         if(required === undefined) {
@@ -27080,24 +33271,29 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Значения селектора
-     * @return {array} value
-     * */
+     * Values
+     * @type {Array}
+     */
     get values() {
         return this._input.values;
     }
 
     /**
-     * Включен/выключен
+     * Enable/Disable
+     * @type {boolean}
      */
     get enabled() {
         return this._input.enabled;
     }
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input.enabled = value;
     }
-
+    /** @private */
     _setEnabled() {
         if(!this.value && this._fieldData.default) {
             this.value = this._fieldData.default;
@@ -27105,9 +33301,8 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Установить новое значение свойству lookup
-     * Загрузить значения селектора альтернативным способом, указанным в lookup
-     * @param {(Object|function)} value
+     * Run lookup
+     * @param {Object|Function} value
      */
     _setLookup(value) {
         let lookupPromise;
@@ -27177,6 +33372,7 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
         return lookupPromise;
     }
 
+    /** @private */
     _getDependsValue(type = null) {
         if (this.root && this._fieldData?.lookup) {
 
@@ -27196,10 +33392,7 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
         }
     }
 
-    /**
-     * Если необходимо инициализировать данные из lookup
-     * @private
-     */
+    /** @private */
     _initializeValues() {
         if (this._fieldData.lookup) {
             this.loading = true;
@@ -27227,23 +33420,34 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input && this._input.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input) {
             this._input.tabIndex = value;
         }
     }
 
+    /**
+     * Popup configuration
+     * @type {object}
+     */
     set popupconfig(value) {
         this._input.popupconfig = value;
     }
+    get popupconfig() {
+        return this._input.popupconfig;
+    }
 
+    /** @private */
     _createSelector() {
         return new Colibri.UI.Chooser(
             'input',
@@ -27258,14 +33462,28 @@ Colibri.UI.Forms.Choose = class extends Colibri.UI.Forms.Field {
         );
     }
 
+    /**
+     * Value object
+     * @type {object}
+     * @readonly
+     */
     get valueObject() {
         return this._input.valueObject;
     }
+    
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Choose', 'Colibri.UI.Forms.Choose', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.DateRange = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
         this.AddClass('app-component-daterange-field');
 
@@ -27343,8 +33561,16 @@ Colibri.UI.Forms.DateRange = class extends Colibri.UI.Forms.Field {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
         
         this.AddClass('app-component-numberrange-field');
@@ -27428,20 +33654,32 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input1.focus();
         // this._input1.select();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input1.attr('readonly') === 'readonly';
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -27454,10 +33692,18 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._placeholder;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._placeholder = value;
@@ -27465,6 +33711,10 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
         this._input2.attr('placeholder', this._placeholder + ' ()');
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
         let value1 = this._input1.value;
         if(this._fieldData?.params?.emptyAsNull && value === '') {
@@ -27477,6 +33727,10 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
         return [this._convertValue(value1, false), this._convertValue(value2, false)];
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
 
         if(!Array.isArray(value)) {
@@ -27490,6 +33744,7 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
         this._input2.value = value[1];
     }
 
+    /** @private */
     _convertValue(value, direction = true) {
         if(this._fieldData?.params?.format === 'percent') {
             value = direction ? value * (value <= 1 ? 100 : 1) : value / (value <= 1 ? 100 : 1);
@@ -27497,11 +33752,18 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
         return value;
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._input1.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(value) {
@@ -27515,13 +33777,16 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input1 && this._input1.attr('tabIndex');
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this._input1 && this._input1.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
         this._input2 && this._input2.attr('tabIndex', value === true ? Colibri.UI.tabIndex++ : value);
@@ -27529,8 +33794,16 @@ Colibri.UI.Forms.NumberRange = class extends Colibri.UI.Forms.Field {
 
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('NumberRange', 'Colibri.UI.Forms.NumberRange', '')
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.DateTimeRange = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-datetimerange-field');
@@ -27597,24 +33870,43 @@ Colibri.UI.Forms.DateTimeRange = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this._input1.Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._input1.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._input1.readonly = value;
         this._input2.readonly = value;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._placeholder;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         value = this._convertProperty('String', value);
         this._placeholder = value;
@@ -27622,6 +33914,10 @@ Colibri.UI.Forms.DateTimeRange = class extends Colibri.UI.Forms.Field {
         this._input2.placeholder = this._placeholder + ' ()';
     }
 
+    /**
+     * Value
+     * @type {Array<Date>}
+     */
     get value() {
         let value1 = this._input1.value;
         let value2 = this._input2.value;
@@ -27633,6 +33929,10 @@ Colibri.UI.Forms.DateTimeRange = class extends Colibri.UI.Forms.Field {
         return [value1 ? value1 + ' ' + timeValue1 : null, value2 ? value2 + ' ' + timeValue2 : null];
     }
 
+    /**
+     * Value
+     * @type {Array<Date>}
+     */
     set value(value) {
         if(!Array.isArray(value)) {
             value = [value ?? '', ''];
@@ -27650,11 +33950,18 @@ Colibri.UI.Forms.DateTimeRange = class extends Colibri.UI.Forms.Field {
 
     }
 
-    
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._input1.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this._input1.enabled = value;
@@ -27662,13 +33969,16 @@ Colibri.UI.Forms.DateTimeRange = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this._input1 && this._input1.tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         if (this._input1) {
             this._input1.tabIndex = value;
@@ -27679,8 +33989,16 @@ Colibri.UI.Forms.DateTimeRange = class extends Colibri.UI.Forms.Field {
     }
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('DateTimeRange', 'Colibri.UI.Forms.DateTimeRange', '');
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-checkboxlist-field');
@@ -27704,6 +34022,7 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _handleEvents(input) {
         input.AddHandler('Changed', (event, args) => this.Dispatch('Changed', Object.assign(args || {}, {component: this})));
         input.AddHandler('Clicked', (event, args) => {
@@ -27716,14 +34035,25 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
         input.AddHandler('LoosedFocus', (event, args) => this.Dispatch('LoosedFocus', args));
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this.contentContainer.Children('firstChild')?.Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this.contentContainer.Children('firstChild')?.readonly ?? false;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this.contentContainer.ForEach((name, component) => {
@@ -27731,6 +34061,10 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
         });
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
         const contentContainer = this.contentContainer;
         const ret = [];
@@ -27742,6 +34076,10 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
         return ret;
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
 
         if(!Array.isArray(value)) {
@@ -27755,10 +34093,18 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this.contentContainer.Children('firstChild')?.enabled ?? true;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         this.contentContainer.ForEach((name, component) => {
@@ -27767,13 +34113,16 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Индекс табуляции
-     * @todo проверить правильно ли получаю tabIndex и исправить
+     * Tab index
      * @type {number}
      */
     get tabIndex() {
         return this.contentContainer.Children('firstChild').tabIndex;
     }
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         this.contentContainer.ForEach((name, component) => {
             component.tabIndex = (value++);
@@ -27795,6 +34144,7 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
         this._values = value;
         this._showValues();
     }
+    /** @private */
     _showValues() {
         const contentContainer = this.contentContainer;
         contentContainer.Clear();
@@ -27815,8 +34165,16 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('CheckboxList', 'Colibri.UI.Forms.CheckboxList', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
         this.AddClass('app-component-object-field');
 
@@ -27846,6 +34204,7 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _renderFields() {
 
         this._fieldData?.params?.vertical && this.AddClass('app-field-vertical');
@@ -27893,17 +34252,25 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
         this.Dispatch('FieldsRendered');
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         if(this.contentContainer.Children('firstChild')) {
             this.contentContainer.Children('firstChild').Focus();
         }
     }
 
+    /**
+     * Value
+     * @type {Object}
+     */
     get value() {
 
         if(this.contentContainer?.Children('nofields')) {
@@ -27928,6 +34295,10 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Value
+     * @type {Object}
+     */
     set value(value) {
 
         if(this.contentContainer?.Children('nofields')) {
@@ -27984,20 +34355,36 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         // do nothing
     }
 
+    /**
+     * Tab index
+     * @type {number}
+     */
     get tabIndex() {
         const first = this.contentContainer.Children('firstChild');
         return first && first.tabIndex;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         const first = this.contentContainer.Children('firstChild');
         return first && first.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         super.readonly = value;
@@ -28016,10 +34403,18 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(this._enabled != value) {
@@ -28033,6 +34428,7 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /** @protected */
     _calcRuntimeValues(rootValue = null) {
         this.ForEveryField((name, fieldComponent) => {
             const fieldData = fieldComponent.field;
@@ -28048,6 +34444,7 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
         });
     }
     
+    /** @protected */
     _hideAndShow() {
 
         const data = this.value;
@@ -28111,6 +34508,11 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Searches for field or returns all fields
+     * @param {string|null} name name of field to find
+     * @returns 
+     */
     Fields(name = null) {
         if(!this.contentContainer) {
             return [];
@@ -28118,6 +34520,10 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
         return name ? this.contentContainer.Children(name) : this.contentContainer.Children();
     }
 
+    /**
+     * Cycles all fields
+     * @param {Function} callback callback for each field
+     */
     ForEveryField(callback) {
         this.contentContainer && this.contentContainer.ForEach(callback);
     }
@@ -28126,8 +34532,16 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Object', 'Colibri.UI.Forms.Object', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-array-field');
@@ -28162,6 +34576,7 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
     } 
 
+    /** @private */
     _createAddNewLink() {
         if(this._fieldData.params && this._fieldData.params.addlink === null) {
             return;
@@ -28197,10 +34612,16 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         return this._link;
     }
 
+    /** @private */
     __updateObjectFields(fieldData) {
         return fieldData;
     }
 
+    /**
+     * Adds new object to array
+     * @param {Object} value add new row
+     * @returns {Colibri.UI.Forms.Object}
+     */
     AddNew(value) {
         if(this._link.ContainsClass('ui-disabled')) {
             return;
@@ -28210,6 +34631,12 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         return object;
     }
 
+    /**
+     * Adds new object
+     * @private
+     * @param {object} value object for add
+     * @returns {Colibri.UI.Forms.Object}
+     */
     _addNew(value = null) {
         // const containerElement = this.contentContainer.container.querySelector('.array-component-container');
         let fieldData = Object.cloneRecursive(this._fieldData);
@@ -28310,22 +34737,34 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         return object;
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component to the first object of array
+     */
     Focus() {
         if(this._itemsContainer.Children('firstChild')) {
             this._itemsContainer.Children('firstChild').Focus();
         }
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         const first = this._itemsContainer.Children('firstChild');
         return first?.readonly ?? false;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         super.readonly = true;
@@ -28336,10 +34775,18 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._enabled ?? true;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(this._enabled != value) {
@@ -28351,6 +34798,10 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
 
         let data = [];
@@ -28364,6 +34815,10 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
         
         value = eval_default_values(value);
@@ -28383,6 +34838,11 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /**
+     * Searches for objects in array
+     * @param {string} name field to search for
+     * @returns {Array<Colibri.UI.Forms.Object>}
+     */
     Fields(name) {
         if(!this._itemsContainer) {
             return [];
@@ -28402,15 +34862,26 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         return ret;
     }
 
+    /**
+     * Cycles all rows in array
+     * @param {Function} callback callback for each item
+     */
     ForEveryField(callback) {
         this._itemsContainer.ForEach(callback);
     }
 
+    /**
+     * Tab index
+     * @type {number}
+     */
     set tabIndex(value) {
         // do nothing
     }
 
-
+    /**
+     * Tab index
+     * @type {number}
+     */
     get tabIndex() {
         const first = this._itemsContainer.Children('firstChild');
         return first?.tabIndex ?? 0;
@@ -28424,6 +34895,7 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         return this._itemsContainer;
     }
 
+    /** @proptected */
     _calcRuntimeValues(rootValue = null) {
         const formValue = rootValue ?? this.root?.value ?? {};
         this.itemsContainer.ForEach((name, rowObject) => {
@@ -28431,10 +34903,16 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         });
     }
 
+    /**
+     * Items container component
+     * @type {Colibri.UI.Component}
+     * @readonly
+     */
     get itemsContainer() {
         return this._itemsContainer;
     }
 
+    /** @private */
     _hideAndShow() {
         this.ForEveryField((name, component) => component._hideAndShow());
     }
@@ -28442,8 +34920,16 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Array', 'Colibri.UI.Forms.Array', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
         this.AddClass('app-component-tabs-field');
 
@@ -28482,6 +34968,7 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
     }
 
+    /** @protected */
     _renderFields() {
 
         // this._fieldData.vertical && this.AddClass('app-field-vertical');
@@ -28513,21 +35000,33 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
         this.Dispatch('FieldsRendered');
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
         this.RegisterEvent('TabChanged', false, 'Когда вкладка переключена');
     }
 
+    /**
+     * Focus on component to the first object of array
+     */
     Focus() {
         this.contentContainer.Children('firstChild').Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         const first = this.contentContainer.Children('firstChild');
         return first.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         super.readonly = value;
@@ -28536,6 +35035,10 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
         });
     }
 
+    /**
+     * Value
+     * @type {object}
+     */
     get value() {
 
         let data = {};
@@ -28552,6 +35055,10 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
     }
 
+    /**
+     * Value
+     * @type {object}
+     */
     set value(value) {
         value = eval_default_values(value);
         
@@ -28587,6 +35094,7 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
         }
     }
 
+    /** @protected */
     _hideAndShow() {
 
         const data = this.value;
@@ -28648,6 +35156,11 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
     }
 
+    /**
+     * Searches for field
+     * @param {string} name field to search for
+     * @returns {Array<Colibri.UI.Forms.Object>}
+     */
     Fields(name = null) {
         if(!this._tabs) {
             return [];
@@ -28655,26 +35168,47 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
         return name ? this._tabs.components[name] : this._tabs.components;
     }
 
+    /**
+     * Cycles all rows in array
+     * @param {Function} callback callback for each item
+     */
     ForEveryField(callback) {
         Object.forEach(this._tabs.components, callback);
     }
 
+    /**
+     * Selected index
+     * @type {number}
+     */
     set selectedIndex(value) {
         value = this._convertProperty('Number', value);
         this._tabs.selectedIndex = value;
     }
+    /**
+     * Selected index
+     * @type {number}
+     */
     get selectedIndex() {
         return this._tabs.selectedIndex;
     }
 
+    /**
+     * Buttons
+     * @type {Array}
+     */
     get buttons() {
         return this._tabs.buttons;
     }
 
+    /**
+     * Components
+     * @type {Array}
+     */
     get panes() {
         return this._tabs.components;
     }
 
+    /** @protected */
     _calcRuntimeValues(rootValue = null) {
         Object.forEach(this._fieldData.fields, (name, fieldData) => {
             const fieldComponent = this.Fields(name);         
@@ -28694,7 +35228,17 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Tabs', 'Colibri.UI.Forms.Tabs', '')
 
+/**
+ * @class
+ * @namespace
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
+
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
         this.AddClass('app-component-array-grid-field');
 
@@ -28721,6 +35265,7 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
 
     }
 
+    /** @protected */
     _handleEvents() {
         /** Открыть окно с новым объектом */
         this._addObjectButton.AddHandler('Clicked', (event, args) => this.__newObject(event, args));
@@ -28744,20 +35289,14 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
          this._objectsGrid.AddHandler('MassActionsMenuActionClicked', (event, args) => this.__processMassAction(event, args));
     }
 
-    /**
-     * Нарисовать кнопку добавления нового объекта
-     * @private
-     */
+    /** @private */
     _renderAddObjectButton() {
         this._addObjectButton = new Colibri.UI.OutlineBlueButton(this._name + '-add-object-button', this.contentContainer);
         this._addObjectButton.value = this._fieldData.params?.addlink || ' «' + (this._fieldData.desc) + '»';
         this._addObjectButton.shown = true;
     }
 
-    /**
-     * Нарисовать таблицу с нужными колонками
-     * @private
-     */
+    /** @private */
     _renderObjectsGrid() {
         this._objectsGrid = new Colibri.UI.Grid(this._name + '-container-grid', this.contentContainer);
         this._objectsGrid.selectionMode = Colibri.UI.Grid.FullRow;
@@ -28774,8 +35313,8 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Открыть окно с объектом
-     * @param {Object|null} value //содержимое полей объекта/формы
+     * Opens window for clicked object
+     * @param {Object|null} value
      * @private
      */
     _openObjectWindow(value) {
@@ -28816,43 +35355,39 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Открыть окно с новым объектом
-     * @param event
-     * @param args
      * @private
-     */
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __newObject(event, args) {
         this._openObjectWindow();
     }
 
     /**
-     * Открыть окно с существующим объектом
-     * @param event
-     * @param args
      * @private
-     */
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __showObject(event, args) {
         let row = this._getRow(args.object_row);
         if (row) { this._openObjectWindow(row.tag._objectValue || null); }
     }
 
     /**
-     * Добавить строку с новым объектом
-     * @param event
-     * @param args
      * @private
-     */
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __addObjectRow(event, args) {
         let value = this._objectWindow?.value || args.formValues || {};
         this._addRow(value);
     }
 
     /**
-     * Обвновить строку с объектом
-     * @param event
-     * @param args
      * @private
-     */
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __updateObjectRow(event, args) {
         let row = this._getRow(args.object_row);
         let value = this._objectWindow?.value || args.formValues || {};
@@ -28861,18 +35396,17 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Удалить строку с объектом
-     * @param event
-     * @param args
      * @private
-     */
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __removeObjectRow(event, args) {
         let row = this._getRow(args.object_row);
         if (row) { row.Dispose(); }
     }
 
     /**
-     * Добавить строку
+     * Adds a new row
      * @param {Object} value
      * @private
      */
@@ -28882,11 +35416,10 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Показать контекстное меню строки
-     * @param event
-     * @param args
      * @private
-     */
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __showContextMenu(event, args) {
         args.domEvent.preventDefault();
         args.domEvent.stopPropagation();
@@ -28909,11 +35442,10 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Обработать клик по одному из пунктов контекстного меню
-     * @param event
-     * @param args
      * @private
-     */
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __processContextMenuAction(event, args) {
         if (args?.menuData && args?.item) {
             switch (args.menuData.name) {
@@ -28931,6 +35463,11 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __toggleMassActionsMenu(event, args) {
         if (this._objectsGrid.checked.length > 1) {
             this._objectsGrid.massActionsMenu = [
@@ -28946,6 +35483,11 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __processMassAction(event, args) {
         if (args?.menuData && args?.items) {
             switch (args.menuData.name) {
@@ -28960,7 +35502,7 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Выбранная строка грида
+     * Returns selected row
      * @return {Colibri.UI.Component[]}
      * @private
      */
@@ -28969,8 +35511,8 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Получить строку по имени
-     * @param {string|Colibri.UI.Grid.Row} value имя строки/объект строки
+     * Gets a row by row or row name
+     * @param {string|Colibri.UI.Grid.Row} value 
      * @return {null|Colibri.UI.Grid.Row}
      * @private
      */
@@ -28982,7 +35524,7 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Список отображаемых колонок (если не указан, отображаются все)
+     * Shows/hides columns
      * @private
      */
     _setDisplayedColumns() {
@@ -29005,24 +35547,29 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Фокус
+     * Focus on grid
      */
     Focus() {
         // do nothing
     }
 
     /**
-     * Только для чтения
+     * Readonly
+     * @type {boolean}
      */
     get readonly() {
         // do nothing
     }
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         // do nothing
     }
 
     /**
-     * Значение поля (все объекты)
+     * Value
      * @type {Object[]}
      */
     get value() {
@@ -29031,6 +35578,10 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
 
         return data;
     }
+    /**
+     * Value
+     * @type {Object[]}
+     */
     set value(value) {
         value = eval_default_values(value);
         if(value && !Array.isArray(value)) { 
@@ -29043,7 +35594,7 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     }
 
     /**
-     * Поля объекта
+     * Fiels of object
      * @param {string|null} name имя поля, (если не указано, возвращает сразу все)
      * @return {Object|Colibri.UI.Forms.Field}
      * @constructor
@@ -29059,18 +35610,36 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
         return fields;
     }
 
+    /**
+     * Tab indes
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         // do nothing
     }
 
+    /**
+     * Tab indes
+     * @type {number|boolean}
+     */
     get tabIndex() {
         return this._objectsGrid.tabIndex;
     }
 
 }
 
-
+/**
+ * @class
+ * @extends Colibri.UI.ModelessWindow
+ * @memberof Colibri.UI.Forms.ArrayGrid
+ */
 Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindow {
+
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-component-array-grid-object-window');
@@ -29091,6 +35660,7 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
         this._saveButton.shown = true;
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', 'Когда содержимое формы внутри окна изменилось');
@@ -29098,7 +35668,7 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
     }
 
     /**
-     * Настройки окна
+     * Set a window params
      * @param {Object} params
      */
     setParams(params) {
@@ -29114,22 +35684,22 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
     }
 
     /**
-     * Форма с объектом
-     * @return {Colibri.UI.Forms.Form}
+     * Form with object
+     * @type {Colibri.UI.Forms.Form}
      */
     get form() {
         return this._form;
     }
 
     /**
-     * Поля формы
-     * @return {Object}
+     * Form fields
+     * @type {Object}
      */
     get fields () {
         return this._form.fields;
     }
     /**
-     * Поля формы
+     * Form fields
      * @param {string|Object} value
      */
     set fields(value) {
@@ -29137,32 +35707,47 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
     }
 
     /**
-     * Значения полей формы
+     * Form values
      * @type {Object|null}
      */
     get value() {
         return this._form.value;
     }
+    /**
+     * Form values
+     * @type {Object|null}
+     */
     set value(value) {
         this._form.value = value;
     }
 
     /**
-     * Находится ли в форме новый объект
+     * Is form contains new object
      * @type {boolean}
      */
     get containsNewObject() {
         return this._containsNewObject;
     }
+    /**
+     * Is form contains new object
+     * @type {boolean}
+     */
     set containsNewObject(value) {
         this._containsNewObject = (value === true || value === 'true');
     }
 
-    
+    /**
+     * Returns root object
+     * @type {object}
+     */
     get root() {
         return this._form.root;
     }
 
+    /**
+     * Returns root object
+     * @type {object}
+     */
     set root(value) {
         this._form.root = value;
     }
@@ -29171,8 +35756,16 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
 
 Colibri.UI.Forms.Field.RegisterFieldComponent('ArrayGrid', 'Colibri.UI.Forms.ArrayGrid', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.SimpleArray = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-simplearray-field');
@@ -29222,28 +35815,48 @@ Colibri.UI.Forms.SimpleArray = class extends Colibri.UI.Forms.Field {
 
     } 
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component 
+     */
     Focus() {
         this.contentContainer.Children('firstChild').Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._grid.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._grid.readonly = value;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._enabled ?? true;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(this._enabled != value) {
@@ -29255,6 +35868,10 @@ Colibri.UI.Forms.SimpleArray = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
 
         let val = [];
@@ -29270,6 +35887,10 @@ Colibri.UI.Forms.SimpleArray = class extends Colibri.UI.Forms.Field {
         return val;
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
         if(!Array.isArray(value)) {
             value = [];
@@ -29283,52 +35904,50 @@ Colibri.UI.Forms.SimpleArray = class extends Colibri.UI.Forms.Field {
         }
     }
 
-
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         this._grid.tabIndex = value;
     }
 
-
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     get tabIndex() {
         return this._grid.tabIndex;
     }
 
     /**
-     * Высота
+     * Height
      * @type {number}
      */
     get height() {
         return this._grid.height;
     }
     /**
-     * Высота
+     * Height
      * @type {number}
      */
     set height(value) {
         this._grid.height = value;
     }
 
-    // /**
-    //  * Ширина
-    //  * @type {number}
-    //  */
-    // get width() {
-    //     return this._grid.width;
-    // }
-    // /**
-    //  * Высота
-    //  * @type {number}
-    //  */
-    // set width(value) {
-    //     this._element.css('width', value + 'px');
-    // }
-    
-
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('SimpleArray', 'Colibri.UI.Forms.SimpleArray', '')
 
+/**
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
 Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
 
+    /**
+     * Render field component
+     */
     RenderFieldContainer() {
 
         this.AddClass('app-component-simplearray-field');
@@ -29381,28 +36000,48 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
 
     } 
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         // если нужно добавить что то
     }
 
+    /**
+     * Focus on component
+     */
     Focus() {
         this.contentContainer.Children('firstChild').Focus();
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._grid.readonly;
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         value = this._convertProperty('Boolean', value);
         this._grid.readonly = value;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._enabled ?? true;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         value = this._convertProperty('Boolean', value);
         if(this._enabled != value) {
@@ -29414,6 +36053,10 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
         }
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
 
         let val = {};
@@ -29423,6 +36066,10 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
         return val;
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
         this._grid.ClearAllRows();
         
@@ -29436,25 +36083,31 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
 
     }
 
-
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     set tabIndex(value) {
         this._grid.tabIndex = value;
     }
 
-
+    /**
+     * Tab index
+     * @type {number|boolean}
+     */
     get tabIndex() {
         return this._grid.tabIndex;
     }
 
     /**
-     * Высота
+     * Height
      * @type {number}
      */
     get height() {
         return this._grid.height;
     }
     /**
-     * Высота
+     * Height
      * @type {number}
      */
     set height(value) {
@@ -29467,9 +36120,17 @@ Colibri.UI.Forms.Field.RegisterFieldComponent('KeyValueObject', 'Colibri.UI.Form
 
 /**
  * Extended buttons base class
+ * @class
+ * @extends Colibri.UI.Button
+ * @memberof Colibri.UI
  */
 Colibri.UI.ExtendedButton = class extends Colibri.UI.Button {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-extended-button-component');
@@ -29478,23 +36139,43 @@ Colibri.UI.ExtendedButton = class extends Colibri.UI.Button {
         this._span.shown = true;
     }
 
+    /**
+     * Icon 
+     * @type {string}
+     */
     get icon() {
         return this._icon.iconSVG;
     }
 
+    /**
+     * Icon 
+     * @type {string}
+     */
     set icon(value) {
         this._icon.shown = true;
         this._icon.iconSVG = value;
     }
 
+    /**
+     * Value 
+     * @type {string}
+     */
     get value() {
         return this._span.value;
     }
 
+    /**
+     * Value 
+     * @type {string}
+     */
     set value(value) {
         this._span.value = value;
     }
 
+    /**
+     * Icon position 
+     * @type {right,true,false|boolean}
+     */
     set iconPosition(value) {
         if(value === 'right' || value === 'true' || value === true) {
             this.AddClass('ui-icon-right');
@@ -29502,6 +36183,13 @@ Colibri.UI.ExtendedButton = class extends Colibri.UI.Button {
         else {
             this.RemoveClass('ui-icon-right');
         }
+    }
+    /**
+     * Icon position 
+     * @type {right,true,false|boolean}
+     */
+    get iconPosition() {
+
     }
     
     /**
@@ -29522,8 +36210,16 @@ Colibri.UI.ExtendedButton = class extends Colibri.UI.Button {
 }
 /**
  * Successful action related button
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.SuccessButton = class extends Colibri.UI.ExtendedButton {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-success-button-component');
@@ -29532,8 +36228,16 @@ Colibri.UI.SuccessButton = class extends Colibri.UI.ExtendedButton {
 }
 /**
  * Error action related button
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.ErrorButton = class extends Colibri.UI.ExtendedButton {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-error-button-component');
@@ -29541,8 +36245,16 @@ Colibri.UI.ErrorButton = class extends Colibri.UI.ExtendedButton {
 }
 /**
  * Grayed button
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.GrayButton = class extends Colibri.UI.ExtendedButton {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-gray-button-component');
@@ -29550,8 +36262,16 @@ Colibri.UI.GrayButton = class extends Colibri.UI.ExtendedButton {
 }
 /**
  * Simple button, not submit or reset
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.SimpleButton = class extends Colibri.UI.ExtendedButton {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-simple-button-component');
@@ -29559,8 +36279,16 @@ Colibri.UI.SimpleButton = class extends Colibri.UI.ExtendedButton {
 }
 /**
  * Outlined button
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.OutlineBlueButton = class extends Colibri.UI.ExtendedButton {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-outline-blue-button-component');
@@ -29568,20 +36296,36 @@ Colibri.UI.OutlineBlueButton = class extends Colibri.UI.ExtendedButton {
 }
 /**
  * Button viewed as link
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.AsLinkButton = class extends Colibri.UI.ExtendedButton {
+    
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container component or element
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-aslink-button-component');
     }
+    
 }
-
-
 /**
  * Button with upload support
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-success-button-component');
@@ -29605,6 +36349,7 @@ Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
 
@@ -29612,6 +36357,10 @@ Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
 
     }
 
+    /**
+     * Multiple
+     * @type {boolean}
+     */
     set multiple(value) {
         if(value) {
             this._input.attr('multiple', 'multiple');
@@ -29621,38 +36370,67 @@ Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
         }
     }
 
+    /**
+     * Multiple
+     * @type {boolean}
+     */
     get multiple() {
         return this._input.attr('multiple') === 'multiple';
     }
 
+    /**
+     * Allowed types
+     * @type {Array|string}
+     */
     set allowTypes(value) {
         if(typeof value === 'string') {
             value = value.split(',');
         }
-        this._allowTypes = value;
+        this._allowTypes = value.map(v => v.toLowerCase());
         this._setAccept();
     }
 
+    /**
+     * Allowed types
+     * @type {Array|string}
+     */
     get allowTypes() {
         return this._allowTypes;
     }
 
+    /**
+     * Allowed size
+     * @type {number}
+     */
     set allowSize(value) {
         this._allowSize = parseInt(value);
     }
 
+    /**
+     * Allowed size
+     * @type {number}
+     */
     get allowSize() {
         return this._allowSize;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clicked(event, args) {
         this.ClickOnButton();
     }
     
+    /**
+     * Perform click on button
+     */
     ClickOnButton() {
         this._input.click();
     }
 
+    /** @private */
     _checkChoosedFiles(files) {
         let errors = [];
         let success = [];
@@ -29668,6 +36446,7 @@ Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
         this.Dispatch('Changed', {errors: errors, success: success});
     }
     
+    /** @private */
     _setAccept() {
         let ret = [];
         for(const ext of this._allowTypes) {
@@ -29680,9 +36459,17 @@ Colibri.UI.UploadButton = class extends Colibri.UI.ExtendedButton {
 
 
 /**
- * Button viewed as link
+ * Toggle button
+ * @class
+ * @extends Colibri.UI.ExtendedButton
+ * @memberof Colibri.UI
  */
 Colibri.UI.ToggleButton = class extends Colibri.UI.ExtendedButton {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-toggle-button-component');
@@ -29695,20 +36482,21 @@ Colibri.UI.ToggleButton = class extends Colibri.UI.ExtendedButton {
     }
 
     /**
-     * 
+     * Stat of button
      * @type {expanded|collapsed}
      */
     get state() {
         return this._state;
     }
     /**
-     * 
+     * Stat of button
      * @type {expanded|collapsed}
      */
     set state(value) {
         this._state = value;
         this._showState();
     }
+    /** @private */
     _showState() {
         if(this._state === 'expanded') {
             this.AddClass('-expanded').RemoveClass('-collapsed');
@@ -29721,16 +36509,32 @@ Colibri.UI.ToggleButton = class extends Colibri.UI.ExtendedButton {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Pane
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Loading = class extends Colibri.UI.Pane {
 
-    constructor(name, container, children, sendToFront = true) {
-        super(name, container, children || Element.create('div'));
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {*} element element to generate in
+     * @param {boolean} sendToFront send the component to front
+     */
+    constructor(name, container, element, sendToFront = true) {
+        super(name, container, element || Element.create('div'));
         this.AddClass('app-loading-component');
         
         this._element.html(Colibri.UI.LoadingIcon);
         this._sendToFront = sendToFront;
     }
 
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         if(this._sendToFront) {
@@ -29740,6 +36544,13 @@ Colibri.UI.Loading = class extends Colibri.UI.Pane {
                 this.SendToBack();
             }
         }
+    }
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
+    get shown () {
+        return super.shown;
     }
 
     /**
@@ -29757,6 +36568,7 @@ Colibri.UI.Loading = class extends Colibri.UI.Pane {
         this._icon = value;
         this._showicon();
     }
+    /** @private */
     _showicon() {
         this._element.html(eval(this._icon));
     }
@@ -29790,8 +36602,18 @@ Colibri.UI.AddTemplate('Colibri.UI.LoadingContainer',
 '    </div>' + 
 '</div>' + 
 '');
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.LoadingContainer = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Colibri.UI.Templates['Colibri.UI.LoadingContainer']);
         this.AddClass('app-loading-container-component');
@@ -29800,72 +36622,146 @@ Colibri.UI.LoadingContainer = class extends Colibri.UI.Component {
         this._progress = this.Children('progress');
     }
 
+    /**
+     * Loading icon
+     * @type {String}
+     */
     set icon(value) {
         this._loadingcontainer.value = value;
     }
+    /**
+     * Loading icon
+     * @type {String}
+     */
     get icon() {
         return this._loadingcontainer.value;
     }
 
+    /**
+     * Show icon
+     * @type {boolean}
+     */
     set shownIcon(value) {
         this._loadingcontainer.shown = value === 'true' || value === true;
     }
+    /**
+     * Show icon
+     * @type {boolean}
+     */
     get shownIcon() {
         return this._loadingcontainer.shown;
     }
 
+    /**
+     * Progress value
+     * @type {number}
+     */
     set progress(value) {
         this._progress.progress = value;
     }
+    /**
+     * Progress value
+     * @type {number}
+     */
     get progress() {
         return this._progress.progress;
     }
 
+    /**
+     * Progress bar color
+     * @type {string}
+     */
     set progressColor(value) {
         this._progress.color = value;
     }
+    /**
+     * Progress bar color
+     * @type {string}
+     */
     get progressColor() {
         return this._progress.color;
     }
 
+    /**
+     * Opacity
+     * @type {number}
+     */
     set opacity(value) {
         this._element.css('opacity', value)
     }
 
+    /**
+     * Opacity
+     * @type {number}
+     */
     get opacity() {
         return this._element.css('opacity');
     }
 
+    /**
+     * Start progress
+     * @param {number} timer timer value
+     * @param {number} speed speed
+     */
     StartProgress(timer, speed) {
         this.BringToFront();
         this.Children('progress').Start(timer, speed);
     }
 
+    /**
+     * Pause timer
+     */
     PauseProgress() {
         this.BringToFront();
         this.Children('progress').Pause();
     }
 
+    /**
+     * Stop timer
+     */
     StopProgress(timer) {
         this.BringToFront();
         this.Children('progress').Stop();
     }
 
+    /**
+     * Show component
+     */
     Show() {
         super.Show();
         this.BringToFront();        
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Shader = class extends Colibri.UI.Component {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-shader-component');
         
     }
 }
+/**
+ * @class
+ * @extends Colibri.UI.TextSpan
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Counter = class extends Colibri.UI.TextSpan {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-indicator-component');
@@ -29886,22 +36782,33 @@ Colibri.UI.AddTemplate('Colibri.UI.ConfirmDialog',
 '    ' + 
 '</div>' + 
 '');
+/**
+ * Confirmation dialog
+ * @class
+ * @extends Colibri.UI.Window
+ * @memberof Colibri.UI
+ */
 Colibri.UI.ConfirmDialog = class extends Colibri.UI.Window {
 
+    /**
+     * @constructor
+     * @param {string} name name of window
+     * @param {Element|Colibri.UI.Component} container container component or element
+     * @param {number} width width of confirmation window
+     */
     constructor(name, container, width) {
         super(name, container, Colibri.UI.Templates['Colibri.UI.ConfirmDialog'], '', width);
         this.AddClass('app-confirm-dialog-component')
-
         this._callback = null;
-
-        
-
-
     }
-
+    
     /**
-     * Показывает диалог
-     * @param {Function(dialogResult)} callback результат диалога, true - да, false - нет 
+     * Shown dialog
+     * @param {string} title title of dialog
+     * @param {string} message message to show in dialog
+     * @param {string} okbutton ok button title
+     * @param {string} cancelbutton cancel button title
+     * @returns Promise
      */
     Show(title, message, okbutton = null, cancelbutton = null) {
     
@@ -29942,8 +36849,20 @@ Colibri.UI.AddTemplate('Colibri.UI.AlertDialog',
 '    ' + 
 '</div>' + 
 '');
+/**
+ * Alert dialog component
+ * @class
+ * @extends Colibri.UI.Window
+ * @memberof Colibri.UI
+ */
 Colibri.UI.AlertDialog = class extends Colibri.UI.Window {
 
+    /**
+     * @constructor
+     * @param {string} name Name of component
+     * @param {Element|Colibri.UI.Component} container parent container or component
+     * @param {number} width width of window
+     */
     constructor(name, container, width) {
         super(name, container, Colibri.UI.Templates['Colibri.UI.AlertDialog'], '', width);
         this.AddClass('app-alert-dialog-component')
@@ -29953,8 +36872,11 @@ Colibri.UI.AlertDialog = class extends Colibri.UI.Window {
     }
 
     /**
-     * Показывает диалог
-     * @param {Function(dialogResult)} callback
+     * Shows alert
+     * @param {string} title title of window
+     * @param {string} message message to show in window
+     * @param {string} button button title
+     * @returns {Promise}
      */
     Show(title, message, button) {
         return new Promise((resolve, reject) => {
@@ -29986,8 +36908,20 @@ Colibri.UI.AddTemplate('Colibri.UI.PromptDialog',
 '    ' + 
 '</div>' + 
 '');
+/**
+ * Prompt dialog
+ * @class
+ * @extends Colibri.UI.Window
+ * @memberof Colibri.UI
+ */
 Colibri.UI.PromptDialog = class extends Colibri.UI.Window {
 
+    /**
+     * @constructor
+     * @param {string} name name of dialog
+     * @param {Element|Colibri.UI.Component} container container element or component
+     * @param {number} width width ot dialog
+     */
     constructor(name, container, width) {
         super(name, container, Colibri.UI.Templates['Colibri.UI.PromptDialog'], '', width);
         this.AddClass('app-prompt-dialog-component');
@@ -30007,18 +36941,18 @@ Colibri.UI.PromptDialog = class extends Colibri.UI.Window {
                 args.domEvent.preventDefault();
                 return false;
             }
-        })
-
+        });
 
     }
 
     /**
-     * Показывает диалог
-     * @param {Function(dialogResult)} callback результат диалога, true - да, false - нет 
+     * Shows dialog
+     * @param {string} title dialog title
+     * @param {object} fields fields object
+     * @param {string} button button title
+     * @returns {Promise}
      */
     Show(title, fields, button) {
-    
-    
         return new Promise((resolve, reject) => {
             this.title = title;
 
@@ -30032,7 +36966,6 @@ Colibri.UI.PromptDialog = class extends Colibri.UI.Window {
             }
             this._form.fields = fields;
             this._form.value = {};
-
 
             this._save.value = button || '';
             super.Show();
@@ -30059,8 +36992,18 @@ Colibri.UI.PromptDialog = class extends Colibri.UI.Window {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.LoadingBallun = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     */
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Element.create('div'));
@@ -30075,7 +37018,18 @@ Colibri.UI.LoadingBallun = class extends Colibri.UI.Component {
         this._iconObject.value = Colibri.UI.LoadingIcon;
 
     }
-
+    
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
+    get shown() {
+        return super.shown;
+    }
+    /**
+     * Show/Hide component
+     * @type {boolean}
+     */
     set shown(value) {
         super.shown = value;
         if(value) {
@@ -30087,44 +37041,54 @@ Colibri.UI.LoadingBallun = class extends Colibri.UI.Component {
     }
 
     /**
-     * Текст
+     * Text
      * @type {string}
      */
     get text() {
         return this._text;
     }
     /**
-     * Текст
+     * Text
      * @type {string}
      */
     set text(value) {
         this._text = value;
         this._showText();
     }
+    /** @private */
     _showText() {
         this._textObject.shown = !!this._text;
         this._textObject.value = this._text;
     }
 
     /**
-     * Иконка
+     * Icon
      * @type {string}
      */
     get icon() {
         return this._icon;
     }
     /**
-     * Иконка
+     * Icon
      * @type {string}
      */
     set icon(value) {
         this._icon = value;
         this._showIcon();
     }
+    /** @private */
     _showIcon() {
         this._iconObject.value = this._icon;       
     }
 
+    /**
+     * Starts the ballun
+     * @param {string} loadingText loading text
+     * @param {string} completeText complete text
+     * @param {string} errorText error text
+     * @param {string} completeIcon complete icon
+     * @param {string} errorIcon error icon
+     */
     Start(loadingText, completeText, errorText, completeIcon, errorIcon) {
         this._completeIcon = completeIcon;
         this._errorIcon = errorIcon;
@@ -30138,6 +37102,9 @@ Colibri.UI.LoadingBallun = class extends Colibri.UI.Component {
         this.text = loadingText;
     }
 
+    /**
+     * Set error
+     */
     Error() {
         this.RemoveClass('-loading');
         this.AddClass('-error');
@@ -30148,6 +37115,9 @@ Colibri.UI.LoadingBallun = class extends Colibri.UI.Component {
         });
     }
 
+    /**
+     * Complete
+     */
     Complete() {
         this.RemoveClass('-loading');
         this.AddClass('-complete');
@@ -30160,21 +37130,26 @@ Colibri.UI.LoadingBallun = class extends Colibri.UI.Component {
 
 }
 /**
- * Используется отображения ячеек
- * viewer="Colibri.UI.Viewer"
- * 
- * при использовании внутри можно 
- * 
- * 
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Component
  */
 Colibri.UI.Viewer = class extends Colibri.UI.Component {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element, root) {
         super(name, container, element || Element.create('span'));
         this.AddClass('app-viewer-component');
         this.root = root;
     }
 
+    /** @private */
     _injectParams() {
         if(this._field?.params && this._field?.params?.className) {
             let className = this._field?.params?.className;
@@ -30194,23 +37169,43 @@ Colibri.UI.Viewer = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     get viewedObject() {
         return this._object;
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     set viewedObject(value) {
         this._object = value;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(value) {
         this._field = value;
         this._injectParams();
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     set value(value) {
         if(this.field?.params?.pre) {
             value = this.field?.params?.pre + ' ' + value;
@@ -30221,18 +37216,31 @@ Colibri.UI.Viewer = class extends Colibri.UI.Component {
         super.value = this._convertValue(value);
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     get value() {
         return super.value;
     }
 
+    /**
+     * Root component
+     * @type {Colibri.UI.Component}
+     */
     get root() {
         return this._root;
     }
 
+    /**
+     * Root component
+     * @type {Colibri.UI.Component}
+     */
     set root(value) {
         this._root = value;
     }
 
+    /** @private */
     _convertValue(value) {
         
         if(this.field?.params?.converter) {
@@ -30243,26 +37251,63 @@ Colibri.UI.Viewer = class extends Colibri.UI.Component {
         return value;
     }
 
+    /**
+     * Registered viewers
+     * @private
+     * @static
+     * @type {Array}
+     */
     static _registered = [];
+    /**
+     * Registers the viewer
+     * @static
+     * @param {string} name name of viewer
+     * @param {string} desc description of viewer
+     */
     static Register(name, desc) {
         Colibri.UI.Viewer._registered.push({value: name, title: desc});
     }
+    /**
+     * Enums the registered viewers
+     * @static
+     * @returns Array
+     */
     static Enum() {
         return Colibri.UI.Viewer._registered;
     }
 }
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.ReadUnreadBadge = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-read-unread-badge-component');
 
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     get value() {
         return this.ContainsClass('app-is-read-component');
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
         value = this._convertValue(value);
 
@@ -30276,8 +37321,20 @@ Colibri.UI.ReadUnreadBadge = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.ReadUnreadBadge', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.DateViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-date-viewer-component');
@@ -30288,10 +37345,18 @@ Colibri.UI.DateViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Value
+     * @type {Date|string}
+     */
     get value() {
         return this.ContainsClass('app-is-read-component');
     }
 
+    /**
+     * Value
+     * @type {Date|string}
+     */
     set value(value) {
         if(typeof value === 'string') {
             value = value.toDate();
@@ -30309,8 +37374,20 @@ Colibri.UI.DateViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.DateViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.FileViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-file-viewer-component');
@@ -30321,10 +37398,18 @@ Colibri.UI.FileViewer = class extends Colibri.UI.Viewer {
         this._icon.value = Colibri.UI.FileDownloadIcon;
     }
 
+    /**
+     * Value
+     * @type {Array<{file, name}>}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {Array<{file, name}>}
+     */
     set value(value) {
         
         /**
@@ -30346,8 +37431,20 @@ Colibri.UI.FileViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.FileViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.FilesViewer = class extends Colibri.UI.Viewer {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('div'), root);
         this.AddClass('app-files-viewer-component');
@@ -30386,6 +37483,7 @@ Colibri.UI.FilesViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /** @private */
     _showValue() {
 
         const group = this._list.Children('group');
@@ -30405,32 +37503,67 @@ Colibri.UI.FilesViewer = class extends Colibri.UI.Viewer {
         
     }
     
+    /**
+     * Value
+     * @type {Array<{file, name}>}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {Array<{file, name}>}
+     */
     set value(value) {
         this._value = this._convertValue(Object.isObject(value) ? Object.values(value) : value);
         this._showValue();
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
         this._showValue();
     }
 
+    /**
+     * Download url address
+     * @type {string}
+     */
+    get download() {
+        return this._download;
+    }
+    /**
+     * Download url address
+     * @type {string}
+     */
     set download(value) {
         this._download = value;
     }
 
+    /**
+     * File not exists text
+     * @type {string}
+     */
     get fileNotExistText() {
         return this._fileNotExistText
     }
 
+    /**
+     * File not exists text
+     * @type {string}
+     */
     set fileNotExistText(value) {
         this._fileNotExistText = value
     }
@@ -30438,16 +37571,36 @@ Colibri.UI.FilesViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.FilesViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.LinkViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('a'), root);
         this.AddClass('app-link-viewer-component');
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._value;
     }
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._value = value;
@@ -30458,17 +37611,37 @@ Colibri.UI.LinkViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.LinkViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-select-viewer-component');
     }
 
+    /**
+     * Value 
+     * @type {string|object}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value 
+     * @type {string|object}
+     */
     set value(value) {
         this._value = value;
         if(value !== null && value !== undefined && value !== '') {
@@ -30607,6 +37780,7 @@ Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /** @private */
     _getDependsValue() {
         if (this.root && this._field?.lookup &&
             this._field.lookup['depends']) {
@@ -30623,8 +37797,8 @@ Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
     }
 
     /**
-     * Установить новое значение свойству lookup
-     * Загрузить значения селектора альтернативным способом, указанным в lookup
+     * Set lookup
+     * @param {object|string} value
      */
      _setLookup(value) {
         let lookupPromise;
@@ -30680,10 +37854,23 @@ Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
         // каждый метод должен возвращать промис
         return lookupPromise;
     }
+    
 }
 Colibri.UI.Viewer.Register('Colibri.UI.SelectViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.FieldsViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-fields-viewer-component');
@@ -30700,44 +37887,100 @@ Colibri.UI.FieldsViewer = class extends Colibri.UI.Viewer {
         this.RegisterEvent('ViewerClicked', false, 'Когда вьюер нажат');
     }
 
+    /**
+     * Download url string
+     * @type {string}
+     */
+    get download() {
+        return this._download;
+    }
+    /**
+     * Download url string
+     * @type {string}
+     */
     set download(value) {
         this._download = value;
     }
 
+    /**
+     * Download url string
+     * @type {string}
+     */
+    get downloadlink() {
+        return this._downloadlink;
+    }
+    /**
+     * Download url string
+     * @type {string}
+     */
     set downloadlink(value) {
         this._downloadlink = value;
     }
 
+    /**
+     * Fields object
+     * @type {object}
+     */
     set fields(value) {
         this._fields = value;
     }
 
+    /**
+     * Fields object
+     * @type {object}
+     */
     get fields() {
         return this._fields;
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value object
+     * @type {object}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._value = value;
         this._updateFields();
     }
 
+    /**
+     * Root component
+     * @type {Colibri.UI.Component}
+     */
     get root() {
         return this._root;
     }
 
+    /**
+     * Root component
+     * @type {Colibri.UI.Component}
+     */
     set root(value) {
         this._root = value;
     }
 
+    /**
+     * State
+     * @type {boolean}
+     * @readonly
+     */
     get state() {
         return this._hidden.shown;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __toggleHidden(event, args) {
         this._hidden.shown = !this._hidden.shown;
         this._hiddenLink1.shown = !this._hiddenLink1.shown;
@@ -30745,6 +37988,13 @@ Colibri.UI.FieldsViewer = class extends Colibri.UI.Viewer {
         this.Dispatch('FieldsToggled', {state: this._hidden.shown});
     }
 
+    /**
+     * Generate fields
+     * @param {object} fields fields object
+     * @param {object} value value object
+     * @param {Element} contentElement content element
+     * @param {boolean} showTitles show titles
+     */
     _createFields(fields = null, value = null, contentElement = null, showTitles = true) {
         const root = this.root || this;
         contentElement = contentElement || this;
@@ -30950,6 +38200,13 @@ Colibri.UI.FieldsViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Update fields
+     * @param {object} fields fields object
+     * @param {object} value value object
+     * @param {Element} contentElement content element
+     * @param {boolean} showTitles show titles
+     */
     _updateFields(fields = null, value = null, contentElement = null, showTitles = true) {
         const root = this.root || this;
         contentElement = contentElement || this;
@@ -30975,47 +38232,61 @@ Colibri.UI.FieldsViewer = class extends Colibri.UI.Viewer {
     }
 
     /**
-     * Отображать поля без значения
+     * Show fields that does not have values
      * @type {boolean}
      */
     get showUnsetFields() {
         return this._showUnsetFields;
     }
     /**
-     * Отображать поля без значения
+     * Show fields that does not have values
      * @type {boolean}
      */
     set showUnsetFields(value) {
         this._showUnsetFields = value === 'true' || value === true;
         this._showShowUnsetFields();
     }
+    /** @private */
     _showShowUnsetFields() {
         this._createFields();
     }
 
     /**
-     * Не отображать поля
+     * Hide fields
      * @type {string|Array}
      */
     get hideFields() {
         return this._hideFields;
     }
     /**
-     * Не отображать поля
+     * Hide fields
      * @type {string|Array}
      */
     set hideFields(value) {
         this._hideFields = typeof value === 'string' ? value.split(',') : value;
         this._showHideFields();
     }
+    /** @private */
     _showHideFields() {
         this._createFields();
     }
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.FieldsViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.TextViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-text-viewer-component');
@@ -31037,10 +38308,18 @@ Colibri.UI.TextViewer = class extends Colibri.UI.Viewer {
         this._emptyMessage = value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return super.value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         const emptyMessage = this.field?.params?.empty ?? this._emptyMessage ?? '';
         super.value = !value ? emptyMessage : value;
@@ -31050,20 +38329,37 @@ Colibri.UI.TextViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.TextViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.TextAreaViewer = class extends Colibri.UI.Viewer {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-textarea-viewer-component');
-
-
-
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return super.value;
     }
     
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         super.value = !value ? '&mdash;' : value.replaceAll(/\n/, '<br />');
     }
@@ -31071,31 +38367,63 @@ Colibri.UI.TextAreaViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.TextAreaViewer', '');
+/**
+ * Bool viewer
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.BoolViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */    
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-bool-viewer-component');
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
         this._value = value;
         this._showValue();
     }
 
+    /**
+     * Value object
+     * @type {boolean}
+     */
     get value() {
         return this._value ?? null;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
         this._showValue();
     }
 
+    /**
+     * @private
+     */
     _showValue() {
 
         if(!this._field || this._value === undefined) {
@@ -31125,13 +38453,26 @@ Colibri.UI.BoolViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.BoolViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.ObjectViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-object-viewer-component');
     }
 
+    /** @private */ 
     _showValue() {
         let ret = [];
         if(Object.countKeys(this._field.fields) > 0) {
@@ -31151,10 +38492,18 @@ Colibri.UI.ObjectViewer = class extends Colibri.UI.Viewer {
         }
     }
 
+    /**
+     * Value
+     * @type {object}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {object}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._value = value;
@@ -31164,13 +38513,36 @@ Colibri.UI.ObjectViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.ObjectViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.MonthYearViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-monthyear-viewer-component');
     }
 
+    /**
+     * Value
+     * @type {Date|string}
+     */
+    get value() {
+        return super.value;
+    }
+    /**
+     * Value
+     * @type {Date|string}
+     */
     set value(value) {
         value = this._convertValue(value);
         if(typeof value == 'string') {
@@ -31183,13 +38555,36 @@ Colibri.UI.MonthYearViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.MonthYearViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.YearViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-year-viewer-component');
     }
 
+    /**
+     * Value
+     * @type {Date|string}
+     */
+    get value() {
+        return super.value;
+    }
+    /**
+     * Value
+     * @type {Date|string}
+     */
     set value(value) {
         value = this._convertValue(value);
         if(typeof value == 'number' || typeof value == 'string') {
@@ -31202,8 +38597,20 @@ Colibri.UI.YearViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.YearViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.PeriodViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-period-viewer-component');
@@ -31212,10 +38619,18 @@ Colibri.UI.PeriodViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     get value() {
         return this.ContainsClass('app-is-read-component');
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
         let _value = value;
         if(typeof _value === 'string') {
@@ -31242,8 +38657,20 @@ Colibri.UI.PeriodViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.PeriodViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.RadioViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-radio-viewer-component');
@@ -31252,18 +38679,38 @@ Colibri.UI.RadioViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
-        return this.ContainsClass('app-is-read-component');
+        return super.value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         super.value = value.title;
     }
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.RadioViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.GridFileViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-gridfile-viewer-component');
@@ -31275,10 +38722,18 @@ Colibri.UI.GridFileViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
         value = this._convertValue(value);
 
@@ -31292,6 +38747,7 @@ Colibri.UI.GridFileViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /** @private */
     _createContextMenuButton() {
         if(!this._hasContextMenu || this.Children(this._name + '-contextmenu-icon-parent')) {
             return;
@@ -31323,6 +38779,7 @@ Colibri.UI.GridFileViewer = class extends Colibri.UI.Viewer {
         
     }
 
+    /** @private */
     _removeContextMenuButton() {
         if(this._hasContextMenu && this.Children(this._name + '-contextmenu-icon-parent')) {
             this.Children(this._name + '-contextmenu-icon-parent').Dispose();
@@ -31330,6 +38787,11 @@ Colibri.UI.GridFileViewer = class extends Colibri.UI.Viewer {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __createContextMenu(event, args) {
         let contextmenu = [];
         this.value.forEach((v) => {
@@ -31345,6 +38807,11 @@ Colibri.UI.GridFileViewer = class extends Colibri.UI.Viewer {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnContextMenu(event, args) {
         if(!args.menuData) {
             return;
@@ -31354,17 +38821,37 @@ Colibri.UI.GridFileViewer = class extends Colibri.UI.Viewer {
         
     }
 
+    /**
+     * Download url string
+     * @type {string}
+     */
     set download(value) {
         this._download = value;
     }
+    /**
+     * Download url string
+     * @type {string}
+     */
     get download() {
         return this._download;
     }
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.GridFileViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.CheckboxAsTextViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-checkboxastext-viewer-component');
@@ -31372,10 +38859,18 @@ Colibri.UI.CheckboxAsTextViewer = class extends Colibri.UI.Viewer {
         this._value = false;
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     get value() {
         return this.value === false ? '' : this._field.placeholder;
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
     
         this._value = value;
@@ -31391,8 +38886,20 @@ Colibri.UI.CheckboxAsTextViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.CheckboxAsTextViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.DateTimeViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-datetime-viewer-component');
@@ -31404,10 +38911,18 @@ Colibri.UI.DateTimeViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Value
+     * @type {Date}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {Date}
+     */
     set value(value) {
         value = this._convertValue(value);
         if(typeof value === 'string') {
@@ -31428,8 +38943,20 @@ Colibri.UI.DateTimeViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.DateTimeViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.FileSizeViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-filesize-viewer-component');
@@ -31441,10 +38968,18 @@ Colibri.UI.FileSizeViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     set value(value) {
         value = this._convertValue(value);
         if(typeof value !== 'number') {
@@ -31457,13 +38992,36 @@ Colibri.UI.FileSizeViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.FileSizeViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.HtmlDataViewer = class extends Colibri.UI.Viewer {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-htmldata-viewer-component');
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
+    get value() {
+        return super.value;
+    }
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         let v = !value ? '&mdash;' : value.replaceAll(/\n/, '<br />');
         v = v.stripHtml().words(20);
@@ -31473,13 +39031,29 @@ Colibri.UI.HtmlDataViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.HtmlDataViewer', '');
+/**
+ * Array data viewer
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.ArrayViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container of component
+     * @param {Element|string} element element for create childrens
+     * @param {Colibri.UI.Component} root root component
+     */
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-array-viewer-component');
     }
 
+    /**
+     * @private
+     */
     _showValue() {
         let ret = [];
         if(isIterable(this._value)) {
@@ -31490,21 +39064,40 @@ Colibri.UI.ArrayViewer = class extends Colibri.UI.Viewer {
         this._element.html(ret.join(', '));
     }
 
+    /**
+     * Value of component
+     * @type {Array}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value of component
+     * @type {Array}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._value = value;
         this._showValue();
     }
 
-
 }
 Colibri.UI.Viewer.Register('Colibri.UI.ArrayViewer', '');
+/**
+ * @memberof Colibri.UI
+ * @class
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.CheckboxViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-checkbox-viewer-component');
@@ -31515,6 +39108,10 @@ Colibri.UI.CheckboxViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
         if(this._convertValue(value)) {
             this._checkbox.AddClass('-checked');
@@ -31523,14 +39120,26 @@ Colibri.UI.CheckboxViewer = class extends Colibri.UI.Viewer {
         }
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     get value() {
         return this._checkbox.ContainsClass('-checked');
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
     }
@@ -31538,8 +39147,20 @@ Colibri.UI.CheckboxViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.CheckboxViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.ColorViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-color-viewer-component');
@@ -31552,20 +39173,36 @@ Colibri.UI.ColorViewer = class extends Colibri.UI.Viewer {
 
     }
  
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._colorBox.styles = {backgroundColor: value};
         this._view.value = value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._view.value;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
     }
@@ -31573,8 +39210,20 @@ Colibri.UI.ColorViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.ColorViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.BorderViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-border-viewer-component');
@@ -31587,20 +39236,36 @@ Colibri.UI.BorderViewer = class extends Colibri.UI.Viewer {
 
     }
  
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._colorBox.styles = {border: value};
         this._view.value = value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._view.value;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
     }
@@ -31608,8 +39273,20 @@ Colibri.UI.BorderViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.BorderViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.ImageViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-image-viewer-component');
@@ -31622,6 +39299,11 @@ Colibri.UI.ImageViewer = class extends Colibri.UI.Viewer {
 
     }
 
+    /**
+     * Get the image size
+     * @param {string} value url of image
+     * @returns {Promise}
+     */
     GetImageSize(value) {
         return new Promise((resolve, reject) => {
             value = value.indexOf('url') !== -1 ? value.replace(/url\((['"])?(.*?)\1\)/gi, '$2') : value;
@@ -31635,20 +39317,36 @@ Colibri.UI.ImageViewer = class extends Colibri.UI.Viewer {
         });
     }
  
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._colorBox.styles = {backgroundImage: value.indexOf('url') !== -1 ? value : 'url(' + value + ')'};
         this._view.value = value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._view.value;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
     }
@@ -31656,8 +39354,20 @@ Colibri.UI.ImageViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.ImageViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.ShadowViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-shadow-viewer-component');
@@ -31670,20 +39380,36 @@ Colibri.UI.ShadowViewer = class extends Colibri.UI.Viewer {
 
     }
  
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         value = this._convertValue(value);
         this._colorBox.styles = {boxShadow: value};
         this._view.value = value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._view.value;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
     }
@@ -31691,45 +39417,93 @@ Colibri.UI.ShadowViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.ShadowViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.FontFamilyViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-shadow-viewer-component');
 
     }
  
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         super.value = value;
         this.styles = {fontFamily: value};
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return super.value;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(field) {
         this._field = field;
     }
 
-
 }
+
 Colibri.UI.Viewer.Register('Colibri.UI.FontFamilyViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.NumberViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-number-viewer-component');
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     set value(value) {
         this._value = value;
         value = this._convertValue(value);
@@ -31779,22 +39553,34 @@ Colibri.UI.NumberViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.NumberViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.DocumentViewer = class extends Colibri.UI.Viewer {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     * @param {Colibri.UI.Component|null} root root component 
+     */ 
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('div'), root);
         this.AddClass('app-document-viewer-component');
     }
 
     /**
-     * Метод для скачивания данных
+     * Download handler
      * @type {Function}
      */
     get downloadHandler() {
         return this._downloadHandler;
     }
     /**
-     * Метод для скачивания данных
+     * Download handler
      * @type {Function}
      */
     set downloadHandler(value) {
@@ -31802,20 +39588,21 @@ Colibri.UI.DocumentViewer = class extends Colibri.UI.Viewer {
     }
     
     /**
-     * Неизвестный формат, сообщение
+     * Unknown formate message
      * @type {string}
      */
     get unknownFormatText() {
         return this._unknownFormatText;
     }
     /**
-     * Неизвестный формат, сообщение
+     * Unknown formate message
      * @type {string}
      */
     set unknownFormatText(value) {
         this._unknownFormatText = value;
     }
 
+    /** @private */
     _isFileViewable(mimetype) {
         let found = false;
         ['application/pdf', 'image/'].forEach((m) => {
@@ -31827,6 +39614,17 @@ Colibri.UI.DocumentViewer = class extends Colibri.UI.Viewer {
         return found;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         value = this._convertValue(value);
 
@@ -31876,8 +39674,18 @@ Colibri.UI.DocumentViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('Colibri.UI.DocumentViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.JsonViewer = class extends Colibri.UI.Pane {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container);
@@ -31902,6 +39710,8 @@ Colibri.UI.JsonViewer = class extends Colibri.UI.Pane {
         this._value = value;
         this._showValue();
     }
+    
+    /** @private */
     _showValue() {
         const value = Object.cloneRecursive(this._value);
 
@@ -31939,8 +39749,18 @@ Colibri.UI.JsonViewer = class extends Colibri.UI.Pane {
 }
 
 Colibri.UI.Viewer.Register('Colibri.UI.JsonViewer', '');
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.DateRangeViewer = class extends Colibri.UI.Viewer {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container);
@@ -31954,11 +39774,18 @@ Colibri.UI.DateRangeViewer = class extends Colibri.UI.Viewer {
 
     }
    
-
+    /**
+     * Value
+     * @type {Date|string}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {Date|string}
+     */
     set value(value) {
         if(!Array.isArray(value)) {
             value = [value, null];
@@ -31975,8 +39802,18 @@ Colibri.UI.DateRangeViewer = class extends Colibri.UI.Viewer {
 
     }
 }
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Viewer
+ */
 Colibri.UI.DateDiffViewer = class extends Colibri.UI.Viewer {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container);
@@ -31985,10 +39822,18 @@ Colibri.UI.DateDiffViewer = class extends Colibri.UI.Viewer {
         this._value = null;
     }
 
+    /**
+     * Value
+     * @type {Array|string}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {Array|string}
+     */
     set value(value) {
         if(!Array.isArray(value)) {
             value = [value, (new Date()).toDbDate()];
@@ -32004,7 +39849,18 @@ Colibri.UI.DateDiffViewer = class extends Colibri.UI.Viewer {
 
     }
 }
+/**
+ * @class
+ * @extends Colibri.UI.Component
+ * @memberof Colibri.UI
+ */
 Colibri.UI.Editor = class extends Colibri.UI.Component {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     * @param {Element|string} element element to generate childs
+     */ 
     constructor(name, container, element) {
         super(name, container, element || '<input />');
         this.AddClass('app-editor-component');
@@ -32027,6 +39883,11 @@ Colibri.UI.Editor = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisFocused(event, args) {
         const fieldEditoPane = this._element.closest('.app-field-pane-editor');
         if(fieldEditoPane && fieldEditoPane.tag('component')) {
@@ -32034,6 +39895,11 @@ Colibri.UI.Editor = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisUnfocused(event, args) {
         const fieldEditoPane = this._element.closest('.app-field-pane-editor');
         if(fieldEditoPane && fieldEditoPane.tag('component')) {
@@ -32041,23 +39907,41 @@ Colibri.UI.Editor = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Прозошло изменение данных компонента')
     }
 
+    /**
+     * Is editor data is invalid
+     * @type {boolean}
+     * @readonly
+     */
     get invalid() {
         return this.ContainsClass('-invalid');
     }
 
+    /**
+     * Edited object
+     * @type {object}
+     */
     get editedObject() {
         return this._editedObject;
     }
 
+    /**
+     * Edited object
+     * @type {object}
+     */
     set editedObject(value) {
         this._editedObject = value;
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(value) {
         this._fieldData = value;
         if(this._updateFieldData) {
@@ -32065,10 +39949,15 @@ Colibri.UI.Editor = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._fieldData;
     }
-    
+
+    /** @protected */
     _setFilled() {
         const fieldEditoPane = this._element.closest('.app-field-pane-editor');
         if(fieldEditoPane && fieldEditoPane.tag('component')) {
@@ -32076,6 +39965,7 @@ Colibri.UI.Editor = class extends Colibri.UI.Component {
         }
     }
 
+    /** @protected */
     _unsetFilled() {
         const fieldEditoPane = this._element.closest('.app-field-pane-editor');
         if(fieldEditoPane && fieldEditoPane.tag('component')) {
@@ -32086,7 +39976,16 @@ Colibri.UI.Editor = class extends Colibri.UI.Component {
 
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Editor
+ */
 Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         super(name, container, Element.create('input'));
         this.AddClass('app-email-editor-component');
@@ -32096,6 +39995,7 @@ Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     __elementChanged(e) {
         if(this.value) {
             this._setFilled();
@@ -32105,6 +40005,9 @@ Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /**
+     * Validate editor data
+     */
     Validate() {
         if(this._element.value && !this._element.value.isEmail()) {
             this.AddClass('-invalid');
@@ -32116,15 +40019,26 @@ Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Focus on editor
+     */
     Focus() {
         this._element.focus();
         // this._element.select();
     } 
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._fieldData.readonly;
     }  
  
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._fieldData.readonly = value === true || value === 'true';
         if(value === true || value === 'true') {
@@ -32135,18 +40049,34 @@ Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._element.attr('placeholder');
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._element.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._element.value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._element.value = value;
         if(value) {
@@ -32157,10 +40087,18 @@ Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
         this.Validate();
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._element.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('ui-disabled');
@@ -32173,8 +40111,18 @@ Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Editor
+ * @memberof Colibri.UI
+ */
 Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
     
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-files-editor-component');
@@ -32249,6 +40197,7 @@ Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'Когда файлы выбраны');
@@ -32319,7 +40268,7 @@ Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
     }
 
     /**
-     * Показать ошибки валидации
+     * Show errors
      * @private
      */
      _showError() {
@@ -32334,11 +40283,17 @@ Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
         this._errorMessages = [];
     }
 
-    
+    /**
+     * Validate editor
+     */
     Validate() {
         
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     get value() {
         let ret = [];
         this._filesGroup.ForEach((name, item) => {
@@ -32347,6 +40302,10 @@ Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
         return ret;
     }
 
+    /**
+     * Value
+     * @type {Array}
+     */
     set value(value) {
         this._filesGroup.Clear();
         value && value.forEach((file) => {
@@ -32363,6 +40322,10 @@ Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
     }
     
     
+    /**
+     * Field object
+     * @type {object}
+     */
     set field(value) {
         this._fieldData = value;
 
@@ -32374,27 +40337,27 @@ Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /**
+     * Field object
+     * @type {object}
+     */
     get field() {
         return this._fieldData;
     }
 
 }
-Colibri.UI.LinkEditor = class extends Colibri.UI.Editor {
-    
-    constructor(name, container) {
-        super(name, container, Element.create('input'));
-        this.AddClass('app-link-editor-component');
-
-    }
-    
-    
-    Validate() {
-        
-    }
-
-}
+/**
+ * @class
+ * @extends Colibri.UI.Editor
+ * @memberof Colibri.UI
+ */
 Colibri.UI.LinkEditor = class extends Colibri.UI.Editor {
 
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-link-editor-component');
@@ -32422,6 +40385,7 @@ Colibri.UI.LinkEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     _showValue() {
         this._text.value = this.value;
         if(this._grid) {
@@ -32439,29 +40403,58 @@ Colibri.UI.LinkEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     _clickOnLink() {
         if(this.field && this._downloadlink) {
             window.open((window.rpchandler ? window.rpchandler : '') + this._downloadlink + '?name=' + this.field.name + '&data=' + this.field.params.data);
         }
     }
 
-    
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._value = value;
         this._showValue();
     }
 
+    /**
+     * Download link
+     * @type {string}
+     */
+    get downloadlink() {
+        return this._downloadlink;
+    }
+    /**
+     * Download link
+     * @type {string}
+     */
     set downloadlink(value) {
         this._downloadlink = value;
     }
 
 
 }
+/**
+ * @class
+ * @extends Colibri.UI.Editor
+ * @memberof Colibri.UI
+ */
 Colibri.UI.TextEditor = class extends Colibri.UI.Editor {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         super(name, container, Element.create('input'));
         this.AddClass('app-text-editor-component');
@@ -32474,6 +40467,7 @@ Colibri.UI.TextEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     __elementChanged(e) {
         if(this.value) {
             this._setFilled();
@@ -32483,28 +40477,46 @@ Colibri.UI.TextEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     _updateFieldData() {
         this.placeholder = this._fieldData?.placeholder;
     }
 
+    /**
+     * Validate editor
+     */
     Validate() {
         
     }
 
+    /**
+     * Focus on editor
+     */
     Focus() {
         this._element.focus();
         // this._element.select();
         this.parent.parent.AddClass('-focused');
     } 
 
+    /**
+     * Remove focus from editor
+     */
     Blur() {
         this.parent.parent.RemoveClass('-focused');
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._fieldData.readonly;
     }  
  
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._fieldData.readonly = value === true || value === 'true';
         if(value === true || value === 'true') {
@@ -32515,18 +40527,34 @@ Colibri.UI.TextEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._element.attr('placeholder');
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._element.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._element.value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._element.value = value;
         this.Validate();
@@ -32538,10 +40566,18 @@ Colibri.UI.TextEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._element.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('ui-disabled');
@@ -32554,7 +40590,17 @@ Colibri.UI.TextEditor = class extends Colibri.UI.Editor {
     }
 
 }
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Editor
+ */
 Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         super(name, container, Element.create('input', {type: 'number'}));
         this.AddClass('app-number-editor-component');
@@ -32567,6 +40613,7 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     __elementChanged(e) {
         if(this.value) {
             this._setFilled();
@@ -32576,21 +40623,30 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /**
+     * Validate editor
+     */
     Validate() {
         
     }
 
-
+    /**
+     * Focus on editor
+     */
     Focus() {
         this._element.focus();
         // this._element.select();
         this.parent.parent.AddClass('-focused');
     } 
 
+    /**
+     * Remove focus from editor
+     */
     Blur() {
         this.parent.parent.RemoveClass('-focused');
     }
 
+    /** @private */
     _updateFieldData() {
         if(this._fieldData?.placeholder) {
             this._element.attr('placeholder', this._fieldData?.placeholder);
@@ -32603,10 +40659,18 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._fieldData.readonly;
     }  
  
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._fieldData.readonly = value === true || value === 'true';
         if(value === true || value === 'true') {
@@ -32617,14 +40681,26 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._element.attr('placeholder');
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._element.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     get value() {
         let v = this._element.value; 
         if(this._fieldData?.params?.isShare) {
@@ -32633,6 +40709,10 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
         return v;
     }
 
+    /**
+     * Value
+     * @type {number}
+     */
     set value(value) {
 
         if(this._fieldData?.params?.isShare) {
@@ -32648,10 +40728,18 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._element.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('ui-disabled');
@@ -32664,7 +40752,17 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
     }
 
 }
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Editor
+ */
 Colibri.UI.CheckboxEditor = class extends Colibri.UI.Editor {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-checkbox-editor-component');
@@ -32678,31 +40776,58 @@ Colibri.UI.CheckboxEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /**
+     * Validate
+     */
     Validate() {
         
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._fieldData.readonly;
     }  
  
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._fieldData.readonly = value === true || value === 'true';
         this._input.readonly = value === true || value === 'true';
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.placeholder;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._input.placeholder = value ? value[Lang.Current] ?? value : '';
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     get value() {
         return this._input.checked;
     }
 
+    /**
+     * Value
+     * @type {boolean}
+     */
     set value(value) {
         this._input.checked = value === true || value === 1;
         this.Validate();
@@ -32713,10 +40838,18 @@ Colibri.UI.CheckboxEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._input.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('ui-disabled');
@@ -32728,12 +40861,25 @@ Colibri.UI.CheckboxEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Focus on editor
+     */
     Focus() {
         this._input.Focus();
     }
 
 }
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Editor
+ */
 Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         super(name, container, Element.create('div'));
         this.AddClass('app-select-editor-component');
@@ -32743,31 +40889,58 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /**
+     * Validate editor
+     */
     Validate() {
         
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this.field.readonly;
     }  
  
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this.field.readonly = value === true || value === 'true';
         this._input.readonly = value === true || value === 'true';
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._input.placeholder;
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._input.placeholder = value ? value[Lang.Current] ?? value : '';
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._input.value?.value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         Colibri.Common.Wait(() => !this.loading).then(() => {
             this._input.value = value;
@@ -32781,10 +40954,18 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
         
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._input.enabled;
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('ui-disabled');
@@ -32811,6 +40992,7 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
         super.field = value;
         this._showField();
     }
+    /** @private */
     _showField() {
         this._input = this._createSelector();
         this._input.shown = true;
@@ -32859,6 +41041,7 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /** @private */
     _createSelector() {
 
         return new Colibri.UI.Selector(
@@ -32879,7 +41062,7 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
     }
 
     /**
-     * Заново загрузить значения из хранилища
+     * Reload values
      */
     ReloadValues() {
         this.values = this.field.values;
@@ -32900,6 +41083,7 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /** @private */
     _getDependsValue(type = null) {
         if (this.root && this.field?.lookup) {
 
@@ -32919,8 +41103,7 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
     }
 
     /**
-     * Установить новое значение свойству lookup
-     * Загрузить значения селектора альтернативным способом, указанным в lookup
+     * Set the lookup object
      * @param {(Object|function)} value
      */
     _setLookup(value) {
@@ -32990,9 +41173,9 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
     }
 
     /**
-     * Значения селектора
-     * @param {array} value
-     * */
+     * Selector values
+     * @type {Array}
+     */
     set values(value) {
         let required = this.field?.params?.required;
         if(required === undefined) {
@@ -33008,15 +41191,15 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
     }
 
     /**
-     * Значения селектора
-     * @return {array} value
-     * */
+     * Selector values
+     * @type {Array}
+     */
     get values() {
         return this._input.values;
     }
 
     /**
-     * Если необходимо инициализировать данные из lookup
+     * Initialize data from lookup when component is created
      * @private
      */
     _initializeValues() {
@@ -33045,6 +41228,7 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /** @private */
     _setEnabled() {
         if(!this.value && this.field.default) {
             this.value = this.field.default;
@@ -33069,13 +41253,26 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Focus on editor
+     */
     Focus() {
         this._input.Focus();
     }
 
 
 }
+/**
+ * @class
+ * @memberof Colibri.UI
+ * @extends Colibri.UI.Editor
+ */
 Colibri.UI.TextAreaEditor = class extends Colibri.UI.Editor {
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.Component} container container element and component
+     */ 
     constructor(name, container) {
         super(name, container, Element.create('textarea'));
         this.AddClass('app-textarea-editor-component');
@@ -33088,6 +41285,7 @@ Colibri.UI.TextAreaEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     __elementChanged(e) {
         if(this.value) {
             this._setFilled();
@@ -33097,28 +41295,46 @@ Colibri.UI.TextAreaEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /** @private */
     _updateFieldData() {
         this.placeholder = this._fieldData?.placeholder;
     }
 
+    /**
+     * Validate
+     */
     Validate() {
         
     }
 
+    /**
+     * Focus on editor
+     */
     Focus() {
         this._element.focus();
         // this._element.select();
         this.parent.parent.AddClass('-focused');
     } 
 
+    /**
+     * Remove focus from editor
+     */
     Blur() {
         this.parent.parent.RemoveClass('-focused');
     }
 
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     get readonly() {
         return this._fieldData.readonly;
     }  
  
+    /**
+     * Readonly
+     * @type {boolean}
+     */
     set readonly(value) {
         this._fieldData.readonly = value === true || value === 'true';
         if(value === true || value === 'true') {
@@ -33129,18 +41345,34 @@ Colibri.UI.TextAreaEditor = class extends Colibri.UI.Editor {
         }
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     get placeholder() {
         return this._element.attr('placeholder');
     }
 
+    /**
+     * Placeholder
+     * @type {string}
+     */
     set placeholder(value) {
         this._element.attr('placeholder', value ? value[Lang.Current] ?? value : '');
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     get value() {
         return this._element.value;
     }
 
+    /**
+     * Value
+     * @type {string}
+     */
     set value(value) {
         this._element.value = value;
         this.Validate();
@@ -33152,10 +41384,18 @@ Colibri.UI.TextAreaEditor = class extends Colibri.UI.Editor {
 
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     get enabled() {
         return this._element.attr('disabled') != 'disabled';
     }
 
+    /**
+     * Enable/Disable
+     * @type {boolean}
+     */
     set enabled(value) {
         if(value) {
             this.RemoveClass('ui-disabled');
@@ -33168,11 +41408,20 @@ Colibri.UI.TextAreaEditor = class extends Colibri.UI.Editor {
     }
 
 }
+/**
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.UI
+ */
 Colibri.UI.FormValidator = class extends Colibri.Events.Dispatcher {
 
     _form = null;
     _validators = null;
 
+    /**
+     * @constructor
+     * @param {Colibri.UI.Forms.Form} form form component
+     */ 
     constructor(form) {
         super();
 
@@ -33186,6 +41435,7 @@ Colibri.UI.FormValidator = class extends Colibri.Events.Dispatcher {
         this._createValidators();
     }
 
+    /** @private */
     _createValidators() {
         this._validators = [];
         this._form.ForEach((name, component) => {
@@ -33198,7 +41448,7 @@ Colibri.UI.FormValidator = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     *
+     * Validate form
      * @param {boolean} messages отображать ли сообщения
      * @param {boolean} breakFirst прерывается на первом не валидном поле
      * @param {string} className
@@ -33235,6 +41485,12 @@ Colibri.UI.FormValidator = class extends Colibri.Events.Dispatcher {
         return this._validated;
     }
 
+    /**
+     * Invalidate field
+     * @param {string} field field to invalidate
+     * @param {string} message message to show
+     * @param {string} className classname for error
+     */
     Invalidate(field, message, className = 'app-validate-error') {
         const fieldObject = this._form.FindField(field);
         if(!fieldObject) {
@@ -33245,10 +41501,20 @@ Colibri.UI.FormValidator = class extends Colibri.Events.Dispatcher {
         validator.Invalidate(message, className);
     }
 
+    /**
+     * Form object
+     * @type {Colibri.UI.Forms.Form}
+     * @readonly
+     */
     get form() {
         return this._form;
     }
 }
+/**
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.UI
+ */
 Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
 
     _field = null;
@@ -33261,6 +41527,11 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
     _validating = false;
     _validators = [];
 
+    /**
+     * @constructor
+     * @param {Colibri.UI.Forms.Field} fieldComponent field component
+     * @param {Colibri.UI.Forms.Form} formComponent form component
+     */ 
     constructor(fieldComponent, formComponent) {
         super();
         this.RegisterEvent('Validated', false, 'Когда поле валидировано');
@@ -33279,6 +41550,7 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
         this._createValidators();
     }
 
+    /** @private */
     _createValidators() {
         if (this._field?.Fields) {
             this._validators = [];
@@ -33292,6 +41564,10 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Clear validation
+     * @param {string} className class name
+     */
     Clear(className = null) {
         this._validated = true;
         this._message = '';
@@ -33304,6 +41580,12 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Validate form
+     * @param {Array<string>} messages messages
+     * @param {string} className class name
+     * @returns {boolean}
+     */
     Validate(messages = true, className = null) {
         this._className = className;
         // валидируем и потом выставляем поля validated и message
@@ -33351,16 +41633,31 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
         return this._validated;
     }
 
+    /**
+     * Invalidate form
+     * @param {string} message message
+     * @param {string} className class name
+     */
     Invalidate(message, className) {
         this._validated = false;
         this._field.message = message;
         this._field.AddClass(className);    
     }
 
+    /**
+     * Is form validated
+     * @type {boolean}
+     * @readonly
+     */
     get validated() {
         return this._validated;
     }
 
+    /**
+     * Message
+     * @type {string}
+     * @readonly
+     */
     get message() {
         if (this._validators.length > 0) {
             let messages = [];
@@ -33375,16 +41672,35 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Field object
+     * @type {object}
+     * @readonly
+     */
     get field() {
         return this._field;
     }
 
+    /**
+     * Form object
+     * @type {object}
+     * @readonly
+     */
     get form() {
         return this._form;
     }
 }
+/**
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.UI
+ */
 Colibri.UI.SimpleFormValidator = class {
 
+    /**
+     * @constructor
+     * @param {Colibri.UI.Forms.Form} form form component
+     */ 
     constructor(form) {
         this._form = form;
         this._init(this._form.Fields());
@@ -33396,6 +41712,11 @@ Colibri.UI.SimpleFormValidator = class {
         });
     }
 
+    /**
+     * Init
+     * @private
+     * @param {object} fields fields object
+     */
     _init(fields) {
         if(fields.length == 0) {
             return;
@@ -33408,6 +41729,10 @@ Colibri.UI.SimpleFormValidator = class {
         });
     }
 
+    /**
+     * Validate field
+     * @param {object} field field object
+     */
     __validateField(field) {
 
         field.field.params && (field.field.params.validated = 'success');
@@ -33438,6 +41763,10 @@ Colibri.UI.SimpleFormValidator = class {
 
     }
 
+    /**
+     * Status of validation
+     * @param {object} fields fields object
+     */
     Status(fields = null) {
 
         if(!fields) {
@@ -33467,6 +41796,10 @@ Colibri.UI.SimpleFormValidator = class {
 
     }
 
+    /**
+     * Clear messages of validation
+     * @param {object} fields fields object
+     */
     Clear(fields = null) {
 
         this._form.message = '';
@@ -33494,6 +41827,10 @@ Colibri.UI.SimpleFormValidator = class {
 
     }
 
+    /**
+     * Validate all fields
+     * @param {object|null} fields fields object
+     */
     ValidateAll(fields = null) {
 
         this._form.message = '';
@@ -33519,6 +41856,10 @@ Colibri.UI.SimpleFormValidator = class {
 
     }
 
+    /**
+     * Set field as valid
+     * @param {object|string} field field object
+     */
     SetAsValid(field) {
         const f = typeof field === 'string' ? this._form.FindField(field) : field;
         if(!f) {
@@ -33529,6 +41870,11 @@ Colibri.UI.SimpleFormValidator = class {
         f.RemoveClass('app-validate-error');
     }
 
+    /**
+     * Invalidate field
+     * @param {object|string"} field field object 
+     * @param {string} message validation message 
+     */
     Invalidate(field, message) {
         if(field == 'form') {
             this._form.message = message;
@@ -33543,6 +41889,11 @@ Colibri.UI.SimpleFormValidator = class {
         f.AddClass('app-validate-error');
     }
 
+    /**
+     * Form object
+     * @type {object}
+     * @readonly
+     */
     get form() {
         return this._form;
     }
@@ -33550,6 +41901,11 @@ Colibri.UI.SimpleFormValidator = class {
 
 }
 
+/**
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.UI.Utilities
+ */
 Colibri.UI.Utilities.Mask = class extends Destructable {
 
     static DIGIT = "9";
@@ -33557,12 +41913,16 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
     static ALPHANUM = "S";
     static BY_PASS_KEYS = [9, 16, 17, 18, 36, 37, 38, 39, 40, 91, 92, 93];
 
-
+    /**
+     * @constructor
+     * @param {Array<Element>} elements elements to mask
+     */ 
     constructor(elements) {
         super();
         this.elements = elements;
     }
 
+    /** @private */
     _isAllowedKeyCode(keyCode) {
         for (var i = 0, len = Colibri.UI.Utilities.Mask.BY_PASS_KEYS.length; i < len; i++) {
             if (keyCode == Colibri.UI.Utilities.Mask.BY_PASS_KEYS[i]) {
@@ -33572,6 +41932,7 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
         return true;
     }
 
+    /** @private */
     _mergeMoneyOptions(opts) {
         opts = opts || {};
         opts = {
@@ -33588,6 +41949,7 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
         return opts;
     }
 
+    /** @private */
     _unbindElementToMask() {
         for (var i = 0, len = this.elements.length; i < len; i++) {
             this.elements[i].lastOutput = "";
@@ -33600,6 +41962,7 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
         }
     }
 
+    /** @private */
     _bindElementToMask(maskFunction) {
         const onType = (e) => {
             e = e || window.event;
@@ -33625,31 +41988,55 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
         }
     }
 
+    /**
+     * Mask as money
+     * @param {object} opts options
+     */
     maskMoney(opts) {
         this.opts = this._mergeMoneyOptions(opts);
         this._bindElementToMask("toMoney");
     }
 
+    /**
+     * Mask as number
+     */
     maskNumber() {
         this.opts = {};
         this._bindElementToMask("toNumber");
     }
 
+    /**
+     * Mask as alphanumeric
+     */
     maskAlphaNum() {
         this.opts = {};
         this._bindElementToMask("toAlphaNumeric");
     }
 
+    /**
+     * Mask with pattern
+     * @param {string} pattern mask pattern
+     */
     maskPattern(pattern) {
         this.opts = { pattern: pattern };
         this._bindElementToMask("toPattern");
     }
 
+    /**
+     * Unmask field
+     */
     unMask() {
         this._unbindElementToMask();
     }
 
-    // Fill wildcards past index in output with placeholder
+    /**
+     * Fill wildcards past index in output with placeholder
+     * @static
+     * @param {*} output 
+     * @param {*} index 
+     * @param {*} placeholder 
+     * @returns {string}
+     */
     static _addPlaceholdersToOutput(output, index, placeholder) {
         for (; index < output.length; index++) {
             if (output[index] === Colibri.UI.Utilities.Mask.DIGIT || output[index] === Colibri.UI.Utilities.Mask.ALPHA || output[index] === Colibri.UI.Utilities.Mask.ALPHANUM) {
@@ -33659,7 +42046,13 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
         return output;
     }
 
-
+    /**
+     * Perform convertion to money
+     * @static
+     * @param {*} value value to mask
+     * @param {object} opts options
+     * @returns {string}
+     */
     static toMoney(value, opts) {
         opts = this._mergeMoneyOptions(opts);
         if (opts.zeroCents) {
@@ -33718,6 +42111,13 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
         return output.replace(clearSeparator, "") + opts.suffixUnit;
     };
 
+    /**
+     * Perform mask process with pattern
+     * @static
+     * @param {*} value value to mask 
+     * @param {object} opts mask options 
+     * @returns 
+     */
     static toPattern(value, opts) {
 
         var pattern = (typeof opts === 'object' ? opts.pattern : opts),
@@ -33768,14 +42168,29 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
         return output.join("").substr(0, i);
     };
 
+    /**
+     * Perform mask process to number
+     * @param {*} value value to mask
+     * @returns {string}
+     */
     static toNumber(value) {
         return value.toString().replace(/(?!^-)[^0-9]/g, "");
     }
 
+    /**
+     * Perform mask process to alphanumeric
+     * @param {*} value value to mask
+     * @returns {string}
+     */
     static toAlphaNumeric(value) {
         return value.toString().replace(/[^a-z0-9 ]+/i, "");
     }
 
+    /**
+     * Check string to mask pattern
+     * @param {*} value value to mask
+     * @returns {string}
+     */
     static Check(value, pattern) {
         const v = Colibri.UI.Utilities.Mask.toPattern(value, {pattern: pattern, placeholder: "_"});
         return v === value;
@@ -33786,13 +42201,27 @@ Colibri.UI.Utilities.Mask = class extends Destructable {
 
 
 
+/**
+ * @class
+ * @memberof Colibri.UI.Utilities
+ */
 Colibri.UI.Utilities.Validator = class {
 
+    /**
+     * Validate UK post code
+     * @param {string} string uk post code
+     * @returns {boolean}
+     */
     static IsUKPostCode(string) {
         var postcodeRegEx = /[A-Z]{1,2}[0-9A-Z]{1,2} ?[0-9][A-Z]{2}/i; 
         return postcodeRegEx.test(string); 
     }
 
+    /**
+     * Validate Russian tax code
+     * @param {string} value russian tax code
+     * @returns {boolean}
+     */
     static IsValidRuINN(value){
         //первая цифра ИНН может быть нулём, поэтому он не может быть числом
         if(typeof value !== 'string'){
@@ -33890,15 +42319,13 @@ Colibri.UI.Utilities.Validator = class {
                 
             }else if(checkSumOne !== Number(arNumbers[10])){
                 console.error(
-                    `Первая контрольная сумма не совпала
-    с одиннадцатым символом ${checkSumOne} != ${arNumbers[10]}`
+                    `Первая контрольная сумма не совпала с одиннадцатым символом ${checkSumOne} != ${arNumbers[10]}`
                 );
                 return false;
                 
             }else if(checkSumTwo !== Number(arNumbers[11])){
                 console.error(
-                    `Вторая контрольная сумма не совпала
-    с двенадцатым символом ${checkSumTwo} != ${arNumbers[11]}`
+                    `Вторая контрольная сумма не совпала с двенадцатым символом ${checkSumTwo} != ${arNumbers[11]}`
                 );
                 return false;
             }
@@ -33906,15 +42333,24 @@ Colibri.UI.Utilities.Validator = class {
     }
 
 }
+/**
+ * Represents a utility for handling web requests.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Web
+ */
 Colibri.Web.Request = class extends Destructable {
 
+    /**
+     * @constructor
+     */
     constructor() {
         super();
     }
 
     /**
-     * Возвращает путь запроса 
-     * приоритет на location.hash
+     * Retrieves the URI of the request, prioritizing location.hash.
+     * @returns {string} - The URI of the request.
      */
     get uri() {
         let h = App.Router.type === Colibri.Web.Router.RouteOnHash ? location.hash.substring(1) : location.pathname;
@@ -33925,18 +42361,18 @@ Colibri.Web.Request = class extends Destructable {
     }
 
     /**
-     * Возвращает путь запроса 
-     * приоритет на location.hash
+     * Retrieves the path segments of the request.
+     * @returns {Array} - The path segments of the request.
      */
     get path() {
         return this.uri.split('/').filter(v => v != '');
     }
 
     /**
-     * Возвращает параметры запроса
-     * приоритет на location.hash
+     * Retrieves the query parameters of the request, prioritizing location.hash.
+     * @returns {Object} - The query parameters of the request.
      */
-     get query() {
+    get query() {
         let h = location.hash ? location.hash.substring(1) : location.search;
         if(h.indexOf('?') !== -1) {
             h = h.split('?')[1];
@@ -33948,7 +42384,8 @@ Colibri.Web.Request = class extends Destructable {
     }
 
     /**
-     * Возвращает путь в hash
+     * Retrieves the path in the hash.
+     * @returns {string} - The path in the hash.
      */
     get hash() {
         let h = location.hash ? location.hash.substring(1) : '/';
@@ -33958,18 +42395,36 @@ Colibri.Web.Request = class extends Destructable {
         return h;
     }
 
+    /**
+     * Retrieves the root path.
+     * @returns {string} - The root path.
+     */
     get rootPath() {
         return location.pathname;
     }
 
+    /**
+     * Sets the root path.
+     * @param {string} [value='/'] - The value to set as the root path.
+     */
     set rootPath(value = '/') {
         history.pushState({url: value}, '', value);
     }
 
 }
 
+/**
+ * Represents a router for handling web routes.
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Web
+ */
 Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
+    /**
+     * @constructor
+     * @param {string} type - The type of router ('hash' or 'history').
+     */
     constructor(type) {
         super();
 
@@ -34011,6 +42466,23 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
                 this.Dispatch('RouteChanged', {url: this._url, options: this._options});
             }
         };
+        this._handleNavigate = (e) => {
+            let url = '';
+            let options = {};
+            if(this._type == Colibri.Web.Router.RouteOnHash) {
+                url = e.destination.url;
+                options = url.split('#')[1]?.toObject(['&', '=']) || {};
+                this._url = url.split('#')[0];
+            } else if(this._type == Colibri.Web.Router.RouteOnHistory) {
+                url = e.destination.url;
+                options = url.split('?')[1]?.toObject(['&', '=']) || {};
+                this._url = url.split('?')[0];
+            }
+            this._path = url.split('/').filter(v => v != '');
+            this._options = options;
+            this._history.push({url: this._url, options: this._options});
+            
+        };
 
         if(type == Colibri.Web.Router.RouteOnHash) {
             this._initRouterOnHash();
@@ -34022,10 +42494,17 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
         
     }
 
+    /**
+     * Creates a URI string with the current URL and query parameters.
+     * @returns {string} - The URI string.
+     */
     CreateUri() {
         return this._url + '?' + Object.toQueryString(this._options, ['&', '=']);
     }
 
+    /**
+     * Handles the DOM ready event. Initializes the router with the current URL and query parameters.
+     */
     HandleDomReady() {
         this._url = App.Request.uri;
         this._path = App.Request.uri.split('/').filter(v => v != '');
@@ -34035,24 +42514,46 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
         this.Dispatch('RouteChanged', {url: this._url, options: this._options});
     }
 
+    /**
+     * Registers events for the router.
+     * @private
+     */
+    /** @protected */
     _registerEvents() {
         this.RegisterEvent('RouteChanged', false, 'При изменении раута');
     }
 
+    /**
+     * Processes route patterns.
+     */
     ProcessPatterns() {
         this._processRoutePatterns();
     }
 
+    /**
+     * Initializes the router based on hash changes.
+     * @private
+     */
     _initRouterOnHash() {
         window.removeEventListener('popstate', this._handlePopState);
         window.addEventListener('hashchange', this._handleHashChange);
+        try { navigation.addEventListener('navigate', this._handleNavigate); } catch(e) {}
     }
 
+    /**
+     * Initializes the router based on history changes.
+     * @private
+     */
     _initRouterOnHistory() {
         window.removeEventListener('hashchange', this._handleHashChange);
         window.addEventListener('popstate', this._handlePopState);
+        try { navigation.addEventListener('navigate', this._handleNavigate); } catch(e) {}
     }
 
+    /**
+     * Processes route patterns.
+     * @private
+     */
     _processRoutePatterns() {
         const routePatters = Object.keys(this._routeHandlers);
         for(let i=0; i < routePatters.length; i++) {
@@ -34073,10 +42574,10 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Добавляет обработчик
-     * @param {string} routePattern шаблон поиска
-     * @param {Function} handler хендлер
-     * @param {boolean} prepend добавить в начало
+     * Adds a route pattern and its handler.
+     * @param {string} routePattern - The route pattern to match.
+     * @param {Function} handler - The handler function for the route.
+     * @param {boolean} [prepend=false] - Whether to add the handler at the beginning.
      */
     AddRoutePattern(routePattern, handler, prepend = false) {
 
@@ -34107,10 +42608,23 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Constructs a URL with query parameters.
+     * @param {string} url The base URL.
+     * @param {object} options The query parameters.
+     * @returns {string} The constructed URL.
+     */
     Url(url, options) {
         return url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) : '');
     }
 
+    /**
+     * Checks if the URL has changed.
+     * @param {string} url - The URL to check.
+     * @param {Object} options - The options for the URL.
+     * @returns {boolean} - Whether the URL has changed.
+     * @private
+     */
     _isChanged(url, options) {
         const u = url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) : '');
         let isChanged = false;
@@ -34123,11 +42637,20 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
         return isChanged;
     }
 
+    /**
+     * Sets the URL and options in the address bar.
+     * @param {string} url - The URL to set.
+     * @param {Object} options - The options for the URL.
+     * @param {boolean} replaceOnHistory - Whether to replace the current entry in the history.
+     * @param {boolean} preventNextEvent - Whether to prevent the next event.
+     * @private
+     */
     _setToAddressBar(url, options, replaceOnHistory = false, preventNextEvent = false) {
 
         this._preventNextEvent = preventNextEvent;
 
-        const u = url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) : '') + this.GetSafeParamsAsString();
+        const saveParams = this.GetSafeParamsAsString();
+        const u = url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) + (saveParams ? '&' + saveParams : '') : '');
         if(this._type == Colibri.Web.Router.RouteOnHash) {
             location.hash = '#' + u;
         } else if(this._type == Colibri.Web.Router.RouteOnHistory) {
@@ -34142,9 +42665,13 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Переадресация
-     * @param {string} url куда
-     * @param {object} options параметры
+     * Navigates to a URL with options.
+     * @param {string} url - The URL to navigate to.
+     * @param {Object} [options={}] - The options for the URL.
+     * @param {boolean} [replaceOnHistory=false] - Whether to replace the current entry in the history.
+     * @param {boolean} [setOnHistory=false] - Whether to add the navigation to the history.
+     * @param {string} [target='_self'] - The target window or tab.
+     * @returns {string} - The URL that was navigated to.
      */
     Navigate(url, options = {}, replaceOnHistory = false, setOnHistory = false, target = '_self') {
 
@@ -34201,26 +42728,49 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
         this.Navigate(data.url, data.options);
     }
 
+    /**
+     * Dispatches the 'RouteChanged' event with the current URL and options.
+     */
     DispatchRouteChanged() {
         this.Dispatch('RouteChanged', {url: this._url, options: this._options});
     }
 
+    /**
+     * Returns the current URL.
+     * @returns {string} - The current URL.
+     */
     get current() {
         return this._url;
     }
 
+    /**
+     * Returns the path segments of the current URL.
+     * @returns {Array} - The path segments of the current URL.
+     */
     get path() {
         return this._path;
     }
 
+    /**
+     * Returns the query parameters of the current URL.
+     * @returns {Object} - The query parameters of the current URL.
+     */
     get options() {
         return this._options;
     }
 
+    /**
+     * Returns the type of the router.
+     * @returns {string} - The type of the router.
+     */
     get type() {
         return this._type;
     }
 
+    /**
+     * Sets the type of the router.
+     * @param {string} value - The type of the router.
+     */
     set type(value) {
         this._type = value;
         if(this._type == Colibri.Web.Router.RouteOnHash) {
@@ -34247,6 +42797,11 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
         this._safeParams = value;
     }
 
+    /**
+     * Gets the string representation of safe query parameters.
+     * @returns {string} - The string representation of safe query parameters.
+     * @private
+     */
     GetSafeParamsAsString() {
         let ret = [];
         for(const param of this.safeParams) {
@@ -34259,26 +42814,43 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
 }
 
-/** Раутинг на основе Hash */
+/** Routing based on hash */
 Colibri.Web.Router.RouteOnHash = 'hash';
-/** Роутинг на основе истории */
+/** Routing based on history */
 Colibri.Web.Router.RouteOnHistory = 'history';
+/**
+ * Handles the connection to the Comet server and message communication.
+ * @class 
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Web
+ */
 Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
 
+    /** @type {string} */
     _url = '';
+    /** @type {object} */
     _storage = window.localStorage;
+    /** @type {Colibri.Storages.Store} */
     _store = null;
+    /** @type {string} */
     _storeMessages = '';
+    /** @type {string} */
     _storeUnread = '';
 
+    /** @type {object} */
     _settings = null;
+    /** @type {WebSocket|null} */
     _ws = null;
+    /** @type {boolean} */
     _connected = false;
+    /** @type {object} */
     _user = null;
+    /** @type {string} */
     _clientId = null;
 
     /**
-     * Создает обьект
+     * @constructor
+     * @param {object} settings - Settings for the Comet connection.
      */
     constructor(settings) {
         super();
@@ -34294,6 +42866,9 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         
     }
 
+    /**
+     * Destructor to close WebSocket connection when the object is destroyed.
+     */
     destructor() {
         super.destructor();
         if(this._ws) {
@@ -34301,6 +42876,11 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Generates a unique device ID for the Comet connection.
+     * @private
+     * @returns {string} - The generated device ID.
+     */
     _generateDeviceId() {
         let deviceId = App.Browser.Get('device-id');
         if(!deviceId) {
@@ -34310,6 +42890,10 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         return deviceId;
     }
 
+    /**
+     * Initializes the WebSocket connection.
+     * @private
+     */
     _initConnection() {
         this._ws && this._ws.close();
         this._ws = new WebSocket('wss://' + this._settings.host + ':' + this._settings.port + '/client/' + this._clientId);
@@ -34319,10 +42903,10 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
     }
     
     /**
-     * 
-     * @param {number} organizationId ID организации
-     * @param {Colibri.Storages.Store} store хрналище
-     * @param {string} storeMessages куда выбрасывать сообщения
+     * Initializes the Comet object with user data and storage settings.
+     * @param {object} userData - Data of the user.
+     * @param {Colibri.Storages.Store} store - Storage object.
+     * @param {string} storeMessages - Key where messages will be stored.
      */
     Init(userData, store, storeMessages) {
 
@@ -34343,6 +42927,9 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Disconnects from the Comet server.
+     */
     Disconnect() {
         if(this._ws) {
             this._ws.close();
@@ -34350,11 +42937,20 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Handles the WebSocket connection open event.
+     * @private
+     */
     __onCometOpened() {
         this._connected = true;
         this.Command(this._user, 'register', {name: this._userName});
     }
 
+    /**
+     * Handles incoming messages from the Comet server.
+     * @private
+     * @param {object} message - The received message object.
+     */
     __onCometMessage(message) {
         message = JSON.parse(message.data);
         if(message.action == 'connection-success') {
@@ -34381,6 +42977,11 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Handles WebSocket connection errors.
+     * @private
+     * @param {object} error - The error object.
+     */
     __onCometError(error) {
         
         console.log('');
@@ -34391,8 +42992,9 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
 
 
     /**
-     * Берет из локального хранилища
-     * @returns []
+     * Retrieves stored messages from local storage.
+     * @private
+     * @returns {array} - Array of stored messages.
      */
     _getStoredMessages() {
         let messages = this._storage.getItem('comet.messages');
@@ -34404,15 +43006,17 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Сохраняет в локальное хранилище
-     * @param {[]} messages сообщения
+     * Saves messages to local storage.
+     * @private
+     * @param {array} messages - Array of messages to be stored.
      */
     _setStoredMessages(messages) {
         this._storage.setItem('comet.messages', JSON.stringify(messages));
     }
 
     /**
-     * Сохраняет сообщения в хранилище приложения
+     * Saves messages to the application store.
+     * @private
      */
     _saveToStore() {
         let messages = this._getStoredMessages();
@@ -34422,7 +43026,7 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Очистить сообщения
+     * Clears stored messages.
      */
     ClearMessages() {
         this._setStoredMessages([]);
@@ -34430,7 +43034,7 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Пометить все сообщения как прочитанные
+     * Marks all messages as read.
      */
     MarkAsRead() {
         let messages = this._getStoredMessages();
@@ -34440,6 +43044,10 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         this.Dispatch('MessagesMarkedAsRead', {});
     }
 
+    /**
+     * Removes a message from storage.
+     * @param {object} message - The message to be removed.
+     */
     RemoveMessage(message) {
         let messages = this._getStoredMessages();
         messages = messages.filter(m => m.id != message.id);
@@ -34448,6 +43056,12 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         this.Dispatch('MessageRemoved', {});
     }
 
+    /**
+     * Sends a command to the Comet server.
+     * @param {string} userGuid - The GUID of the user.
+     * @param {string} action - The action to be performed.
+     * @param {object} message - The message data.
+     */
     Command(userGuid, action, message = null) {
         try {
             if(this._ws.readyState === 1) {
@@ -34462,6 +43076,13 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Sends a message to a specific user.
+     * @param {string} userGuid - The GUID of the recipient user.
+     * @param {string} action - The action to be performed.
+     * @param {string} message - The message content.
+     * @returns {string|null} - The ID of the sent message.
+     */
     SendTo(userGuid, action, message = null) {
         try {
             const id = Date.Mc();
@@ -34479,11 +43100,22 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         return null;
     }
 
+    /**
+     * Gets the client ID for the Comet connection.
+     * @type {string}
+     * @readonly
+     */
     get clientId() {
         return this._clientId;
     }
 
 }
+/**
+ * Manages IndexedDB operations.
+ * @class 
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Web
+ */
 Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
     
     _db = null;
@@ -34491,6 +43123,11 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
     _name = null;
     _version = null;
 
+    /**
+     * @constructor
+     * @param {string} name - The name of the IndexedDB.
+     * @param {number} version - The version of the IndexedDB.
+     */
     constructor(name, version) {
         super();
 
@@ -34510,6 +43147,9 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
 
     }
     
+    /**
+     * Opens the IndexedDB.
+     */
     Open() {
         const request = window.indexedDB.open(this._name, this._version);
         request.onupgradeneeded = (event) => {
@@ -34534,10 +43174,23 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         };
     }
 
+    /**
+     * Checks if a store exists in the database.
+     * @param {string} name - The name of the store.
+     * @returns {boolean} - True if the store exists, false otherwise.
+     */
     StoreExists(name) {
         return this._db.objectStoreNames.contains(name);
     }
 
+    /**
+     * Creates a new store in the database.
+     * @param {string} name - The name of the store.
+     * @param {string} keyPath - The key path for the store.
+     * @param {boolean} autoIncrement - Whether the store should auto increment keys.
+     * @param {array} indices - Array of index objects to create for the store.
+     * @returns {object} - The newly created store.
+     */
     CreateStore(name, keyPath = 'id', autoIncrement = false, indices = []) {
         const store = this._db.createObjectStore(name, {keyPath: keyPath, autoIncrement: autoIncrement});
         for(const index of indices) {
@@ -34546,16 +43199,35 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         return store;
     }
 
+    /**
+     * Creates a new index for a store in the database.
+     * @param {string} name - The name of the store.
+     * @param {string} indexName - The name of the index.
+     * @param {string} key - The key for the index.
+     * @param {boolean} unique - Whether the index should be unique.
+     * @param {boolean} multiEntry - Whether the index should allow multiple entries for a key.
+     * @returns {object} - The newly created index.
+     */
     CreateIndex(name, indexName, key, unique = false, multiEntry = false) {
         const store = this._db.objectStore(name);
         const options = {unique: unique, multiEntry: multiEntry};
         return store.createIndex(indexName, key, options);
     }
 
+    /**
+     * Deletes a store from the database.
+     * @param {string} name - The name of the store to delete.
+     */
     DeleteStore(name) {
         return this._db.deleteObjectStore(name);
     }
 
+    /**
+     * Adds data to a specified store in the database.
+     * @param {string} storeName - The name of the store.
+     * @param {object} dataObject - The data object to add.
+     * @returns {Promise} - A promise that resolves with the result of the operation.
+     */
     AddData(storeName, dataObject) {
         return new Promise((resolve, reject) => {
             let transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34576,6 +43248,12 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Updates data in a specified store in the database.
+     * @param {string} storeName - The name of the store.
+     * @param {object} dataObject - The data object to update.
+     * @returns {Promise} - A promise that resolves with the result of the operation.
+     */
     UpdateData(storeName, dataObject) {
         return new Promise((resolve, reject) => {
             let transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34596,6 +43274,12 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves data from a specified store in the database by its ID.
+     * @param {string} storeName - The name of the store.
+     * @param {*} dataId - The ID of the data to retrieve.
+     * @returns {Promise} - A promise that resolves with the retrieved data.
+     */
     GetDataById(storeName, dataId) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34610,6 +43294,13 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves data from a specified store within a specified range of keys.
+     * @param {string} storeName - The name of the store to retrieve data from.
+     * @param {*} [idFrom=null] - The lower bound of the key range. If null, starts from the first key.
+     * @param {*} [idTo=null] - The upper bound of the key range. If null, ends at the last key.
+     * @returns {Promise} A Promise that resolves with the retrieved data or rejects with an error.
+     */
     GetDataByRange(storeName, idFrom = null, idTo = null) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34643,6 +43334,13 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves keys from a specified store within a specified range of keys.
+     * @param {string} storeName - The name of the store to retrieve keys from.
+     * @param {*} [idFrom=null] - The lower bound of the key range. If null, starts from the first key.
+     * @param {*} [idTo=null] - The upper bound of the key range. If null, ends at the last key.
+     * @returns {Promise} A Promise that resolves with the retrieved keys or rejects with an error.
+     */
     GetKeysByRange(storeName, idFrom = null, idTo = null) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34676,6 +43374,13 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves data from a specified store using an index and a specified key.
+     * @param {string} storeName - The name of the store to retrieve data from.
+     * @param {string} indexName - The name of the index to use for retrieval.
+     * @param {*} key - The key to use for data retrieval.
+     * @returns {Promise} A Promise that resolves with the retrieved data or rejects with an error.
+     */
     GetDataByIndex(storeName, indexName, key) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34697,6 +43402,14 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves data from a specified store using an index and a specified range of keys.
+     * @param {string} storeName - The name of the store to retrieve data from.
+     * @param {string} indexName - The name of the index to use for retrieval.
+     * @param {*} [keyFrom=null] - The lower bound of the key range. If null, starts from the first key.
+     * @param {*} [keyTo=null] - The upper bound of the key range. If null, ends at the last key.
+     * @returns {Promise} A Promise that resolves with the retrieved data or rejects with an error.
+     */
     GetDataByIndexRange(storeName, indexName, keyFrom = null, keyTo = null) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34731,6 +43444,13 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves the key of a data entry in a specified store using an index and a specified key.
+     * @param {string} storeName - The name of the store to retrieve data from.
+     * @param {string} indexName - The name of the index to use for retrieval.
+     * @param {*} key - The key to use for data retrieval.
+     * @returns {Promise} A Promise that resolves with the retrieved key or rejects with an error.
+     */
     GetId(storeName, indexName, key) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34752,6 +43472,12 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Deletes a data entry in a specified store by its ID.
+     * @param {string} storeName - The name of the store to delete data from.
+     * @param {*} id - The ID of the data entry to delete.
+     * @returns {Promise} A Promise that resolves when the deletion is successful or rejects with an error.
+     */
     DeleteById(storeName, id) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34772,6 +43498,13 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Deletes data entries in a specified store using an index and a specified key.
+     * @param {string} storeName - The name of the store to delete data from.
+     * @param {string} indexName - The name of the index to use for deletion.
+     * @param {*} key - The key to use for data deletion.
+     * @returns {Promise} A Promise that resolves when the deletion is successful or rejects with an error.
+     */
     DeleteByIndex(storeName, indexName, key) {
         return new Promise((resolve, reject) => {
             const transaction = this._db.transaction(storeName, "readwrite"); 
@@ -34793,22 +43526,66 @@ Colibri.Web.IndexDB = class extends Colibri.Events.Dispatcher {
 
 
 }
+/**
+ * Represents a device in the Colibri framework, providing functionalities related to the device's platform, theme, and plugins.
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Devices
+ */
 Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
 
-    static Web = 'web';
-    static IOs = 'ios';
-    static Android = 'android';
-    static Windows = 'electron';
+    /**
+     * Represents the platform types.
+     * @readonly
+     * @enum {string}
+     */
+    static Platform = {
+        Web: 'web',
+        IOs: 'ios',
+        Android: 'android',
+        Windows: 'electron'
+    };
 
-    static Light = 'light';
-    static Dark = 'dark';
+    /**
+     * Represents the theme types.
+     * @readonly
+     * @enum {string}
+     */
+    static Theme = {
+        Light: 'light',
+        Dark: 'dark'
+    };
 
+    /**
+     * Represents the platform type of the device.
+     * @private
+     */
     _platform = '';
+    /**
+     * Represents the file system of the device.
+     * @private
+     */
     _fileSystem = null;
+    /**
+     * Represents the theme of the device.
+     * @private
+     */
     _theme = 'light';
+    /**
+     * Represents the theme detection plugin.
+     * @private
+     */
     _themeDetectionPlugin = null;
+    /**
+     * Represents the push notifications plugin.
+     * @private
+     */
     _pushNotifications = null;
     
+    /**
+     * Creates an instance of Device.
+     * @constructor
+     */
     constructor() {
         super();
         this._detect();        
@@ -34822,12 +43599,21 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Registers events for the device.
+     * @private
+     */
+    /** @protected */
     _registerEvents() {
         this.RegisterEvent('OrientationChanged', false, 'Когда ориентация была изменена');
         this.RegisterEvent('ThemeChanged', false, 'Когда тема изменена');
         this.RegisterEvent('NotificationTapped', false, 'When push notification is tapped');
     }
 
+    /**
+     * Detects the platform and initializes theme detection and push notifications.
+     * @private
+     */
     _detect() {
         if(!window.hasOwnProperty("cordova")){
             this._platform = 'web';
@@ -34865,6 +43651,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Binds events related to the device.
+     * @private
+     */
     _bindDeviceEvents() {
         window.addEventListener("orientationchange", () => {
             const old = this._currentOrientation;
@@ -34887,30 +43677,59 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         
     }
 
+    /**
+     * Gets the platform type of the device.
+     * @returns {string} The platform type.
+     */
     get platform() {
         return this._platform;
     }
 
+    /**
+     * Checks if the device platform is Android.
+     * @returns {boolean} True if the device platform is Android, otherwise false.
+     */
     get isAndroid() {
         return this._platform === Colibri.Devices.Device.Android;
     }
 
+    /**
+     * Checks if the device platform is iOS.
+     * @returns {boolean} True if the device platform is iOS, otherwise false.
+     */
     get isIOs() {
         return this._platform === Colibri.Devices.Device.IOs;
     }
 
+    /**
+     * Checks if the device platform is Windows.
+     * @returns {boolean} True if the device platform is Windows, otherwise false.
+     */
     get isWindows() {
         return this._platform === Colibri.Devices.Device.Windows;
     }
 
+    /**
+     * Checks if the device platform is Web.
+     * @returns {boolean} True if the device platform is Web, otherwise false.
+     */
     get isWeb() {
         return this._platform === Colibri.Devices.Device.Web;
     }
 
+    /**
+     * Gets the background mode of the device.
+     * @return {boolean} value - The value to set for background mode.
+     */
     get backgroundMode() {
         return this._backgroundMode;
     }
 
+    /**
+     * Sets the background mode of the device.
+     * @param {boolean} value - The value to set for background mode.
+     * @throws {string} Throws an error if the 'cordova-plugin-background-mode' plugin is not enabled.
+     */
     set backgroundMode(value) {
         if(!cordova?.plugins?.backgroundMode) {
             throw 'Please enable \'cordova-plugin-background-mode\' plugin';
@@ -34928,6 +43747,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
     
     }
 
+    /**
+     * Wakes up the device.
+     * @throws {string} Throws an error if the 'cordova-plugin-background-mode' plugin is not enabled.
+     */
     WakeUp() {
         if(!cordova?.plugins?.backgroundMode) {
             throw 'Please enable \'cordova-plugin-background-mode\' plugin';
@@ -34935,6 +43758,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         cordova.plugins.backgroundMode.wakeUp();
     }
 
+    /**
+     * Unlocks the device.
+     * @throws {string} Throws an error if the 'cordova-plugin-background-mode' plugin is not enabled.
+     */
     Unlock() {
         if(!cordova?.plugins?.backgroundMode) {
             throw 'Please enable \'cordova-plugin-background-mode\' plugin';
@@ -34942,6 +43769,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         cordova.plugins.backgroundMode.unlock();
     }
 
+    /**
+     * Retrieves the safe area of the device.
+     * @returns {Promise<{top: number, bottom: number}>} A promise that resolves with the safe area object containing top and bottom values.
+     */
     SafeArea() {
         return new Promise((resolve, reject) => {
             if(this.isIOs) {
@@ -34959,6 +43790,11 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Retrieves a plugin based on the provided query.
+     * @param {string} query - The query string to retrieve the plugin.
+     * @returns {*} The plugin object if found, otherwise undefined.
+     */
     Plugin(query) {
         let plugin = eval('cordova.' + query);
         if(!plugin) {
@@ -34976,6 +43812,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         return plugin;
     } 
 
+    /**
+     * Locks the device orientation to a specified type.
+     * @param {string|null} [type=null] - The orientation type to lock. Defaults to the current orientation type.
+     */
     LockOrientation(type = null) {
         try {
             screen.orientation.lock(type || this._currentOrientation.type);
@@ -34985,6 +43825,9 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Unlocks the device orientation.
+     */
     UnlockOrientation() {
         try {
             screen.orientation.unlock();
@@ -34994,6 +43837,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Retrieves the file system of the device.
+     * @returns {Colibri.Devices.FileSystem} The file system instance.
+     */
     get FileSystem() {
         if(!this._fileSystem) {
             this._fileSystem = new Colibri.Devices.FileSystem(this);
@@ -35001,6 +43848,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         return this._fileSystem;
     }
 
+    /**
+     * Retrieves the camera instance.
+     * @returns {Colibri.Devices.Camera} The camera instance.
+     */
     get Camera() {
         if(!this._camera) {
             this._camera = new Colibri.Devices.Camera(this);
@@ -35008,6 +43859,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         return this._camera;
     }
 
+    /**
+     * Retrieves the SMS instance.
+     * @returns {Colibri.Devices.Sms} The SMS instance.
+     */
     get Sms() {
         if(!this._sms) {
             this._sms = new Colibri.Devices.Sms(this);
@@ -35015,6 +43870,10 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         return this._sms;
     }
 
+    /**
+     * Retrieves the dialogs instance.
+     * @returns {Colibri.Devices.Dialogs} The dialogs instance.
+     */
     get Dialogs() {
         if(!this._dialogs) {
             this._dialogs = new Colibri.Devices.Dialogs(this);
@@ -35022,10 +43881,18 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         return this._dialogs;
     }
 
+    /**
+     * Retrieves the local notifications instance.
+     * @returns {Colibri.Devices.LocalNotifications} The local notifications instance.
+     */
     get Notifications() {
         return this._localNotifications;
     }
 
+    /**
+     * Retrieves device information.
+     * @returns {Object} The device information.
+     */
     get Info() {
         
         if(!window.hasOwnProperty("cordova")){
@@ -35045,10 +43912,18 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Retrieves the current theme.
+     * @returns {string} The current theme.
+     */
     get Theme() {
         return this._theme;
     }
 
+    /**
+     * Retrieves the geolocation instance.
+     * @returns {Colibri.Devices.GeoLocation} The geolocation instance.
+     */
     get GeoLocation() {
         if(!this._geoLocation) {
             this._geoLocation = new Colibri.Devices.GeoLocation(this);
@@ -35057,24 +43932,93 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
     }
 
 }
+/**
+ * Represents a file system utility for managing directories and files.
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Devices
+ */
 Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
     
+    /**
+     * Error code for 'Not Found'.
+     * @type {number}
+     */
     static NotFound = 1;	
+    /**
+     * Error code for 'Security Error'.
+     * @type {number}
+     */
     static SecurityError = 2;
+    /**
+     * Error code for 'Abort'.
+     * @type {number}
+     */
     static Abort = 3;
+    /**
+     * Error code for 'Not Reachable'.
+     * @type {number}
+     */
     static NotReachable = 4;	
+    /**
+     * Error code for 'Encoding'.
+     * @type {number}
+     */
     static Encoding = 5;
+    /**
+     * Error code for 'No Modification Allowed'.
+     * @type {number}
+     */
     static NoModificationAllowed = 6;	
+    /**
+     * Error code for 'Invalid State'.
+     * @type {number}
+     */
     static InvalidState = 7;
+    /**
+     * Error code for 'Syntax Error'.
+     * @type {number}
+     */
     static SyntaxError = 8;
+    /**
+     * Error code for 'Invalid Modification'.
+     * @type {number}
+     */
     static InvalidModification = 9;	
+    /**
+     * Error code for 'Quota Exceeded'.
+     * @type {number}
+     */
     static QuotaExeeded = 10;
+    /**
+     * Error code for 'Type Mismatch'.
+     * @type {number}
+     */
     static TypeMismatch = 11;	
+    /**
+     * Error code for 'Path Exists'.
+     * @type {number}
+     */
     static PathExists = 12;
 
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
     _device = null;
+    /**
+     * Instance variable representing the plugin.
+     * @type {object}
+     * @private
+     */
     _plugin = null;
 
+    /**
+     * Creates an instance of FileSystem.
+     * @constructor
+     * @param {*} device - The device object.
+     */
     constructor(device) {
         super();
         this._device = device;
@@ -35082,100 +44026,99 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Каталог только для чтения, в котором установлено 
-     * приложение. (iOS, Android, BlackBerry 10, OSX, windows)
+     * Represents the application directory.
+     * @type {*}
      */
     get AppDirectory() {
         return this._plugin.applicationDirectory;
     }
 
     /**
-     *  Корневой каталог песочницы приложения; в iOS и 
-     * Windows это расположение доступно только для чтения 
-     * (но определенные подкаталоги [например, на iOS или в Windows] 
-     * читаются и записываются). Все данные, содержащиеся внутри, 
-     * являются частными для (iOS, Android, BlackBerry 10, OSX/Documents/localState)
+     * Represents the application storage directory.
+     * @type {*}
      */
     get AppStorageDirectory() {
         return this._plugin.applicationStorageDirectory    
     }
 
     /**
-     * Постоянное и приватное хранение данных в песочнице приложения с 
-     * использованием встроенной памяти (на Android, если вам нужно использовать 
-     * внешнюю память, используйте). В iOS этот каталог не синхронизируется с iCloud 
-     * (используйте). (iOS, Android, BlackBerry 10, окна.externalDataDirectory.syncedDataDirectory)
+     * Represents the data directory.
+     * @type {*}
      */
     get DataDirectory() {
         return this._plugin.dataDirectory;
     }
 
     /**
-     * Каталог для кэшированных файлов данных или любых файлов, 
-     * которые ваше приложение может легко воссоздать. ОС может удалить 
-     * эти файлы, когда на устройстве заканчивается хранилище, тем не менее, 
-     * приложения не должны полагаться на ОС для удаления файлов здесь. 
-     * (iOS, Android, BlackBerry 10, OSX, windows)
+     * Represents the cache directory.
+     * @type {*}
      */
     get CacheDirectory() {
         return this._plugin.cacheDirectory;
     }
 
     /**
-     * Прикладное пространство на внешнем накопителе. (Андроид)
+     * Represents the external application storage directory (Android).
+     * @type {*}
      */
     get ExternalAppStorageDirectory() {
         return this._device.externalApplicationStorageDirectory;
     }
 
     /**
-     * Куда поместить файлы данных приложения на внешнее хранилище. (Андроид)
+     * Represents the external data directory (Android).
+     * @type {*}
      */
     get ExternalDataDirectory() {
         return this._device.externalDataDirectory;
     } 
     
     /**
-     * Внешний накопитель (SD-карта) root. (Андроид, BlackBerry 10)
+     * Represents the external root directory (SD-card) (Android, BlackBerry 10).
+     * @type {*}
      */
     get ЕxternalRootDirectory() {
         return this._plugin.externalRootDirectory;
     }
 
     /**
-     * Временный каталог, который ОС может очистить по желанию. 
-     * Не полагайтесь на ОС для очистки этого каталога; ваше 
-     * приложение всегда должно удалять файлы, если это 
-     * применимо. (iOS, OSX, windows)
+     * Represents the temporary directory.
+     * @type {*}
      */
     get TempDirectory() {
         return this._plugin.tempDirectory;
     }
 
     /**
-     * Содержит файлы, специфичные для приложения, которые 
-     * должны быть синхронизированы (например, с iCloud). (iOS, окна)
+     * Represents the synced data directory.
+     * @type {*}
      */
     get SyncedDataDirectory() {
         return this._plugin.syncedDataDirectory;
     }
 
     /**
-     * Файлы, закрытые для приложения, но значимые для другого 
-     * приложения (например, файлы Office). Обратите внимание, 
-     * что для OSX это каталог пользователя. (iOS, OSX~/Documents)
+     * Represents the documents directory.
+     * @type {*}
      */
     get DocumentsDirectory() {
         return this._plugin.documentsDirectory;
     }
 
     /**
-     * Файлы глобально доступны для всех приложений (BlackBerry 10)
+     * Represents the shared directory (BlackBerry 10).
+     * @type {*}
      */
     get SharedDirectory() {
        return this._plugin.sharedDirectory;
     }
 
+    /**
+     * Generates a Blob object.
+     * @param {*} name - The name of the file.
+     * @param {*} content - The content of the file.
+     * @returns {*} - Blob object.
+     */
     Blob(name, content) {
         if(content instanceof Blob) {
             return content;
@@ -35184,6 +44127,13 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         return new Blob([content], { type: mimetype });
     }
 
+    /**
+     * Converts a base64 string to a Blob object.
+     * @param {string} b64Data - The base64 data.
+     * @param {string} contentType - The content type.
+     * @param {number} sliceSize - The slice size.
+     * @returns {*} - Blob object.
+     */
     B64ToBlob(b64Data, contentType, sliceSize = 512) {
         
         contentType = contentType || '';
@@ -35209,6 +44159,12 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
     
     }
 
+    /**
+     * Gets the file system.
+     * @param {*} type - The type of the file system.
+     * @param {number} quota - The quota for the file system.
+     * @returns {Promise} - Promise resolving to the file system root.
+     */
     Get(type = LocalFileSystem.PERSISTENT, quota = 0) {
         return new Promise((resolve, reject) => {
             window.requestFileSystem(type, quota, (fs) => {
@@ -35217,6 +44173,11 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Resolves a local file system URL.
+     * @param {string} path - The file system path.
+     * @returns {Promise} - Promise resolving to the file system entry.
+     */
     Local(path) {
         return new Promise((resolve, reject) => {
             window.resolveLocalFileSystemURL(path, (entry) => {
@@ -35225,7 +44186,13 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
-
+    /**
+     * Creates a file.
+     * @param {*} fsOrDir - The file system or directory.
+     * @param {string} fileName - The name of the file.
+     * @param {*} options - Options for file creation.
+     * @returns {Promise} - Promise resolving to the file entry.
+     */
     File(fsOrDir, fileName, options) {
         options = Object.assign({ create: true, exclusive: false }, options);
         return new Promise((resolve, reject) => {
@@ -35235,6 +44202,13 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Creates a directory.
+     * @param {*} fsOrDir - The file system or directory.
+     * @param {string} dirName - The name of the directory.
+     * @param {*} options - Options for directory creation.
+     * @returns {Promise} - Promise resolving to the directory entry.
+     */
     Directory(fsOrDir, dirName, options) {
         return new Promise((resolve, reject) => {
             dirName = dirName.split('/');
@@ -35250,6 +44224,13 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Writes content to a file.
+     * @param {*} fileEntry - The file entry.
+     * @param {*} content - The content to write.
+     * @param {boolean} isAppend - Indicates whether to append to the file.
+     * @returns {Promise} - Promise resolving to the file entry.
+     */
     Write(fileEntry, content, isAppend) {
         return new Promise((resolve, reject) => {
             fileEntry.createWriter((fileWriter) => {
@@ -35273,6 +44254,11 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Reads content from a file.
+     * @param {*} fileEntry - The file entry.
+     * @returns {Promise} - Promise resolving to the file content.
+     */
     Read(fileEntry) {
         return new Promise((resolve, reject) => {
             fileEntry.file((file) => {
@@ -35289,6 +44275,17 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Requests a file.
+     * @param {*} type - The type of the file system.
+     * @param {number} quota - The quota for the file system.
+     * @param {string} path - The file path.
+     * @param {string} fileName - The file name.
+     * @param {*} content - The content of the file.
+     * @param {boolean} isAppend - Indicates whether to append to the file.
+     * @param {*} options - Options for file request.
+     * @returns {Promise} - Promise resolving to the file entry.
+     */
     RequestFile(type = LocalFileSystem.PERSISTENT, quota = 0, path, fileName, content, isAppend, options = {}) {
         return new Promise((resolve, reject) => {
             this.Get(type, quota)
@@ -35300,6 +44297,13 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Creates a directory.
+     * @param {string} rootPath - The root path.
+     * @param {string} path - The directory path.
+     * @param {*} options - Options for directory creation.
+     * @returns {Promise} - Promise resolving to the directory entry.
+     */
     CreateDirectory(rootPath, path, options = {}) {
         return new Promise((resolve, reject) => {
             this.Local(rootPath)
@@ -35309,6 +44313,16 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Creates a file.
+     * @param {string} rootPath - The root path.
+     * @param {string} path - The file path.
+     * @param {string} fileName - The file name.
+     * @param {*} content - The content of the file.
+     * @param {boolean} isAppend - Indicates whether to append to the file.
+     * @param {*} options - Options for file creation.
+     * @returns {Promise} - Promise resolving to the file entry.
+     */
     CreateFile(rootPath, path, fileName, content, isAppend, options = {}) {
         return new Promise((resolve, reject) => {
             this.Local(rootPath)
@@ -35320,6 +44334,13 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Reads content from a file.
+     * @param {string} rootPath - The root path.
+     * @param {string} path - The file path.
+     * @param {string} fileName - The file name.
+     * @returns {Promise} - Promise resolving to the file content.
+     */
     ReadFile(rootPath, path, fileName) {
         return new Promise((resolve, reject) => {
             this.Local(rootPath)
@@ -35331,6 +44352,12 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
         });
     }
 
+    /**
+     * Reads entries from a directory.
+     * @param {string} rootPath - The root path.
+     * @param {string} path - The directory path.
+     * @returns {Promise} - Promise resolving to the directory entries.
+     */
     ReadDirectory(rootPath, path) {
         return new Promise((resolve, reject) => {
             this.Local(rootPath)
@@ -35343,18 +44370,44 @@ Colibri.Devices.FileSystem = class extends Colibri.Events.Dispatcher {
     }
 
 }
+/**
+ * Represents a camera utility for capturing pictures.
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Devices
+ */
 Colibri.Devices.Camera = class extends Colibri.Events.Dispatcher {
 
+    /**
+     * Instance variable representing the device.
+     * @type {null}
+     * @private
+     */
     _device = null;
+
+    /**
+     * Instance variable representing the plugin.
+     * @type {null}
+     * @private
+     */
     _plugin = null;
 
-
+    /**
+     * Creates an instance of Camera.
+     * @param {*} device - The device object.
+     */
     constructor(device) {
         super();
         this._device = device;
         this._plugin = this._device.Plugin('camera');
     }
 
+    /**
+     * Gets a picture from the camera.
+     * @constructor
+     * @param {*} options - Options for getting the picture.
+     * @returns {Promise} - Promise resolving to the picture URI.
+     */
     GetPicture(options = {}) {
         options = Object.assign({
             quality: 100,
@@ -35374,6 +44427,10 @@ Colibri.Devices.Camera = class extends Colibri.Events.Dispatcher {
         }); 
     }
 
+    /**
+     * Cleans up temporary files.
+     * @returns {Promise} - Promise resolving when cleanup is complete.
+     */
     CleanUp() {
         return new Promise((resolve, reject) => {
             this._plugin.cleanup(() => {
@@ -35383,17 +44440,60 @@ Colibri.Devices.Camera = class extends Colibri.Events.Dispatcher {
     }
 
 }
+/**
+ * Represents a media utility for handling audio playback and recording.
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri.Devices
+ */
+
 Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
 
+    /**
+     * Status code for 'None'.
+     * @type {number}
+     */
     static MediaNone = 0;
+    /**
+     * Status code for 'Starting'.
+     * @type {number}
+     */
     static MediaStarting = 1;
+    /**
+     * Status code for 'Running'.
+     * @type {number}
+     */
     static MediaRunning = 2;
+    /**
+     * Status code for 'Paused'.
+     * @type {number}
+     */
     static MediaPaused = 3;
+    /**
+     * Status code for 'Stopped'.
+     * @type {number}
+     */
     static MediaStopped = 4;
     
+    /**
+     * Instance variable representing the media object.
+     * @type {object}
+     * @private
+     */
     _object = null;
+
+    /**
+     * Source of the media.
+     * @type {string}
+     * @private
+     */
     _src = null;
 
+    /**
+     * Creates an instance of Media.
+     * @constructor
+     * @param {string} src - The source of the media.
+     */
     constructor(src) {
         super();
         this._src = src;
@@ -35402,18 +44502,31 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
         this._create();
     }
 
+    /**
+     * Registers events for media.
+     * @private
+     */
+    /** @protected */
     _registerEvents() {
         this.RegisterEvent('Stopped', false, 'Когда медия остановлено');
         this.RegisterEvent('ErrorOccurred', false, 'Когда произошла ошибка');
         this.RegisterEvent('StatusChanged', false, 'Когда получили статус');
     }
 
+    /**
+     * Checks if the Media plugin is installed.
+     * @private
+     */
     _check() {
         if(typeof Media !== 'function'){
             console.log('Plugin cordova.media is not installed. Please run cordova plugin add cordova-plugin-media');
         }
     }
 
+    /**
+     * Creates the media object.
+     * @private
+     */
     _create() {
         this._object = new Media(this._src, () => {
             this.Dispatch('Stopped', {});
@@ -35425,7 +44538,8 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Returns the current amplitude within an audio file
+     * Returns the current amplitude within an audio file.
+     * @returns {Promise} - Promise resolving to the amplitude.
      */
     GetCurrentAmplitude() {
         return new Promise((resolve, reject) => {
@@ -35437,7 +44551,8 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
     
 
     /**
-     * Returns the current position within an audio file
+     * Returns the current position within an audio file.
+     * @returns {Promise} - Promise resolving to the position.
      */
     GetCurrentPosition() {
         return new Promise((resolve, reject) => {
@@ -35449,6 +44564,7 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
 
     /**
      * Returns the duration of an audio file.
+     * @returns {number} - The duration of the audio file.
      */
     GetDuration() {
         return this._object.getDuration();
@@ -35491,6 +44607,7 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
 
     /**
      * Moves the position within the audio file.
+     * @param {number} ms - The position in milliseconds.
      */
     SeekTo(ms = 10000) {
         return this._object.seekTo(ms);
@@ -35498,6 +44615,7 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
 
     /**
      * Set the volume for audio playback.
+     * @param {string} volume - The volume level.
      */
     SetVolume(volume = '0.5') {
         return this._object.setVolume(volume);
@@ -35526,6 +44644,7 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
 
     /**
      * Set the playback rate for the audio file.
+     * @param {number} rate - The playback rate.
      */
     SetRate(rate = 2.0) {
         return this._object.setRate(rate);
@@ -35533,12 +44652,22 @@ Colibri.Devices.Media = class extends Colibri.Events.Dispatcher {
 
 }
 
+/**
+ * Static method to start recording a media file.
+ * @param {string} mediaFile - The media file to record.
+ * @returns {*} - The media object.
+ */
 Colibri.Devices.Media.StartRecording = function(mediaFile) {
     const media = new Colibri.Devices.Media(mediaFile);
     media.StartRecording();
     return media;
 }
 
+/**
+ * Static method to play a media file.
+ * @param {string} mediaFile - The media file to play.
+ * @returns {*} - The media object.
+ */
 Colibri.Devices.Media.Play = function(mediaFile) {
     const media = new Colibri.Devices.Media(mediaFile);
     media.play();
@@ -35546,6 +44675,9 @@ Colibri.Devices.Media.Play = function(mediaFile) {
 }
 
 /**
+ * 
+ * Represents a notification object.
+ * 
  * IOs payload
  *  { 
  *      aps: {
@@ -35570,12 +44702,32 @@ Colibri.Devices.Media.Play = function(mediaFile) {
  *  }
  * 
  * 
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Devices
  */
 Colibri.Devices.Notification = class extends Destructable {
 
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
     _device = null;
+
+    /**
+     * Instance variable representing the payload.
+     * @type {null}
+     * @private
+     */
     _payload = null;
 
+    /**
+     * Creates an instance of Notification.
+     * @constructor
+     * @param {*} device - The device object.
+     * @param {*} payload - The notification payload.
+     */
     constructor(device, payload) {
         super();
         
@@ -35583,6 +44735,10 @@ Colibri.Devices.Notification = class extends Destructable {
         this._payload = payload;
     }
 
+    /**
+     * Gets the title of the notification.
+     * @returns {string} - The title.
+     */
     get title() {
         if(this._device.isAndroid) {
             return this._payload.data.title;
@@ -35591,6 +44747,10 @@ Colibri.Devices.Notification = class extends Destructable {
             return this._payload.data.title;
         }
     }
+    /**
+     * Gets the subtitle of the notification.
+     * @returns {string} - The subtitle.
+     */
     get subtitle() {
         if(this._device.isAndroid) {
             return this._payload.data.body;
@@ -35599,6 +44759,10 @@ Colibri.Devices.Notification = class extends Destructable {
             
         }
     }
+    /**
+     * Gets the payload of the notification.
+     * @returns {string} - The payload.
+     */
     get payload() {
         if(this._device.isAndroid) {
             return this._payload.data.payload;
@@ -35610,33 +44774,92 @@ Colibri.Devices.Notification = class extends Destructable {
 
 }
 
+/**
+ * Represents an emulator for local notifications.
+ * @class
+ * @extends Destructable
+ */
 Colibri.Devices.LocalNotificationsEmulator = class extends Destructable {
+    /**
+     * Checks if the emulator has permission.
+     * @param {function} success - Success callback.
+     * @param {function} fail - Fail callback.
+     */
     hasPermission(success, fail) {
         success(true);
     }
+    /**
+     * Requests permission for the emulator.
+     * @param {function} success - Success callback.
+     * @param {function} fail - Fail callback.
+     */
     requestPermission(success, fail) {
         success(true);
     }
+    /**
+     * Schedules a notification with given parameters.
+     * @param {*} params - Parameters for scheduling the notification.
+     */
     schedule(params) {
         //
     }
+    /**
+     * Cancels a scheduled notification with given id.
+     * @param {number} id - The id of the notification to cancel.
+     */
     cancel(id) {
         // 
     }
+    /**
+     * Registers an event listener.
+     * @param {string} event - The event to listen for.
+     * @param {function} callback - The callback function.
+     * @param {*} scope - The scope of the callback.
+     */
     on(event, callback, scope) {
         // 
     }
+     /**
+     * Unregisters an event listener.
+     * @param {string} event - The event to stop listening for.
+     * @param {function} callback - The callback function.
+     * @param {*} scope - The scope of the callback.
+     */
     un(event, callback, scope) {
         // 
     }
 }
 
+/**
+ * Represents a utility for handling local notifications.
+ * @class
+ * @extends Destructable
+ */
 Colibri.Devices.LocalNotifications = class extends Destructable {
     
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
     _device = null;
+    /**
+     * Instance variable representing the plugin.
+     * @type {object}
+     * @private
+     */
     _plugin = null;
+    /**
+     * Flag indicating whether permission is granted.
+     * @type {boolean}
+     * @private
+     */
     _permited = false;
 
+    /**
+     * Creates an instance of LocalNotifications.
+     * @param {*} device - The device object.
+     */
     constructor(device) {
         super();
         this._device = device;
@@ -35650,6 +44873,10 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
 
     }
 
+    /**
+     * Checks if permission is granted.
+     * @returns {Promise} - Promise resolving when permission is granted.
+     */
     HasPermission() {
         return new Promise((resolve, reject) => {
             if(this._granted) {
@@ -35667,6 +44894,10 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         });
     }
 
+    /**
+     * Requests permission for notifications.
+     * @returns {Promise} - Promise resolving when permission is granted.
+     */
     RequestPermission() {
         return new Promise((resolve, reject) => {
             if(this._granted) {
@@ -35686,13 +44917,35 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         });
     }
 
+    /**
+     * Adds actions to a notification group.
+     * @param {string} groupName - The name of the notification group.
+     * @param {*} actions - Actions to add.
+     */
     AddActions(groupName, actions) {
         this._plugin.local.addActions(groupName, actions);
     }
+    /**
+     * Removes actions from a notification group.
+     * @param {string} groupName - The name of the notification group.
+     */
     RemoveActions(groupName) {
         this._plugin.local.removeActions(groupName);
     }
 
+    /**
+     * Schedules a notification with given parameters.
+     * @param {string} title - The title of the notification.
+     * @param {string} message - The message of the notification.
+     * @param {*} actions - Actions to attach to the notification.
+     * @param {*} trigger - Trigger for the notification.
+     * @param {boolean} isForeground - Flag indicating whether the notification should appear in foreground.
+     * @param {boolean} isLaunch - Flag indicating whether the notification should launch the app.
+     * @param {number} priority - Priority of the notification.
+     * @param {number} id - The id of the notification.
+     * @param {*} progressBar - Progress bar configuration.
+     * @param {boolean} sound - Flag indicating whether to include sound with the notification.
+     */
     Schedule(title, message, actions = null, trigger = null, isForeground = true, isLaunch = true, priority = 2, id = null, progressBar = null, sound = true) {
         // trigger = { in: 1, unit: 'second' }, { in: 15, unit: 'minutes' }
         this.RequestPermission().then(() => {
@@ -35723,27 +44976,77 @@ Colibri.Devices.LocalNotifications = class extends Destructable {
         });
     }
 
+    /**
+     * Cancels a scheduled notification with given id.
+     * @param {number} id - The id of the notification to cancel.
+     */
     Cancel(id) {
         this.RequestPermission().then(() => {
             this._plugin.local.cancel(id);    
         });
     }
 
+    /**
+     * Registers an event listener.
+     * @param {string} event - The event to listen for.
+     * @param {function} callback - The callback function.
+     * @param {*} scope - The scope of the callback.
+     */
     On(event, callback, scope) {
         this._plugin.local.on(event, callback, scope);
     }
+
+    /**
+     * Unregisters an event listener.
+     * @param {string} event - The event to stop listening for.
+     * @param {function} callback - The callback function.
+     * @param {*} scope - The scope of the callback.
+     */
     Off(event, callback, scope) {
         this._plugin.local.un(event, callback, scope);
     }
 
 }
-
+/**
+ * Represents a utility for handling SMS operations.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Devices
+ */
 Colibri.Devices.Sms = class extends Destructable {
     
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
     _device = null;
-    _plugin = null;
+    
+    /**
+     * Instance variable representing the notification plugin.
+     * @type {object}
+     * @private
+     */
+    _pluginSend = null;
+
+    /**
+     * Instance variable representing the notification read plugin.
+     * @type {object}
+     * @private
+     */
+    _pluginRead = null;
+
+    /**
+     * Instance variable representing the SMS plugin for receiving messages.
+     * @type {null}
+     * @private
+     */
     _permitedSend = false;
 
+    /**
+     * @constructor
+     * @param {Colibri.Devices.Device} device
+     */
     constructor(device) {
         super();
         this._device = device;
@@ -35756,6 +45059,10 @@ Colibri.Devices.Sms = class extends Destructable {
         this.CheckPermissionForSend();
     }
 
+    /**
+     * Checks permission to send SMS.
+     * @returns {Promise} - Promise resolving when permission is checked.
+     */
     CheckPermissionForSend() {
         return new Promise((resolve, reject) => {
             if(this._device.isIOs) {
@@ -35777,6 +45084,10 @@ Colibri.Devices.Sms = class extends Destructable {
         });
     }
 
+    /**
+     * Requests permission to send SMS.
+     * @returns {Promise} - Promise resolving when permission is requested.
+     */
     RequestPermissionForSend() {
         return new Promise((resolve, reject) => {
             this.CheckPermissionForSend().then(() => {
@@ -35796,6 +45107,13 @@ Colibri.Devices.Sms = class extends Destructable {
         });
     }
 
+    /**
+     * Sends an SMS message.
+     * @param {string} number - The recipient's phone number.
+     * @param {string} message - The message content.
+     * @param {string} intent - The intent for sending the message.
+     * @returns {Promise} - Promise resolving when message is sent.
+     */
     Send(number, message, intent = 'INTENT') {
         return new Promise((resolve, reject) => {
             this.RequestPermissionForSend().then(() => {
@@ -35816,26 +45134,34 @@ Colibri.Devices.Sms = class extends Destructable {
         });
     }
 
+    /**
+     * Callback function for SMS arrival.
+     * @param {*} message - The incoming SMS message.
+     */
     _smsReceiverCallback(message) {
         this._arriveCallback(message);
     }
 
+    /**
+     * Registers an event listener for incoming SMS messages.
+     * @param {function} listener - The listener function.
+     */
     RegisterArriveListener(listener) {
         document.addEventListener('onSMSArrive', (e) => {
             listener(e);
         });
     }
 
+    /**
+     * Starts watching for incoming SMS messages.
+     * @returns {Promise} - Promise resolving when watching is started.
+     */
     Watch() {
         if(!this._pluginRead) {
             return;
         }
         return new Promise((resolve, reject) => {
             this._pluginRead.startWatch((strSuccess) => {
-                // if(strSuccess === 'SMS_WATCHING_STARTED' || strSuccess === 'SMS_WATCHING_ALREADY_STARTED') {
-                // } else {
-                //     reject(strSuccess);
-                // }
                 resolve(strSuccess);
             }, (strError) => {
                 reject(strError);
@@ -35843,6 +45169,10 @@ Colibri.Devices.Sms = class extends Destructable {
         });
     }
 
+    /**
+     * Stops watching for incoming SMS messages.
+     * @returns {Promise} - Promise resolving when watching is stopped.
+     */
     Stop() {
         if(!this._pluginRead) {
             return;
@@ -35857,19 +45187,51 @@ Colibri.Devices.Sms = class extends Destructable {
     }
 
 }
-
+/**
+ * Represents a utility for displaying dialogs and notifications.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Devices
+ */
 Colibri.Devices.Dialogs = class extends Destructable {
     
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
     _device = null;
+    /**
+     * Instance variable representing the notification plugin.
+     * @type {object}
+     * @private
+     */
     _plugin = null;
+    /**
+     * Flag indicating whether permission is granted.
+     * @type {boolean}
+     * @private
+     */
     _permited = false;
 
+    /**
+     * Creates an instance of Dialogs.
+     * @constructor
+     * @param {Colibri.Devices.Device} device - The device object.
+     */
     constructor(device) {
         super();
         this._device = device;
         this._plugin = this._device.Plugin('notification');
     }
 
+    /**
+     * Displays an alert dialog.
+     * @param {string} message - The message to display.
+     * @param {string} title - The title of the alert dialog.
+     * @param {string} buttonName - The label for the button.
+     * @returns {Promise} - Promise resolving when the alert is dismissed.
+     */
     Alert(message, title, buttonName) {
         return new Promise((resolve, reject) => {
             this._plugin.alert(
@@ -35883,6 +45245,13 @@ Colibri.Devices.Dialogs = class extends Destructable {
         });
     }
 
+    /**
+     * Displays a confirmation dialog.
+     * @param {string} message - The message to display.
+     * @param {string} title - The title of the confirmation dialog.
+     * @param {string[]} buttonLabels - Labels for the buttons.
+     * @returns {Promise} - Promise resolving with the index of the selected button.
+     */
     Confirm(message, title, buttonLabels = ['Ok', 'Cancel']) {
         return new Promise((resolve, reject) => {
             this._plugin.confirm(
@@ -35896,6 +45265,14 @@ Colibri.Devices.Dialogs = class extends Destructable {
         });
     }
  
+    /**
+     * Displays a prompt dialog.
+     * @param {string} message - The message to display.
+     * @param {string} title - The title of the prompt dialog.
+     * @param {string[]} buttonLabels - Labels for the buttons.
+     * @param {string} defaultText - The default text in the input field.
+     * @returns {Promise} - Promise resolving with the entered text and button index.
+     */
     Prompt(message, title, buttonLabels = ['Ok', 'Cancel'], defaultText = '') {
         return new Promise((resolve, reject) => {
             this._plugin.confirm(
@@ -35909,10 +45286,23 @@ Colibri.Devices.Dialogs = class extends Destructable {
         });
     }
 
+    /**
+     * Emits a beep sound.
+     * @param {number} times - The number of times to beep.
+     */
     Beep(times) {
         this._plugin.beep(times);
     }
 
+    /**
+     * Schedules a local notification.
+     * @param {string} title - The title of the notification.
+     * @param {string} message - The message of the notification.
+     * @param {object} trigger - The trigger object defining when to fire the notification.
+     * @param {boolean} isForeground - Whether the app is in the foreground when notification fires.
+     * @param {boolean} isLaunch - Whether the app launches when notification is tapped.
+     * @param {number} priority - The priority of the notification.
+     */
     Schedule(title, message, trigger, isForeground = true, isLaunch = true, priority = 2) {
         // trigger = { in: 1, unit: 'second' }, { in: 15, unit: 'minutes' }
         this._plugin.local.schedule({
@@ -35927,17 +45317,36 @@ Colibri.Devices.Dialogs = class extends Destructable {
 
 }
 
+/**
+ * Represents a utility for accessing geolocation information.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Devices
+ */
 Colibri.Devices.GeoLocation = class extends Destructable {
 
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
     _device = null;
-    _plugin = null;
-    _permited = false;
 
+    /**
+     * Creates an instance of GeoLocation.
+     * @constructor
+     * @param {Colibri.Devices.Device} device - The device object.
+     */
     constructor(device) {
         super();
         this._device = device;
     }
 
+    /**
+     * Detects the current position.
+     * @param {object} options - The options for geolocation detection.
+     * @returns {Promise} - Promise resolving with the current position.
+     */
     Detect(options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }) {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition((position) => {
@@ -35948,6 +45357,12 @@ Colibri.Devices.GeoLocation = class extends Destructable {
         });
     }
 
+    /**
+     * Watches for changes in position.
+     * @param {function} callback - The callback function to handle position changes.
+     * @param {object} options - The options for watching position changes.
+     * @returns {Promise} - Promise resolving when position watching is started.
+     */
     Watch(callback, options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }) {
         return new Promise((resolve, reject) => {
             navigator.geolocation.watchPosition(callback, (error) => {
@@ -35958,12 +45373,31 @@ Colibri.Devices.GeoLocation = class extends Destructable {
 
 }
 /**
- * Основной класс приложения
- * ! нужно исправить инициализацию модулей, они должны родиться после приложения!
+ * The main application class.
+ * @class
+ * @extends Colibri.Events.Dispatcher
+ * @memberof Colibri
  */
 Colibri.App = class extends Colibri.Events.Dispatcher { 
     
-    /** @constructor */ 
+
+    /**
+     * Indicates wheter the App is initialized
+     * @type {boolean}
+     * @private
+     */
+    _initialized = false;
+
+    /**
+     * Indicates last change time
+     * @type {string}
+     * @private
+     */
+    _changeLastTime = null;
+
+    /** 
+     * Constructs a new instance of the Colibri.App class.
+     */
     constructor() {
         super('App'); 
 
@@ -35972,11 +45406,14 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         this._changeLastTime = Date.Now().getTime(); 
    
         this.RegisterEvents();  
- 
         this.RegisterEventHandlers();
   
     } 
 
+    /**
+     * Registers application events.
+     * @public
+     */
     RegisterEvents() { 
         this.RegisterEvent('Event', false, 'When any event dispatched');
         this.RegisterEvent('DocumentReady', false, 'Когда DOM готов');
@@ -35988,12 +45425,31 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         this.RegisterEvent('DocumentHidden', false, 'Документ скрыт');
     }
 
+    /**
+     * Registers event handlers.
+     */
     RegisterEventHandlers() {
         this.AddHandler('DocumentShown', (event, args) => {
             Colibri.UI.UpdateMaxZIndex();
         });
     }
 
+    /**
+     * Initializes the application with the specified configuration.
+     * @param {string} [name='app'] - The name of the application.
+     * @param {number} [version=1] - The version of the application.
+     * @param {string} [routerType=Colibri.Web.Router.RouteOnHash] - The type of router to use.
+     * @param {string} [requestType=Colibri.IO.Request.RequestEncodeTypeEncrypted] - The type of request encoding to use.
+     * @param {boolean} [initComet=false] - Whether to initialize Comet.
+     * @param {boolean} [showLoader=true] - Whether to show the loader.
+     * @param {string} [remoteDomain=null] - The remote domain for requests.
+     * @param {string} [dateformat=null] - The date format.
+     * @param {string} [numberformat=null] - The number format.
+     * @param {string} [currency=null] - The currency format.
+     * @param {string} [loadingIcon=null] - The loading icon.
+     * @param {string} [csrfToken=null] - The CSRF token.
+     * @returns {Promise} A promise that resolves when the application is initialized.
+     */
     InitializeApplication(
         name = 'app',
         version = 1,
@@ -36146,12 +45602,19 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     }
 
+    /**
+     * Sets the theme for the application.
+     * @param {string} theme - The theme to set.
+     */
     SetTheme(theme) {
         document.body.classList.remove('prefer-dark');
         document.body.classList.remove('prefer-light');
         document.body.classList.add('prefer-' + theme);
     }
 
+    /**
+     * Initializes the modules.
+     */
     InitializeModules() {
         Object.keys(App.Modules).forEach((module) => {
             try {
@@ -36161,6 +45624,9 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         })
     }
 
+    /**
+     * Starts flashing the title of the document by appending "(*)" every second.
+     */
     StartFlashTitle() {
         this.StopFlashTitle();
 
@@ -36170,6 +45636,9 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         }, 1000);
     }
 
+    /**
+     * Stops flashing the title of the document and restores the original title.
+     */
     StopFlashTitle() {
         if(this._flashInterval) {
             if(this._title) {
@@ -36181,7 +45650,14 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Отправляет событие в CRM
+     * Sends an event to CRM.
+     * @param {string} module - The module name.
+     * @param {string} form - The form name.
+     * @param {string} cat1 - The category 1.
+     * @param {string} cat2 - The category 2.
+     * @param {number} duration - The duration.
+     * @param {string} iddoc - The document ID.
+     * @param {number} amountdoc - The document amount.
      */
     SendEventToCRM(module, form, cat1, cat2, duration, iddoc, amountdoc) {
         try {
@@ -36193,42 +45669,82 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         }
     }
 
+    /**
+     * Gets the version of the application.
+     * @returns {number} The version of the application.
+     */
     get appVersion() {
         return this._appVersion;
     }
 
+    /**
+     * Sets the version of the application.
+     * @param {number} value - The version of the application.
+     */
     set appVersion(value) {
         this._appVersion = value;
     }
 
+    /**
+     * Gets the name of the application.
+     * @returns {string} The name of the application.
+     */
     get name() {
         return this._name;
     }
 
+    /**
+     * Gets the actions associated with the application.
+     * @returns {Colibri.Common.HashActions} The actions associated with the application.
+     */
     get Actions() {
         return this._actions;
     } 
 
+    /**
+     * Gets the storage associated with the application.
+     * @returns {Colibri.Storages.Store} The storage associated with the application.
+     */
     get Storage() {
         return this._storage;
     }
     
+    /**
+     * Gets the store associated with the application.
+     * @returns {Colibri.Storages.Store} The store associated with the application.
+     */
     get Store() {
         return this._store;
     }
 
+    /**
+     * Gets the request associated with the application.
+     * @returns {Colibri.Web.Request} The request associated with the application.
+     */
     get Request() {
         return this._request;
     }
 
+    /**
+     * Gets the router associated with the application.
+     * @returns {Colibri.Web.Router} The router associated with the application.
+     */
     get Router() {
         return this._router;
     }
 
+    /**
+     * Gets the notices associated with the application.
+     * @returns {Colibri.UI.Notices} The notices associated with the application.
+     */
     get Notices() {
         return this._notices;
     }
 
+    /**
+     * Gets the loader associated with the application.
+     * @returns {Colibri.UI.LoadingContainer} The loader associated with the application.
+     */
     get Loader() {
         if(!this._loader) {
             this._loader = new Colibri.UI.LoadingContainer('app-loader', document.body);
@@ -36236,89 +45752,180 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
         return this._loader;
     }
 
+    /**
+     * Gets the confirm dialog associated with the application.
+     * @returns {Colibri.UI.ConfirmDialog} The confirm dialog associated with the application.
+     */
     get Confirm() {
         return this._confirmDialog;
     }
 
+    /**
+     * Gets the prompt dialog associated with the application.
+     * @returns {Colibri.UI.PromptDialog} The prompt dialog associated with the application.
+     */
     get Prompt() {
         return this._promptDialog;
     }
     
+    /**
+     * Gets the alert dialog associated with the application.
+     * @returns {Colibri.UI.AlertDialog} The alert dialog associated with the application.
+     */
     get Alert() {
         return this._alertDialog;
     }
 
+    /**
+     * Gets the loading box associated with the application.
+     * @returns {Colibri.UI.Loading} The loading box associated with the application.
+     */
     get Loading() {
         return this._loadingBox;
     }
     
+    /**
+     * Gets the loading ballun associated with the application.
+     * @returns {Colibri.UI.LoadingBallun} The loading ballun associated with the application.
+     */
     get LoadingBallun() {
         return this._loadingBallun;
     }
 
+    /**
+     * Gets the comet associated with the application.
+     * @returns {Colibri.Web.Comet} The comet associated with the application.
+     */
     get Comet() {
         return this._comet;
     }
 
+    /**
+     * Gets the browser storage associated with the application.
+     * @returns {Colibri.Common.BrowserStorage} The browser storage associated with the application.
+     */
     get Browser() {
         return this._browser;
     }
 
+    /**
+     * Gets the database associated with the application.
+     * @returns {Colibri.Web.IndexDB} The database associated with the application.
+     */
     get Db() {
         return this._db;
     }
 
+    /**
+     * Gets the tooltip associated with the application.
+     * @returns {Colibri.UI.ToolTip} The tooltip associated with the application.
+     */
     get ToolTip() {
         return this._customToolTip;
     }
 
+    /**
+     * Gets the device associated with the application.
+     * @returns {Colibri.Devices.Device} The device associated with the application.
+     */
     get Device() {
         return this._device;
     }
 
+    /**
+     * Gets the remote domain associated with the application.
+     * @returns {string} The remote domain associated with the application.
+     */
     get RemoteDomain() {
         return this._remoteDomain;
     }
     
+    /**
+     * Indicates whether the application is initialized.
+     * @returns {boolean} `true` if the application is initialized; otherwise, `false`.
+     */
     get Initialized() {
         return this._initialized;
     }
 
+    /**
+     * Gets the date format used by the application.
+     * @returns {string|null} The date format used by the application, or `null` if not set.
+     */
     get DateFormat() {
         return this._dateformat;
     }
+    /**
+     * Sets the date format used by the application.
+     * @param {string} value - The date format to set.
+     */
     set DateFormat(value) {
         this._dateformat = value;
     }
+    /**
+     * Gets the number format used by the application.
+     * @returns {string|null} The number format used by the application, or `null` if not set.
+     */
     get NumberFormat() {
         return this._numberformat;
     }
+    /**
+     * Sets the number format used by the application.
+     * @param {string} value - The number format to set.
+     */
     set NumberFormat(value) {
         this._numberformat = value;
     }
+    /**
+     * Gets the currency used by the application.
+     * @returns {string|null} The currency used by the application, or `null` if not set.
+     */
     get Currency() {
         return this._currency;
     }
+    /**
+     * Sets the currency used by the application.
+     * @param {string} value - The currency to set.
+     */
     set Currency(value) {
         this._currency = value;
     }
 
+    /**
+     * Gets the CSRF token used by the application.
+     * @returns {string|null} The CSRF token used by the application, or `null` if not set.
+     */
     get CsrfToken()
     {
         return this._csrfToken;
     }
+    /**
+     * Sets the CSRF token used by the application.
+     * @param {string} value - The CSRF token to set.
+     */
     set CsrfToken(value) {
         this._csrfToken = value;
     }
 
 }
 
+/**
+ * Created App object
+ */
 const App = new Colibri.App();
-
+/**
+ * Represents a collection of modules in the application.
+ * @namespace App.Modules
+ * @memberof App
+ */
 App.Modules = class {
 
 }
-
+/**
+ * Represents a collection of components in the application.
+ * @namespace App.Components
+ * @memberof App
+ */
 App.Components = class {
 
 }
@@ -36686,6 +46293,11 @@ App.Modules.Lang.UI.Text = class extends Colibri.UI.Forms.Object {
         this.AddHandler('ContextMenuItemClicked', (event, args) => this.__contextMenuClicked(event, args));
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __contextMenuClicked(event, args) {
         if(!args.menuData) {
             return false;
@@ -36697,6 +46309,11 @@ App.Modules.Lang.UI.Text = class extends Colibri.UI.Forms.Object {
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __contextMenu(event, args) {
         Promise.all([
             Lang.Store.AsyncQuery('lang.settings'),
@@ -36810,6 +46427,11 @@ App.Modules.Lang.UI.TextArea = class extends Colibri.UI.Forms.Object {
         this.AddHandler('ContextMenuItemClicked', (event, args) => this.__contextMenuClicked(event, args));
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __contextMenuClicked(event, args) {
         if(!args.menuData) {
             return false;
@@ -36821,6 +46443,11 @@ App.Modules.Lang.UI.TextArea = class extends Colibri.UI.Forms.Object {
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __contextMenu(event, args) {
         Promise.all([
             Lang.Store.AsyncQuery('lang.settings'),
@@ -37122,9 +46749,15 @@ App.Modules.Lang.LangTextsViewer = class extends Colibri.UI.Viewer {
 
 }
 Colibri.UI.Viewer.Register('App.Modules.Lang.LangTextsViewer', 'Отображение текстов по ключу');
-App.Modules.Lang.LangTree = class extends Colibri.UI.Tree {
+App.Modules.Lang.LangTree = class extends Colibri.UI.Tree { 
 
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
 
         if(!Object.isObject(data)) {
             data = {};
@@ -37175,9 +46808,15 @@ App.Modules.Lang.LangChangeIcon = class extends Colibri.UI.Icon {
             });
         });
 
-    }
+    } 
 
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
         if(!data || !Object.isObject(data) || !Object.countKeys(data)) {
             return;
         }
@@ -37192,6 +46831,11 @@ App.Modules.Lang.LangChangeIcon = class extends Colibri.UI.Icon {
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __contextMenuItemClicked(event, args) {
         if(args.menuData) {
             if(this._savePlace === 'cookie') {
@@ -37512,26 +47156,56 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         Lang.Texts(searchTerm, notfilled, page);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __searchInputFilled(event, args) {
         this._loadDataPage(this._searchInput.value, this._fullfiledCheckbox.checked, 1);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __fullfilledChanged(event, args) {
         this._loadDataPage(this._searchInput.value, this._fullfiledCheckbox.checked, 1);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __textsScrolledToBottom(event, args) {
         this._loadDataPage(this._searchInput.value, this._fullfiledCheckbox.checked, this._dataCurrentPage + 1);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __langsSelectionChanged(event, args) {
         this._enableComponents();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __textsSelectionChanged(event, args) {
         this._enableComponents();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderFoldersContextMenu(event, args) {
 
         Lang.Store.AsyncQuery('lang.settings').then((settings) => {
@@ -37562,6 +47236,11 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnFoldersContextMenu(event, args) {
 
         const item = args?.item;
@@ -37607,6 +47286,11 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         }
         
     }
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderTextsContextMenu(event, args) {
 
         Lang.Store.AsyncQuery('lang.settings').then((settings) => {
@@ -37653,6 +47337,11 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnTextsContextMenu(event, args) {
 
         const item = args?.item;
@@ -37691,6 +47380,11 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __deleteTextClicked(event, args) {
         if(Security.IsCommandAllowed('lang.texts.remove')) {
             const textSelected = this._texts.selected;
@@ -37720,6 +47414,11 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __addTextClicked(event, args) { 
         if(Security.IsCommandAllowed('lang.texts.add')) {
             Manage.FormWindow.Show('Նոր տեքստ', 850, this._textFields(), {})
@@ -37734,6 +47433,11 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         
     }
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __editTextClicked(event, args) { 
         if(Security.IsCommandAllowed('lang.texts.edit')) {
             const textSelected = this._texts.selected;
@@ -37751,12 +47455,22 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __doubleClickedTextsContextMenu(event, args) {
         if(this._editText.enabled) {
             this.__editTextClicked(event, args);
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __translateTextClicked(event, args) {
         Lang.Store.AsyncQuery('lang.settings').then((settings) => {
             
@@ -38368,7 +48082,7 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
                     .catch(error => {
                         App.Notices.Add(new Colibri.UI.Notice(error.result));
                         console.error(error);
-                        reject(response);
+                        reject(error);
                     });
             }
         });
@@ -38668,6 +48382,11 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __reloadClicked(event, args) {
         if(!this.enabled) {
             return;
@@ -38675,14 +48394,17 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
         this.Dispatch('Changed', {value: this.value});
     }
 
-    /**
-     * Register events
-     */
+    /** @protected */
     _registerEvents() {
         super._registerEvents();
         this.RegisterEvent('Changed', false, 'When page changed');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __leftClicked(event, args) {
         if(!this._left.enabled) {
             return;
@@ -38690,6 +48412,11 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
         this.value = this.value - 1;
         this.Dispatch('Changed', {value: this.value});
     }
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __rightClicked(event, args) {
         if(!this._right.enabled) {
             return;
@@ -38698,6 +48425,11 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
         this.Dispatch('Changed', {value: this.value});
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __currentPageChanged(event, args) {
         if(!this.hasMaxPages || (this._currentPage.value >= 1 && this._currentPage.value <= this._maxPages)) {
             this.value = this._currentPage.value;
@@ -38928,6 +48660,12 @@ App.Modules.Sites.Widgets.StoragesWidget = class extends Colibri.UI.Widget {
 
     }
 
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
     __renderBoundedValues(data, path) {
         if(!data) {
             return;
@@ -39040,9 +48778,15 @@ App.Modules.Sites.FoldersTree = class extends Colibri.UI.Tree {
                 node.Dispose();
             }
         });
-    }
+    } 
 
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
 
         Promise.all([
             Sites.Store.AsyncQuery('sites.domains'),
@@ -39084,6 +48828,11 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
         this._sortData = {name: '', order: ''};
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnDataColumn(event, args) {
         this._sortChanged = JSON.stringify(this._sortData) != JSON.stringify({name: this.sortColumn?.name, order: this.sortOrder});
         this._sortData = {name: this.sortColumn?.name, order: this.sortOrder};
@@ -39128,7 +48877,14 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
         this._clearOnChange = value;
     }
     
-    __renderBoundedValues(data) {
+
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
 
         if(!data) {
             data = [];
@@ -39246,7 +49002,14 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
 }
 App.Modules.Sites.PublicationsGrid = class extends Colibri.UI.Grid {
  
-    __renderBoundedValues(data) {
+
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
 
         if(!data) {
             data = [];
@@ -39293,14 +49056,25 @@ App.Modules.Sites.StoragesTree = class extends Colibri.UI.Tree {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisNodeClicked(event, args) {
         // if(args.item.tag === 'module') {
         args.item.Expand();
         // }
     }
+ 
 
-
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
         if(!data) {
             return;
         }
@@ -39543,6 +49317,12 @@ App.Modules.Sites.StoragesManagerTree = class extends Colibri.UI.Tree {
     }
 
 
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
     __renderBoundedValues(data, path) {
         
         if(!data) {
@@ -39704,6 +49484,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderFoldersContextMenu(event, args) {
 
         let contextmenu = [];
@@ -39739,6 +49524,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnFoldersContextMenu(event, args) {
 
         const item = args?.item;
@@ -39886,6 +49676,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderPublicationsContextMenu(event, args) {
         let contextmenu = [];
         
@@ -39897,6 +49692,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnPublicationsContextMenu(event, args) {
 
         const item = args?.item;
@@ -39913,6 +49713,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __foldersDoubleClick(event, args) {
         const item = this._folders.selected;
         if(!item) {
@@ -39952,6 +49757,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragDropOver(event, args) {
         const dragged = args.dragged;
         const droppedTo = args.droppedTo;
@@ -39970,6 +49780,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragDropComplete(event, args) {
 
         const dragged = args.dragged;
@@ -40026,16 +49841,31 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __searchInputFilled(event, args) {
         const selected = this._folders.selected;
         this._loadPublicationsPage(selected?.tag, this._searchInput.value, 1);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __publicationsScrolledToBottom(event, args) {
         const selected = this._folders.selected;
         this._loadPublicationsPage(selected?.tag, this._searchInput.value, this._publicationsCurrentPage + 1);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __selectionChangedOnFolder(event, args) {
 
         const selected = this._folders.selected;
@@ -40053,6 +49883,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __selectionChangedOnPublication(event, args) {
         const checked = this._publications.checked;
         const selected = this._publications.selected;
@@ -40060,6 +49895,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         this._deleteData.enabled = checked.length > 0 || !!selected;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __checkChangedOnPublications(event, args) { 
         const checked = this._publications.checked;
         const selected = this._publications.selected;
@@ -40067,6 +49907,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         this._deleteData.enabled = checked.length > 0 || !!selected;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __deleteDataButtonClicked(event, args) {
         if(this._publications.checked.length == 0) {
             App.Confirm.Show('', '', '').then(() => {
@@ -40084,6 +49929,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __addDataButtonClicked(event, args) {
 
         Manage.Store.AsyncQuery('manage.storages').then((storages) => {
@@ -40124,10 +49974,20 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __doubleClickedOnPublication(event, args) {
         this._editData.Dispatch('Clicked');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __editDataButtonClicked(event, args) {
         if(!this._publications.selected) {
             return;
@@ -40154,6 +50014,11 @@ App.Modules.Sites.StructurePage = class extends Colibri.UI.Component
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __publishButtonClicked(event, args) {
 
         const wnd = new App.Modules.Sites.DataWindow('publish', document.body, '');
@@ -40281,6 +50146,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
             .catch(() => {});
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __searchFilterClicked(event, args) {
         this._showFilters();
     }
@@ -40292,6 +50162,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
     }
 
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __searchInputFilled(event, args) {
         const selected = this._storages.selected;
         if(!selected || (selected.tag === 'module' || selected.tag === 'group')) {
@@ -40304,6 +50179,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, 1);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __storagesSelectionChanged(event, args) {
 
         const selection = this._storages.selected;
@@ -40324,16 +50204,21 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __pagerDataChanged(event, args) {
         const selected = this._storages.selected;
         this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, this._pagerData.value);        
     }
-    
-    // __dataScrolledToBottom(event, args) {
-    //     const selected = this._storages.selected;
-    //     this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, this._dataCurrentPage + 1);
-    // }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dataSelectionChanged(event, args) {
         const checked = this._data.checked;
         const selected = this._data.selected;
@@ -40342,6 +50227,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._deleteData.enabled = checked.length > 0 || !!selected;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __checkChangedOnData(event, args) { 
         const checked = this._data.checked;
         const selected = this._data.selected;
@@ -40349,10 +50239,20 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._deleteData.enabled = checked.length > 0 || !!selected;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __doubleClickedOnData(event, args) {
         this._editData.Dispatch('Clicked');
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __restoreDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
@@ -40375,6 +50275,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __deleteDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
@@ -40397,6 +50302,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __addDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
@@ -40418,6 +50328,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __editDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
@@ -40439,6 +50354,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dublDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
@@ -40462,6 +50382,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __exportDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
@@ -40473,6 +50398,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
     }
 
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderDataContextMenu(event, args) {
         let contextmenu = [];
         this._data.selected = args.item;
@@ -40491,6 +50421,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnDataContextMenu(event, args) {
 
         const item = args?.item;
@@ -40513,6 +50448,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnDataColumn(event, args) {
         this.__searchInputFilled(event, args);
     }
@@ -40554,6 +50494,8 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         this._modules = this.Children('storages-pane/split/left/modules');
         
 
+        this._modules.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderModulesContextMenu(event, args))
+        this._modules.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnModulesContextMenu(event, args));
         this._storages.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderStoragesContextMenu(event, args))
         this._storages.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnStoragesContextMenu(event, args));
         this._storages.AddHandler('DoubleClicked', (event, args) => this.__storagesDoubleClick(event, args));
@@ -40583,6 +50525,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         return field.type === 'json';
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __modulesSelectionChanged(event, args) {
         const selected = this._modules.selected;
         if(!selected) {
@@ -40598,6 +50545,24 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
+    __renderModulesContextMenu(event, args) {
+        let contextmenu = [];
+        contextmenu.push({ name: 'new-storage', title: '', icon: Colibri.UI.ContextMenuAddIcon });
+        args.item.contextmenu = contextmenu;
+        args.item.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB], '', args.isContextMenuEvent ? { left: args.domEvent.clientX, top: args.domEvent.clientY } : null);
+
+    }
+
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderStoragesContextMenu(event, args) {
 
         let contextmenu = [];
@@ -42117,6 +52082,43 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         return path;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
+    __clickOnModulesContextMenu(event, args) {
+        const item = this._modules.selected;
+        if(!item) {
+            return false;
+        }
+
+        const menuData = args.menuData;
+        if (!menuData) {
+            return false;
+        }
+
+        if (menuData.name == 'new-storage') {
+            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
+            if (Security.IsCommandAllowed('sites.storages.add')) {
+                Manage.FormWindow.Show('', 800, this._storageFields(), {})
+                    .then((data) => {
+                        Sites.SaveStorage(moduleNode.value, data);
+                    })
+                    .catch(() => { });
+            }
+            else {
+                App.Notices.Add(new Colibri.UI.Notice('', Colibri.UI.Notice.Error, 5000));
+            }
+        }
+        
+    }
+
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnStoragesContextMenu(event, args) {
 
         const node = this._storages.selected;
@@ -42295,6 +52297,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __storagesDoubleClick(event, args) {
         const node = this._storages.selected;
         if (!node) {
@@ -42311,6 +52318,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragDropOver(event, args) {
         const dragged = args.dragged;
         const droppedTo = args.droppedTo;
@@ -42342,6 +52354,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dragDropComplete(event, args) {
         
         const dragged = args.dragged;
@@ -42410,16 +52427,31 @@ App.Modules.Sites.DataWindow = class extends Colibri.UI.Window {
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnDataColumn(event, args) {
         this.__searchInputFilled(event, args);
     }
 
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dataScrolledToBottom(event, args) {
         const selected = this._storages.selected;
         this._loadDataPage(selected?.tag, this._searchInput.value, this._data.sortColumn?.name, this._data.sortOrder, this._dataCurrentPage + 1);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __searchInputFilled(event, args) {
         const selected = this._storages.selected;
         if(!selected || (selected.tag === 'module' || selected.tag === 'group')) {
@@ -42437,6 +52469,11 @@ App.Modules.Sites.DataWindow = class extends Colibri.UI.Window {
         Sites.LoadData(storage, searchTerm, sortField, sortOrder, page, 20);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __storagesSelectionChanged(event, args) {
         const selection = this._storages.selected;
         if(!selection) {
@@ -42455,12 +52492,22 @@ App.Modules.Sites.DataWindow = class extends Colibri.UI.Window {
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __dataSelectionChanged(event, args) {
         const checked = this._data.checked;
         const selected = this._data.selected;
         this._save.enabled = checked.length > 0 || !!selected;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __saveClicked(event, args) {
         const storage = this._storages.selected;
         const dataChecked = this._data.checked;
@@ -42511,6 +52558,12 @@ App.Modules.Sites.ModulesManagerList = class extends Colibri.UI.List {
 
     }
 
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
     __renderBoundedValues(data, path) {
         
         if(!data) {
@@ -42529,8 +52582,10 @@ App.Modules.Sites.ModulesManagerList = class extends Colibri.UI.List {
 Colibri.UI.AddTemplate('App.Modules.Sites.ModulesManagerListItem', 
 '<div namespace="App.Modules.Sites.ModulesManagerListItem">' + 
 '' + 
-'    <H3 shown="true" name="ttl2"></H3>' + 
-'    <TextSpan shown="true" name="nam"></TextSpan>' + 
+'    <Pane shown="true" name="container">' + 
+'        <H3 shown="true" name="ttl2"></H3>' + 
+'        <TextSpan shown="true" name="nam"></TextSpan>' + 
+'    </Pane>' + 
 '' + 
 '</div>' + 
 '');
@@ -42542,9 +52597,21 @@ App.Modules.Sites.ModulesManagerListItem = class extends Colibri.UI.Pane {
         super(name, container, Colibri.UI.Templates['App.Modules.Sites.ModulesManagerListItem']);
         this.AddClass('app-manager-module-list-item-component');
         
-        this._ttl = this.Children('ttl2');
-        this._nam = this.Children('nam');
-        
+        this._ttl = this.Children('container/ttl2');
+        this._nam = this.Children('container/nam');
+        this.hasContextMenu = true;
+
+        this.AddHandler('ContextMenuIconClicked', (event, args) => this.__thisContextMenuItemClicked(event, args));
+
+    }
+
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
+    __thisContextMenuItemClicked(event, args) {
+        this.parent.Dispatch('ContextMenuIconClicked', args);
     }
 
     /**
@@ -42564,7 +52631,7 @@ App.Modules.Sites.ModulesManagerListItem = class extends Colibri.UI.Pane {
     }
     _showValue() {
         this._ttl.value = this._value.desc;
-        this._nam.value = this._value.name
+        this._nam.value = this._value.name;
     }
 
 }
@@ -43036,6 +53103,11 @@ App.Modules.Tools.UI.BackupLog = class extends Colibri.UI.Component
         this._group.AddItem(message);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __closeClicked(event, args) {
         this._group.Clear();
         this.Hide();
@@ -43048,9 +53120,15 @@ App.Modules.Tools.SettingsTree = class extends Colibri.UI.Tree {
         super(name, container);
         this.AddClass('app-settings-tree-component');
     }
+ 
 
-
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
         if(!data) {
             this.nodes.Clear();
             return;
@@ -43135,9 +53213,15 @@ App.Modules.Tools.NoticesTree = class extends Colibri.UI.Tree {
 
         this.RegisterEvent('NodesLoaded', false, 'Когда все узлы загружены');
     }
+ 
 
-
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
         if(!data) {
             this.nodes.Clear();
             return;
@@ -43201,9 +53285,15 @@ App.Modules.Tools.BucketsTree = class extends Colibri.UI.Tree {
         super(name, container);
         this.AddClass('app-buckets-tree-component');
     }
+ 
 
-
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
         if(!data) {
             this.nodes.Clear();
             return;
@@ -43266,9 +53356,15 @@ App.Modules.Tools.BackupsGrid = class extends Colibri.UI.Grid {
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-backups-grid-component');
-    }
+    } 
 
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
 
         if(!data) {
             return;
@@ -43299,9 +53395,15 @@ App.Modules.Tools.VarsGrid = class extends Colibri.UI.Grid {
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-backups-grid-component');
-    }
+    } 
 
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
         if(!data) {
             return;
         }
@@ -43476,9 +53578,15 @@ App.Modules.Tools.MixinsGrid = class extends Colibri.UI.Grid {
     constructor(name, container) {
         super(name, container);
         this.AddClass('app-backups-grid-component');
-    }
+    } 
 
-    __renderBoundedValues(data) {
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
 
         if(!data) {
             return;
@@ -43553,6 +53661,11 @@ App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderSettingsContextMenu(event, args) {
 
         const itemData = args.item?.tag;
@@ -43576,6 +53689,11 @@ App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnSettingsContextMenu(event, args) {
         const item = args?.item;
         const menuData = args.menuData;
@@ -43609,6 +53727,11 @@ App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __settingsNodeEditCompleted(event, args) {
 
         const node = args.node;
@@ -43631,6 +53754,11 @@ App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __settingsSelectionChanged(event, args) {
 
         const selection = this._settings.selected;
@@ -43731,6 +53859,11 @@ App.Modules.Tools.SettingsManagerPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __saveClicked(event, args) {
 
         const selection = this._settings.selected;
@@ -43793,6 +53926,11 @@ App.Modules.Tools.SettingsDataPage = class extends Colibri.UI.Component
         this._save.AddHandler('Clicked', (event, args) => this.__saveClicked(event, args));
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __settingsSelectionChanged(event, args) {
 
         const selection = this._settings.selected;
@@ -43887,6 +54025,11 @@ App.Modules.Tools.SettingsDataPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __saveClicked(event, args) {
 
         const selection = this._settings.selected;
@@ -43973,6 +54116,11 @@ App.Modules.Tools.NoticesPage = class extends Colibri.UI.Component
     }
 
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __noticesSelectionChanged(event, args) {
 
         const selection = this._notices.selected;
@@ -44017,6 +54165,11 @@ App.Modules.Tools.NoticesPage = class extends Colibri.UI.Component
     }
 
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __noticesNodeEditCompleted(event, args) {
 
         const node = args.node;
@@ -44035,6 +54188,11 @@ App.Modules.Tools.NoticesPage = class extends Colibri.UI.Component
     }
 
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderNoticesContextMenu(event, args) {
         let contextmenu = [];
 
@@ -44052,6 +54210,11 @@ App.Modules.Tools.NoticesPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnNoticesContextMenu(event, args) {
         const item = args?.item;
         const menuData = args.menuData;
@@ -44072,6 +54235,11 @@ App.Modules.Tools.NoticesPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __saveClicked(event, args) {
 
         const selection = this._notices.selected;
@@ -44181,10 +54349,20 @@ App.Modules.Tools.BackupPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __createButtonClicked(event, args) {
         this._showCreateEditWindow();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderDataContextMenu(event, args) {
         let contextmenu = [];
         
@@ -44196,6 +54374,11 @@ App.Modules.Tools.BackupPage = class extends Colibri.UI.Component
         
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnDataContextMenu(event, args) {
         const item = args?.item;
         const menuData = args.menuData;
@@ -44213,6 +54396,11 @@ App.Modules.Tools.BackupPage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __doubleClickedOnData(event, args) {
         const data = this._backups.selected?.value;
         this._showCreateEditWindow(data);
@@ -44310,6 +54498,11 @@ App.Modules.Tools.ExecutePHPPage = class extends Colibri.UI.Component
         this._running.shown = false;
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __runClicked(event, args) {
 
         Tools.Call('Execute', 'Run', {script: this._form.value.script}).then((response) => {
@@ -44327,6 +54520,11 @@ App.Modules.Tools.ExecutePHPPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __killClicked(event, args) {
         Tools.Call('Execute', 'Kill', {pid: this._runningScriptPid}).then((response) => {
             App.Notices.Add(new Colibri.UI.Notice('', Colibri.UI.Notice.Success));
@@ -44478,6 +54676,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         this._deleteMixinButton.enabled = selected && selected.tag.type == 'theme' && (!!selectedMixin || checkedMixins.length > 0);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __themesSelectionChanged(event, args) {
         const selected = this._domainsAndThemes?.selected;
         if(selected && selected.tag.type == 'theme') {
@@ -44493,14 +54696,29 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
     }   
 
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __varsSelectionChagned(event, args) {
         this._enableControls();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __mixinsSelectionChagned(event, args) {
         this._enableControls();
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __themesNodeEditCompleted(event, args) {
         const node = args.node;
         const mode = args.mode;
@@ -44516,6 +54734,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __renderThemesContextMenu(event, args) {
         let contextmenu = [];
 
@@ -44544,6 +54767,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __clickOnThemesContextMenu(event, args) {
         const item = args?.item;
         const menuData = args.menuData;
@@ -44627,6 +54855,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __themesNodeDoubleClicked(event, args) {
         const theme = this._domainsAndThemes.selected?.tag;
         if(!theme) {
@@ -44689,6 +54922,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         return fields;
     }
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __addVarButtonClicked(event, args) {
         const theme = this._domainsAndThemes.selected?.tag?.data;
         Manage.Store.AsyncQuery('manage.storages(themes)').then(storage => {
@@ -44719,6 +54957,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __editVarButtonClicked(event, args) {
         let selected = this._varsGrid.selected;
         if(!selected) {
@@ -44758,6 +55001,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __deleteVarButtonClicked(event, args) {
         const theme = this._domainsAndThemes.selected?.tag?.data;
         const selectedVar = this._varsGrid.selected;
@@ -44778,10 +55026,20 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         }
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __varsDoubleClicked(event, args) {
         this.__editVarButtonClicked(event, args);
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __addMixinButtonClicked(event, args) {
         const theme = this._domainsAndThemes.selected?.tag?.data;
         Manage.Store.AsyncQuery('manage.storages(themes)').then(storage => {
@@ -44796,6 +55054,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __editMixinButtonClicked(event, args) {
         let selected = this._mixinsGrid.selected;
         if(!selected) {
@@ -44817,6 +55080,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __deleteMixinButtonClicked(event, args) {
         const theme = this._domainsAndThemes.selected?.tag?.data;
         const selectedMixin = this._mixinsGrid.selected;
@@ -44838,6 +55106,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
     }
 
     
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __mixinsDoubleClicked(event, args) {
         this.__editMixinButtonClicked(event, args);
     }
@@ -44932,6 +55205,11 @@ App.Modules.Tools.JobsPage = class extends Colibri.UI.Component
 
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisShown(event, args) {
         Tools.Store.Reload('tools.pipelines', false);
         Colibri.Common.StartTimer('pipelines', 5000, () => {
@@ -44939,12 +55217,21 @@ App.Modules.Tools.JobsPage = class extends Colibri.UI.Component
         });
     }
 
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
     __thisHidden(event, args) {
         Colibri.Common.StopTimer('pipelines');
     }
 
+    
     /**
-     * Обработка binding
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
      */
     __renderBoundedValues(data, path) {
         if(!data) {
@@ -47175,7 +57462,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
         try {
-            if(App.Device.isAndroid) {
+            if(App.Device.isAndroid && args.secondsLeft % 60 > 0) {
                 App.Device.Notifications.Schedule(
                     'Ավտոկայանատեղի',
                     'Մնացել է ' + args.secondsLeft.toTimeString(':'),
@@ -47409,7 +57696,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
 
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
-        if(App.Device.isAndroid) {
+        if(App.Device.isAndroid && args.secondsLeft % 60 > 0) {
             try {
                 App.Device.Notifications.Schedule(
                     'Անվճար ավտոկայանատեղի',
