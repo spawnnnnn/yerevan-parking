@@ -57119,7 +57119,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.PaymentPage',
 '    <FlexBox shown="true" name="container">' + 
 '        <FlexBox shown="true" name="content">' + 
 '' + 
-'            <H2 shown="true" name="h2" value="" />' + 
+'            <H2 shown="true" name="h2" value="Ընտրեք վճարման եղանակ" />' + 
 '' + 
 '            <Forms.Form shown="true" name="form" className="app-modules-yerevanparking-form-component">' + 
 '                <fields>' + 
@@ -57605,8 +57605,8 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WaitPage',
 '    <FlexBox shown="true" name="container">' + 
 '' + 
 '        <Components.Timer shown="true" name="timer" />' + 
-'        <SuccessButton shown="true" className="small" name="paynow" value="" />' + 
-'        <SimpleButton shown="true" className="small" name="cancel" value="" />' + 
+'        <SuccessButton shown="true" className="small" name="paynow" value="Վճարել" />' + 
+'        <SimpleButton shown="true" className="small" name="cancel" value="Հեռանալ" />' + 
 '' + 
 '    </FlexBox>' + 
 '' + 
@@ -57704,7 +57704,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
                     'paynow-cancel',
                     null,
                     true, 
-                    true, 
+                    true,  
                     1, 
                     3, {
                         value: parseInt(args.secondsLeft * 100 / 900)

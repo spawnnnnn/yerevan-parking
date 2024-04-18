@@ -57704,7 +57704,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
                     'paynow-cancel',
                     null,
                     true, 
-                    true, 
+                    true,  
                     1, 
                     3, {
                         value: parseInt(args.secondsLeft * 100 / 900)
