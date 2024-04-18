@@ -55773,30 +55773,21 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             if(paymenttype === 'sms') {
                 const zoneSettings = settings.sms;
                 if(sendsms) {
-                    try {
-                        this.Call('Client', 'AddHistory', {
-                            vahile: vahile,
-                            paytime: paytime,
-                            payment_type: paymenttype,
-                            zone: zone,
-                            amount: amount
-                        }).then((response) => {
-                            this._store.Set('yerevan-parking.settings', response.result);
+                    this.Call('Client', 'AddHistory', {
+                        vahile: vahile,
+                        paytime: paytime,
+                        payment_type: paymenttype,
+                        zone: zone,
+                        amount: amount
+                    }).then((response) => {
+                        this._store.Set('yerevan-parking.settings', response.result);
+                        try {
                             App.Device.Sms.Send(zoneSettings[zone], vahile, '');
-                            resolve();
-                        }).catch((response) => reject(response));
-                    } catch(e) {
-                        this.Call('Client', 'AddHistory', {
-                            vahile: vahile,
-                            paytime: paytime,
-                            payment_type: paymenttype,
-                            zone: zone,
-                            amount: amount
-                        }).then((response) => {
-                            this._store.Set('yerevan-parking.settings', response.result);
-                            resolve();
-                        }).catch((response) => reject(response));
-                    }
+                        } catch(e) {
+                            
+                        }
+                        resolve();
+                    }).catch((response) => reject(response));
                 } else { 
                     this.Call('Client', 'AddHistory', {
                         vahile: vahile,
@@ -56888,11 +56879,18 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
                     paytime: paytime
                 });
 
-            }).catch(e => {
+            }).catch(response => {
+                
+                let message = 'Անսպասելի սխալ է տեղի ունեցել կայանման համար վճարելիս, դուք կարող եք թույլտվություն չունենաք SMS ուղարկելու կամ կապ չկա, ստուգեք ձեր թույլտվությունները և կապը և նորից փորձեք։';
+                if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
+                    message = 'Ավտոկայանատեղի համար արդեն վճարված է միջև %s, հարմարության համար թույլտվություն տվեք հավելվածին ավտոմատ կերպով թարմացնել կայանատեղը'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
+                } else if(response.code === 501) {
+                    message = response.result.message;
+                }
 
                 YerevanParking.Alert.Show(
                     'Վճարման սխալշ',
-                    e.code === 501 ? e.message : 'Անսպասելի սխալ է տեղի ունեցել կայանման համար վճարելիս, դուք կարող եք թույլտվություն չունենաք SMS ուղարկելու կամ կապ չկա, ստուգեք ձեր թույլտվությունները և կապը և նորից փորձեք։',
+                    message,
                     'Լավ'
                 );
 
@@ -57377,6 +57375,18 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                     {paytime: parseInt(this._currentTimer.tag.paytime) + 1}
                 ));
                 App.Notices.Add(new Colibri.UI.Notice('Ավտոկանգառը երկարացվել է', Colibri.UI.Notice.Success));
+            }).catch((response) => {
+                let message = 'Անսպասելի սխալ է տեղի ունեցել կայանման համար վճարելիս, դուք կարող եք թույլտվություն չունենաք SMS ուղարկելու կամ կապ չկա, ստուգեք ձեր թույլտվությունները և կապը և նորից փորձեք։';
+                if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
+                    message = 'Ավտոկայանատեղի համար արդեն վճարված է միջև %s, հարմարության համար թույլտվություն տվեք հավելվածին ավտոմատ կերպով թարմացնել կայանատեղը'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
+                } else if(response.code === 501) {
+                    message = response.result.message;
+                }
+                YerevanParking.Alert.Show(
+                    'Վճարման սխալշ',
+                    message,
+                    'Լավ'
+                );
             });
             // we can enhance no more than 1 hour
         } else {
@@ -57410,6 +57420,18 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                         {paytime: parseInt(this._currentTimer.tag.paytime) + parseInt(response.paytime)}
                     ));
                     App.Notices.Add(new Colibri.UI.Notice('Ավտոկանգառը երկարացվել է', Colibri.UI.Notice.Success));
+                }).catch((response) => {
+                    let message = 'Անսպասելի սխալ է տեղի ունեցել կայանման համար վճարելիս, դուք կարող եք թույլտվություն չունենաք SMS ուղարկելու կամ կապ չկա, ստուգեք ձեր թույլտվությունները և կապը և նորից փորձեք։';
+                    if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
+                        message = 'Ավտոկայանատեղի համար արդեն վճարված է միջև %s, հարմարության համար թույլտվություն տվեք հավելվածին ավտոմատ կերպով թարմացնել կայանատեղը'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
+                    } else if(response.code === 501) {
+                        message = response.result.message;
+                    }
+                    YerevanParking.Alert.Show(
+                        'Վճարման սխալշ',
+                        message,
+                        'Լավ'
+                    );
                 });
             });
 
@@ -57659,7 +57681,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     __thisShown(event, args) {
         this._containerPaynow.RemoveClass('-urgent');
         this._containerTimer.RemoveClass('-urgent');
-        this._currentTimer = YerevanParking.CreateTimer('wating', this, 1 * 60, 0 * 60, App.Router.options);
+        this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
         try {
             App.Device.Notifications.Schedule(
                 'Անվճար ավտոկայանատեղի',
@@ -57703,10 +57725,16 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
             App.Router.options.paytime
         ).then(() => {
             App.Router.Navigate('/parking', App.Router.options);
-        }).catch(() => {
+        }).catch((response) => {
+            let message = 'Անսպասելի սխալ է տեղի ունեցել կայանման համար վճարելիս, դուք կարող եք թույլտվություն չունենաք SMS ուղարկելու կամ կապ չկա, ստուգեք ձեր թույլտվությունները և կապը և նորից փորձեք։';
+            if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
+                message = 'Ավտոկայանատեղի համար արդեն վճարված է միջև %s, հարմարության համար թույլտվություն տվեք հավելվածին ավտոմատ կերպով թարմացնել կայանատեղը'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
+            } else if(response.code === 501) {
+                message = response.result.message;
+            }
             YerevanParking.Alert.Show(
                 'Վճարման սխալշ',
-                'Անսպասելի սխալ է տեղի ունեցել կայանման համար վճարելիս, դուք կարող եք թույլտվություն չունենաք SMS ուղարկելու կամ կապ չկա, ստուգեք ձեր թույլտվությունները և կապը և նորից փորձեք։',
+                message,
                 'Լավ'
             );
         });
