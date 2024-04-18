@@ -57695,6 +57695,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     TryPayNow() {
         try {
             App.Device.Notifications.Cancel(1);
+            App.Device.Notifications.Cancel(3);
         } catch(e) { }
         YerevanParking.DisposeTimer();
         YerevanParking.Pay(
@@ -57781,7 +57782,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         const paymenttype = settings.session.settings.payment_type ?? null;
         const autosms = (settings.session.settings.autosms ?? 0) === 1;
         if(paymenttype === 'sms' && autosms === true) {
-            this.TryEnhance();
+            this.TryPayNow();
         } else {
             this.TryCancel();
         }
