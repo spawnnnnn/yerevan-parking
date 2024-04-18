@@ -42714,14 +42714,14 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
     }
 
     /**
-     * Возвращается на шаг назад, добавляет в историю пункт
+     * Gets back
      */
     Back() {
         history.back();
     }
 
     /**
-     * Возвращается в начало истории
+     * Returns to start of navigation
      */
     Pop() {
         const data = this._history.pop();
@@ -42737,7 +42737,7 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
     /**
      * Returns the current URL.
-     * @returns {string} - The current URL.
+     * @type {string} - The current URL.
      */
     get current() {
         return this._url;
@@ -42745,7 +42745,7 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
     /**
      * Returns the path segments of the current URL.
-     * @returns {Array} - The path segments of the current URL.
+     * @type {Array} - The path segments of the current URL.
      */
     get path() {
         return this._path;
@@ -42753,10 +42753,19 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
     /**
      * Returns the query parameters of the current URL.
-     * @returns {Object} - The query parameters of the current URL.
+     * @type {Object} - The query parameters of the current URL.
      */
     get options() {
         return this._options;
+    }
+
+    /**
+     * History object
+     * @type {Array}
+     * @readonly
+     */
+    get history() {
+        return this._history;
     }
 
     /**
@@ -43738,13 +43747,22 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         this._backgroundMode = value;
         cordova.plugins.backgroundMode.setEnabled(value);
         if(value) {
-            cordova.plugins.backgroundMode.setDefaults({ silent: true });
-            // cordova.plugins.backgroundMode.overrideBackButton();
+            cordova.plugins.backgroundMode.setDefaults({ silent: false });
             cordova.plugins.backgroundMode.on('activate', function () {
                 cordova.plugins.backgroundMode.disableWebViewOptimizations();
             });
         }
     
+    }
+
+    get overrideBackButton() {
+        return this._overrideBackButton;
+    }
+    set overrideBackButton(value) {
+        this._overrideBackButton = value;
+        if(value) {
+            cordova.plugins.backgroundMode.overrideBackButton();
+        }
     }
 
     /**
@@ -57462,7 +57480,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
         try {
-            if(App.Device.isAndroid && args.secondsLeft % 60 > 0) {
+            if(App.Device.isAndroid && args.secondsLeft % 60 == 0) {
                 App.Device.Notifications.Schedule(
                     '',
                     ' ' + args.secondsLeft.toTimeString(':'),
@@ -57628,7 +57646,11 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         this._containerPaynow.AddHandler('Clicked', (event, args) => this.__containerPaynowClicked(event, args));
 
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
-    
+        
+        App.Device.Notifications.Cancel(1);
+        App.Device.Notifications.Cancel(3);
+        this._containerPaynow.RemoveClass('-urgent');
+        this._containerTimer.RemoveClass('-urgent');    
     }
 
     destructor() {
@@ -57637,7 +57659,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
 
     __thisShown(event, args) {
         this._containerPaynow.RemoveClass('-urgent');
-        this._containerPaynow.RemoveClass('-urgent');
+        this._containerTimer.RemoveClass('-urgent');
         this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
         try {
             App.Device.Notifications.Schedule(
@@ -57696,7 +57718,8 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
 
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
-        if(App.Device.isAndroid && args.secondsLeft % 60 > 0) {
+
+        if(App.Device.isAndroid && args.secondsLeft % 60 == 0) {
             try {
                 App.Device.Notifications.Schedule(
                     '',
@@ -57722,7 +57745,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
         } else {
             this._containerTimer.value = args.secondsLeft;
             this._containerPaynow.RemoveClass('-urgent');
-            this._containerPaynow.RemoveClass('-urgent');
+            this._containerTimer.RemoveClass('-urgent');
             try {
                 if(App.Device.isAndroid) {
                     App.Device.Notifications.Schedule(

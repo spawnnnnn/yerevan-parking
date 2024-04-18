@@ -22,7 +22,7 @@
     "cordova-plugin-android-permissions": "^1.1.5",
     "cordova-plugin-app-version": "^0.1.14",
     "cordova-plugin-auto-theme": "^1.0.3",
-    "cordova-plugin-background-mode": "^0.7.3",
+    "cordova-plugin-background-mode": "github:Mforcen/cordova-plugin-background-mode",
     "cordova-plugin-badge-fix": "^0.8.10",
     "cordova-plugin-cutout": "^1.0.11",
     "cordova-plugin-device": "^2.1.0",
@@ -63,7 +63,6 @@
       "cordova-plugin-dialogs": {},
       "cordova-plugin-push-notifications": {},
       "cordova-plugin-local-notification-12": {},
-      "cordova-plugin-background-mode": {},
       "cordova-plugin-android-permissions": {},
       "cordova-ios-requires-fullscreen": {},
       "cordova-plugin-safearea": {},
@@ -75,7 +74,8 @@
       },
       "cordova-plugin-app-version": {},
       "cordova-sms-plugin": {},
-      "cordova-plugin-sms-receive": {}
+      "cordova-plugin-sms-receive": {},
+      "cordova-plugin-background-mode": {}
     }
   }
 }

@@ -130,6 +130,7 @@ function onDeviceReady() {
         ).finally(() => {
             App.appVersion = '1.0.32.0';
             App.Device.backgroundMode = true;
+            App.Device.overrideBackButton = true;
         });
 
    });
