@@ -57356,7 +57356,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
             App.Device.Notifications.Cancel(4);
             App.Device.Notifications.Cancel(5);
         } catch(e) {}
-        YerevanParking.DisposeTimer('parking');
+        YerevanParking.DisposeTimer();
         App.Router.Navigate('/main');
     }
 
@@ -57660,7 +57660,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     __thisShown(event, args) {
         this._containerPaynow.RemoveClass('-urgent');
         this._containerTimer.RemoveClass('-urgent');
-        this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
+        this._currentTimer = YerevanParking.CreateTimer('wating', this, 1 * 60, 0 * 60, App.Router.options);
         try {
             App.Device.Notifications.Schedule(
                 'Անվճար ավտոկայանատեղի',
@@ -57693,6 +57693,7 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     }
 
     TryPayNow() {
+        debugger;
         try {
             App.Device.Notifications.Cancel(1);
             App.Device.Notifications.Cancel(3);
