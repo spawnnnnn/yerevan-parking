@@ -57777,7 +57777,14 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     }
 
     __currentTimerTimerEnds(event, args) {
-        this.TryCancel();
+        const settings = YerevanParking.Store.Query('yerevan-parking.settings');
+        const paymenttype = settings.session.settings.payment_type ?? null;
+        const autosms = (settings.session.settings.autosms ?? 0) === 1;
+        if(paymenttype === 'sms' && autosms === true) {
+            this.TryEnhance();
+        } else {
+            this.TryCancel();
+        }
     }
     
 
