@@ -55774,18 +55774,17 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 const zoneSettings = settings.sms;
                 if(sendsms) {
                     try {
-                        App.Device.Sms.Send(zoneSettings[zone], vahile, '').then(() => {
-                            this.Call('Client', 'AddHistory', {
-                                vahile: vahile,
-                                paytime: paytime,
-                                payment_type: paymenttype,
-                                zone: zone,
-                                amount: amount
-                            }).then((response) => {
-                                this._store.Set('yerevan-parking.settings', response.result);
-                                resolve();
-                            }).catch((response) => reject(response));
-                        });    
+                        this.Call('Client', 'AddHistory', {
+                            vahile: vahile,
+                            paytime: paytime,
+                            payment_type: paymenttype,
+                            zone: zone,
+                            amount: amount
+                        }).then((response) => {
+                            this._store.Set('yerevan-parking.settings', response.result);
+                            App.Device.Sms.Send(zoneSettings[zone], vahile, '');
+                            resolve();
+                        }).catch((response) => reject(response));
                     } catch(e) {
                         this.Call('Client', 'AddHistory', {
                             vahile: vahile,
@@ -57693,7 +57692,6 @@ App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
     }
 
     TryPayNow() {
-        debugger;
         try {
             App.Device.Notifications.Cancel(1);
             App.Device.Notifications.Cancel(3);
