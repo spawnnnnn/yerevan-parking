@@ -37,19 +37,19 @@ const json_array = function (v) {
  * @param {string} defaultAsString - The default value string to evaluate.
  * @returns {any} Returns the evaluated default value.
  */
-const eval_default_values = function (defaultAsString) { 
+const eval_default_values = function (defaultAsString) {
     if (typeof defaultAsString == 'string' && (defaultAsString.indexOf('json_object') !== -1 || defaultAsString.indexOf('json_array') !== -1)) {
         return eval(defaultAsString);
-    }  
-    return defaultAsString; 
-};  
+    }
+    return defaultAsString;
+};
 
 /**
  * Checks whether a value is iterable.
  * @param {any} value - The value to check.
  * @returns {boolean} Returns true if the value is iterable, false otherwise.
  */
-const isIterable = (value) => { 
+const isIterable = (value) => {
     return Symbol.iterator in Object(value);
 };
 
@@ -58,7 +58,7 @@ const isIterable = (value) => {
  * @param {string} stringNumber - The formatted number string to unformat.
  * @returns {number} Returns the unformatted number.
  */
-Intl.NumberFormat.prototype.unformat = function(stringNumber) {
+Intl.NumberFormat.prototype.unformat = function (stringNumber) {
     const thousandSeparator = this.format(11111).replace(/\p{Number}/gu, '');
     const decimalSeparator = this.format(1.1).replace(/\p{Number}/gu, '');
 
@@ -95,8 +95,8 @@ Array.merge = function (a, ar) {
 Array.part = function (a, e) {
     var r = [];
     a.forEach((o, index) => {
-        if(e instanceof Function) {
-            if(e(o, index)) {
+        if (e instanceof Function) {
+            if (e(o, index)) {
                 r.push(o);
             }
         } else {
@@ -189,10 +189,10 @@ Array.enumerateRev = function (start, end, callback) {
  * @returns {Object} Returns the converted object.
  */
 Array.toObject = function (a) {
-    if(Object.isObject(a)) {
+    if (Object.isObject(a)) {
         return a;
     }
-    
+
     let ret = {};
     a.forEach((v, i) => {
         ret[i] = v;
@@ -219,7 +219,7 @@ Array.findObject = function (arr, field, value = null) {
             let v = null;
             try {
                 v = eval('o[\'' + field.replaceAll('.', '\'][\'') + '\']');
-            } catch(e) {}
+            } catch (e) { }
             if (v == value) {
                 return o;
             }
@@ -264,7 +264,7 @@ Array.replaceObject = function (arr, field, value, replace = null, insertIfNotEx
  * Calculates the average of all elements in the array.
  * @returns {number} Returns the average value.
  */
-Array.prototype.avg = function() {
+Array.prototype.avg = function () {
     return this.reduce((a, b) => a + b, 0) / this.length;
 }
 
@@ -273,9 +273,9 @@ Array.prototype.avg = function() {
  * @param {number} l - The number of elements to include in the new array.
  * @returns {Array} Returns a new array containing the first 'l' elements.
  */
-Array.prototype.part = function(l) {
+Array.prototype.part = function (l) {
     let ret = [];
-    for(let i=0; i<l; i++) {
+    for (let i = 0; i < l; i++) {
         ret.push(this[i]);
     }
     return ret;
@@ -286,7 +286,7 @@ Array.prototype.part = function(l) {
  * @param {number} n - The number of elements to return.
  * @returns {Array} Returns the last 'n' elements.
  */
-Array.prototype.last = function(n) {
+Array.prototype.last = function (n) {
     return this.splice(this.length - n, this.length);
 }
 
@@ -330,25 +330,25 @@ Array.prototype.equals = function (array) {
  * @param {Function|null} handler - Optional handler function for custom sorting logic.
  * @returns {Array} Returns the sorted array.
  */
-Array.prototype.multiSort = function(fields, handler = null) {
+Array.prototype.multiSort = function (fields, handler = null) {
     this.sort((a, b) => {
 
-        for(const field of fields) {
-            if(a[field.name] == b[field.name]) {
+        for (const field of fields) {
+            if (a[field.name] == b[field.name]) {
                 continue;
-            }    
-            
-            if(handler) {
+            }
+
+            if (handler) {
                 return handler(field.name, field.order, a, b);
             }
 
-            if(field.order === 'asc') {
+            if (field.order === 'asc') {
                 return a[field.name] > b[field.name] ? 1 : -1;
             } else {
                 return a[field.name] > b[field.name] ? -1 : 1;
             }
         }
-        
+
     });
     return this;
 }
@@ -357,9 +357,9 @@ Array.prototype.multiSort = function(fields, handler = null) {
  * Flattens a nested array structure into a single array.
  * @returns {Array} Returns the flattened array.
  */
-Array.prototype.concatAll = function() {
+Array.prototype.concatAll = function () {
     let ret = [];
-    for(const item of this) {
+    for (const item of this) {
         ret = [...ret, ...item];
     }
     return ret;
@@ -369,14 +369,14 @@ Array.prototype.concatAll = function() {
  * Calculates the standard deviation of the array.
  * @returns {number} Returns the standard deviation.
  */
-Array.prototype.stanDeviate = function() {
-    if(this.length === 0) {
+Array.prototype.stanDeviate = function () {
+    if (this.length === 0) {
         return 0;
     }
     const total = this.reduce((a, b) => parseFloat(a || 0) + parseFloat(b || 0));
-    const mean = total/this.length;
+    const mean = total / this.length;
     const diffSqredArr = this.map(v => Math.pow((parseFloat(v || 0) - parseFloat(mean || 0)), 2));
-    return (Math.sqrt(diffSqredArr.reduce((f, n) => parseFloat(f || 0) + parseFloat(n || 0)) / (this.length-1)));
+    return (Math.sqrt(diffSqredArr.reduce((f, n) => parseFloat(f || 0) + parseFloat(n || 0)) / (this.length - 1)));
 };
 
 /**
@@ -392,9 +392,9 @@ Array.prototype.intersect = function (arr) {
  * Converts the array elements into an object with each element as a key, and the value set to true.
  * @returns {Object} Returns the object with array elements as keys.
  */
-Array.prototype.toObjectAsTrue = function() {
+Array.prototype.toObjectAsTrue = function () {
     let ret = {};
-    for(const v of this) {
+    for (const v of this) {
         ret[v] = true;
     }
     return ret;
@@ -405,8 +405,8 @@ Array.prototype.toObjectAsTrue = function() {
  * @param {(string|Function)} field - Optional field to specify which values to sum.
  * @returns {number} Returns the sum of values.
  */
-Array.prototype.sum = function(field = null) {
-    if(!field) {
+Array.prototype.sum = function (field = null) {
+    if (!field) {
         return this.reduce((partialSum, a) => partialSum + a, 0);
     } else {
         return this.map(typeof field == 'function' ? field : v => v[field]).reduce((partialSum, a) => partialSum + a, 0);
@@ -418,12 +418,44 @@ Array.prototype.sum = function(field = null) {
  * @param {(string|Function)} field - Optional field to specify which values to average.
  * @returns {number} Returns the average value.
  */
-Array.prototype.avg = function(field = null) {
-    if(!field) {
+Array.prototype.avg = function (field = null) {
+    if (!field) {
         return this.sum() / this.length;
     } else {
         return this.map(typeof field == 'function' ? field : v => v[field]).sum() / this.length;
     }
+}
+
+/**
+ * Calculates the max of all elements in the array.
+ * @param {(string|Function)} field - Optional field to specify which values to average.
+ * @returns {number} Returns the average value.
+ */
+Array.prototype.max = function (field = null) {
+    let max = -9999999999;
+    for (const v of this) {
+        let f = (typeof field == 'function' ? field() : v[field]);
+        if (f > max) {
+            max = f;
+        }
+    }
+    return max;
+}
+
+/**
+ * Calculates the min of all elements in the array.
+ * @param {(string|Function)} field - Optional field to specify which values to average.
+ * @returns {number} Returns the average value.
+ */
+Array.prototype.min = function (field = null) {
+    let min = 9999999999;
+    for (const v of this) {
+        let f = (typeof field == 'function' ? field() : v[field]);
+        if (f < min) {
+            min = f;
+        }
+    }
+    return min;
 }
 
 /**
@@ -446,7 +478,7 @@ Array.toObjectWithKeys = function (array, fieldKey, fieldValue) {
  * @param {Array} ar - The array to calculate the sum.
  * @returns {number} Returns the sum of values.
  */
-Array.sum = function(ar) {
+Array.sum = function (ar) {
     return ar.reduce((partialSum, a) => partialSum + a, 0);
 }
 
@@ -456,9 +488,9 @@ Array.sum = function(ar) {
  * @param {Array} keysArray - The array of keys to organize the objects.
  * @returns {Array} Returns the organized array of objects.
  */
-Array.organizeObjectKeys = function(objects, keysArray) {
+Array.organizeObjectKeys = function (objects, keysArray) {
     let ret = [];
-    for(const obj of objects) {
+    for (const obj of objects) {
         ret.push(Object.organizeKeys(obj, keysArray));
     }
     return ret;
@@ -470,9 +502,9 @@ Array.organizeObjectKeys = function(objects, keysArray) {
  * @param {Array} keysArray - An array of keys to include in the new object.
  * @returns {Object} Returns a new object with the specified keys.
  */
-Object.organizeKeys = function(obj, keysArray) {
+Object.organizeKeys = function (obj, keysArray) {
     let ret = {};
-    for(const key of keysArray) {
+    for (const key of keysArray) {
         ret[key] = obj[key];
     }
     return ret;
@@ -483,10 +515,10 @@ Object.organizeKeys = function(obj, keysArray) {
  * @param {Object} object - The object to extract keys from.
  * @returns {Array} Returns an array of keys with truthy values.
  */
-Object.fromObjectAsTrue = function(object) {
+Object.fromObjectAsTrue = function (object) {
     let ret = [];
     Object.forEach(object, (name, value) => {
-        if(value) {
+        if (value) {
             ret.push(name);
         }
     });
@@ -498,7 +530,7 @@ Object.fromObjectAsTrue = function(object) {
  * @param {*} o - The value to check.
  * @returns {boolean} Returns true if the value is an object (excluding arrays), false otherwise.
  */
-Object.isObject = function(o) {
+Object.isObject = function (o) {
     return o instanceof Object && !Array.isArray(o);
 }
 
@@ -507,8 +539,26 @@ Object.isObject = function(o) {
  * @param {Object} object - The object to convert.
  * @returns {Object} Returns the extended object.
  */
-Object.convertToExtended = function(object) {
+Object.convertToExtended = function (object) {
     return object;
+}
+
+Object.sort = function (object, fn) {
+    const indexes = [];
+    const keys = Object.keys(object);
+    const values = Object.values(object);
+    for (i = 0; i < values.length; i++) {
+        const key = keys[i];
+        const value = values[i];
+        indexes[fn(key, value, object, i)] = [key, value];
+    }
+    const ret = {};
+    for (const v of indexes) {
+        if (v) {
+            ret[v[0]] = v[1];
+        }
+    }
+    return ret;
 }
 
 /**
@@ -516,21 +566,21 @@ Object.convertToExtended = function(object) {
  * @param {Object} object - The object to sort.
  * @returns {Object} Returns the sorted object.
  */
-Object.sortPropertiesRecursive = function(object) {
-    if(!(object instanceof Object)) {
+Object.sortPropertiesRecursive = function (object) {
+    if (!(object instanceof Object)) {
         return object;
     }
 
     const keys = Object.keys(object);
     keys.sort();
     const ret = {};
-    for(const key of keys) {
+    for (const key of keys) {
         let v;
-        if(object[key] instanceof Object && !Array.isArray(object[key])) {
+        if (object[key] instanceof Object && !Array.isArray(object[key])) {
             v = Object.sortPropertiesRecursive(object[key]);
-        } else if(Array.isArray(object[key])) {
+        } else if (Array.isArray(object[key])) {
             let rows = [];
-            for(const row of object[key]) {
+            for (const row of object[key]) {
                 rows.push(Object.sortPropertiesRecursive(row));
             }
             v = rows;
@@ -549,7 +599,7 @@ Object.sortPropertiesRecursive = function(object) {
  * @param {string|null} valueField - The field to use as the value (optional).
  * @returns {Object} Returns the resulting object.
  */
-Object.createFromArray = function(array, keyField, valueField = null) {
+Object.createFromArray = function (array, keyField, valueField = null) {
     const ret = {};
     array.forEach((v) => {
         ret[v[keyField]] = valueField ? v[valueField] : v;
@@ -654,6 +704,39 @@ Object.toStyles = function (o) {
 };
 
 /**
+ * Find last key of object
+ * @param {Object} o object to find last key
+ * @returns {string}
+ */
+Object.lastKey = function (o) {
+    const keys = Object.keys(o);
+    return keys[keys.length - 1];
+}
+
+/**
+ * Find last value of object
+ * @param {Object} o object to find last value
+ * @returns {*}
+ */
+Object.lastValue = function (o) {
+    return o[Object.lastKey(o)];
+}
+
+/**
+ * Enum internal objects and sum specific property within
+ * @param {Object} o object fo enumerate
+ * @param {string} field field within value of object properties
+ * @returns {Number}
+ */
+Object.sumInternal = function (o, field) {
+    let s = 0;
+    Object.forEach(o, (key, value) => {
+        s += parseFloat(value[field]);
+    });
+    return s;
+}
+
+/**
  * Inserts a key-value pair into an object at a specified index.
  * @param {Object} object - The object to insert into.
  * @param {string} key - The key to insert.
@@ -714,14 +797,14 @@ Object.toPlain = function (object, prefix) {
  * @returns {Object} Returns the cloned object.
  */
 Object.cloneRecursive = function (object, callback = null, excludeKeys = []) {
-    if(typeof object == 'string') {
-        object = JSON.parse(object);    
+    if (typeof object == 'string') {
+        object = JSON.parse(object);
     }
 
-    if(Array.isArray(object)) {
+    if (Array.isArray(object)) {
         let ret = [];
-        for(const o of object) {
-            if(o instanceof Object) {
+        for (const o of object) {
+            if (o instanceof Object) {
                 ret.push(Object.cloneRecursive(o, callback, excludeKeys));
             } else {
                 ret.push(o);
@@ -732,7 +815,7 @@ Object.cloneRecursive = function (object, callback = null, excludeKeys = []) {
 
     let ret = {};
     Object.forEach(object, (prop, value) => {
-        if(excludeKeys.indexOf(prop) !== -1) {
+        if (excludeKeys.indexOf(prop) !== -1) {
             return true;
         }
 
@@ -751,7 +834,7 @@ Object.cloneRecursive = function (object, callback = null, excludeKeys = []) {
             ret[prop] = value;
         }
     });
-    if(callback) {
+    if (callback) {
         ret = callback(ret);
     }
     return ret;
@@ -850,15 +933,95 @@ Object.map = function (obj, func) {
 };
 
 /**
+ * Filters over the properties of an object, applying a function to each key-value pair.
+ * @param {Object} obj - The object to map over.
+ * @param {Function} func - The mapping function to apply to each key-value pair.
+ * @returns {Object} Returns a new object with the mapped key-value pairs.
+ */
+Object.filter = function (obj, func) {
+    let newObject = {};
+    Object.forEach(obj, (key, value) => {
+        if (func(key, value)) {
+            newObject[key] = value;
+        }
+    });
+    return newObject;
+};
+
+/**
+ * 
+ * @param {object} textAsObject object to render
+ * @param {boolean} showLineBrakes show line breaks
+ * @param {string} itemsTag item tag
+ * @param {boolean} isPrintVersion is printable version
+ * @returns 
+ */
+Object.PerformFormatConversion = function (textAsObject, showLineBrakes = false, itemsTag = 'p', isPrintVersion = false) {
+    if (typeof textAsObject === 'string') {
+        return '<div>' + textAsObject + '</div>';
+    }
+
+    if (!textAsObject) {
+        return '<div />';
+    }
+
+    if (!Array.isArray(textAsObject) || textAsObject.length === 0) {
+        return '';
+    }
+
+    let ret = [];
+    for (const obj of textAsObject) {
+        if (obj?.type) {
+            let color = (obj?.color ? ' style="color: ' + obj.color + '"' : '');
+            switch (obj.type) {
+                case 'br': {
+                    ret.push(showLineBrakes ? '<br />' : '');
+                    break;
+                }
+                default:
+                case 'default': {
+                    ret.push(!obj?.txt ? '' : '<' + itemsTag + ' class="default"' + color + '>' + obj.txt + '</' + itemsTag + '>');
+                    break;
+                }
+                case 'strong': {
+                    color = (obj?.color ? ' style="color: ' + obj.color + '"' : '');
+                    ret.push(!obj?.txt ? '' : '<' + itemsTag + ' ' + (isPrintVersion ? '' : 'class="strong"') + '' + color + '>' + (isPrintVersion ? '<b>' : '') + obj.txt + (isPrintVersion ? '</b>' : '') + '</' + itemsTag + '>');
+                    break;
+                }
+                case 'title': {
+                    color = (obj?.color ? ' style="color: ' + obj.color + '"' : '');
+                    if (isPrintVersion) {
+                        ret.push(!obj?.txt ? '' : '<b>' + obj.txt + '</b>');
+                    }
+                    else {
+                        ret.push(!obj?.txt ? '' : '<' + itemsTag + ' class="title"' + color + '>' + obj.txt + '</' + itemsTag + '>');
+                    }
+                    break;
+                }
+                case 'anchor': {
+                    color = (obj?.color ? ' style="color: ' + obj.color + '"' : '');
+                    ret.push(!obj.txt ? '' : '<a href="' + obj.command + '" ' + color + '>' + obj.txt + '</a>');
+                    break;
+                }
+            }
+        }
+        else if (obj?.txt) {
+            ret.push('<' + itemsTag + '>' + obj.txt + '</' + itemsTag + '>');
+        }
+    }
+    return '<div>' + ret.join('') + '</div>';
+}
+
+/**
  * Returns an array of all captured groups in a string that match the regular expression.
  * @param {string} str - The string to search for matches.
  * @returns {Array} Returns an array containing all captured groups.
  */
-RegExp.prototype.all = function(str) {
+RegExp.prototype.all = function (str) {
     let ret = [];
     const matches = str.match(this);
-    if(matches) {
-        for(let index = 1; index<matches.length; index++) {
+    if (matches) {
+        for (let index = 1; index < matches.length; index++) {
             ret.push(matches[index]);
         }
     }
@@ -870,8 +1033,8 @@ RegExp.prototype.all = function(str) {
  * @param {string} string - The string to escape.
  * @returns {string} Returns the escaped string.
  */
-RegExp.quote = function(string) {
-    if(typeof string === 'string') {
+RegExp.quote = function (string) {
+    if (typeof string === 'string') {
         return string.replace(/[.,*+?^${}()|[\]\\]/g, "\\$&");
     }
     return string;
@@ -881,14 +1044,14 @@ RegExp.quote = function(string) {
  * Removes formatting characters and converts the string to a number using the current locale settings.
  * @returns {number|string} Returns the unformatted number if successful, otherwise an empty string.
  */
-String.prototype.unformatCurrent = function() {
+String.prototype.unformatCurrent = function () {
     return (this + '') === '' ? '' : new Intl.NumberFormat(App.NumberFormat).unformat(this);
 }
 /**
  * Formats the string as a number using the current locale settings.
  * @returns {string} Returns the formatted string representation of the number if successful, otherwise an empty string.
  */
-String.prototype.formatCurrent = function() {
+String.prototype.formatCurrent = function () {
     return (this + '') === '' || isNaN(this) ? '' : new Intl.NumberFormat(App.NumberFormat).format(this);
 }
 /**
@@ -913,8 +1076,8 @@ String.prototype.rtrim = function (c) { return this.replace(new RegExp((c != und
  * @param {string} [c] - Optional characters to trim from the beginning and end of the string.
  * @returns {string} Returns the string with leading and trailing whitespace or specified characters removed.
  */
-String.prototype.trimString = function (c) { 
-    return this.replace(new RegExp('^' + (c != undefined ? RegExp.quote(c) : '\\s') + '*(.*?)' + (c != undefined ? RegExp.quote(c) : '\\s') + '*$'), '$1'); 
+String.prototype.trimString = function (c) {
+    return this.replace(new RegExp('^' + (c != undefined ? RegExp.quote(c) : '\\s') + '*(.*?)' + (c != undefined ? RegExp.quote(c) : '\\s') + '*$'), '$1');
 }
 /**
  * Splits the string into an array of substrings using the specified separator.
@@ -1047,9 +1210,9 @@ String.prototype.toDate = function () {
  * Converts the string from DDMMYYYY format to a Date object.
  * @returns {Date} Returns the Date object representing the date parsed from the string in DDMMYYYY format.
  */
-String.prototype.fromDDMMYYYY = function() {
+String.prototype.fromDDMMYYYY = function () {
     let splitter = '-';
-    if(this.indexOf('.') !== -1) {
+    if (this.indexOf('.') !== -1) {
         splitter = '.';
     }
     return (this.split(splitter)[2] + '-' + this.split(splitter)[1] + '-' + this.split(splitter)[0]).toDate();
@@ -1058,7 +1221,7 @@ String.prototype.fromDDMMYYYY = function() {
  * Converts the string from European date format to a Date object.
  * @returns {Date} Returns the Date object representing the date and time parsed from the string in European date format.
  */
-String.prototype.fromEuropeanDate = function() {
+String.prototype.fromEuropeanDate = function () {
     const euroDate = this;
     const parts = euroDate.split(' ');
     const date = parts[0];
@@ -1304,7 +1467,7 @@ String.prototype.ellipsis = function (length, hasTitle = false) {
 
     let cliplen = parseInt((length - 3) / 2);
     let ret = str.substr(0, cliplen) + '...' + str.substr(strlen - cliplen - 1, strlen);
-    if(hasTitle) {
+    if (hasTitle) {
         ret = '<span title="' + this + '">' + ret + '</span>';
     }
     return ret;
@@ -1331,7 +1494,7 @@ String.prototype.hexToString = function () {
  * @param {string} newPart - The new part to replace the last part with.
  * @returns {string} The modified string.
  */
-String.prototype.replaceLastPart = function(splitter, newPart) {
+String.prototype.replaceLastPart = function (splitter, newPart) {
     let parts = this.split(splitter);
     parts.splice(-1);
     return parts.join(splitter) + splitter + newPart;
@@ -1429,6 +1592,18 @@ String.prototype.firstCharsOfWords = function () {
         chars.push(part.substr(0, 1).toUpperCase());
     });
     return chars.join('');
+};
+/**
+ * Check if the string is valid json
+ * @returns {Boolean}
+ */
+String.prototype.isJson = function () {
+    try {
+        JSON.parse(this);
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
 /**
  * Checks if the string represents an integer.
@@ -1770,7 +1945,7 @@ String.prototype.bin2hex = function () {
  * Formats the number according to the current locale.
  * @returns {string} The formatted number string.
  */
-Number.prototype.formatCurrent = function() { return isNaN(this) ? '' : new Intl.NumberFormat(App.NumberFormat).format(this); }
+Number.prototype.formatCurrent = function () { return isNaN(this) ? '' : new Intl.NumberFormat(App.NumberFormat).format(this); }
 /**
  * Converts the Unix timestamp to a JavaScript Date object.
  * @returns {Date} The Date object corresponding to the Unix timestamp.
@@ -1852,7 +2027,7 @@ Number.prototype.toMoney = function (digits, force = true, space = ' ', useNulls
 
     result = price.substring(0, len - count * 3) + result;
     let ret = (result + (dec ? ',' + dec : (force ? ',' + '0'.repeat(digits) : ''))).trimString('.').trimString(',');
-    if(!useNulls) {
+    if (!useNulls) {
         ret = ret.replaceAll('.00', '');
         ret = ret.replaceAll(',00', '');
     }
@@ -1866,25 +2041,25 @@ Number.prototype.toMoney = function (digits, force = true, space = ' ', useNulls
  * @param {string} [currencyCode=null] - The currency code for 'money' type formatting.
  * @returns {string} The formatted number string.
  */
-Number.prototype.intlFormat = function(type, decimal = 2, unit = null, currencyCode = null) {
+Number.prototype.intlFormat = function (type, decimal = 2, unit = null, currencyCode = null) {
     let v = this;
-    if(type === 'money') {
-        const formatter = new Intl.NumberFormat(App.NumberFormat, {style: 'currency', currency: currencyCode ?? App.Currency.code, maximumFractionDigits: decimal ?? 2});
+    if (type === 'money') {
+        const formatter = new Intl.NumberFormat(App.NumberFormat, { style: 'currency', currency: currencyCode ?? App.Currency.code, maximumFractionDigits: decimal ?? 2 });
         v = formatter.format(parseFloat(v));
         // v = parseFloat(v).toMoney(decimal ?? 2);
     }
-    else if(type === 'percent') {
-        const formatter = new Intl.NumberFormat(App.NumberFormat, {style: 'percent', maximumFractionDigits: decimal ?? 2, minimumFractionDigits: decimal ?? 2});
-        if(v > 1) {
+    else if (type === 'percent') {
+        const formatter = new Intl.NumberFormat(App.NumberFormat, { style: 'percent', maximumFractionDigits: decimal ?? 2, minimumFractionDigits: decimal ?? 2 });
+        if (v > 1) {
             v = v / 100;
         }
         v = formatter.format(parseFloat(v));
         // v = parseFloat(v).toMoney(decimal ?? 2);
     }
     else {
-        const formatter = new Intl.NumberFormat(App.NumberFormat, {style: 'decimal', maximumFractionDigits: decimal ?? 2, minimumFractionDigits: decimal ?? 2});
+        const formatter = new Intl.NumberFormat(App.NumberFormat, { style: 'decimal', maximumFractionDigits: decimal ?? 2, minimumFractionDigits: decimal ?? 2 });
         v = formatter.format(parseFloat(v));
-        if(unit) {
+        if (unit) {
             v = v + ' ' + (Array.isArray(unit) ? parseFloat(v).formatSequence(unit, false) : unit);
         }
     }
@@ -1928,7 +2103,7 @@ Number.prototype.toTimeString = function (daySplitter, trim00 = true) {
     txt.push((secs + '').expand("0", 2));
     txt = txt.join(':');
 
-    if(trim00) {
+    if (trim00) {
         txt = txt.ltrim("0");
         txt = txt.ltrim(":");
     }
@@ -1961,7 +2136,7 @@ Number.prototype.toTimeString = function (daySplitter, trim00 = true) {
 Number.prototype.toSizeString = function (postfixes, range, remove0s = false, approximate = false, shownumber = true) {
     let number = this;
     let isMinus = number < 0;
-    if(isMinus) {
+    if (isMinus) {
         number = Math.abs(number);
     }
     let j = 0;
@@ -1975,7 +2150,7 @@ Number.prototype.toSizeString = function (postfixes, range, remove0s = false, ap
     if (remove0s) {
         number = number.replaceAll('.00', '');
     }
-    if(approximate) {
+    if (approximate) {
         number = Math.round(number);
     }
     return (shownumber ? (isMinus ? '-' : '') + number + ' ' : '') + postfixes[j];
@@ -2017,7 +2192,7 @@ Number.Rnd4 = function () { return (((1 + Math.random()) * 0x10000) | 0).toStrin
  * Generates a unique number based on the current timestamp, performance data, and randomness.
  * @returns {number} The unique number.
  */
-Number.unique = function () { return (window.performance.getEntries()[0].duration + window.performance.now() + Math.random()) * 1e13;};
+Number.unique = function () { return (window.performance.getEntries()[0].duration + window.performance.now() + Math.random()) * 1e13; };
 
 /**
  * Formats the date as a string in the 'YYYY-MM-DD HH:mm:ss' format.
@@ -2045,7 +2220,7 @@ Date.prototype.toTimeString = function (hasSeconds = true) { if (this == 'Invali
  * @param {number} year - The year to check.
  * @returns {boolean} True if the year is a leap year, false otherwise.
  */
-Date.isLeapYear = function (year) {  return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); };
+Date.isLeapYear = function (year) { return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); };
 /**
  * Returns the number of days in the given month and year.
  * @param {number} year - The year.
@@ -2054,11 +2229,20 @@ Date.isLeapYear = function (year) {  return (((year % 4 === 0) && (year % 100 !=
  */
 Date.daysInMonth = function (year, month) { return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month]; };
 
+Date.prototype.getPeriods = function (dateFrom) {
+    let periods = [];
+    while (dateFrom < this) {
+        periods.push(dateFrom.getFullYear() + '-' + ((dateFrom.getMonth() + 1) + '').expand('0', 2));
+        dateFrom = dateFrom.addMonths(1);
+    }
+    return periods;
+}
+
 /**
  * Returns the number of days in the month of the current date.
  * @returns {number} The number of days in the month.
  */
-Date.prototype.daysInMonth = function () {  return Date.daysInMonth(this.getFullYear(), this.getMonth()); };
+Date.prototype.daysInMonth = function () { return Date.daysInMonth(this.getFullYear(), this.getMonth()); };
 /**
  * Represents the timezone offset of the current date in hours.
  */
@@ -2098,19 +2282,19 @@ Date.prototype.addYears = function (years) { this.setFullYear(this.getFullYear()
  * @param {boolean} [setDay=true] - Whether to adjust the day to be within the new month's range.
  * @returns {Date} The updated date.
  */
-Date.prototype.addMonths = function (months, setDay = true) {  let n = this.getDate(); this.setMonth(this.getMonth() + months); if(setDay) { this.setDate(Math.min(n, this.daysInMonth())); } return this; };
+Date.prototype.addMonths = function (months, setDay = true) { let n = this.getDate(); this.setMonth(this.getMonth() + months); if (setDay) { this.setDate(Math.min(n, this.daysInMonth())); } return this; };
 /**
  * Checks if the current date is a working day (not a weekend or holiday).
  * @param {string[]} holidays - An array of holiday dates in 'YYYY-MM-DD' format.
  * @returns {boolean} True if it's a working day, false otherwise.
  */
-Date.prototype.isWorkingDay = function(holidays) { return !([0, 6].indexOf(this.getDay()) !== -1 || holidays.indexOf(this.toShortDateString()) !== -1); };
+Date.prototype.isWorkingDay = function (holidays) { return !([0, 6].indexOf(this.getDay()) !== -1 || holidays.indexOf(this.toShortDateString()) !== -1); };
 /**
  * Checks if the current date is a holiday.
  * @param {string[]} holidays - An array of holiday dates in 'YYYY-MM-DD' format.
  * @returns {boolean} True if it's a holiday, false otherwise.
  */
-Date.prototype.isHoliday = function(holidays) { return !(holidays.indexOf(this.toShortDateString()) !== -1); };
+Date.prototype.isHoliday = function (holidays) { return !(holidays.indexOf(this.toShortDateString()) !== -1); };
 /**
  * Adds the specified number of working days to the current date, considering holidays.
  * @param {number} days - The number of working days to add. Positive values for future dates, negative values for past dates.
@@ -2118,21 +2302,21 @@ Date.prototype.isHoliday = function(holidays) { return !(holidays.indexOf(this.t
  * @param {boolean} [holidaysOnly=false] - If true, only holidays will be considered as working days.
  * @returns {Date} The updated date.
  */
-Date.prototype.addWorkingDays = function (days, holidays, holidaysOnly = false) { 
+Date.prototype.addWorkingDays = function (days, holidays, holidaysOnly = false) {
     let addFactor = days < 0 ? -1 : 1;
 
-    while(true) {
+    while (true) {
 
         this.addDays(addFactor);
-        if(holidaysOnly ? this.isHoliday(holidays) : this.isWorkingDay(holidays)) {
+        if (holidaysOnly ? this.isHoliday(holidays) : this.isWorkingDay(holidays)) {
             days -= addFactor;
         }
-        if(days === 0) {
+        if (days === 0) {
             break;
         }
     }
 
-    return this; 
+    return this;
 };
 /**
  * Finds the next working day from the current date, considering holidays.
@@ -2142,16 +2326,16 @@ Date.prototype.addWorkingDays = function (days, holidays, holidaysOnly = false) 
  * @returns {Date} The next working day.
  */
 Date.prototype.nextWorkingDay = function (addFactor = 1, holidays = [], holidaysOnly = false) {
-    while(!(holidaysOnly ? this.isHoliday(holidays) : this.isWorkingDay(holidays))) {
+    while (!(holidaysOnly ? this.isHoliday(holidays) : this.isWorkingDay(holidays))) {
         this.addDays(1 * addFactor);
-    } 
-    return this; 
+    }
+    return this;
 };
 /**
  * Creates a copy of the current date object.
  * @returns {Date} The copied date object.
  */
-Date.prototype.Copy = function() { let d = new Date(); d.setTime(this.getTime()); return d; };
+Date.prototype.Copy = function () { let d = new Date(); d.setTime(this.getTime()); return d; };
 /**
  * Calculates the difference in seconds between the current date and the specified date.
  * @param {Date} dt - The date to compare with.
@@ -2168,8 +2352,8 @@ Date.prototype.DiffInMonths = function (dateTo) {
     let d = new Date();
     d.setTime(this.getTime());
     let i = 0;
-    while(d <= dateTo) {
-        d.setMonth(d.getMonth()+1);
+    while (d <= dateTo) {
+        d.setMonth(d.getMonth() + 1);
         i++;
     }
     return i - 1;
@@ -2187,13 +2371,13 @@ Date.prototype.DiffInDays = function (dateTo) {
  * @param {Date} dateTo date to
  * @param {Array} holidays holidays with holidays mark
  */
-Date.prototype.DiffInDaysHolidays = function(dateTo, holidays) {
+Date.prototype.DiffInDaysHolidays = function (dateTo, holidays) {
     let holidays2 = holidays.filter(v => v.isholiday).map(v => v.date);
     let d = new Date();
     d.setTime(this.getTime());
     let i = 0;
-    while(d <= dateTo) {
-        if(holidays2.indexOf(d.toShortDateString()) !== -1) {
+    while (d <= dateTo) {
+        if (holidays2.indexOf(d.toShortDateString()) !== -1) {
             i++;
         }
         d.addDays(1);
@@ -2205,12 +2389,12 @@ Date.prototype.DiffInDaysHolidays = function(dateTo, holidays) {
  * @param {Date} dateTo - The date to compare with.
  * @returns {number} The difference in years.
  */
-Date.prototype.DiffInYears = function(dateTo) {
+Date.prototype.DiffInYears = function (dateTo) {
     let d = new Date();
     d.setTime(this.getTime());
     let i = 0;
-    while(d <= dateTo) {
-        d.setMonth(d.getMonth()+12);
+    while (d <= dateTo) {
+        d.setMonth(d.getMonth() + 12);
         i++;
     }
     return i - 1;
@@ -2220,7 +2404,7 @@ Date.prototype.DiffInYears = function(dateTo) {
  * @param {Date} dateTo - The date to compare with.
  * @returns {Object} An object containing the difference in years, months, and days.
  */
-Date.prototype.DiffFull = function(dateTo) {
+Date.prototype.DiffFull = function (dateTo) {
 
     // не считаем дату начала и считаем дату окончания полностью
     let time1 = this.toShortDateString().toDate().addDays(1); // меньше
@@ -2233,7 +2417,7 @@ Date.prototype.DiffFull = function(dateTo) {
     time1.addMonths(m, false);
 
     let d = time1.DiffInDays(time2);
-    return {days: d > 0 ? d : 0, months: m > 0 ? m : 0, years: y > 0 ? y : 0};
+    return { days: d > 0 ? d : 0, months: m > 0 ? m : 0, years: y > 0 ? y : 0 };
 
 };
 /**
@@ -2243,19 +2427,18 @@ Date.prototype.DiffFull = function(dateTo) {
  * @param {string[][]} [tokens] - An array of tokens for years, months, and days.
  * @returns {string} The formatted difference string.
  */
-Date.prototype.DiffFullTokens = function(
+Date.prototype.DiffFullTokens = function (
     dateTo,
-    splitter = ' ', 
+    splitter = ' ',
     tokens = [
         ['год', 'года', 'лет'],
         ['месяц', 'месяца', 'месяцев'],
         ['день', 'дня', 'дней']
-    ]) 
-{
+    ]) {
     const diff = this.DiffFull(dateTo);
-    return (diff.years > 0 ? diff.years.formatSequence(tokens[0], true).replaceAll(' ', '&nbsp;') + splitter : '') +  
-        (diff.months > 0 ? diff.months.formatSequence(tokens[1], true).replaceAll(' ', '&nbsp;') + splitter : '') + 
-        (diff.days > 0 ? diff.days.formatSequence(tokens[2], true).replaceAll(' ', '&nbsp;') : ''); 
+    return (diff.years > 0 ? diff.years.formatSequence(tokens[0], true).replaceAll(' ', '&nbsp;') + splitter : '') +
+        (diff.months > 0 ? diff.months.formatSequence(tokens[1], true).replaceAll(' ', '&nbsp;') + splitter : '') +
+        (diff.days > 0 ? diff.days.formatSequence(tokens[2], true).replaceAll(' ', '&nbsp;') : '');
 
 };
 /**
@@ -2265,7 +2448,7 @@ Date.prototype.DiffFullTokens = function(
  * @param {string[][]} [tokens=null] - An array of tokens for years, months, weeks, days, hours, minutes, and seconds.
  * @returns {string} The age string.
  */
-Date.prototype.Age = function (removeNazad = false, returnFull = false, tokens = null) {
+Date.prototype.Age = function (removeNazad = false, returnFull = false, tokens = null, nazad = 'назад', day = 'день', yesterday = 'вчера', justnow = 'только что') {
     let time = Math.abs((new Date()).getTime() / 1000 - this.getTime() / 1000); // to get the time since that moment
 
     tokens = tokens || [
@@ -2285,9 +2468,9 @@ Date.prototype.Age = function (removeNazad = false, returnFull = false, tokens =
 
         if (time < parseInt(unit)) continue;
         let numberOfUnits = Math.floor(time / unit);
-        let ret = (numberOfUnits > 1 ? numberOfUnits + ' ' : '') + numberOfUnits.formatSequence(labels, false) + (removeNazad ? '' : ' назад');
-        if (ret == 'день' + (removeNazad ? '' : ' назад'))
-            ret = 'вчера';
+        let ret = (numberOfUnits > 1 ? numberOfUnits + ' ' : '') + numberOfUnits.formatSequence(labels, false) + (removeNazad ? '' : ' ' + nazad);
+        if (ret == day + (removeNazad ? '' : ' ' + nazad))
+            ret = yesterday;
 
         if (returnFull) {
             retArray.push(ret);
@@ -2300,7 +2483,7 @@ Date.prototype.Age = function (removeNazad = false, returnFull = false, tokens =
         return retArray.join(' ');
     }
     else {
-        return 'только что';
+        return justnow;
     }
 };
 /**
@@ -2315,18 +2498,18 @@ Date.prototype.format = function (formatString) { return this.toString(formatStr
  * @param {boolean} [withoutDay=false] - Whether to exclude day.
  * @returns {string} The formatted date string.
  */
-Date.prototype.intlFormat = function (withTime = false, withoutDay = false) { 
+Date.prototype.intlFormat = function (withTime = false, withoutDay = false) {
     let dateformat = App.DateFormat || 'ru-RU';
-    const params = {day: '2-digit', month: 'short', year: 'numeric'};
-    if(withTime) {
+    const params = { day: '2-digit', month: 'short', year: 'numeric' };
+    if (withTime) {
         params.hour = '2-digit';
         params.minute = '2-digit';
     }
-    if(withoutDay) {
+    if (withoutDay) {
         delete params.day;
     }
     const format = new Intl.DateTimeFormat(dateformat, params);
-    return format.format(this); 
+    return format.format(this);
 };
 /**
  * Gets the day index of the year.
@@ -2361,7 +2544,7 @@ Date.prototype.copy = function () {
  * Sets the date to the start of the current year.
  * @returns {Date} The updated date object.
  */
-Date.prototype.setAsStartOfYear = function() {
+Date.prototype.setAsStartOfYear = function () {
     this.setDate(1);
     this.setMonth(0);
     return this;
@@ -2370,7 +2553,7 @@ Date.prototype.setAsStartOfYear = function() {
  * Sets the date to the end of the current year.
  * @returns {Date} The updated date object.
  */
-Date.prototype.setAsEndOfYear = function() {
+Date.prototype.setAsEndOfYear = function () {
     this.setMonth(11);
     this.setDate(31);
     return this;
@@ -2379,7 +2562,7 @@ Date.prototype.setAsEndOfYear = function() {
  * Gets the quarter of the year.
  * @returns {number} The quarter number.
  */
-Date.prototype.getQuarter = function() {
+Date.prototype.getQuarter = function () {
     return Math.floor((this.getMonth() + 3) / 3);
 };
 /**
@@ -2388,7 +2571,7 @@ Date.prototype.getQuarter = function() {
  * @param {boolean} [numberOnly=false] - Whether to return only the quarter number.
  * @returns {string} The quarter string.
  */
-Date.prototype.toQuarterString = function(quarterName = 'квартал', numberOnly = false) {
+Date.prototype.toQuarterString = function (quarterName = 'квартал', numberOnly = false) {
     let quarter = this.getQuarter();
     if (numberOnly) {
         return quarter;
@@ -2427,19 +2610,19 @@ Date.from = function (from) {
  * @param {number} [startOrEnd=1] - 1 for start date, 2 for end date.
  * @returns {string} The period start or end date string.
  */
-Date.QuarterToPeriod = function(quarter, year, startOrEnd = 1) {
-    
+Date.QuarterToPeriod = function (quarter, year, startOrEnd = 1) {
+
     let ret = '';
-    if(quarter == 1) {
+    if (quarter == 1) {
         ret = startOrEnd == 1 ? '01.01.' + year : '31.03.' + year;
     }
-    else if(quarter == 2) {
+    else if (quarter == 2) {
         ret = startOrEnd == 1 ? '01.01.' + year : '30.06.' + year;
     }
-    else if(quarter == 3) {
+    else if (quarter == 3) {
         ret = startOrEnd == 1 ? '01.01.' + year : '30.09.' + year;
     }
-    else if(quarter == 4) {
+    else if (quarter == 4) {
         ret = startOrEnd == 1 ? '01.01.' + year : '31.12.' + year;
     }
 
@@ -2452,17 +2635,17 @@ Date.QuarterToPeriod = function(quarter, year, startOrEnd = 1) {
  * @param {number} to - The target scrollTop value to scroll to.
  * @param {number} duration - The duration of the animation in milliseconds.
  */
-Element.prototype.animateScrollTop = function(to, duration) {
+Element.prototype.animateScrollTop = function (to, duration) {
     let start = this.scrollTop,
         change = to - start,
         currentTime = 0,
         increment = 20;
-        
-    const animateScroll = () => {        
+
+    const animateScroll = () => {
         currentTime += increment;
         let val = Math.easeInOutQuad(currentTime, start, change, duration);
         this.scrollTop = val;
-        if(currentTime < duration) {
+        if (currentTime < duration) {
             setTimeout(animateScroll, increment);
         }
     };
@@ -2526,7 +2709,7 @@ Element.prototype.inInViewport = function (container) {
  * @returns {number|null} The index of the element, or null if it has no parent.
  */
 Element.prototype.index = function () {
-    if(this.parentElement) {
+    if (this.parentElement) {
         return Array.prototype.indexOf.call(this.parentElement.children, this);
     } else {
         return null;
@@ -2587,10 +2770,10 @@ Element.fromHtml = function (html) {
  * Returns the path of the element, representing its ancestry within the DOM tree.
  * @returns {string} The path of the element.
  */
-Element.prototype.path = function() {
+Element.prototype.path = function () {
     let path = [];
     let p = this;
-    while(p.parent()) {
+    while (p.parent()) {
         path.push(p.attr('data-object-name') ? p.attr('data-object-name') : p.nodeName.toLowerCase());
         p = p.parent();
     }
@@ -2646,9 +2829,9 @@ Element.prototype.tag = function (name, value) {
  * @param {number} index The index at which to insert the element.
  * @returns {HTMLElement} The inserted element.
  */
-Element.prototype.insertAtIndex = function(parent, index) {
+Element.prototype.insertAtIndex = function (parent, index) {
     const childOnIndex = parent.children[index];
-    if(childOnIndex) {
+    if (childOnIndex) {
         parent.insertBefore(this, childOnIndex);
     } else {
         parent.append(this);
@@ -2741,7 +2924,7 @@ Element.prototype.prepend = function (child) {
 Element.prototype.after = function (element) {
     if (this.nextElementSibling && this.parentElement) {
         this.parentElement.insertBefore(element, this.nextElementSibling);
-    } else if(this.parentElement) {
+    } else if (this.parentElement) {
         this.parentElement.appendChild(element);
     }
     return this;
@@ -2835,11 +3018,19 @@ Element.prototype.parent = function () {
 }));
 
 /**
+ * Returns closest component object
+ * @returns Colibri.UI.Component|null
+ */
+Element.prototype.closestComponent = function () {
+    return this.closest('[data-object-name]')?.tag('component') ?? null;
+}
+
+/**
  * Retrieves the computed style value of the specified CSS property for the element.
  * @param {string} name The name of the CSS property.
  * @returns {string} The computed style value of the specified CSS property.
  */
-Element.prototype.computedCss = function(name) {
+Element.prototype.computedCss = function (name) {
     return getComputedStyle(this)[name];
 }
 
@@ -2863,8 +3054,8 @@ Element.prototype.css = function (name, value) {
         if (value === undefined) {
             return styleObject && styleObject[name] !== undefined ? styleObject[name] : getComputedStyle(this)[name];
         } else {
-            if(value === null) {
-                delete styleObject[name.toCamelCase()];    
+            if (value === null) {
+                delete styleObject[name.toCamelCase()];
             } else {
                 styleObject[name.toCamelCase()] = value;
             }
@@ -2921,14 +3112,14 @@ Element.prototype.bounds = function (includeBorders = false, includeMargin = fal
  * Returns the offset of the element.
  * @returns {Object} An object containing the offset of the element.
  */
-Element.prototype.offset = function() { return this.bounds(); };
+Element.prototype.offset = function () { return this.bounds(); };
 /**
  * Returns the position of the element.
  * @returns {Object} An object containing the position of the element.
  */
-Element.prototype.position = function() {
+Element.prototype.position = function () {
     const bounds = this.bounds();
-    return {left: bounds.left, top: bounds.top};
+    return { left: bounds.left, top: bounds.top };
 };
 
 // Element.prototype.index = function() {
@@ -3077,27 +3268,27 @@ Element.prototype.emitHtmlEvents = function (eventType) {
  * @memberof Element.prototype
  * @returns {boolean} true if the value or content exceeds the element's width, otherwise false.
  */
-Element.prototype.isValueExceeded = function() {
+Element.prototype.isValueExceeded = function () {
     const width = this.bounds().outerWidth;
-    if(!width) {
+    if (!width) {
         return false;
     }
     var s = Element.create('span');
     s.css({
-        position : 'absolute',
-        left : -9999,
-        top : -9999,
+        position: 'absolute',
+        left: -9999,
+        top: -9999,
         // ensure that the span has same font properties as the element
-        'font-family' : this.css('font-family'),
-        'font-size' : this.css('font-size'),
-        'font-weight' : this.css('font-weight'),
-        'font-style' : this.css('font-style')
+        'font-family': this.css('font-family'),
+        'font-size': this.css('font-size'),
+        'font-weight': this.css('font-weight'),
+        'font-style': this.css('font-style')
     });
     s.html(this.value || this.html());
     document.body.append(s);
     var result = s.bounds().outerWidth > width;
     s.remove();
-    return result;    
+    return result;
 }
 
 /**
@@ -3134,7 +3325,7 @@ function Base2File(data, filename, mime, isBase) {
  * @param {boolean} [isBase=true] Indicates if the data is base64 encoded.
  */
 function DownloadFile(data, filename, mime, isBase = true) {
-    var a = Element.create('a', { href: window.URL.createObjectURL(Base2File(data, filename, mime, isBase), { type: mime }), download: filename});
+    var a = Element.create('a', { href: window.URL.createObjectURL(Base2File(data, filename, mime, isBase), { type: mime }), download: filename });
     document.body.append(a);
     a.click();
     document.body.removeChild(a);
@@ -3146,7 +3337,7 @@ function DownloadFile(data, filename, mime, isBase = true) {
  * @param {string} [target='_self'] The target window.
  */
 function DownloadUrl(url, filename = null, target = '_self') {
-    if(!filename) {
+    if (!filename) {
         const pi = url.pathinfo();
         filename = pi.basename;
     }
@@ -3265,13 +3456,13 @@ Function.isPromise = function (p) {
  * @param {number} d The duration.
  * @returns {number} The eased value.
  */
-Math.easeInOutQuad = function(t, b, c, d) {
-    t /= d/2;
+Math.easeInOutQuad = function (t, b, c, d) {
+    t /= d / 2;
     if (t < 1) {
-        return c/2*t*t + b;
+        return c / 2 * t * t + b;
     }
     t--;
-    return -c/2 * (t*(t-2) - 1) + b;
+    return -c / 2 * (t * (t - 2) - 1) + b;
 };
 
 /**
@@ -3315,6 +3506,13 @@ var hexcase=0;function hex_md5(a){return rstr2hex(rstr_md5(str2rstr_utf8(a)))}fu
 function hex2bin(h) { var r = ""; for (var i= (h.substr(0, 2)=="0x")?2:0; i<h.length; i+=2) {r += String.fromCharCode (parseInt (h.substr (i, 2), 16));} return r; }
 function bin2hex(bin) { var result = ""; var temp = ""; for(var i=0; i < bin.length; i++) { var chr = bin.charCodeAt(i); if(chr > 127){ chr = encodeURIComponent(bin.charAt(i)); } else { chr = chr.toString(16); } result += chr; }  for(var i=0; i < result.length ;i++) { var chr = result.charAt(i); if(chr != '%') temp += chr; }  return temp.toLowerCase(); } 
 
+/**
+ * Represents a module for handling events.
+ * @namespace
+ */
+Colibri.Events = class {
+    
+}
 /**
  * Represents common utility functions.
  * @namespace
@@ -3417,9 +3615,10 @@ Colibri.Common = class {
      * Loads a script from a URL.
      * @param {string} url - The URL of the script.
      * @param {string} [id=null] - The ID to assign to the script element.
+     * @param {Object} [params] - the parameters of script object
      * @returns {Promise} - A promise that resolves with the ID of the loaded script.
      */
-    static LoadScript(url, id = null) {
+    static LoadScript(url, id = null, params = {}) {
 
         if(document.getElementById(id)) {
             return new Promise((resolve, reject) => {
@@ -3438,6 +3637,9 @@ Colibri.Common = class {
             script.onerror = (e) => {
                 reject(e);
             };
+            Object.forEach(params, (name, value) => {
+                script[name] = value;
+            });
             script.id = id ? id : 'script_' + (new Date()).getTime();
             document.getElementsByTagName('head')[0].appendChild(script);
         });
@@ -3490,13 +3692,6 @@ Colibri.Common = class {
         }); 
     }
 
-}
-/**
- * Represents a module for handling events.
- * @namespace
- */
-Colibri.Events = class {
-    
 }
 /**
  * Represents the input/output (IO) operations class in the Colibri framework.
@@ -3566,13 +3761,16 @@ Colibri.UI = class {
      * @static
      */
     static _getZIndex(elements = null) {
-        return (elements ?? [...document.querySelectorAll('body *')]).reduce((accumulator, current_value) => {
-            current_value = +getComputedStyle(current_value).zIndex;
-            if (current_value === current_value) {
-                return Math.max(accumulator, current_value) 
-            }
-            return accumulator;
-        }, 0);
+        // return (elements ?? [...document.querySelectorAll('body *')]).reduce((accumulator, current_value) => {
+        //     current_value = +getComputedStyle(current_value).zIndex;
+        //     if (current_value === current_value) {
+        //         return Math.max(accumulator, current_value) 
+        //     }
+        //     return accumulator;
+        // }, 0);
+        return (elements ?? [...document.querySelectorAll('body *')])
+            .map(elt => parseFloat(getComputedStyle(elt).zIndex))
+            .reduce((highest, z) => z > highest ? z : highest, 1);
     }
 
     /** 
@@ -3582,21 +3780,23 @@ Colibri.UI = class {
     static registerMutationObserver() {
         // fixing start max z-index 
         Colibri.UI.maxZIndex = Colibri.UI._getZIndex();
-        Colibri.Common.StartTimer('z-index-timer', 10000, () => {
+        Colibri.Common.StartTimer('z-index-timer', 30000, () => {
             Colibri.UI.maxZIndex = Colibri.UI._getZIndex();
         });
-        new MutationObserver((mutationList, observer) => {
-            let elements = [];
-            for(const mut of mutationList) {
-                elements.push(mut.target);
-            }
-            Colibri.UI.maxZIndex = Math.max(Colibri.UI.maxZIndex, Colibri.UI._getZIndex(elements));
-        }).observe(document.body, {
-            attributes: true, 
-            attributeFilter: ['style', 'class'], 
-            childList: true,
-            subtree: true
-        });
+        if(document.body) {
+            new MutationObserver((mutationList, observer) => {
+                let elements = [];
+                for(const mut of mutationList) {
+                    elements.push(mut.target);
+                }
+                Colibri.UI.maxZIndex = Math.max(Colibri.UI.maxZIndex, Colibri.UI._getZIndex(elements));
+            }).observe(document.body, {
+                attributes: true, 
+                attributeFilter: ['style', 'class'], 
+                childList: true,
+                subtree: true
+            });
+        }
     }
 
     /**
@@ -3697,8 +3897,9 @@ Colibri.UI = class {
 
 
 }
-
-Colibri.UI.registerMutationObserver();
+Colibri.Common.Wait(() => !!document.body).then(() => {
+    Colibri.UI.registerMutationObserver();
+});
 
 /**
  * Forms namespace
@@ -3724,6 +3925,261 @@ Colibri.Web = class {
  */
 Colibri.Devices = class {
     
+}
+/**
+ * Represents an event.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Events
+ */
+Colibri.Events.Event = class extends Destructable {
+
+    /**
+     * Creates a new instance of Colibri.Events.Event.
+     * @param {*} sender - The sender of the event.
+     * @param {string} name - The name of the event.
+     * @param {boolean} [bubbles=false] - Indicates whether the event bubbles up the component tree or not.
+     */
+    constructor(sender, name, bubbles) {
+        super();
+
+        /** @type {*} - отправитель */
+        this._sender = sender;
+
+        /** @type {string} name - событие */
+        this._name = name;
+
+        /** @type {boolean} */
+        this._bubbles = bubbles || false;
+
+    }
+
+    destructor() {
+
+    }
+
+    /**
+     * Gets the sender of the event.
+     * @type {*}
+     */
+    get sender() {
+        return this._sender;
+    }
+    /**
+     * Sets the sender of the event.
+     * @type {*}
+     */
+    set sender(value) {
+        this._sender = value;
+    }
+
+    /**
+     * Gets the name of the event.
+     * @type {string}
+     */
+    get name() {
+        return this._name;
+    }
+    /**
+     * Sets the name of the event.
+     * @type {string}
+     */
+    set name(value) {
+        this._name = value;
+    }
+
+    /**
+     * Indicates whether the event bubbles.
+     * @type {boolean}
+     */
+    get bubbles() {
+        return this._bubbles;
+    }
+    /**
+     * Sets whether the event bubbles.
+     * @type {boolean}
+     */
+    set bubbles(value) {
+        this._bubbles = value;
+    }
+
+
+}
+/**
+ * Represents a dispatcher for events.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Events
+ */
+Colibri.Events.Dispatcher = class extends Destructable {
+
+    /** 
+     * @type {Object.<string, Colibri.Events.Event>} - список зарегистрированых событий 
+     **/
+    __events = {};
+    /** 
+     * @type {Object.<string, Array<Object.<handler: Function, respondent: Object>>>} - список обработчиков 
+     **/
+    __handlers = {};
+
+    /**
+     * Creates a new instance of Colibri.Events.Dispatcher.
+     */
+    constructor() {
+        super();
+    }
+
+    destructor() {
+        super.destructor();
+        this.Dispose();
+    }
+
+    /**
+     * Registers an event.
+     * @param {string} eventName - The name of the event.
+     * @param {boolean} bubbles - Indicates whether the event bubbles up the component tree.
+     * @param {string} description - Description of the event.
+     */
+    RegisterEvent(eventName, bubbles, description) {
+        this.__events[eventName] = { name: eventName, bubbles: bubbles, description: description };
+    }
+
+    /**
+     * Adds an event handler.
+     * @param {string|array} eventName - The event or array of events to add the handler to.
+     * @param {Function} handler - The handler method.
+     * @param {boolean} [prepend=false] - Whether to insert the handler at the beginning.
+     * @param {Object} [respondent=this] - The object that responds to the event.
+     * @returns {Colibri.Events.Dispatcher}
+     */
+    AddHandler(eventName, handler, prepend = false, respondent = this) {
+
+        if (eventName instanceof Array) {
+            eventName.forEach((en) => {
+                this.AddHandler(en, handler, prepend, respondent);
+            });
+        } else {
+            
+            this.RemoveHandler(eventName, handler);
+
+            if (!this.__handlers[eventName]) {
+                this.__handlers[eventName] = [];
+            }
+
+            const handlerObject = { handler: handler, respondent: respondent };
+            if (prepend) {
+                this.__handlers[eventName].splice(0, 0, handlerObject);
+            } else {
+                this.__handlers[eventName].push(handlerObject);
+            }
+        }
+
+        return this;
+
+    }
+
+    /**
+     * Removes an event handler.
+     * @param {string} eventName - The event to remove the handler from.
+     * @param {Function} handler - The handler to remove.
+     * @returns {Colibri.Events.Dispatcher}
+     */
+    RemoveHandler(eventName, handler) {
+        
+        if (!this.__handlers[eventName]) {
+            this.__handlers[eventName] = [];
+        }
+
+        const handlerObject = { handler: handler, respondent: this };
+        for (let i = 0; i < this.__handlers[eventName].length; i++) {
+            const h = this.__handlers[eventName][i];
+            if (h.handler == handlerObject.handler && h.respondent == handlerObject.respondent) {
+                this.__handlers[eventName].splice(i, 1);
+                break;
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Checks if an event handler exists.
+     * @param {string} eventName - The event to check for the handler.
+     * @param {Function} handler - The handler to check for.
+     * @returns {boolean} - True if the handler exists, false otherwise.
+     */
+    HandlerExists(eventName, handler) {
+        const handlerObject = { handler: handler, respondent: this },
+              handlerStr = handlerObject.handler.toString();
+        for (let i = 0; i < this.__handlers[eventName].length; i++) {
+            const h = this.__handlers[eventName][i];
+            if (h.handler.toString() === handlerStr && h.respondent === handlerObject.respondent) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Dispatches an event.
+     * @param {(Colibri.Events.Event|string)} event - The event object or its name.
+     * @param {object} args - Arguments for the event.
+     * @returns {Colibri.Events.Dispatcher}
+     */
+    Dispatch(event, args = null) {
+
+        if (!(event instanceof Colibri.Events.Event)) {
+            // ищем сoбытие в стандартных
+            if(this.__events[event]) {
+                event = this.__events[event];
+            } else if(!event.bubbles) {
+                return true;
+            }
+        }
+
+        if(!event.sender) {
+            event.sender = this;
+        }
+
+        if(App && event.name !== 'Event') {
+            App.Dispatch('Event', {event: event, args: args});
+        }
+
+        const eventHandlers = this.__handlers[event.name];
+        if (eventHandlers) {
+
+            for (var j = 0; j < eventHandlers.length; j++) {
+                const handlerObject = eventHandlers[j];
+                if (handlerObject && handlerObject.handler.apply(handlerObject.respondent, [event, args]) === false) {
+                    return false;
+                }
+            }
+        }
+
+        if(event.bubbles && this.parent && this.parent.Dispatch(event, args) === false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Clears all event handlers.
+     */
+    ClearHandlers() {
+        this.__handlers = {};
+    }
+
+    /**
+     * Disposes of the dispatcher.
+     */
+    Dispose() {
+        delete this.__events;
+        delete this.__handlers;
+        this.__events = {};
+        this.__handlers = {};
+    }
+
+
 }
 /**
  * Represents a browser storage utility.
@@ -3758,6 +4214,51 @@ Colibri.Common.BrowserStorage = class {
      */
     Delete(name) {
         window.localStorage.removeItem(name);
+    }
+
+    /**
+     * Checks if an item exists in the browser storage.
+     * @param {string} name - The name of the item to check.
+     * @returns {boolean} - True if the item exists, false otherwise.
+     */
+    Has(name) {
+        return !!this.Get(name);
+    }
+};
+
+/**
+ * Represents a browser session storage utility.
+ * @class
+ * @memberof Colibri.Common
+ */
+Colibri.Common.SessionStorage = class {
+    /** @constructor */
+    constructor() {}
+
+    /**
+     * Sets a value in the browser storage.
+     * @param {string} name - The name of the item.
+     * @param {*} [value=true] - The value to set. Defaults to true if not provided.
+     */
+    Set(name, value = true) {
+        window.sessionStorage.setItem(name, value);
+    }
+
+    /**
+     * Gets a value from the browser storage.
+     * @param {string} name - The name of the item.
+     * @returns {*} - The value retrieved from the storage.
+     */
+    Get(name) {
+        return window.sessionStorage.getItem(name);
+    }
+
+    /**
+     * Deletes an item from the browser storage.
+     * @param {string} name - The name of the item to delete.
+     */
+    Delete(name) {
+        window.sessionStorage.removeItem(name);
     }
 
     /**
@@ -3831,18 +4332,22 @@ Colibri.Common.Cookie = class {
  * @class
  * @memberof Colibri.Common
  */
-Colibri.Common.HashActions = class {
+Colibri.Common.HashActions = class extends Colibri.Events.Dispatcher {
     
     
     /** @constructor */
     constructor() {
+        super();
         this.handlers = {};
         this.init();
     }
     
     init() {
+        
+        this.RegisterEvent('ActionRaised', false, 'When action is raised');
+
         this.__clickEvent = (e) => {
-            this._handleAction(e.target.data('action').substring(1));
+            this._handleAction(e.target.data('action').substring(1), e);
             e.preventDefault();
             e.stopPropagation();
             return false;
@@ -3909,12 +4414,13 @@ Colibri.Common.HashActions = class {
      * @param {Object} [args={}] - Additional arguments.
      * @returns {boolean} - Indicates if the action was raised successfully.
      */
-    Raise(action, args = {}) {
+    Raise(action, args = {}, domEvent = null) {
         try {
             if(this.handlers[action] === undefined)
                 return false;
             var handlers = this.handlers[action];
             for(const handler of handlers) {
+                this.Dispatch('ActionRaised', {action: action, args: args, domEvent: domEvent});
                 if(!handler.apply(this, [action, args])) {
                     return false;
                 }
@@ -3930,7 +4436,7 @@ Colibri.Common.HashActions = class {
      * @param {string} actionString - The hash action string.
      * @private
      */
-    _handleAction(actionString) {
+    _handleAction(actionString, domEvent) {
         
         var queryString = actionString.toObject('&=');
         if(queryString.action == undefined)
@@ -3941,7 +4447,7 @@ Colibri.Common.HashActions = class {
                 :
             history.pushState("", document.title, window.location.pathname + window.location.search);
         
-        this.Raise(queryString.action, queryString);
+        this.Raise(queryString.action, queryString, domEvent);
         
     }
     
@@ -3990,6 +4496,7 @@ Colibri.Common.Validation = class {
      * @returns {boolean} - Indicates whether the ИНН is valid.
      */
     static ValidateInn(inn, error) {
+        error = error ?? {};
         var result = false;
         if (typeof inn === 'number') {
             inn = inn.toString();
@@ -4322,6 +4829,7 @@ Colibri.Common.MimeType = class {
         "fif" :  "application/fractals",
         "flr" :  "x-world/x-vrml",
         "gif" :  "image/gif",
+        "webp" :  "image/webp",
         "gtar" :  "application/x-gtar",
         "gz" :  "application/x-gzip",
         "h" :  "text/plain",
@@ -4512,7 +5020,7 @@ Colibri.Common.MimeType = class {
      * @param {string} ext - The file extension.
      * @returns {boolean} True if the file is an image, otherwise false.
      */
-    static isImage(ext) { return ["gif", "jpeg", "jpg", "png", "bmp", "dib", "svg"].indexOf(ext.toLowerCase()) != -1; }
+    static isImage(ext) { return ["gif", "jpeg", "jpg", "png", "bmp", "dib", "svg", "webp"].indexOf(ext.toLowerCase()) != -1; }
     /**
      * Check if a file with the given extension is an audio file.
      * @param {string} ext - The file extension.
@@ -4923,253 +5431,6 @@ Colibri.Common.Scrolling = class {
         this._element.removeEventListener('touchmove', this.__preventDefault, this.wheelOpt);
         this._element.removeEventListener('keydown', this.__preventDefaultForScrollKeys, false);
     }
-
-}
-/**
- * Represents an event.
- * @class
- * @extends Destructable
- * @memberof Colibri.Events
- */
-Colibri.Events.Event = class extends Destructable {
-
-    /**
-     * Creates a new instance of Colibri.Events.Event.
-     * @param {*} sender - The sender of the event.
-     * @param {string} name - The name of the event.
-     * @param {boolean} [bubbles=false] - Indicates whether the event bubbles up the component tree or not.
-     */
-    constructor(sender, name, bubbles) {
-        super();
-
-        /** @type {*} - отправитель */
-        this._sender = sender;
-
-        /** @type {string} name - событие */
-        this._name = name;
-
-        /** @type {boolean} */
-        this._bubbles = bubbles || false;
-
-    }
-
-    destructor() {
-
-    }
-
-    /**
-     * Gets the sender of the event.
-     * @type {*}
-     */
-    get sender() {
-        return this._sender;
-    }
-    /**
-     * Sets the sender of the event.
-     * @type {*}
-     */
-    set sender(value) {
-        this._sender = value;
-    }
-
-    /**
-     * Gets the name of the event.
-     * @type {string}
-     */
-    get name() {
-        return this._name;
-    }
-    /**
-     * Sets the name of the event.
-     * @type {string}
-     */
-    set name(value) {
-        this._name = value;
-    }
-
-    /**
-     * Indicates whether the event bubbles.
-     * @type {boolean}
-     */
-    get bubbles() {
-        return this._bubbles;
-    }
-    /**
-     * Sets whether the event bubbles.
-     * @type {boolean}
-     */
-    set bubbles(value) {
-        this._bubbles = value;
-    }
-
-
-}
-/**
- * Represents a dispatcher for events.
- * @class
- * @extends Destructable
- * @memberof Colibri.Events
- */
-Colibri.Events.Dispatcher = class extends Destructable {
-
-    /**
-     * Creates a new instance of Colibri.Events.Dispatcher.
-     */
-    constructor() {
-        super();
-        /** @type {Object.<string, Array<Object.<handler: Function, respondent: Object>>>} - список обработчиков */
-        this.__handlers = {};
-        /** @type {Object.<string, Colibri.Events.Event>} - список зарегистрированых событий */
-        this.__events = {};
-    }
-
-    destructor() {
-        this.Dispose();
-    }
-
-    /**
-     * Registers an event.
-     * @param {string} eventName - The name of the event.
-     * @param {boolean} bubbles - Indicates whether the event bubbles up the component tree.
-     * @param {string} description - Description of the event.
-     */
-    RegisterEvent(eventName, bubbles, description) {
-        this.__events[eventName] = { name: eventName, bubbles: bubbles, description: description };
-    }
-
-    /**
-     * Adds an event handler.
-     * @param {string|array} eventName - The event or array of events to add the handler to.
-     * @param {Function} handler - The handler method.
-     * @param {boolean} [prepend=false] - Whether to insert the handler at the beginning.
-     * @param {Object} [respondent=this] - The object that responds to the event.
-     * @returns {Colibri.Events.Dispatcher}
-     */
-    AddHandler(eventName, handler, prepend = false, respondent = this) {
-
-        if (eventName instanceof Array) {
-            eventName.forEach((en) => {
-                this.AddHandler(en, handler, prepend, respondent);
-            });
-        } else {
-            
-            this.RemoveHandler(eventName, handler);
-
-            if (!this.__handlers[eventName]) {
-                this.__handlers[eventName] = [];
-            }
-
-            const handlerObject = { handler: handler, respondent: respondent };
-            if (prepend) {
-                this.__handlers[eventName].splice(0, 0, handlerObject);
-            } else {
-                this.__handlers[eventName].push(handlerObject);
-            }
-        }
-
-        return this;
-
-    }
-
-    /**
-     * Removes an event handler.
-     * @param {string} eventName - The event to remove the handler from.
-     * @param {Function} handler - The handler to remove.
-     * @returns {Colibri.Events.Dispatcher}
-     */
-    RemoveHandler(eventName, handler) {
-        
-        if (!this.__handlers[eventName]) {
-            this.__handlers[eventName] = [];
-        }
-
-        const handlerObject = { handler: handler, respondent: this };
-        for (let i = 0; i < this.__handlers[eventName].length; i++) {
-            const h = this.__handlers[eventName][i];
-            if (h.handler == handlerObject.handler && h.respondent == handlerObject.respondent) {
-                this.__handlers[eventName].splice(i, 1);
-                break;
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Checks if an event handler exists.
-     * @param {string} eventName - The event to check for the handler.
-     * @param {Function} handler - The handler to check for.
-     * @returns {boolean} - True if the handler exists, false otherwise.
-     */
-    HandlerExists(eventName, handler) {
-        const handlerObject = { handler: handler, respondent: this },
-              handlerStr = handlerObject.handler.toString();
-        for (let i = 0; i < this.__handlers[eventName].length; i++) {
-            const h = this.__handlers[eventName][i];
-            if (h.handler.toString() === handlerStr && h.respondent === handlerObject.respondent) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Dispatches an event.
-     * @param {(Colibri.Events.Event|string)} event - The event object or its name.
-     * @param {object} args - Arguments for the event.
-     * @returns {Colibri.Events.Dispatcher}
-     */
-    Dispatch(event, args = null) {
-
-        if (!(event instanceof Colibri.Events.Event)) {
-            // ищем сoбытие в стандартных
-            if(this.__events[event]) {
-                event = this.__events[event];
-            } else if(!event.bubbles) {
-                return true;
-            }
-        }
-
-        if(!event.sender) {
-            event.sender = this;
-        }
-
-        if(App && event.name !== 'Event') {
-            App.Dispatch('Event', {event: event, args: args});
-        }
-
-        const eventHandlers = this.__handlers[event.name];
-        if (eventHandlers) {
-
-            for (var j = 0; j < eventHandlers.length; j++) {
-                const handlerObject = eventHandlers[j];
-                if (handlerObject && handlerObject.handler.apply(handlerObject.respondent, [event, args]) === false) {
-                    return false;
-                }
-            }
-        }
-
-        if(event.bubbles && this.parent && this.parent.Dispatch(event, args) === false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Clears all event handlers.
-     */
-    ClearHandlers() {
-        this.__handlers = {};
-    }
-
-    /**
-     * Disposes of the dispatcher.
-     */
-    Dispose() {
-        this.__events = {};
-        this.__handlers = {};
-    }
-
 
 }
 /**
@@ -5821,6 +6082,11 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
         
     }
 
+    
+    destructor() {
+        this._stopDeferedTimer();
+    }
+
     /**
      * Initializes the module.
      * This method is automatically called during module construction.
@@ -5834,6 +6100,8 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
             this.remoteDomain = App.RemoteDomain;
         }
 
+        this.Dispatch('ModuleInitialized');
+
     }
 
     /**
@@ -5843,6 +6111,7 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
      */
     RegisterEvents() {
         // Тут регистрируем все события (свои события)
+        this.RegisterEvent('ModuleInitialized', false, 'When module is initialized');
     }
 
     /**
@@ -5939,6 +6208,96 @@ Colibri.Modules.Module = class extends Colibri.IO.RpcRequest {
         }
     }
 
+    /**
+     * Calls saved to next launch
+     * @protected
+     */
+    _deferedCalls = [];
+
+    /**
+     * Call results by requestKeyword
+     * @protected
+     */
+    _deferedResults = {};
+
+    /**
+     * Start timer for defered calls
+     * @param {number} timeout timeout for defer call
+     * @param {string} deferedController controller for executing defered calls
+     * @param {string} deferedMethod defered calls method
+     */
+    _startDeferedTimer(timeout = 500, deferedController, deferedMethod) {
+
+        Colibri.Common.StartTimer(this._moduleEntry.toLowerCase() + '-defered-timer', timeout, () => {
+
+            if(this._deferedCalls.length > 0) {
+                while(this._deferedCalls.length > 0) {
+                    const currentCalls = [].concat(this._deferedCalls.splice(0, 10));
+                    setTimeout(() => {
+                        this.Call(deferedController, deferedMethod, {calls: currentCalls}).then((response) => {
+                            const results = response.result;
+                            for(const result of results) {
+                                this._deferedResults['_' + result.requestKeyword] = result;
+                            }
+                        });
+                    }, 5);
+                }
+
+                
+            }
+
+        });
+
+    }
+
+    /**
+     * Stop timer
+     */
+    _stopDeferedTimer() {
+        Colibri.Common.StopTimer(this.name + '-defered-timer');
+    }
+
+    /**
+     * Makes an RPC (Remote Procedure Call) to the specified controller and method.
+     * @param {string} controller - The name of the controller to call.
+     * @param {string} method - The name of the method to call.
+     * @param {Object|null} params - Parameters to pass to the method.
+     * @param {Object} headers - Additional headers for the RPC request.
+     * @param {boolean} withCredentials - Whether to include credentials in the request.
+     * @param {string} requestKeyword - The request keyword.
+     * @returns {Promise} - A promise representing the result of the RPC call.
+     * @public 
+     */
+    Defer(controller, method, params = null, headers= {}, withCredentials= true, requestKeyword = Date.Mc()) {
+
+        this._deferedCalls.push({
+            controller, 
+            method, 
+            params, 
+            headers, 
+            withCredentials, 
+            requestKeyword
+        });
+
+        return new Promise((resolve, reject) => {
+            Colibri.Common.StartTimer('request_' + requestKeyword, 100, () => {
+                if(!!this._deferedResults['_' + requestKeyword]) {
+                    Colibri.Common.StopTimer('request_' + requestKeyword);
+                    const response = this._deferedResults['_' + requestKeyword];
+                    delete this._deferedResults['_' + requestKeyword];
+                    if(response.code != 200) {
+                        reject(response);
+                    } else {
+                        resolve(response);
+                    }    
+                }
+            });
+        }); 
+        
+        
+    }
+
+
 }
 /**
  * Represents a storage class that extends Colibri.Events.Dispatcher.
@@ -5982,6 +6341,22 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
 
     }
 
+    destructor() {
+        super.destructor();
+        this.Dispose();
+    }
+
+    Dispose() {
+
+        this._owner = null;
+        this._parent = null;
+        this._data = null;
+
+        this._pathHandlers = null;
+        this._pathLoaders = null;
+        
+    }
+
     /**
      * Saves the store data in the permanent storage.
      */
@@ -5989,7 +6364,7 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         const __domain = location.hostname;
         let savingData = this.ExportData();
         savingData = Object.assign(savingData, {__domain: __domain});
-        App.Db.GetDataById(this._name, __domain).then(() => {
+        App?.Db?.GetDataById(this._name, __domain).then(() => {
             App.Db.UpdateData(this._name, savingData);
         }).catch(() => {
             App.Db.AddData(this._name, savingData);
@@ -6003,7 +6378,7 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
      */
     RetreiveFromPermanentStore() {
         if(App.Db.StoreExists(this._name)) {
-            this._data = App.Db.GetDataById(this._name, location.hostname);
+            this._data = App?.Db?.GetDataById(this._name, location.hostname);
             Colibri.Common.StartTimer(this._name + '-store-dump', 15000, () => {
                 this.KeepInPermanentStore();
             });
@@ -6178,7 +6553,7 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
             // значит это Module:Controller.Method
             const parts = loader.split(':');
             const module = eval(parts[0]);
-            loader = () => module.Call(parts[1].split('.')[0], parts[1].split('.')[1], params);
+            loader = () => module.Call(parts[1].split('.')[0], parts[1].split('.')[1], Object.assign(params, {__defered: true}));
         }
 
         this._pathLoaders[path] = {loader: loader, loading: false, loaded: false};
@@ -6200,9 +6575,6 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
             }
             return this;
         }
-
-        // let data = this._parsePathIfHasParam(path);
-        // path = data[0];
 
         const childStoreData = this.GetChild(path);
         if(childStoreData) {
@@ -6257,13 +6629,28 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
      * @returns {Colibri.Storages.Store} The store instance.
      */
     RemovePathHandler(path, respondent, handler) {
-        for (let i = 0; i < this._pathHandlers[path].length; i++) {
-            const h = this._pathHandlers[path][i];
+
+        const childStoreData = this.GetChild(path);
+        if(childStoreData) {
+            return childStoreData.child.RemovePathHandler(childStoreData.path, respondent, handler);
+        }
+
+        if(!this._pathHandlers) {
+            return this;
+        }
+
+        const handlers = this._pathHandlers[path];
+        if(!handlers) {
+            return this;
+        }
+        for (let i = 0; i < handlers.length; i++) {
+            const h = handlers[i];
             if (h.handler == handler && h.respondent == respondent) {
-                this._pathHandlers[path].splice(i, 1);
+                handlers.splice(i, 1);
                 break;
             }
         }
+        this._pathHandlers[path] = handlers;
         return this;
     }
 
@@ -6335,7 +6722,6 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
      * @returns {Promise} A promise that resolves when the reload operation is complete.
      */
     async Reload(path, nodispatch = true, param = null) {
-        
         const childStore = this.GetChild(path);
         if(childStore) {
             return childStore.child.Reload(childStore.path, nodispatch, param);
@@ -6357,7 +6743,7 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
             let response = await loader.loader(param);
             if(response && response.result) {
                 this.Set(path, response.result, nodispatch);
-                return param ? response.result[param] : response.result;    
+                return this.Query(path + (param && param.indexOf('=') === -1 ? '.' + param : ''), param && param.indexOf('=') !== -1 ? param : null);
             } else {
                 return null;
             }
@@ -6430,7 +6816,10 @@ Colibri.Storages.Store = class extends Colibri.Events.Dispatcher {
         if(queryList) {
             // queryList = field=value
             const queryParts = queryList.split('=');
-            data = Array.findObject(data, queryParts[0], queryParts[1]);
+            data = Array.isArray(data) ? data.filter(v => v[queryParts[0]] == queryParts[1]) : []; 
+            if(data.length === 1) {
+                data = data[0];
+            }
         }
 
         return data;
@@ -6932,6 +7321,7 @@ Colibri.UI.CopyIcon =                         '<svg width="28" height="27" viewB
 Colibri.UI.DragIcon =                         '<svg width="4" height="12" viewBox="0 0 4 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.99558 12C1.58186 12 1.22917 11.8527 0.9375 11.5581C0.645833 11.2635 0.5 10.9093 0.5 10.4956C0.5 10.0819 0.647306 9.72917 0.941917 9.4375C1.23654 9.14583 1.59071 9 2.00442 9C2.41814 9 2.77083 9.14731 3.0625 9.44192C3.35417 9.73654 3.5 10.0907 3.5 10.5044C3.5 10.9181 3.3527 11.2708 3.05808 11.5625C2.76346 11.8542 2.40929 12 1.99558 12ZM1.99558 7.5C1.58186 7.5 1.22917 7.35269 0.9375 7.05808C0.645833 6.76346 0.5 6.40929 0.5 5.99558C0.5 5.58186 0.647306 5.22917 0.941917 4.9375C1.23654 4.64583 1.59071 4.5 2.00442 4.5C2.41814 4.5 2.77083 4.64731 3.0625 4.94192C3.35417 5.23654 3.5 5.59071 3.5 6.00442C3.5 6.41814 3.3527 6.77083 3.05808 7.0625C2.76346 7.35417 2.40929 7.5 1.99558 7.5ZM1.99558 3C1.58186 3 1.22917 2.85269 0.9375 2.55808C0.645833 2.26346 0.5 1.90929 0.5 1.49558C0.5 1.08186 0.647306 0.729167 0.941917 0.4375C1.23654 0.145833 1.59071 0 2.00442 0C2.41814 0 2.77083 0.147306 3.0625 0.441917C3.35417 0.736542 3.5 1.09071 3.5 1.50442C3.5 1.91814 3.3527 2.27083 3.05808 2.5625C2.76346 2.85417 2.40929 3 1.99558 3Z" fill="#070A21" fill-opacity="0.9"/></svg>';
 Colibri.UI.Filters =                          '<svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M640 288a64 64 0 1 1 0.032-128.032A64 64 0 0 1 640 288z m123.456-96c-14.304-55.04-64-96-123.456-96s-109.152 40.96-123.456 96H128v64h388.544c14.304 55.04 64 96 123.456 96s109.152-40.96 123.456-96H896V192h-132.544zM640 864a64 64 0 1 1 0.032-128.032A64 64 0 0 1 640 864m0-192c-59.456 0-109.152 40.96-123.456 96H128v64h388.544c14.304 55.04 64 96 123.456 96s109.152-40.96 123.456-96H896v-64h-132.544c-14.304-55.04-64-96-123.456-96M384 576a64 64 0 1 1 0.032-128.032A64 64 0 0 1 384 576m0-192c-59.456 0-109.152 40.96-123.456 96H128v64h132.544c14.304 55.04 64 96 123.456 96s109.152-40.96 123.456-96H896v-64H507.456c-14.304-55.04-64-96-123.456-96" fill="#181818" /></svg>';
 Colibri.UI.Favorite =                         '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve"><defs></defs><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" ><path d="M 69.671 88.046 c -0.808 0 -1.62 -0.195 -2.37 -0.59 L 45 75.732 L 22.7 87.456 c -1.727 0.907 -3.779 0.757 -5.356 -0.388 c -1.577 -1.146 -2.352 -3.052 -2.023 -4.972 l 4.259 -24.832 L 1.539 39.678 c -1.396 -1.361 -1.889 -3.358 -1.287 -5.213 c 0.603 -1.854 2.176 -3.181 4.105 -3.461 l 24.932 -3.622 L 40.44 4.79 C 41.303 3.041 43.05 1.955 45 1.955 c 0 0 0 0 0.001 0 c 1.949 0 3.696 1.086 4.559 2.834 l 11.15 22.592 l 24.932 3.623 c 1.93 0.28 3.503 1.606 4.105 3.461 c 0.603 1.854 0.109 3.851 -1.287 5.213 L 70.419 57.264 l 4.26 24.832 c 0.329 1.921 -0.446 3.827 -2.023 4.972 C 71.764 87.717 70.721 88.046 69.671 88.046 z M 7.055 36.676 l 17.058 16.628 c 1.198 1.167 1.746 2.85 1.462 4.502 l -4.027 23.479 l 21.086 -11.086 c 1.481 -0.779 3.25 -0.779 4.732 0 l 21.085 11.086 l -4.027 -23.48 c -0.283 -1.649 0.264 -3.333 1.463 -4.501 l 17.058 -16.628 L 59.372 33.25 c -1.658 -0.242 -3.089 -1.282 -3.829 -2.783 L 45 9.106 L 34.457 30.468 c -0.74 1.5 -2.171 2.54 -3.827 2.782 L 7.055 36.676 z M 84.779 36.942 h 0.011 H 84.779 z M 44.18 7.444 c 0 0 0 0.001 0.001 0.002 L 44.18 7.444 C 44.18 7.445 44.18 7.445 44.18 7.444 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" /></g></svg>';
+Colibri.UI.EditIcon =                         '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.0002 13.9997C17.5525 13.9998 18.0002 14.4476 18 14.9999C17.9999 15.5522 17.5521 15.9998 16.9999 15.9997L17 14.9997L17.0002 13.9997ZM14.9588 15.9994C13.7784 15.9992 12.2785 15.9991 11 15.9991C10.4477 15.9991 10 15.5514 10 14.9991C10 14.4468 10.4477 13.9991 11 13.9991C12.2786 13.9991 13.7786 13.9992 14.959 13.9994L17.0002 13.9997C17.0003 13.9997 17.0002 13.9997 17 14.9997C16.9999 15.9997 16.9999 15.9997 16.9999 15.9997L14.9588 15.9994Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8.62074 2.9649C8.44203 2.89088 8.23717 2.97584 8.16332 3.15461L4.71736 11.4957C4.65853 11.6381 4.63799 11.7936 4.65777 11.9464C4.74364 12.61 5.50796 12.9412 6.05025 12.5492C6.18154 12.4543 6.28418 12.3251 6.34693 12.1757L9.84352 3.85212C9.91865 3.67328 9.83399 3.46744 9.65477 3.39321L8.62074 2.9649ZM6.84522 1.50002C7.09316 0.899856 7.78092 0.614606 8.38085 0.863105L11.3145 2.07825C11.9161 2.32746 12.2003 3.01848 11.9481 3.61888L7.87781 13.3082C7.79784 13.4985 7.66701 13.6632 7.49966 13.7842L4.09343 16.2464C3.78623 16.4684 3.3533 16.2812 3.30465 15.9053L2.7681 11.759C2.74291 11.5644 2.76908 11.3665 2.84403 11.1851L6.84522 1.50002Z" fill="black"/></svg>';
 
 Colibri.UI.ContextMenuRightArrowIcon =        '<svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.30376 4.29655C5.68944 4.68622 5.68944 5.31378 5.30376 5.70345L1.71074 9.33371C1.08228 9.96868 -2.68774e-08 9.52365 1.2174e-08 8.63025L3.29541e-07 1.36974C3.68592e-07 0.476352 1.08228 0.0313211 1.71074 0.666293L5.30376 4.29655Z" fill="#7D859B"/></svg>'
 Colibri.UI.ContextMenuAddIcon =               '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="3" height="13" transform="rotate(-90 3 11)" fill="white"/><rect x="8" y="3" width="3" height="13" fill="white"/></svg>';
@@ -7017,7 +7407,7 @@ Colibri.UI.FieldIcons = {
     'Colibri.UI.Forms.Radio': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 14C20 17.3137 17.3137 20 14 20C10.6863 20 8 17.3137 8 14C8 10.6863 10.6863 8 14 8C17.3137 8 20 10.6863 20 14Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 14C3 7.928 7.928 3 14 3C20.072 3 25 7.928 25 14C25 20.072 20.072 25 14 25C7.928 25 3 20.072 3 14ZM14 22.8C9.149 22.8 5.2 18.851 5.2 14C5.2 9.149 9.149 5.2 14 5.2C18.851 5.2 22.8 9.149 22.8 14C22.8 18.851 18.851 22.8 14 22.8Z" fill="black"/></svg>',   
     'Colibri.UI.Forms.Period': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H10V6H8V3Z" fill="black"/><path d="M25 19V21H22V19H25Z" fill="black"/><path d="M10 3H25V5H10V3Z" fill="black"/><path d="M23 3H25V21H23V3Z" fill="black"/><path d="M10 15H11V16H10V15Z" fill="black"/><path d="M10 17H11V18H10V17Z" fill="black"/><path d="M13 15H12V16H13V15Z" fill="black"/><path d="M12 17H13V18H12V17Z" fill="black"/><path d="M15 15H14V16H15V15Z" fill="black"/><path d="M14 17H15V18H14V17Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16 20H9C8.4485 20 8 19.5515 8 19V12C8 11.4485 8.4485 11 9 11H10V10H11V11H14V10H15V11H16C16.5515 11 17 11.4485 17 12V19C17 19.5515 16.5515 20 16 20ZM16.0001 13L16 12H9V13H16.0001ZM16.0001 14L16.0005 19H9V14H16.0001Z" fill="black"/><path d="M3 6H5V25H3V6Z" fill="black"/><path d="M20 6H22V25H20V6Z" fill="black"/><path d="M3 8V6H22V8H3Z" fill="black"/><path d="M3 25L3 23H22V25H3Z" fill="black"/></svg>',   
     'Colibri.UI.Forms.Checkbox': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.59 9L12 15.59L9.41 13.01L8 14.42L12 18.42L20 10.42L18.59 9Z" fill="black"/><path d="M5 5H7V23H5V5Z" fill="black"/><path d="M21 5H23V23H21V5Z" fill="black"/><path d="M23 5V7L5 7L5 5H23Z" fill="black"/><path d="M23 21V23H5V21L23 21Z" fill="black"/></svg>',   
-    'Colibri.UI.Forms.CheckboxList': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.59 9L12 15.59L9.41 13.01L8 14.42L12 18.42L20 10.42L18.59 9Z" fill="black"/><path d="M5 5H7V23H5V5Z" fill="black"/><path d="M21 5H23V23H21V5Z" fill="black"/><path d="M23 5V7L5 7L5 5H23Z" fill="black"/><path d="M23 21V23H5V21L23 21Z" fill="black"/></svg>',   
+    'Colibri.UI.Forms.CheckboxList': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5H6.53472V18.8125H5V5Z" fill="black"/><path d="M17.2778 5H18.8126V9.25H17.2778V5Z" fill="black"/><path d="M18.8125 5V6.53472H5V5H18.8125Z" fill="black"/><path d="M9.25 17.2778V18.8126H5V17.2778H9.25Z" fill="black"/><path d="M18.6161 11.2571L13.5592 16.314L11.5717 14.3342L10.4897 15.4162L13.5592 18.4856L19.6981 12.3467L18.6161 11.2571Z" fill="black"/><path d="M8.1875 8.1875H9.72222V22H8.1875V8.1875Z" fill="black"/><path d="M20.4653 8.1875H22.0001V22H20.4653V8.1875Z" fill="black"/><path d="M22 8.1875V9.72222H8.1875V8.1875H22Z" fill="black"/><path d="M22 20.4653V22.0001H8.1875V20.4653H22Z" fill="black"/></svg>',   
     'Colibri.UI.Forms.Passport': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 6C10.6916 6 8 8.69159 8 12C8 15.3084 10.6916 18 14 18C17.3084 18 20 15.3084 20 12C20 8.69159 17.3084 6 14 6ZM18.6746 14.1429H17.2111C17.325 13.6062 17.3969 13.0309 17.4202 12.4286H19.1249C19.0745 13.0358 18.9183 13.6134 18.6746 14.1429ZM9.32541 9.85714H10.7889C10.675 10.3938 10.6031 10.9691 10.5798 11.5714H8.87514C8.9255 10.9642 9.08171 10.3866 9.32541 9.85714ZM12.2857 9H11.9272C12.3178 7.93505 12.9053 7.16684 13.5714 6.93241V11.5714H11.4381C11.4644 10.9671 11.5456 10.3889 11.6715 9.85714H12.2857C12.5224 9.85714 12.7143 9.66525 12.7143 9.42857C12.7143 9.19189 12.5224 9 12.2857 9ZM16.0728 9H14.4286V6.93241C15.0947 7.16684 15.6822 7.93505 16.0728 9ZM8.87514 12.4286H10.5798C10.6031 13.0309 10.675 13.6062 10.7889 14.1429H9.32541C9.08171 13.6134 8.9255 13.0358 8.87514 12.4286ZM11.4381 12.4286H13.5714V14.1429H11.6715C11.5456 13.6111 11.4644 13.0329 11.4381 12.4286ZM13.5714 15V17.0676C12.9053 16.8331 12.3178 16.0649 11.9272 15H13.5714ZM14.4286 17.0676V15H16.0728C15.6822 16.0649 15.0947 16.8332 14.4286 17.0676ZM14.4286 14.1429V9.85714H16.3285C16.4544 10.3889 16.5356 10.9671 16.5619 11.5714H15.7143C15.4776 11.5714 15.2857 11.7633 15.2857 12C15.2857 12.2367 15.4776 12.4286 15.7143 12.4286H16.5619C16.5356 13.0329 16.4544 13.6111 16.3286 14.1429H14.4286ZM17.4202 11.5714C17.3969 10.9691 17.325 10.3938 17.2111 9.85714H18.6746C18.9182 10.3866 19.0745 10.9642 19.1249 11.5714H17.4202ZM18.1747 9H16.9835C16.7779 8.36454 16.5078 7.80493 16.1878 7.34636C16.9821 7.72136 17.6656 8.29371 18.1747 9ZM11.8123 7.34636C11.4922 7.80488 11.2222 8.36448 11.0165 9H9.82534C10.3344 8.29371 11.0179 7.72136 11.8123 7.34636ZM9.82534 15H11.0165C11.2221 15.6355 11.4922 16.1951 11.8123 16.6536C11.0179 16.2786 10.3344 15.7063 9.82534 15ZM16.1877 16.6536C16.5078 16.1951 16.7778 15.6355 16.9834 15H18.1746C17.6656 15.7063 16.9821 16.2786 16.1877 16.6536Z" fill="black"/><path d="M18.6396 19H9.36036C9.16135 19 9 19.2239 9 19.5C9 19.7761 9.16135 20 9.36036 20H18.6396C18.8386 20 19 19.7761 19 19.5C19 19.2239 18.8386 19 18.6396 19Z" fill="black"/><path d="M12.5789 21H10.4211C10.1885 21 10 21.2239 10 21.5C10 21.7761 10.1885 22 10.4211 22H12.5789C12.8115 22 13 21.7761 13 21.5C13 21.2239 12.8115 21 12.5789 21Z" fill="black"/><path d="M17.6364 21H14.3636C14.1628 21 14 21.2239 14 21.5C14 21.7761 14.1628 22 14.3636 22H17.6364C17.8372 22 18 21.7761 18 21.5C18 21.2239 17.8372 21 17.6364 21Z" fill="black"/><path d="M5 3H7V25H5V3Z" fill="black"/><path d="M5 5V3L23 3V5L5 5Z" fill="black"/><path d="M5 25L5 23H23V25H5Z" fill="black"/><path d="M21 3L23 3V25H21V3Z" fill="black"/></svg>',   
     'Colibri.UI.Forms.FileLabel': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.6667 13.3333L10.9433 14.0238L11.777 14.8972L12.4798 13.9154L11.6667 13.3333ZM10.5 12.1111L11.2234 11.4206L10.3897 10.5473L9.68689 11.529L10.5 12.1111ZM7 17L6.18689 16.4179L5.05424 18H7V17ZM21 17V18H22.8921L21.8262 16.4367L21 17ZM15.1667 8.44444L15.9929 7.88111L15.1867 6.69863L14.3536 7.86233L15.1667 8.44444ZM12.39 12.6429L11.2234 11.4206L9.77664 12.8016L10.9433 14.0238L12.39 12.6429ZM9.68689 11.529L6.18689 16.4179L7.81311 17.5821L11.3131 12.6932L9.68689 11.529ZM7 18H21V16H7V18ZM21.8262 16.4367L15.9929 7.88111L14.3404 9.00778L20.1738 17.5633L21.8262 16.4367ZM14.3536 7.86233L10.8536 12.7512L12.4798 13.9154L15.9798 9.02656L14.3536 7.86233ZM9.91667 10.6667C11.4788 10.6667 12.6667 9.35379 12.6667 7.83333H10.6667C10.6667 8.33792 10.2875 8.66667 9.91667 8.66667V10.6667ZM12.6667 7.83333C12.6667 6.31288 11.4788 5 9.91667 5V7C10.2875 7 10.6667 7.32875 10.6667 7.83333H12.6667ZM9.91667 5C8.35455 5 7.16667 6.31288 7.16667 7.83333H9.16667C9.16667 7.32875 9.54578 7 9.91667 7V5ZM7.16667 7.83333C7.16667 9.35379 8.35455 10.6667 9.91667 10.6667V8.66667C9.54578 8.66667 9.16667 8.33792 9.16667 7.83333H7.16667ZM7 21H21V19H7V21Z" fill="black"/></svg>',   
     'Colibri.UI.Forms.Object': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 14.0472V12.9453C6.60284 12.9453 7.02305 12.8005 7.26064 12.5108C7.50177 12.217 7.62234 11.7405 7.62234 11.0815V9.4758C7.62234 8.76636 7.69681 8.18497 7.84574 7.7316C7.99823 7.27824 8.21986 6.92562 8.51064 6.67375C8.80142 6.42188 9.15603 6.24767 9.57447 6.15112C9.99291 6.05037 10.4681 6 11 6V7.75049C10.5816 7.75049 10.2606 7.81976 10.0372 7.95828C9.81383 8.09261 9.65957 8.30041 9.57447 8.58166C9.49291 8.86291 9.45213 9.22183 9.45213 9.6584V11.7237C9.45213 12.047 9.40603 12.3492 9.31383 12.6305C9.22163 12.9117 9.05319 13.1594 8.80851 13.3735C8.56383 13.5834 8.21454 13.7492 7.76064 13.8709C7.31028 13.9885 6.7234 14.0472 6 14.0472ZM11 22C10.4681 22 9.99291 21.9496 9.57447 21.8489C9.15603 21.7523 8.80142 21.5781 8.51064 21.3263C8.21986 21.0744 7.99823 20.7218 7.84574 20.2684C7.69681 19.815 7.62234 19.2336 7.62234 18.5242V16.9248C7.62234 16.2658 7.50177 15.7914 7.26064 15.5018C7.02305 15.2079 6.60284 15.061 6 15.061V13.9591C6.7234 13.9591 7.31028 14.0199 7.76064 14.1417C8.21454 14.2592 8.56383 14.425 8.80851 14.6391C9.05319 14.849 9.22163 15.0946 9.31383 15.3758C9.40603 15.6571 9.45213 15.9572 9.45213 16.2763V18.3416C9.45213 18.7782 9.49291 19.1371 9.57447 19.4183C9.65957 19.6996 9.81383 19.9095 10.0372 20.048C10.2606 20.1865 10.5816 20.2558 11 20.2558V22ZM6 15.061V12.9453H7.68617V15.061H6Z" fill="black"/><path d="M22 13.9528V15.0547C21.3972 15.0547 20.977 15.1995 20.7394 15.4892C20.4982 15.783 20.3777 16.2595 20.3777 16.9185V18.5242C20.3777 19.2336 20.3032 19.815 20.1543 20.2684C20.0018 20.7218 19.7801 21.0744 19.4894 21.3263C19.1986 21.5781 18.844 21.7523 18.4255 21.8489C18.0071 21.9496 17.5319 22 17 22V20.2495C17.4184 20.2495 17.7394 20.1802 17.9628 20.0417C18.1862 19.9074 18.3404 19.6996 18.4255 19.4183C18.5071 19.1371 18.5479 18.7782 18.5479 18.3416L18.5479 16.2763C18.5479 15.953 18.594 15.6508 18.6862 15.3695C18.7784 15.0883 18.9468 14.8406 19.1915 14.6265C19.4362 14.4166 19.7855 14.2508 20.2394 14.1291C20.6897 14.0115 21.2766 13.9528 22 13.9528ZM17 6C17.5319 6 18.0071 6.05037 18.4255 6.15112C18.844 6.24767 19.1986 6.42188 19.4894 6.67375C19.7801 6.92562 20.0018 7.27824 20.1543 7.7316C20.3032 8.18497 20.3777 8.76637 20.3777 9.4758V11.0752C20.3777 11.7342 20.4982 12.2086 20.7394 12.4982C20.977 12.7921 21.3972 12.939 22 12.939V14.0409C21.2766 14.0409 20.6897 13.9801 20.2394 13.8583C19.7855 13.7408 19.4362 13.575 19.1915 13.3609C18.9468 13.151 18.7784 12.9054 18.6862 12.6242C18.594 12.3429 18.5479 12.0428 18.5479 11.7237V9.6584C18.5479 9.22183 18.5071 8.86291 18.4255 8.58166C18.3404 8.30041 18.1862 8.09052 17.9628 7.95199C17.7394 7.81346 17.4184 7.7442 17 7.74419V6ZM22 12.939V15.0547H20.3138V12.939H22Z" fill="black"/><path d="M3 3H5V25H3V3Z" fill="black"/><path d="M23 3H25V25H23V3Z" fill="black"/><path d="M3 5V3H25V5L3 5Z" fill="black"/><path d="M3 25L3 23L25 23V25H3Z" fill="black"/></svg>',   
@@ -7028,6 +7418,7 @@ Colibri.UI.FieldIcons = {
     'Colibri.UI.Forms.HiddenField': '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 3H5V25H3V3Z" fill="black"/><path d="M23 3H25V25H23V3Z" fill="black"/><path d="M3 5V3H25V5L3 5Z" fill="black"/><path d="M3 25L3 23L25 23V25H3Z" fill="black"/><path d="M7.10878 13.6834C7.44169 13.2407 7.79021 12.8378 8.15138 12.4757C9.78462 10.8387 11.7239 9.96413 13.7232 9.92021C14.4707 9.90378 15.2254 10.0037 15.9742 10.2234L15.3015 10.9641C14.7796 10.8492 14.257 10.798 13.739 10.8094C11.9376 10.8491 10.1826 11.6447 8.6961 13.1348C8.43132 13.4002 8.17633 13.6856 7.93252 13.9905C8.39634 14.5829 8.91234 15.0948 9.46515 15.5247C9.80558 15.7895 10.1598 16.0232 10.5243 16.2256L9.92475 16.8858C9.60779 16.6971 9.2988 16.4863 8.99962 16.2535C8.29972 15.7092 7.65372 15.0454 7.08782 14.2648C6.96146 14.0895 6.974 13.842 7.10878 13.6834ZM17.941 9L18.6124 9.73941L10.2037 19L9.53214 18.2603L17.941 9ZM18.1335 11.2094C18.6375 11.5265 19.1324 11.903 19.614 12.3404C20.0557 12.7415 20.4839 13.1903 20.8946 13.6874C21.0271 13.8476 21.0336 14.0853 20.9203 14.2529C20.4497 14.9849 19.9091 15.61 19.3174 16.1303C17.8372 17.4316 16.0392 18.0723 14.2179 18.0813C13.5213 18.0847 13.1016 17.6872 12.4149 17.5071L12.8188 17.0626C13.2819 17.151 13.7493 17.1942 14.2147 17.1919C15.8577 17.1839 17.4792 16.6062 18.8137 15.4328C19.2692 15.0324 19.6917 14.5622 20.0702 14.0208C19.7526 13.6563 19.4291 13.3253 19.1008 13.0273C18.5932 12.5664 18.0706 12.1792 17.5391 11.8638L18.1335 11.2094ZM14 11.2764C14.3035 11.2764 14.5943 11.3368 14.8632 11.447L14.215 12.1608C14.1445 12.1509 14.0728 12.1458 14.0001 12.1458C13.5352 12.1458 13.1143 12.3534 12.8097 12.6889C12.505 13.0244 12.3166 13.488 12.3166 14.0001C12.3166 14.0802 12.3211 14.1592 12.3301 14.2366L11.6819 14.9506C11.5818 14.6547 11.5271 14.3343 11.5271 14.0001C11.5271 13.2479 11.804 12.5672 12.2515 12.0742C12.6989 11.5812 13.3171 11.2764 14 11.2764ZM16.3554 13.1677C16.4317 13.4299 16.473 13.7097 16.473 14.0001C16.473 14.7521 16.1961 15.433 15.7487 15.9258C15.301 16.4187 14.6828 16.7234 14 16.7234C13.7365 16.7234 13.4825 16.6781 13.2443 16.5938L13.9181 15.8518C13.9452 15.8533 13.9726 15.854 14 15.854C14.465 15.854 14.8859 15.6468 15.1905 15.3112C15.4952 14.9757 15.6836 14.5121 15.6836 14.0002C15.6836 13.97 15.6829 13.94 15.6816 13.9098L16.3554 13.1677Z" fill="black"/></svg>',
     'Colibri.UI.Forms.Color': '<svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.00003 3.10376H5.00003V25.1038H3.00003V3.10376Z" fill="black"/><path d="M23 3.10376H25V25.1038H23V3.10376Z" fill="black"/><path d="M3.00003 5.10376V3.10376H25V5.10376L3.00003 5.10376Z" fill="black"/><path d="M3.00003 25.1038L3.00003 23.1038L25 23.1038V25.1038H3.00003Z" fill="black"/><path d="M14.3312 8.0075C15.8212 8.1025 17.1425 8.68625 18.1912 9.7125C19.1437 10.6438 19.75 11.8313 19.9362 13.1338C19.9837 13.46 19.9937 13.6138 19.9925 14.0063C19.9925 14.56 19.945 14.9563 19.8187 15.4625C19.7075 15.9013 19.5925 16.215 19.3812 16.6438C19.15 17.1138 18.9262 17.4588 18.5862 17.8688C18.4387 18.0475 18.01 18.47 17.8162 18.6288C16.9275 19.355 15.8925 19.8038 14.7662 19.95C14.3762 20.0013 13.9037 20.0125 13.7687 19.975C13.5412 19.9113 13.3587 19.7963 13.2262 19.6313C13.0637 19.43 12.9875 19.1938 13.005 18.9375C13.02 18.6913 13.09 18.5313 13.2787 18.3063C13.3625 18.2063 13.45 18.0363 13.4825 17.9063C13.5137 17.7863 13.5137 17.55 13.4825 17.4313C13.4037 17.1275 13.2012 16.885 12.9212 16.7563C12.735 16.6713 12.745 16.6725 11.8125 16.6625C11.3487 16.6575 10.955 16.65 10.9375 16.6463C10.92 16.6413 10.85 16.63 10.7812 16.6188C10.1112 16.5138 9.46875 16.18 8.9725 15.6788C8.5675 15.27 8.29875 14.8188 8.1325 14.2625C7.9975 13.8125 7.96625 13.25 8.045 12.6813C8.2775 11.0125 9.3775 9.54125 11.0187 8.70625C11.7462 8.33625 12.5 8.1175 13.35 8.03125C13.5337 8.0125 14.1675 7.9975 14.3312 8.0075ZM15.3812 9.375C15.0412 9.4825 14.7887 9.745 14.6975 10.085C14.6625 10.2213 14.6625 10.4438 14.6987 10.5813C14.7912 10.9325 15.0675 11.2088 15.4187 11.3013C15.5612 11.3388 15.7687 11.3388 15.9112 11.3013C16.2575 11.21 16.5162 10.9625 16.625 10.6188C16.66 10.5063 16.6725 10.285 16.65 10.1588C16.5825 9.7675 16.2737 9.44625 15.8825 9.35625C15.765 9.32875 15.4925 9.33875 15.3812 9.375ZM12.1275 9.35625C11.7337 9.43875 11.4187 9.7625 11.35 10.1588C11.3275 10.285 11.34 10.5063 11.375 10.6188C11.4837 10.9625 11.7425 11.21 12.0887 11.3013C12.2312 11.3388 12.4387 11.3388 12.5812 11.3013C12.9325 11.2088 13.2087 10.9325 13.3012 10.5813C13.3387 10.4413 13.3387 10.22 13.3012 10.0825C13.2025 9.71125 12.8975 9.42375 12.5237 9.35125C12.435 9.33375 12.2212 9.33625 12.1275 9.35625ZM17.5125 12.0138C17.2912 12.0488 17.1212 12.1388 16.9562 12.305C16.79 12.4725 16.7062 12.645 16.675 12.885C16.635 13.1913 16.7512 13.505 16.9837 13.7263C17.1062 13.8438 17.235 13.915 17.4087 13.965C17.5362 14.0013 17.7887 14.0038 17.9125 13.97C18.365 13.8463 18.6625 13.46 18.6625 13.0013C18.6625 12.795 18.61 12.6125 18.5037 12.4525C18.285 12.1238 17.8962 11.9513 17.5125 12.0138ZM10.065 12.0375C9.63 12.16 9.3375 12.5475 9.3375 13C9.3375 13.2063 9.38625 13.3713 9.495 13.5413C9.8075 14.025 10.4575 14.145 10.9275 13.8038C11.08 13.6938 11.225 13.4913 11.285 13.305C11.395 12.9663 11.31 12.5838 11.0662 12.3238C10.9125 12.1613 10.7275 12.0575 10.5187 12.0175C10.3987 11.9938 10.1825 12.0038 10.065 12.0375Z" fill="black"/></svg>',
     'Colibri.UI.Forms.FontFamily': '<svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.00003 3.10376H5.00003V25.1038H3.00003V3.10376Z" fill="black"/><path d="M23 3.10376H25V25.1038H23V3.10376Z" fill="black"/><path d="M3.00003 5.10376V3.10376H25V5.10376L3.00003 5.10376Z" fill="black"/><path d="M3.00003 25.1038L3.00003 23.1038L25 23.1038V25.1038H3.00003Z" fill="black"/><path d="M12.198 20.298C11.6847 20.298 11.33 20.1953 11.134 19.99C10.938 19.794 10.8353 19.5373 10.826 19.22C10.826 18.9493 10.8773 18.6273 10.98 18.254C11.092 17.8713 11.204 17.5073 11.316 17.162C11.54 16.4993 11.7733 15.846 12.016 15.202C12.2587 14.558 12.5013 13.9373 12.744 13.34C12.996 12.7427 13.234 12.1733 13.458 11.632C13.6913 11.0907 13.906 10.5913 14.102 10.134C13.4673 10.1433 12.9167 10.162 12.45 10.19C11.9927 10.218 11.5727 10.2553 11.19 10.302C10.8073 10.3393 10.4107 10.3953 10 10.47C10.0467 10.078 10.2287 9.77933 10.546 9.574C10.8727 9.35933 11.3067 9.21 11.848 9.126C12.3893 9.042 13.01 9 13.71 9C14.074 9 14.4147 9.00933 14.732 9.028C15.0587 9.03733 15.3667 9.056 15.656 9.084C15.9547 9.112 16.244 9.14 16.524 9.168C17.112 9.224 17.5787 9.26133 17.924 9.28C18.2787 9.29867 18.5307 9.308 18.68 9.308C18.4 9.56933 18.0453 9.76067 17.616 9.882C17.196 9.994 16.7527 10.064 16.286 10.092C15.8193 10.12 15.376 10.134 14.956 10.134C14.508 11.2353 14.0973 12.3787 13.724 13.564C13.3507 14.7493 13.0053 15.9207 12.688 17.078C12.5667 17.526 12.464 17.9087 12.38 18.226C12.3053 18.534 12.2493 18.8187 12.212 19.08C12.1747 19.332 12.156 19.6027 12.156 19.892C12.156 19.9387 12.156 19.99 12.156 20.046C12.1653 20.1113 12.1793 20.1953 12.198 20.298Z" fill="black"/></svg>',
+    'Colibri.UI.Forms.Token': '<svg width="341" height="106" viewBox="0 0 341 106" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 2H325C332.732 2 339 8.26801 339 16V90C339 97.732 332.732 104 325 104H16C8.26802 104 2 97.732 2 90V16C2 8.26802 8.26801 2 16 2Z" stroke="black" stroke-width="4"/><path d="M55.7444 82L56.5495 59.8472L37.8307 71.7292L33 63.2708L52.7252 53L33 42.7292L37.8307 34.2708L56.5495 46.1528L55.7444 24H65.4057L64.6006 46.1528L83.3195 34.2708L88.1502 42.7292L68.4249 53L88.1502 63.2708L83.3195 71.7292L64.6006 59.8472L65.4057 82H55.7444Z" fill="black"/><path d="M126.594 82L127.399 59.8472L108.681 71.7292L103.85 63.2708L123.575 53L103.85 42.7292L108.681 34.2708L127.399 46.1528L126.594 24H136.256L135.45 46.1528L154.169 34.2708L159 42.7292L139.275 53L159 63.2708L154.169 71.7292L135.45 59.8472L136.256 82H126.594Z" fill="black"/><path d="M211.379 47.8824H211.254V42.1797C211.254 32.263 203.199 23.8347 193.375 24.0025C183.821 24.1702 176.079 32.0533 176.079 41.7185V42.2636C176.079 43.0813 176.745 43.7522 177.556 43.7522H182.281C183.093 43.7522 183.759 43.0813 183.759 42.2636V42.0959C183.759 36.7706 187.734 32.0952 193.021 31.7598C198.766 31.4034 203.553 35.9949 203.553 41.6975V47.8615H188.983V47.8824H175.517C173.019 47.9663 171 50 171 52.5368V78.3246C171 80.9034 173.081 83 175.642 83H211.358C213.918 83 216 80.9034 216 78.3246V52.5578C216.021 49.979 213.939 47.8824 211.379 47.8824ZM196.268 66.6048C195.914 66.8564 195.81 67.129 195.81 67.5483C195.831 69.4352 195.831 71.3221 195.81 73.23C195.852 74.0267 195.456 74.7814 194.749 75.1379C193.104 75.9765 191.46 74.8024 191.46 73.23C191.46 73.23 191.46 73.23 191.46 73.209C191.46 71.3221 191.46 69.4142 191.46 67.5273C191.46 67.1499 191.377 66.8774 191.044 66.6258C189.337 65.3678 188.775 63.2084 189.629 61.3005C190.461 59.4555 192.48 58.3653 194.374 58.7636C196.497 59.1829 197.975 60.9231 197.996 63.0406C198.058 64.5292 197.455 65.7452 196.268 66.6048Z" fill="black"/></svg>',
 }
 
 Colibri.UI.Files = {};
@@ -7632,6 +8023,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
      * @param {*} args arguments for event 
      */
     static __nullHandler = (event, args) => {};
+    static __disableHandler = (event, args) => { args.domEvent?.stopPropagation(); args.domEvent?.preventDefault(); return false; };
 
     /**
      * Dom events map to Colibri events
@@ -7805,21 +8197,28 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         
         this.Dispatch('ComponentRendered');
 
-        this.AddHandler('MouseEnter', (event, args) => {
+        this._mouseEnterHandler = (event, args) => {
             if(this._toolTip) {
                 this._createTipObject();
                 this._setToolTipPositionAndGap();
                 this._tipObject.html(this._toolTip);
                 this._tipObject.showElement();
             }
-        });
-        this.AddHandler('MouseLeave', (event, args) => {
+        }
+        this._mouseLeaveHandler = (event, args) => {
             if(this._tipObject) {
                 this._tipObject.html('');
                 this._tipObject.hideElement();
             }
-        });
+        };
+
+        this.AddHandler('MouseEnter', this._mouseEnterHandler);
+        this.AddHandler('MouseLeave', this._mouseLeaveHandler);
+
+        element = null;
+
     }
+
 
     /**
      * Converts property to its correct type, if the value is function then runs a function
@@ -7892,7 +8291,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     CreateComponentClass(element, parent) {
         let comp = null;
         try {
-            comp = element.getAttribute('Component') || element.getAttribute('component') || element.tagName; 
+            comp = element.getAttribute ? (element?.getAttribute('Component') ?? element?.getAttribute('component') ?? element.tagName ?? null) : null; 
         }
         catch(e) {
             return null;
@@ -8121,54 +8520,53 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
     /** @protected */
     _registerEvents() {
-        this.RegisterEvent('ComponentRendered', false, 'Поднимается, когда компонента готова и привязана к DOM-у');
-        this.RegisterEvent('ComponentDisposed', false, 'Поднимается, когда компонента отвязана от DOM-а');
+        this.RegisterEvent('ComponentRendered', false, 'When component is ready and attached to DOM');
+        this.RegisterEvent('ComponentDisposed', false, 'When component is detached and disposed');
         this.RegisterEvent('ComponentMoved', false, 'When component is moved in childs tree');
-        this.RegisterEvent('ReadonlyStateChanged', false, 'Поднимается, когда изменяется свойство Readonly');
-        this.RegisterEvent('EnabledStateChanged', false, 'Поднимается, когда изменяется свойство Enabled');
-        this.RegisterEvent('Resized', false, 'Поднимается, когда изменение размера завершено');
-        this.RegisterEvent('Resize', false, 'Поднимается, когда изменяется размер');
-        this.RegisterEvent('ReceiveFocus', true, 'Получен фокус в компоненте');
-        this.RegisterEvent('LoosedFocus', true, 'Утерян фокус');
-        this.RegisterEvent('Clicked', false, 'Клик мышкой');
-        this.RegisterEvent('DoubleClicked', false, 'Двойной клик');
-        this.RegisterEvent('MouseEnter', false, 'Мышь вошла в область');
-        this.RegisterEvent('MouseLeave', false, 'Кнопка мыши нажата (но не отпущена)');
-        this.RegisterEvent('MouseDown', false, 'Кнопка мыши нажата (но не отпущена)');
-        this.RegisterEvent('MouseUp', false, 'Кнопка мыши отпущена');
-        this.RegisterEvent('MouseMove', false, 'Движение мышью');
-        this.RegisterEvent('KeyDown', false, 'Клавиша нажата');
-        this.RegisterEvent('KeyUp', false, 'Клавиша отпущена');
-        this.RegisterEvent('KeyPressed', false, 'Клавиша нажата и отпущена');
-        this.RegisterEvent('Shown', false, 'Компонент отображен');
-        this.RegisterEvent('ClickedOut', false, 'Клик вне элемента компонента');
-        this.RegisterEvent('ChildAdded', false, 'Когда дочерний элемент добавлен');
-        this.RegisterEvent('ChildsProcessed', false, 'Когда дочерние элементы отрисованы');
-        this.RegisterEvent('ContextMenuIconClicked', false, 'Когда кликнули на иконку контекстного меню');
-        this.RegisterEvent('ContextMenuItemClicked', false, 'Когда кликнули на иконку контекстного меню');
-        this.RegisterEvent('ShadowClicked', false, 'Когда кликнули на тень');
-        this.RegisterEvent('Shown', false, 'Когда элемент компонента получил класс app-component-shown');
+        this.RegisterEvent('ReadonlyStateChanged', false, 'When Readonly property is changed');
+        this.RegisterEvent('EnabledStateChanged', false, 'When Enabled property is changed');
+        this.RegisterEvent('Resized', false, 'When resize is comlete');
+        this.RegisterEvent('Resize', false, 'When resize in progress');
+        this.RegisterEvent('ReceiveFocus', true, 'When focus raised');
+        this.RegisterEvent('LoosedFocus', true, 'When focus lost');
+        this.RegisterEvent('Clicked', false, 'When clicked a mouse button');
+        this.RegisterEvent('DoubleClicked', false, 'When double clicked');
+        this.RegisterEvent('MouseEnter', false, 'When mouse pointer is in component bounds');
+        this.RegisterEvent('MouseLeave', false, 'When mouse pointer is leaved a component bounds');
+        this.RegisterEvent('MouseDown', false, 'When mouse button is down');
+        this.RegisterEvent('MouseUp', false, 'When mouse button is up');
+        this.RegisterEvent('MouseMove', false, 'When mouse button is moving');
+        this.RegisterEvent('KeyDown', false, 'When keyboard key is down');
+        this.RegisterEvent('KeyUp', false, 'When keyboard key is up');
+        this.RegisterEvent('KeyPressed', false, 'Whe keyboard key is pressed');
+        this.RegisterEvent('Shown', false, 'When component is shown');
+        this.RegisterEvent('ClickedOut', false, 'When clicked out of component bounds');
+        this.RegisterEvent('ChildAdded', false, 'When added a child component');
+        this.RegisterEvent('ChildsProcessed', false, 'When childs is rendered');
+        this.RegisterEvent('ContextMenuIconClicked', false, 'When clicked on contextmenu handler');
+        this.RegisterEvent('ContextMenuItemClicked', false, 'When clicked on contextmenu item');
+        this.RegisterEvent('ShadowClicked', false, 'When clicked on shadow');
         this.RegisterEvent('ConnectedTo', false, 'When component is connected to Dom successfuly, not when rendered!');
-        this.RegisterEvent('Hidden', false, 'Когда с элемента компонта снят класс app-component-shown');   
+        this.RegisterEvent('Hidden', false, 'When component is hidden');   
         this.RegisterEvent('Disconnected', false, 'When component disconnected from DOM, not when Disposed');   
-        this.RegisterEvent('Pasted', false, 'Когда вставили в элемент');
-        this.RegisterEvent('DragStart', false, 'Когда элемент начинают перетаскивать');
-        this.RegisterEvent('DragEnd', false, 'Когда элемент перестают перетаскивать');
-        this.RegisterEvent('DragEnter', false, 'Когда перетаскиваемый элемент заходит в область целевого элемента');
-        this.RegisterEvent('DragOver', false, 'Когда перетаскиваемый элемент находится над целевым объектом');
-        this.RegisterEvent('DragLeave', false, 'Когда перетаскиваемый элемент покидает целевой объект');
-        this.RegisterEvent('Drop', false, 'Когда перетаскиваемый элемент "упал" на целевой объект');
-        this.RegisterEvent('Drag', false, 'Когда происходит процесс перетаскивания');
-        this.RegisterEvent('ContextMenu', false, 'Контекстное меню');
-        this.RegisterEvent('Scrolled', false, 'Когда проскроллировали');
-        this.RegisterEvent('VisibilityChanged', false, 'Когда изменилось состояние отображения');
-        this.RegisterEvent('SwipedToLeft', false, 'Когда пользователь провел пальцем/мышью влево');
-        this.RegisterEvent('SwipedToRight', false, 'Когда пользователь провел пальцем/мышью вправо');
-        this.RegisterEvent('SwipedToUp', false, 'Когда пользователь провел пальцем/мышью вверх');
-        this.RegisterEvent('SwipedToDown', false, 'Когда пользователь провел пальцем/мышью вниз');
-        this.RegisterEvent('TouchStarted', false, 'Когда пальцем нажали на экран');
-        this.RegisterEvent('TouchEnded', false, 'Когда палец убрали с экрана');
-        this.RegisterEvent('TouchMoved', false, 'Когда вазюкают пальцем по экрану');
+        this.RegisterEvent('Pasted', false, 'When pasted into component');
+        this.RegisterEvent('DragStart', false, 'When starts drag a component');
+        this.RegisterEvent('DragEnd', false, 'When an element is no longer being dragged');
+        this.RegisterEvent('DragEnter', false, 'When the dragged element enters the target element\'s area');
+        this.RegisterEvent('DragOver', false, 'When the dragged element is over the target object');
+        this.RegisterEvent('DragLeave', false, 'When the dragged element leaves the target object');
+        this.RegisterEvent('Drop', false, 'When the dragged element "drops" onto the target object');
+        this.RegisterEvent('Drag', false, 'When the drag and drop process occurs');
+        this.RegisterEvent('ContextMenu', false, 'Context menu');
+        this.RegisterEvent('Scrolled', false, 'When scrolled');
+        this.RegisterEvent('VisibilityChanged', false, 'When the display state changed');
+        this.RegisterEvent('SwipedToLeft', false, 'When the user swiped left with their finger/mouse');
+        this.RegisterEvent('SwipedToRight', false, 'When the user swiped/mouse to the right');
+        this.RegisterEvent('SwipedToUp', false, 'When the user swipes/mouses up');
+        this.RegisterEvent('SwipedToDown', false, 'When the user swipes/mouses down');
+        this.RegisterEvent('TouchStarted', false, 'When a finger was pressed on the screen');
+        this.RegisterEvent('TouchEnded', false, 'When the finger is removed from the screen');
+        this.RegisterEvent('TouchMoved', false, 'When they swipe their finger on the screen');
     }
 
     /**
@@ -8266,11 +8664,12 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
      * @returns {Colibri.Events.Dispatcher}
      */
     AddHandler(eventName, handler, prepend = false, respondent = this) {
-        handler = handler || Colibri.UI.Component.__nullHandler;
         const __domHandlers = Colibri.UI.Component.__domHandlers;
-        __domHandlers[eventName] && this.__bindHtmlEvent(eventName, __domHandlers[eventName]);
+        if(__domHandlers[eventName]) {
+            this.__bindHtmlEvent(eventName, __domHandlers[eventName]);
+        }
 
-        return super.AddHandler(eventName, handler, prepend, respondent);
+        return super.AddHandler(eventName, handler || Colibri.UI.Component.__nullHandler, prepend, respondent);
     }
 
     /**
@@ -8292,16 +8691,18 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
      * @param {*} args event arguments
      */
     __bindHtmlEvent(eventName, args) {
-        let {domEvent, respondent, delay, handler} = args;
-        handler = handler ? handler : (e => this.Dispatch(eventName, {domEvent: e}));
-        respondent = respondent ? respondent : this._element;
 
         if(this.__domHandlersAttached[eventName]) {
             return;
         }
 
+        let {domEvent, respondent, delay, handler} = args;
+        respondent = respondent ? respondent : this._element;
+
         if(delay) {
             handler = e => Colibri.Common.Delay(delay).then(() => handler(e))
+        } else {
+            handler = handler ? handler : (e => this.Dispatch(eventName, {domEvent: e}));
         }
 
         this.__domHandlersAttached[eventName] = {
@@ -8646,13 +9047,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
      * @type {string}
      */
     get className() {
-        return this._element.attr('class');
+        return this._className ?? this._element.attr('class');
     }
     /**
      * Class name of component element
      * @type {string}
      */
     set className(value) {
+        this._className = value;
         value.split(' ').forEach((v) => {
             if(v) {
                 this._element.classList.add(v);
@@ -8840,7 +9242,7 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
      * @type {String}
      */
     set value(value) {
-       this._element.html(value);
+        this._element.html(value);
     }
 
     /**
@@ -9182,6 +9584,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
      * @returns {Colibri.UI.Component}
      */
     indexOf(name) {
+        if(!this._children) {
+            this._children = [];
+        }
         if(name instanceof Function) {
             return Array.findIndex(this._children, name);
         } else {
@@ -9264,6 +9669,26 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         return this._binding;
     }
 
+    _handler(data, path) {
+        try {
+            if(this.isConnected) {
+                this.__renderBoundedValues(data, path);
+            }
+            //  else {
+            //     Colibri.Common.Wait(() => {
+            //         console.log('wating', this.name);
+            //         return this.isConnected;
+            //     }, 0, 100).then(() => {
+            //         console.log('found', this.name);
+            //         return this.__renderBoundedValues(data, path)
+            //     });
+            // }
+        } catch(e) {
+            console.error(e);
+            App.Notices.Add(new Colibri.UI.Notice(e, Colibri.UI.Notice.Error));
+        }
+    }
+
     /**
      * Path in store to bind to component
      * @type {String}
@@ -9272,6 +9697,14 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
 
         if (value === this._binding) {
             return;
+        }
+
+
+        if(this._binding && typeof this._binding === 'string') {
+            let binding = this._binding.split(';');
+            for(const pathsToLoad of binding) {
+                this._storage.RemovePathHandler(pathsToLoad, this, this._handler);
+            }
         }
 
         this._binding = value;
@@ -9289,27 +9722,6 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
             this._storage = App.Store;
         } 
 
-        const handler = (data, path) => {
-            try {
-                if(this.isConnected) {
-                    this.__renderBoundedValues(data, path);
-                }
-                //  else {
-                //     Colibri.Common.Wait(() => {
-                //         console.log('wating', this.name);
-                //         return this.isConnected;
-                //     }, 0, 100).then(() => {
-                //         console.log('found', this.name);
-                //         return this.__renderBoundedValues(data, path)
-                //     });
-                // }
-            } catch(e) {
-                console.error(e);
-                App.Notices.Add(new Colibri.UI.Notice(e, Colibri.UI.Notice.Error));
-            }
-        };
-
-        
         let pathsToLoad = this._binding;
         if(this._binding.indexOf(';') !== -1) {
             pathsToLoad = this._binding.split(';');
@@ -9322,26 +9734,24 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
                 for(let i=0; i<responses.length; i++) {
                     this.__renderBoundedValues(responses[i], pathsToLoad[i]);
                 }
-                this._storage.AddPathHandler(pathsToLoad, [this, handler]);
+                this._storage.AddPathHandler(pathsToLoad, [this, this._handler]);
             }).catch(response => {
-                console.log(response);
                 this.__renderBoundedValues(null, pathsToLoad);
-                this._storage.AddPathHandler(pathsToLoad, [this, handler]);
+                this._storage.AddPathHandler(pathsToLoad, [this, this._handler]);
             });
             
         }
         else {
             this._storage.AsyncQuery(value).then(data => {
                 this.__renderBoundedValues(data, value);
-                this._storage.AddPathHandler(value, [this, handler]);
+                this._storage.AddPathHandler(value, [this, this._handler]);
             }).catch((response) => {
                 console.log(response);
                 // App.Notices.Add(new Colibri.UI.Notice(response, Colibri.UI.Notice.Error));
                 this.__renderBoundedValues(null, value);
-                this._storage.AddPathHandler(value, [this, handler]);
+                this._storage.AddPathHandler(value, [this, this._handler]);
             });    
         }
-
         
     }
 
@@ -9568,7 +9978,8 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
      */
     KeepInMind() {
         if(this._container) {
-            this._hideData = {index: this.index, parent: this._container};
+            this._hideData = {index: this.index, parent: this._element.parentElement};
+            this._element.tag('containedAt', this._element.parentElement);
             this.Disconnect();
             this.Dispatch('Hidden', {});
             this._sendEventToChilds('Hidden', {});
@@ -9578,9 +9989,10 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     /**
      * Retreives component from memory to DOM in its older position
      */
-    Retreive() {
+    Retreive(performBinding = false) {
         if(this._hideData && this._hideData.parent) {
-            this.ConnectTo(this._hideData.parent, this._hideData.index);
+            this.ConnectTo(this._hideData.parent, this._hideData.index, performBinding);
+            this._element.tag('containedAt', null);
             this._hideData = null;
             this.Dispatch('Shown', {});
             this._sendEventToChilds('Shown', {});
@@ -9631,11 +10043,19 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
         this.__removeHtmlEvents();
         try {
             this._element.remove();
+            // this._element = null;
         }
         catch(e) { console.log('error removing element from DOM', e); }
         this.Dispatch('ComponentDisposed');
 
+        // this._parent = null;
+        // this._children = null;
+        // this._tag = null;
+        // this._container = null;
+
         super.Dispose();
+
+        // delete this;
 
     }
 
@@ -9684,7 +10104,9 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
             val = val.split(' ');
         }
         for(const v of val) {
-            this._element.classList.add(v);
+            if(!this._element.classList.contains(v)) {
+                this._element.classList.add(v);
+            }
         }
         return this;
     }
@@ -9697,11 +10119,13 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     RemoveClass(val) {
         if(Array.isArray(val)) {
             for(const v of val) {
-                this._element.classList.remove(v);
+                if(this._element.classList.contains(v)) {
+                    this._element.classList.remove(v);
+                }
             }
-        } else {
+        } else if(this._element.classList.contains(val)) {
             this._element.classList.remove(val);
-        }
+        }    
         return this;
     }
 
@@ -9828,6 +10252,15 @@ Colibri.UI.Component = class extends Colibri.Events.Dispatcher
     get elementVisible() {
         return this._element.computedCss('display') !== 'none' && this._element.computedCss('visibility') !== 'hidden';
     }
+
+    /**
+     * Is component element has offset parent
+     * @readonly
+     */
+    get elementIsInOffset() {
+        return this._element.offsetParent !== null;
+    }
+
 
     /**
      * Is component must handle visibility change
@@ -10858,6 +11291,7 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
 
         this._allowSize = 900000000;
         this._allowTypes = '*';
+        this._enabled = true;
         
         this._dropContainer = container;this._dropHover = Element.create('div', {class: 'app-drop-over'});
         this._dropHover.append(Element.create('div'));
@@ -10867,6 +11301,21 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
 
         this._initManager();
         this.message = message;
+    }
+
+    /**
+     * Enable/Disable manager
+     * @type {boolean}
+     */
+    get enabled() {
+        return this._enabled;
+    }
+    /**
+     * Enable/Disable manager
+     * @type {boolean}
+     */
+    set enabled(value) {
+        this._enabled = value;
     }
 
     /**
@@ -10934,6 +11383,11 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
     _initManager() {
         
         this._dropContainer.addEventListener('dragover', (e) => {
+            if(!this._enabled) {
+                e.stopPropagation();
+                e.preventDefault();
+                return false;                    
+            }
             if(!this._dropContainer.classList.contains('-dragging')) {
                 this._dropContainer.classList.add('-dragging');
                 this._dropHover.css({zIndex: Colibri.UI.maxZIndex + 1});
@@ -10944,6 +11398,11 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
 
         });
         this._dropHover.addEventListener('dragleave', (e) => {
+            if(!this._enabled) {
+                e.stopPropagation();
+                e.preventDefault();
+                return false;                    
+            }
             this._dropContainer.classList.remove('-dragging');
             this._dropHover.css({zIndex: null});
             e.stopPropagation();
@@ -10951,6 +11410,11 @@ Colibri.UI.FileDropManager = class extends Colibri.Events.Dispatcher {
             return false;
         });
         this._dropHover.addEventListener('drop', (e) => {
+            if(!this._enabled) {
+                e.stopPropagation();
+                e.preventDefault();
+                return false;                    
+            }
             this._dropContainer.classList.remove('-dragging');
             this._dropHover.css({zIndex: null});
 
@@ -11123,6 +11587,17 @@ Colibri.UI.MenuList = class extends Colibri.UI.Component {
         this.AddClass('app-component-menulist');
     }
 
+    AddItem(value = null, name = null) {
+        const n = new Colibri.UI.ListItem(name, this);
+        n.shown = true;
+        if(value instanceof Function) {
+            value(n);
+        } else {
+            n.value = value;
+        }
+        return n;
+    }
+
 }
 /**
  * @class
@@ -11142,6 +11617,16 @@ Colibri.UI.OrderedList = class extends Colibri.UI.Component {
         this.AddClass('app-component-orderedlist');
     }
 
+    AddItem(value = null, name = null) {
+        const n = new Colibri.UI.ListItem(name, this);
+        n.shown = true;
+        if(value instanceof Function) {
+            value(n);
+        } else {
+            n.value = value;
+        }
+        return n;
+    }
 }
 /**
  * @class
@@ -11160,6 +11645,16 @@ Colibri.UI.UnorderedList = class extends Colibri.UI.Component {
         this.AddClass('app-component-unorderedlist');
     }
 
+    AddItem(value = null, name = null) {
+        const n = new Colibri.UI.ListItem(name, this);
+        n.shown = true;
+        if(value instanceof Function) {
+            value(n);
+        } else {
+            n.value = value;
+        }
+        return n;
+    }
 }
 /**
  * @class
@@ -11540,6 +12035,22 @@ Colibri.UI.Split = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Left container
+     * @type {Element}
+     */
+    get left() {
+        return this._element.querySelector(':scope > .app-component-split-left');
+    }
+
+    /**
+     * Right container
+     * @type {Element}
+     */
+    get right() {
+        return this._element.querySelector(':scope > .app-component-split-right');
+    }
+    
     /**
      * Is split has resize handle
      * @type {Boolean}
@@ -12028,14 +12539,34 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
         this._element.append(Element.fromHtml('<div class="tabs-header-container"><div class="tabs-header"></div><div class="tabs-links"></div></div>'));
         this._element.append(Element.fromHtml('<div class="tabs-container"></div>'));
 
-        this.AddHandler('ChildsProcessed', (event, args) => {
-            this._processEvents();
-            this._selectTab(0);
-        });
-
         this.AddHandler('TabClicked', (event, args) => {
             let newIndex = args.tab.container.index();
             this._selectTab(newIndex);
+        });
+
+        this.AddHandler('ChildsProcessed', (event, args) => {
+            const buttons = this.buttonsByIndex;
+            const containers = this.componentsByIndex;
+
+            for(let i=0; i<buttons.length; i++) {
+               buttons[i].contentContainer = containers[i] ?? null;
+            }
+            
+            this._selectTab(0);
+        });
+
+        this.AddHandler('Clicked', (event, args) => {
+            const senderComponent = args.domEvent.target.closest('.app-component-button');
+            if(
+                senderComponent && 
+                senderComponent?.tag('component').parentContainer === this.header && 
+                senderComponent?.tag('component') instanceof Colibri.UI.Button
+            ) {
+                this.Dispatch('TabClicked', {domEvent: args.domEvent, tab: senderComponent.tag('component')});
+                args.domEvent.stopPropagation();
+                args.domEvent.preventDefault();
+                return false;
+            }
         });
     }
 
@@ -12045,12 +12576,6 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
         this.RegisterEvent('TabClicked', false, 'Когда кликнули на вкладку');
         this.RegisterEvent('SelectionChanged', false, 'Deprecated event, must handle Changed');
         this.RegisterEvent('Changed', false, 'Когда выбранная вкладка изменилась');
-    }
-
-    /** @protected */
-    _processEvents() {
-        const buttons = this.header.querySelectorAll(':scope > .app-ui-component');
-        buttons.forEach((button) => button.tag('component').AddHandler('Clicked', (event, args) => this.Dispatch('TabClicked', {domEvent: args.domEvent, tab: event.sender})));
     }
 
     /** @private */
@@ -12067,6 +12592,7 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
             const cc = container.tag('component');
             cc.RemoveClass('tab-selected');
             cc.shown = false;
+            !this._allTabsInDoc && cc.KeepInMind();
         });
 
     }
@@ -12075,39 +12601,41 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     _selectTab(index) {
 
         const currentSelection = this.selectedIndex;
-        const newIndex = index;
-
-        index ++;
 
         this._unselectAllTabs();
+        if(index >= this.buttonsByIndex.length) {
+            index = this.buttonsByIndex.length - 1;
+        }
 
-        const foundButton = this.header.querySelector(':scope > .app-ui-component:nth-child(' + index + ')');
-
-        if(!foundButton) {
+        const button = this.buttonsByIndex[index];
+        if(!button) {
             return;
         }
 
-        const button = foundButton.tag('component');
-        let container = button.contentContainer;
-        if(!container) {
-            const foundContainer = this.container.querySelector(':scope > .app-ui-component:nth-child(' + index + ')');
-            container = foundContainer?.tag('component');
-        }
+        let container = this.componentsByIndex[index];
+        // if(!container) {
+        //     return;
+        // }
 
         button.AddClass('tab-selected');
-        if(container) {        
+        if(container) {
+            !this._allTabsInDoc && container.Retreive(true);
             container.shown = true;
             container.AddClass('tab-selected');
         }
 
-        if(currentSelection != newIndex) {
+        if(currentSelection != index) {
             
-            this.Dispatch('Changed', {newIndex: newIndex, oldIndex: currentSelection, tab: button, container: container});
+            this.Dispatch('Changed', {newIndex: index, oldIndex: currentSelection, tab: button, container: container});
             // @deprecation warning !!
-            this.Dispatch('SelectionChanged', {newIndex: newIndex, oldIndex: currentSelection, tab: button, container: container});
+            this.Dispatch('SelectionChanged', {newIndex: index, oldIndex: currentSelection, tab: button, container: container});
             
         }
 
+    }
+
+    DispatchChanged(){
+        this.Dispatch('Changed', {newIndex: this.selectedIndex, oldIndex: this.selectedIndex, tab: this.buttonsByIndex[0], container: this.componentsByIndex[0]});
     }
 
     /**
@@ -12217,7 +12745,6 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
      * @returns Colibri.UI.Pane
      */
     AddTab(componentHeaderButton, componentContainer) {
-
         componentHeaderButton.contentContainer = componentContainer;
 
         this.Children(componentHeaderButton.name, componentHeaderButton);
@@ -12230,14 +12757,14 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
 
     /**
      * Array of tab components
-     * @type {Array}
+     * @type {Object}
      * @readonly
      */
     get components() {
 
         let ret = {};
         this.ForEach((name, component) => {
-            if(this.container && this.container.contains(component.container)) {
+            if(component && this.container && (component.container?.tag('containedAt') === this.container || this.container.contains(component.container))) {
                 ret[name] = component;
             }
         });
@@ -12246,16 +12773,50 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
     }
 
     /**
-     * Array of tab buttons
+     * Array of tab components by index
      * @type {Array}
+     * @readonly
+     */
+    get componentsByIndex() {
+
+        let ret = [];
+        this.ForEach((name, component) => {
+            if(component && this.container && (component.container?.tag('containedAt') === this.container || this.container.contains(component.container))) {
+                ret.push(component);
+            }
+        });
+        return ret;
+
+    }
+
+    /**
+     * Array of tab buttons
+     * @type {Object}
      * @readonly
      */
     get buttons() {
 
         let ret = {};
         this.ForEach((name, component) => {
-            if(this.container && this.header.contains(component.container)) {
+            if(component && this.container && this.header.contains(component.container)) {
                 ret[name] = component;
+            }
+        });
+        return ret;
+
+    }
+
+    /**
+     * Array of tab buttons by index
+     * @type {Array}
+     * @readonly
+     */
+    get buttonsByIndex() {
+
+        let ret = [];
+        this.ForEach((name, component) => {
+            if(this.container && this.header.contains(component.container)) {
+                ret.push(component);
             }
         });
         return ret;
@@ -12272,6 +12833,21 @@ Colibri.UI.Tabs = class extends Colibri.UI.Component {
         Object.forEach(this.components, (name, component) => {
             component.Dispose();
         });
+    }
+
+    /**
+     * 
+     * @type {}
+     */
+    get allTabsInDoc() {
+        return this._allTabsInDoc;
+    }
+    /**
+     * 
+     * @type {}
+     */
+    set allTabsInDoc(value) {
+        this._allTabsInDoc = value;
     }
 
 }
@@ -12412,7 +12988,7 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
      * Disposes the component
      */
     Dispose() {
-        App.Router.RemoveHandler('RouteChanged', this._routeChangedEvent);
+        App?.Router?.RemoveHandler('RouteChanged', this._routeChangedEvent);
         super.Dispose();
     }
 
@@ -12440,46 +13016,66 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
         if(struct instanceof Promise) {
             struct.then(structure => {
                 this._structure = this.toPlain(structure, '');
-                this._initStructure();        
+                console.log(this._structure)
+                // this._initStructure();        
             });
         } else {
             this._structure = this.toPlain(struct, '/');
-            this._initStructure();    
+            // this._initStructure();    
         }
 
     }
-    /** @private */
-    _initStructure() {
-        
-        for(const pattern of Object.keys(this._structure)) {
-            const route = this._structure[pattern];
-            let component = null;
-            if(route?.component ?? null) {
-                let componentObject = route.component;
-                if(typeof componentObject === 'string') {
-                    componentObject = eval(componentObject);
-                }
-                if(componentObject) {
-                    component = new componentObject(route?.name ?? ('component-' + Date.Mc()), this);
-                }
-            } else {
-                component = new route('component-' + Date.Mc(), this);
-            }
 
-            if(component) {
-                component.routePattern = pattern.substring(this.basePattern.length); 
-                if(route?.attrs ?? null) {
-                    Object.forEach(route?.attrs, (attrName, attrValue) => {
-                        component[attrName] = attrValue;
-                    });
+    _createComponent(pattern, route) {
+        let component = null;
+        let changed = true;
+        if(route?.component ?? null) {
+            let componentObject = route.component;
+            if(typeof componentObject === 'string') {
+                componentObject = eval(componentObject);
+            }
+            if(componentObject) {
+                if(!(this.Children('firstChild') instanceof componentObject)) {
+                    component = new componentObject(route?.name ?? ('component-' + Date.Mc()), this);
+                } else {
+                    component = this.Children('firstChild');
+                    changed = false;
                 }
-    
-                component.Disconnect();
-                component.shown = true;    
+            }
+        } else {
+            if(route !== this.Children('firstChild')) {
+                component = new route('component-' + Date.Mc(), this);
+            } else {
+                component = this.Children('firstChild');
+                changed = false;
             }
         }
 
+        if(component) {
+            component.routePattern = pattern.substring(this.basePattern.length); 
+            if(route?.attrs ?? null) {
+                Object.forEach(route?.attrs, (attrName, attrValue) => {
+                    component[attrName] = attrValue;
+                });
+            }
 
+            component.Disconnect();
+            component.shown = true;    
+        }
+        return [component, changed];
+    }
+
+    /** @private */
+    _initStructure(pattern = null, route = null) {
+        if(pattern === null) {
+            for(const pattern of Object.keys(this._structure)) {
+                const route = this._structure[pattern];
+                this._createComponent(pattern, route);
+            }
+        } else {
+            const route = this._structure[pattern];
+            return this._createComponent(pattern, route);
+        }
     }
 
     /**
@@ -12524,26 +13120,59 @@ Colibri.UI.Router = class extends Colibri.UI.Pane {
      */ 
     __appRouteChanged(event, args) {
         if(args.url.substring(0, this._current.length) === this._current) {
-            this.ForEach((name, component) => {
-                let isPattern = component.routePattern === args.url;
-                let match = args.url;
-                if(component.routeIsRegExp) {
-                    const pattern = this._current + (component.routePattern ?? '').replace('#', '.+').replaceAll('?', '.*') + '$';
-                    const reg = new RegExp(pattern);
-                    isPattern = reg.test(args.url);
-                    match = reg.all(args.url);
-                }
-                if(isPattern) {
-                    if(!component.isConnected) {
-                        component.ConnectTo(this, null, true);
+            if(this._structure) {
+                for(const pattern of Object.keys(this._structure).sort().reverse()) {
+                    const route = this._structure[pattern];
+                    
+                    let isPattern = pattern === args.url;
+                    let match = args.url;
+                    // if(component.routeIsRegExp) {
+                    // this._current + 
+                        const regPattern = (pattern ?? '').replace('#', '.+').replaceAll('?', '.*') + '$';
+                        const reg = new RegExp(regPattern);
+                        isPattern = reg.test(args.url);
+                        match = reg.all(args.url);
+                    // }
+    
+                    if(isPattern) {
+                        const [component, changed] = this._initStructure(pattern, route);
+                        if(changed) {
+                            if(this.children > 1) {
+                                this.Children('firstChild').Dispose();
+                            }
+                        }
+                        if(component) {
+                            if(!component.isConnected) {
+                                component.ConnectTo(this, null, true);
+                            }
+                            component.__processChangeOnRouteSwitch(match);
+                            break;
+                        }
+                    } 
+                }    
+            } else {
+                this.ForEach((name, component) => {
+                    let isPattern = component.routePattern === args.url;
+                    let match = args.url;
+                    if(component.routeIsRegExp) {
+                        const pattern = this._current + (component.routePattern ?? '').replace('#', '.+').replaceAll('?', '.*') + '$';
+                        const reg = new RegExp(pattern);
+                        isPattern = reg.test(args.url);
+                        match = reg.all(args.url);
                     }
-                    component.__processChangeOnRouteSwitch(match);
-                } else {
-                    if(component.isConnected) {
-                        component.Disconnect();
+                    if(isPattern) {
+                        if(!component.isConnected) {
+                            component.ConnectTo(this, null, true);
+                        }
+                        component.__processChangeOnRouteSwitch(match);
+                    } else {
+                        if(component.isConnected) {
+                            component.Disconnect();
+                        }
                     }
-                }
-            });
+                });
+            }
+
         }
 
 
@@ -12608,8 +13237,12 @@ Colibri.UI.Table = class extends Colibri.UI.Component {
      * @param {string} name name of cell
      * @returns {Colibri.UI.TableRow}
      */
-    AddRow(name) {
-        return new Colibri.UI.TableRow(name, this);
+    AddRow(name, className = null) {
+        const row = new Colibri.UI.TableRow(name, this);
+        if(className) {
+            row.AddClass(className);
+        }
+        return row;
     }
 
 
@@ -12886,6 +13519,10 @@ Colibri.UI.PaneSwitcher = class extends Colibri.UI.Pane {
 
     }
 
+    HideAll() {
+        this.ForEach((name, component) => component.Disconnect());
+    }
+
     /**
      * Show/Hide element
      * @type {Number|String}
@@ -12928,11 +13565,12 @@ Colibri.UI.PaneGrid = class extends Colibri.UI.Component {
      * @param {string} name name of component
      * @param {HTMLElement|Colibri.UI.Component} container container of component 
      */
-    constructor(name, container) {
+    constructor(name, container, element) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Colibri.UI.Templates['Colibri.UI.PaneGrid']);
         this.AddClass('colibri-ui-panegrid');
 
+        this.GenerateChildren(element, this);
 
     }
 
@@ -13103,9 +13741,11 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('WindowMinimizing', false, 'Поднимается когда окно минимизируется');
-        this.RegisterEvent('WindowClosed', false, 'Поднимается когда окно закрылось');
-        this.RegisterEvent('WindowContentRendered', false, 'Когда содержание окна отрисовалось');
+        this.RegisterEvent('WindowMinimizing', false, 'When window minimized');
+        this.RegisterEvent('WindowClosed', false, 'When window closed');
+        this.RegisterEvent('WindowBeforeClosed', false, 'When close button clicked');
+        this.RegisterEvent('WindowContentRendered', false, 'When window content is rendered');
+        this.RegisterEvent('WindowOpened', false, 'When window is opened');
     }
 
     /**
@@ -13114,21 +13754,30 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
      * @param {*} args event arguments
      */ 
     __CloseClicked(event, args) {
-        
-        if(this._minimizable === true && this._state === 'minimized') {
-            this.RemoveClass('-minimized');   
-            super.width = null;
-            super.height = null;
-            super.right = null;
-            super.bottom = null;
-            this._state = 'normal';
-        }
 
+        const aargs = {cancel: false};
+        this.Dispatch('WindowBeforeClosed', aargs);
+        if(aargs.cancel) {
+            return;
+        }
+        
+        this.Close();
+        
+    }
+
+    Close() {
         if (this._closable === true) {
+            if(this._minimizable === true && this._state === 'minimized') {
+                this.RemoveClass('-minimized');   
+                super.width = null;
+                super.height = null;
+                super.right = null;
+                super.bottom = null;
+                this._state = 'normal';
+            }
             this.shown = false;
             this.Dispatch('WindowClosed', {});
         }
-        
     }
 
     /** @private */
@@ -13452,6 +14101,9 @@ Colibri.UI.Window = class extends Colibri.UI.Component {
             this.SendToBack();
         }
         this.StartTabIndexRoutine();
+        if(value === true) {
+            this.Dispatch('WindowOpened');
+        }
     }
 
     /**
@@ -15063,11 +15715,13 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
 
         this.RegisterEvent('ColumnVerticalAlignChanged', false, 'Изменилась вертикальная ориентация колонки')
         this.RegisterEvent('ColumnHorizontalAlignChanged', false, 'Изменилась горизонтальная ориентация колонки')
+        this.RegisterEvent('ColumnVisibilityChanged', false, 'When column visibility is changed')
         this.RegisterEvent('ColumnClicked', false, 'Поднимается, когда щелкнули по колонке в заголовке');
         this.RegisterEvent('ColumnStickyChange', false, 'Поднимается, когда колонка меняет липкость');
         this.RegisterEvent('ColumnDisposed', false, 'Поднимается, когда удаляют колонку');
         this.RegisterEvent('ColumnEditorChanged', false, 'Когда изменился редактор в колонке');
         this.RegisterEvent('ColumnViewerChanged', false, 'Когда изменился компонент отображения в колонке');
+        this.RegisterEvent('SortChanged', false, 'When sort column or order is changed');
 
         this.RegisterEvent('RowClicked', false, 'Поднимается, когда щелкнули по строке');
         this.RegisterEvent('RowStickyChange', false, 'Поднимается, когда строка меняет липкость');
@@ -15086,6 +15740,7 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
     }
 
     _setSortAndOrder(column) {
+        const check = [this._sortColumn?.name, this._sortOrder];
         if(this._sortColumn && this._sortColumn === column) {
             if(this._sortOrder === null) {
                 this._sortOrder = Colibri.UI.Grid.SortAsc;
@@ -15106,6 +15761,17 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
         }
 
         this._sortColumn.sortState = this._sortOrder;
+
+        if(JSON.stringify(check) !== JSON.stringify([this._sortColumn?.name, this._sortOrder])) {
+            this.Dispatch('SortChanged', {sortColumn: this._sortColumn, order: this._sortOrder});
+        }
+
+    }
+
+    Sort(columnName, order) {
+        this._sortColumn = this.header.FindColumn(columnName);
+        this._sortOrder = order;
+        this.Dispatch('SortChanged', {sortColumn: this._sortColumn, order: this._sortOrder});
     }
 
     /**
@@ -15210,6 +15876,10 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
             });
         });
 
+        this.AddHandler('ColumnVisibilityChanged', (event, args) => {
+            this.RecalculateCellVisibility(args.column);
+        });
+
     }
 
     /**
@@ -15232,6 +15902,7 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
         return this._massActionsMenu;
     }
     set massActionsMenu(value) {
+        value = this._convertProperty('Array', value);
         this._massActionsMenu = value;
         if (!this._massActionsMenu) { 
             this._massActionsMenuObject?.Dispose(); 
@@ -15281,6 +15952,16 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
             this._massActionsMenuObject.shown = true;
 
         }
+    }
+
+    RecalculateCellVisibility(column) {
+        this.ForEveryRow((name, row) => {
+            row.ForEach((name, cell) => {
+                if(cell.parentColumn) {
+                    cell.shown = cell.parentColumn.shown;
+                }
+            });
+        });
     }
 
     get draggable() {
@@ -15336,7 +16017,7 @@ Colibri.UI.Grid = class extends Colibri.UI.Pane {
 
     get value() {
         const ret = [];
-        this.ForEveryRow((row) => {
+        this.ForEveryRow((name, row) => {
             ret.push(row.value);
         });
         return ret;
@@ -15894,7 +16575,15 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
      * @type {Colibri.UI.Grid}
      */
     get grid() {
-        return this.parent;
+        return this.parent.parent.parent.parent;
+    }
+
+    /**
+     * Header
+     * @type {Colibri.UI.Header}
+     */
+    get header() {
+        return this.parent.parent;
     }
 
     /**
@@ -16059,6 +16748,37 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
         this._sortIcons = value;
     }
 
+    /**
+     * Hide and show column
+     * @type {boolean}
+     */
+    get shown() {
+        return super.shown;
+    }
+    /**
+     * Hide and show column
+     * @type {boolean}
+     */
+    set shown(value) {
+        super.shown = value;
+        this.grid.Dispatch('ColumnVisibilityChanged', {column: this});   
+    }
+
+    /**
+     * Value can be copied, works when viewer is not set
+     * @type {Boolean}
+     */
+    get canCopy() {
+        return this._canCopy;
+    }
+    /**
+     * Value can be copied, works when viewer is not set
+     * @type {Boolean}
+     */
+    set canCopy(value) {
+        this._canCopy = value;
+    }
+
 }
 /**
  * Grid rows group component
@@ -16216,6 +16936,13 @@ Colibri.UI.Grid.Rows = class extends Colibri.UI.Component {
         });
 
         this._titleCellCountSpan.value = ' (' + this.rowsCount + ')';
+
+        if(value?.__selected === true) {
+            this.grid.selected = newRow;
+        }
+        if(value?.__checked === true) {
+            newRow.checked = true;
+        }
 
         return newRow;
     }
@@ -16717,6 +17444,9 @@ Colibri.UI.Grid.Row = class extends Colibri.UI.Component {
             newCell = new Colibri.UI.Grid.Cell(this.name + '-' + column.name, this);
             newCell.parentColumn = column;
             newCell.shown = true;
+            if(!column.shown) {
+                newCell.shown = false;
+            }
         
             newCell.AddHandler('CellDoubleClicked', (event, args) => {
                 this.Dispatch('CellDoubleClicked', args);
@@ -16868,7 +17598,7 @@ Colibri.UI.Grid.Row = class extends Colibri.UI.Component {
             contextMenuObject.Hide();
             this.Dispatch('ContextMenuItemClicked', args);
             contextMenuObject.Dispose();            
-            cell.Children(cell.name + '-contextmenu-icon-parent').RemoveClass('-selected');
+            cell.Children(cell.name + '-contextmenu-icon-parent')?.RemoveClass('-selected');
         });
         
 
@@ -16903,18 +17633,17 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
 
         this.AddClass('app-ui-row-cell');
 
-        this._valueContainer = new Colibri.UI.TextSpan('span', this);
-        this._valueContainer.AddClass('app-ui-row-cell-value-container');
-        this._valueContainer.shown = true;
+        this._parentColumn = this.grid.header.FindColumn(this.columnName);
+        this.className = this._parentColumn.className;
+
+        this._valueContainer = null;
 
         this._stickyHorizontally = false;
         this._stickyVertically = false;
         this._selected = false;
         this._activated = false;
-        this._parentColumn = null;
         this._value = null;
 
-        this._parentColumn = this.grid.header.FindColumn(this.columnName);
         this._editor = this._parentColumn?.editor;
         this._viewer = this._parentColumn?.viewer;
         this._editorObject = null;
@@ -16964,7 +17693,7 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
         });
 
         this.AddHandler('ViewerClicked', (event, args) => {
-            this.grid.Dispatch('CellViewerClicked', {cell: this, field: this.columnName, data: this.parentRow.value});
+            this.grid.Dispatch('CellViewerClicked', Object.assign(args, {cell: this, field: this.columnName, data: this.parentRow.value}));
             this.Dispatch('CellClicked', {cell: this});
             this.EditValue();
         });
@@ -17159,6 +17888,10 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
         this._createEditor();
     }
 
+    get editorObject() {
+        return this._editorObject;
+    }
+
     /**
      * Viewer component
      * @type {Colibri.UI.Component}
@@ -17173,6 +17906,10 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
     set viewer(value) {
         this._viewer = value;
         this._createViewer();
+    }
+
+    get viewerObject() {
+        return this._viewerObject;
     }
 
     /**
@@ -17193,9 +17930,11 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
             this._viewerObject.viewedObject = this.parentRow.value;
         }
         else {
+            this._createValueContainer();
             this._valueContainer.value = '';
             this._valueContainer.value = this._generateViewFromParams();
         }
+
         if(this._editorObject) {
             this._editorObject.value = this._value;
         }
@@ -17281,14 +18020,24 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
         }
     }
 
+    _createValueContainer() {
+        if(!this._valueContainer) {
+            this._valueContainer = new Colibri.UI.TextSpan('span', this);
+            this._valueContainer.AddClass('app-ui-row-cell-value-container');
+            this._valueContainer.shown = true;
+            this._valueContainer.copy = this.parentColumn.canCopy;
+        }
+    }
+
     _createViewer() {
         if(this._viewer && !this._viewerObject) {
+            const cell = this;
             const viewer = eval(this._viewer);
             if(!viewer) {
                 throw 'Can not find viewer component: ' + this._viewer;
             }
             this._viewerObject = new viewer(this.name + '_viewer', this);
-            this._viewerObject.AddHandler('Clicked', (event, args) => this.Dispatch('ViewerClicked', {value: event.sender.value}));
+            this._viewerObject.AddHandler('Clicked', (event, args) => this.Dispatch('ViewerClicked', Object.assign(args, {value: event.sender.value})));
             this._viewerObject.shown = true;
             this._viewerObject.field = this.parentColumn.tag;
             this._viewerObject.download = this.parentColumn.download;
@@ -17297,11 +18046,11 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
                 this._viewerObject[name] = value;
             });
 
-            this._valueContainer.shown = false;
+            this._valueContainer && (this._valueContainer.shown = false);
         }
         else if(!this._viewer && this._viewerObject) {
             this._viewerObject.Dispose();
-            this._valueContainer.shown = true;
+            this._valueContainer ? (this._valueContainer.shown = true) : this._createValueContainer();
         }
     }
 
@@ -17340,15 +18089,15 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
         if(this._editorObject) {
             Colibri.Common.Delay(50).then(() => {
                 this.AddClass('-editing');
-                this.parentRow.AddClass('-editing');
-                this._valueContainer.Hide();
+                this.parentRow && this.parentRow.AddClass('-editing');
+                this._valueContainer && this._valueContainer.Hide();
                 this._viewerObject && this._viewerObject.Hide();
                 this._editorObject.field = this._parentColumn.tag;
                 this._editorObject.Show();
                 if(setFocus) {
                     this._editorObject.Focus();
                 }
-                this._editorObject.editedObject = this.parentRow.value; 
+                this._editorObject.editedObject = this.parentRow ? this.parentRow.value : null; 
                 this._editorObject.value = this.value;   
             });
             return true;
@@ -17366,7 +18115,7 @@ Colibri.UI.Grid.Cell = class extends Colibri.UI.Pane {
             this._viewerObject.Show();
         }
         else {
-            this._valueContainer.Show();
+            this._valueContainer ? this._valueContainer.Show() : this._createValueContainer();
         }
         hide && this._editorObject && this._editorObject.Hide();
     } 
@@ -17967,6 +18716,20 @@ Colibri.UI.List = class extends Colibri.UI.Component {
         this._searchBox.Focus();
     }
 
+    /**
+     * Name of object field for ID
+     * @type {String}
+     */
+    get idField() {
+        return this._idField;
+    }
+    /**
+     * Name of object field for ID
+     * @type {String}
+     */
+    set idField(value) {
+        this._idField = value;
+    }
 
 }
 
@@ -18086,7 +18849,10 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
      * @param {object} itemData data of item
      * @returns string
      */
-    static CreateKey(itemData) {
+    static CreateKey(itemData, idField = null) {
+        if(idField) {
+            return itemData[idField];
+        }
         return itemData?.__id ?? itemData?.id ?? String.MD5(JSON.stringify(Object.sortPropertiesRecursive(itemData))); 
     }
 
@@ -18117,7 +18883,7 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
 
     AddItem(itemData, id = null, selected = false, index = null) {
 
-        const newKey = Colibri.UI.List.Group.CreateKey(itemData); 
+        const newKey = Colibri.UI.List.Group.CreateKey(itemData, this.parent?.idField); 
         const foundItem = this.FindByKey(newKey);
 
         let control;
@@ -18158,7 +18924,7 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
      */
     FindByKey(key) {
         return this._div.indexOf((item) => {
-            const itemKey = Colibri.UI.List.Group.CreateKey(item.value); 
+            const itemKey = Colibri.UI.List.Group.CreateKey(item.value, this.parent?.idField); 
             return itemKey === key;
         });
     }
@@ -18242,7 +19008,7 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
      */    
     set value(value) {
 
-        this.parent.ClearSelection(false);
+        this.parent && this.parent.ClearSelection(false);
         if(!(Symbol.iterator in Object(value))) {
             return;
         }
@@ -18252,14 +19018,14 @@ Colibri.UI.List.Group = class extends Colibri.UI.Component {
         const oldKeys = [];
         const oldValues = this.value;
         for(const item of oldValues) {
-            const key = Colibri.UI.List.Group.CreateKey(item);
+            const key = Colibri.UI.List.Group.CreateKey(item, this.parent?.idField);
             oldKeys.push(key);
         }
 
         const newKeys = [];
         let index = 0;
         for(const item of value) {
-            newKeys.push(Colibri.UI.List.Group.CreateKey(item));
+            newKeys.push(Colibri.UI.List.Group.CreateKey(item, this.parent?.idField));
             this.AddItem(item, null, item?.__selected, index++);
         }
 
@@ -18483,13 +19249,18 @@ Colibri.UI.List.Item = class extends Colibri.UI.Component {
         let html = this._itemData?.title ?? '';
         if(this.list?.rendererComponent) {
             const attrs = this.list?.rendererAttrs ?? {};
-            let content = this.Children(this._itemData?.name ?? this.name + '_renderer');
+            let name = (this._itemData?.name ?? (this.name + '_renderer'));
+            if(Lang) {
+                name = Lang.Translate(name);
+            }
+            name = name.replaceAll('"', '');
+            let content = this.Children(name);
             if(!content) {
                 let comp = typeof(this.list.rendererComponent) === 'string' ? this.list.rendererComponent : this.list.rendererComponent(this._itemData, this);
                 if(!(comp instanceof Colibri.UI.Component)) {
                     comp = eval(comp);
                 }
-                content = new comp(this._itemData?.name ?? this.name + '_renderer', this);
+                content = new comp(name, this);
                 content.shown = true;
                 delete attrs.name;
                 Object.forEach(attrs, (key, value) => {
@@ -18600,11 +19371,12 @@ Colibri.UI.Tree = class extends Colibri.UI.Component {
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('NodeExpanded', false, 'Поднимается, когда ветка дерева раскрывается');
-        this.RegisterEvent('NodeCollapsed', false, 'Поднимается, когда ветка дерева закрывается');
-        this.RegisterEvent('SelectionChanged', false, 'Поднимается, когда ментяется выбранный элемент');
-        this.RegisterEvent('NodeEditCompleted', false, 'Поднимается, когда заканчивается редактирование узла');
-        this.RegisterEvent('NodeClicked', false, 'Поднимается, когда ткнули в узел');
+        this.RegisterEvent('NodeExpanded', false, 'When node is expanded');
+        this.RegisterEvent('NodeCollapsed', false, 'When node is collapsed');
+        this.RegisterEvent('SelectionChanged', false, 'When selection is changed');
+        this.RegisterEvent('NodeEditCompleted', false, 'When node editing is complete');
+        this.RegisterEvent('NodeClicked', false, 'When node is clicked');
+        this.RegisterEvent('NodeDoubleClicked', false, 'When node is double clicked');
         this.RegisterEvent('CheckChanged', false, 'When node checkbox is changed');
     }
 
@@ -19067,6 +19839,13 @@ Colibri.UI.TreeNode = class extends Colibri.UI.Component {
                 if(this.tree.expandOnClick) {
                     this.expanded = true;
                 }
+            }
+            args.domEvent.stopPropagation();
+            return false;
+        });
+        this.AddHandler('DoubleClicked', (sender, args) => {
+            if(this._element.querySelector('div>em.expander') !== args.domEvent.target) {
+                this._nodes.tree.Dispatch('NodeDoubleClicked', Object.assign({item: this}, args));
             }
             args.domEvent.stopPropagation();
             return false;
@@ -20429,6 +21208,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         this.AddClass('app-input-component');
 
         this._fillTimeoutValue = 500;
+        this._showClearIconAllways = false;
 
         new Colibri.UI.Icon('icon', this);
         new Colibri.UI.Pane('loadingicon', this);
@@ -20436,7 +21216,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         this._input = Element.create('input', { type: 'text', placeholder: this.placeholder || '' });
         this._element.append(this._input);
 
-        new Colibri.UI.Pane('clear', this);
+        new Colibri.UI.Icon('clear', this);
 
         this.Children('icon').shown = true;
         this.Children('clear').html = Colibri.UI.ClearIcon;
@@ -20458,11 +21238,15 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
                 }
             }
 
-            if(this.readonly) {
-                this.Children('clear').shown = false;
+            if(!this._showClearIconAllways) {
+                if(this.readonly) {
+                    this.Children('clear').shown = false;
+                } else {
+                    this.Children('clear').shown = this._hasClearIcon && this._input.value.length > 0;
+                } 
             } else {
-                this.Children('clear').shown = this._hasClearIcon && this._input.value.length > 0;
-            } 
+                this.Children('clear').shown = true;
+            }
 
             this.Dispatch('KeyUp', { value: this.value, domEvent: e });
 
@@ -20493,14 +21277,28 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
             return false;
         });
 
+        const pasteEventHandler = (e) => {
+            Colibri.Common.Delay(100).then(() => {
+                this.Dispatch('Pasted', {domEvent: e});
+            });
+        };
+
+        this._input.addEventListener('paste', pasteEventHandler);
+        this._input.addEventListener('input', pasteEventHandler);
+
         this.Children('clear').AddHandler('Clicked', (event, args) => {
             if(!this.enabled) {
                 return;
             }
+            this.Dispatch('BeforeClear', args);
+            if(args.cancel) {
+                return;
+            }
+
             this._input.value = '';
             this._input.focus();
             // this._input.select();
-            this.Children('clear').shown = false;
+            this.Children('clear').shown = this._showClearIconAllways;
             this.loading = false;
             this.Dispatch('Cleared', args);
         });
@@ -20529,7 +21327,8 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         this.RegisterEvent('KeyDown', false, 'Поднимается, когда клавиша нажата');
         this.RegisterEvent('Changed', false, 'Поднимается, когда содержимое поля обновлено');
         this.RegisterEvent('Filled', false, 'Поднимается, когда содержимое поля обновлено и не изменилось в течении fillTimeout мс');
-        this.RegisterEvent('Cleared', false, 'Поднимается, когда содержимое поля очищено с помощью крестика');
+        this.RegisterEvent('Cleared', false, 'When clear icon is clicked and input is cleared');
+        this.RegisterEvent('BeforeClear', false, 'Before clear is complete');
     }
 
     /**
@@ -20654,6 +21453,21 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
         }
     }
 
+    /**
+     * Clear icon
+     * @type {String}
+     */
+    get clearIcon() {
+        return this.Children('clear').iconSVG;
+    }
+    /**
+     * Clear icon
+     * @type {String}
+     */
+    set clearIcon(value) {
+        this.Children('clear').iconSVG = value;
+    }
+
     /** 
      * Input value
      * @type {string} 
@@ -20668,7 +21482,7 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
     set value(value) { 
         value = this._convertProperty('String', value);
         this._input.value = value;
-        if(this.Children('clear')) {
+        if(this.Children('clear') && !this._showClearIconAllways) {
             this.Children('clear').shown = this._hasClearIcon && this._input.value.length > 0;
         }
     }
@@ -20842,6 +21656,25 @@ Colibri.UI.Input = class extends Colibri.UI.Component {
      */
     get isValueExceeded() {
         return this._input.isValueExceeded();
+    }
+
+    /**
+     * Show clear icon allways
+     * @type {Boolean}
+     */
+    get showClearIconAllways() {
+        return this._showClearIconAllways;
+    }
+    /**
+     * Show clear icon allways
+     * @type {Boolean}
+     */
+    set showClearIconAllways(value) {
+        value = this._convertProperty('Boolean', value);
+        this._showClearIconAllways = value;
+        if(value) {
+            this.Children('clear').shown = true;
+        }
     }
 
 }
@@ -21438,7 +22271,7 @@ Colibri.UI.Chart = class extends Colibri.UI.Component {
      */
     AddBarchart(name) {
         let barchart = new Colibri.UI.Chart.Barchart(name, this);
-        barchart._orientation = this._orientation;
+        barchart.orientation = this._orientation;
         return barchart
     }
 }
@@ -21468,7 +22301,6 @@ Colibri.UI.Chart.Barchart = class extends Colibri.UI.Component {
 
         this._barchart = new Colibri.UI.Component('barchart', this);
         this._barchart.AddClass('barchart-body');
-        this._barchart._element.css('width', '50%');
         this._barchart.shown = true;
 
         this._textValue = new Colibri.UI.Component('barchart-text-value', this);
@@ -21496,7 +22328,25 @@ Colibri.UI.Chart.Barchart = class extends Colibri.UI.Component {
      * @type {number}
      */
     set value(value) {
-        return this._barchart._element.css('width', value + '%');
+        return this._barchart._element.css(this._orientation === 'vertical' ? 'height' : 'width', value + '%');
+    }
+    
+    /**
+     * Force something visible
+     * @type {Boolean}
+     */
+    get forceVisible() {
+        return this._forceVisible;
+    }
+    /**
+     * Force something visible
+     * @type {Boolean}
+     */
+    set forceVisible(value) {
+        this._forceVisible = value;
+        if(value) {
+            this._barchart._element.css('min-height', '0.5%');
+        }
     }
 
     /**
@@ -21521,6 +22371,21 @@ Colibri.UI.Chart.Barchart = class extends Colibri.UI.Component {
      */
     set textValue(value) {
         this._textValue.value = value;
+    }
+
+    /**
+     * Orientation of bar
+     * @type {String}
+     */
+    get orientation() {
+        return this._orientation;
+    }
+    /**
+     * Orientation of bar
+     * @type {String}
+     */
+    set orientation(value) {
+        this._orientation = value;
     }
     
 }
@@ -21994,7 +22859,7 @@ Colibri.UI.Input.File = class extends Colibri.UI.Component {
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('InputFileChanged', false, 'Изменён выбранный файл/файлы');
+        this.RegisterEvent('InputFileChanged', false, 'The selected file/files have been changed');
     }
 
     /** @protected */
@@ -22106,8 +22971,8 @@ Colibri.UI.ImageViewWindow = class extends Colibri.UI.Window {
         this.AddClass('app-component-image-view-window');
 
         this._img = this._element.querySelector('.image-container');
-        this._textDescriptionAfter = this._element.querySelector('.text-description-before');
-        this._textDescriptionBefore = this._element.querySelector('.text-description-after');
+        this._textDescriptionAfter = this._element.querySelector('.text-description-after');
+        this._textDescriptionBefore = this._element.querySelector('.text-description-before');
         this._closeButton = this._element.querySelector('.app-component-image-view-window-close-button');
 
         this._handleEvents();
@@ -22340,7 +23205,7 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
      * @param {*} args event arguments
      */ 
     __thisClicked(event, args) {
-        const button = args.domEvent.target.tag('component').Closest(component => component.parent instanceof Colibri.UI.ButtonGroup);
+        const button = args.domEvent.target.closest('[data-object-name]').tag('component').Closest(component => component.parent instanceof Colibri.UI.ButtonGroup);
         this.SelectButton(button);
     }
 
@@ -22371,7 +23236,9 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
         this._selectedButton.AddClass('-selected');
 
         if(!isSelected) {
-            this.Dispatch('Changed', {button: this._selectedButton, index: this.selectedIndex});
+            Colibri.Common.Delay(10).then(() => {
+                this.Dispatch('Changed', {button: this._selectedButton, index: this.selectedIndex});
+            });
         }
 
     }
@@ -22382,13 +23249,14 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
      * @param {string} title title of button
      * @returns {Colibri.UI.Button}
      */
-    AddButton(name, title) {
+    AddButton(name, title, tag = {}) {
         if(this.Children(name)) {
             return this.Children(name);
         }
         const button = new Colibri.UI.Button(name, this);
-        button.value = (title[Lang.Current] ?? title);
+        button.value = (Lang ? Lang.Translate(title) : title);
         button.shown = true;
+        button.tag = tag;
         return button;
     }
 
@@ -22442,7 +23310,9 @@ Colibri.UI.ButtonGroup = class extends Colibri.UI.Component {
      * @param {string|number} name button index or number
      */
     EnableButton(name) {
-        this.Children(name).enabled = true;
+        if(this.Children(name)) {
+            this.Children(name).enabled = true;
+        }
     }
 
 }
@@ -22558,10 +23428,13 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
     static LB = 'lb';
     /** Right bottom */
     static RB = 'rb';
+
     /** Left top */
     static LT = 'lt';
     /** Right top */
     static RT = 'rt'; 
+
+    _addedClasses = [];
 
     /**
      * @constructor
@@ -22656,6 +23529,9 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
                         args.domEvent && args.domEvent.stopPropagation();
                         return false;
                     });
+                    if(this._addedClasses.length > 0) {
+                        this._childContextMenu.AddClass(this._addedClasses);
+                    }
                 }
                 else {
                     this.Dispatch('Clicked', { menu: event.sender, menuData: event.sender.tag, domEvent: args.domEvent });
@@ -22740,13 +23616,13 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
             }
             case Colibri.UI.ContextMenu.LT: {
                 return {
-                    left: pointOnParent.left - thisBounds.outerWidth, 
+                    left: pointOnParent.left, 
                     top: pointOnParent.top - thisBounds.outerHeight
                 };
             }
             case Colibri.UI.ContextMenu.RT: {
                 return {
-                    left: pointOnParent.left, 
+                    left: pointOnParent.left - thisBounds.outerWidth, 
                     top: pointOnParent.top - thisBounds.outerHeight
                 };
             }
@@ -22852,6 +23728,15 @@ Colibri.UI.ContextMenu = class extends Colibri.UI.Component {
         super.Dispose();
     }
 
+    AddClass(className) {
+        if(!this._addedClasses) {
+            this._addedClasses = [];
+        }
+        this._addedClasses.push(className);
+        super.AddClass(className);
+    }
+
+ 
 }
 /**
  * @class
@@ -22884,8 +23769,6 @@ Colibri.UI.Notices = class extends Colibri.UI.Pane {
         if(!noticeData.title) {
             return;
         }
-
-        console.log(noticeData); 
 
         this.shown = true;
         this.BringToFront();
@@ -22959,7 +23842,7 @@ Colibri.UI.Notice = class {
             this._exception = title;
             title = this._exception.message;
         }
-        this._title = title;
+        this._title = title.message ?? title;
         this._severity = severity;
         this._timeout = timeout;
     }
@@ -23226,7 +24109,8 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
      * @param {string} valueField name of value field 
      * @param {Function|null} __render method for render items
      * @param {boolean} allowEmpty is allowed empty values
-     * @param {boolean} clearIcon show clear icon
+     * @param {boolean|string} clearIcon show clear icon
+     * @param {boolean} canSelectGroup can selector select group
      */
     constructor(name, container, multiple = false, readonly = true, searchable = true, values = [], defaultValue = null, titleField = 'title', valueField = 'value', groupField = null, __render = null, allowEmpty = true, clearIcon = false, canSelectGroup = false) {
         super(name, container, Element.create('div'));
@@ -23248,7 +24132,10 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         this._input.shown = true;
         this._input.icon = null;
         this._input.hasIcon = false;
-        this._input.hasClearIcon = clearIcon;
+        this._input.hasClearIcon = !!clearIcon;
+        if(typeof clearIcon === 'string') {
+            this._input.clearIcon = clearIcon;
+        }
         this._input.placeholder = this._placeholder;
         this._input.toolTip = '';
 
@@ -23469,6 +24356,10 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
         this._changeBodyScroll();
     }
 
+    ClosePopup() {
+        this._hidePopup();
+    }
+
     /**
      * Show dropdown
      * @private
@@ -23645,6 +24536,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
                         v = (this._value + '').stripHtml();
                     }
                 }
+                
                 this._input.value = v;
             }
 
@@ -23653,6 +24545,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
             } else {
                 this._input.placeholder = this._placeholderempty.stripHtml();
             }
+
         } else {
             let itemCount = this._value.length;
             this._input._forcedClearIcon = (itemCount !== 0);
@@ -23660,6 +24553,7 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
 
             if(itemCount === 0) {
                 this._input.placeholder = this.placeholder ?? '';
+                this.RemoveClass('-selected');
             } else if(this._placeholderinfo) {
                 let info = this._placeholderinfo;
                 if(this._placeholderinfo instanceof Function) {
@@ -23677,13 +24571,18 @@ Colibri.UI.Selector = class extends Colibri.UI.Component {
                         this._input.placeholder = String.Pluralize(this._placeholderinfo, itemCount).stripHtml();
                     }    
                 }
+                this.AddClass('-selected');
             } else {
                 this._input.placeholder = 'Selected %s1 items of %s2'.replaceAll('%s1', itemCount).replaceAll('%s2', this?.parent?.parent?.title).stripHtml();
+                this.AddClass('-selected');
             }
+
         }
+
         if(this._showToolTip) {
             this._input.toolTip = this._input.isValueExceeded ? (this._input.value ?? this._input.placeholder) : '';
         }
+
     }
 
     /**
@@ -24067,14 +24966,33 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         this._element.append(this._hiddenElement);
         this._element.append(this._viewElement);
 
+        this._clearIcon = new Colibri.UI.Icon('clear-icon', this);
+        this._clearIcon.value = Colibri.UI.ClearIcon;
+        this._clearIcon.shown = false;
+
+        this._min = new Date(-8640000000000000);
+        this._max = new Date(8640000000000000);
+
         this._hiddenElement.addEventListener('click', (e) => {this.Dispatch('Clicked', { domEvent: e }); e.preventDefault(); e.stopPropagation(); return false;});
         this._hiddenElement.addEventListener('change', (e) => {
             this._showValue();
-            this.Dispatch('Changed');
+            if(this._changeTimeout) {
+                clearTimeout(this._changeTimeout);
+                this._changeTimeout = -1;
+            }
+            this._changeTimeout = setTimeout(() => {
+                this.Dispatch('Changed');
+            }, 500);
+            
             e.preventDefault();
         });
         this._hiddenElement.addEventListener('blur', (e) => {
             if(!this._skipLooseFocus) {
+                if(this.value < this._min) {
+                    this.value = this._min;
+                } else if(this.value > this._max) {
+                    this.value = this._max;
+                }
                 this._showValue();
                 this.Dispatch('Changed');
                 this.Close();
@@ -24084,14 +25002,16 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
         //     e.stopPropagation(); 
         // });
 
+        this._clearIcon.AddHandler('Clicked', (event, args) => this.__clearIconClicked(event, args));
+
         this._viewElement.addEventListener('click', (e) => this.Dispatch('Clicked', { domEvent: e }));
         this._viewElement.addEventListener('dblclick', (e) => this.Dispatch('DoubleClicked', { domEvent: e }));
         this._viewElement.addEventListener('mousedown', (e) => this.Dispatch('MouseDown', { domEvent: e }));
         this._viewElement.addEventListener('mouseup', (e) => this.Dispatch('MouseUp', { domEvent: e }));
         this._viewElement.addEventListener('mousemove', (e) => this.Dispatch('MouseMove', { domEvent: e }));
-        this._viewElement.addEventListener('keydown', (e) => this.Dispatch('KeyDown', { domEvent: e }));
-        this._viewElement.addEventListener('keyup', (e) => this.Dispatch('KeyUp', { domEvent: e }));
-        this._viewElement.addEventListener('keypress', (e) => this.Dispatch('KeyPressed', { domEvent: e }));
+        this._viewElement.addEventListener('keydown', nullhandler);
+        this._viewElement.addEventListener('keyup', nullhandler);
+        this._viewElement.addEventListener('keypress', nullhandler);
         this._viewElement.addEventListener('focus', (e) => this.Dispatch('ReceiveFocus', { domEvent: e }));
         this._viewElement.addEventListener('blur', (e) => this.Dispatch('LoosedFocus', { domEvent: e }));
         this._hiddenElement.addEventListener('focus', (e) => this.Dispatch('ReceiveFocus', { domEvent: e }));
@@ -24132,12 +25052,38 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
 
     }
 
+    /**
+     * Show hide clear icon
+     * @type {Boolean}
+     */
+    get clearIcon() {
+        return this._showClearIcon;
+    }
+    /**
+     * Show hide clear icon
+     * @type {Boolean}
+     */
+    set clearIcon(value) {
+        this._showClearIcon = value;
+        this._clearIcon.shown = this._showClearIcon && this._viewElement.value !== '';
+    }
+
+
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('Changed', false, 'Когда значение изменилось');
-        this.RegisterEvent('PopupOpened', false, 'Попап открыт');
-        this.RegisterEvent('PopupClosed', false, 'Попап закрыт');
+        this.RegisterEvent('Changed', false, 'When value is changed');
+        this.RegisterEvent('Cleared', false, 'When clear icon clicked');
+        this.RegisterEvent('PopupOpened', false, 'When popup is opened');
+        this.RegisterEvent('PopupClosed', false, 'When popup is closed');
+    }
+
+    __clearIconClicked(event, args) {
+        this.value = '';
+        this.Dispatch('Cleared');
+        args.domEvent.stopPropagation();
+        args.domEvent.preventDefault();
+        return false;
     }
 
     /** @private */
@@ -24158,6 +25104,9 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
                 this._popup.value = new Date();
             }    
         }
+
+        this._clearIcon.shown = this._showClearIcon && this._viewElement.value !== '';
+
     }
 
     /**
@@ -24358,6 +25307,66 @@ Colibri.UI.DateSelector = class extends Colibri.UI.Component {
      */
     set hasIcon(value) {
         this._icon.shown = value;
+    }
+
+    /**
+     * Minimal date
+     * @type {Date}
+     */
+    get min() {
+        return this._min;
+    }
+    /**
+     * Minimal date
+     * @type {Date}
+     */
+    set min(value) {
+        this._min = value;
+    }
+
+    /**
+     * Maximal date
+     * @type {Date}
+     */
+    get max() {
+        return this._max;
+    }
+    /**
+     * Maximal date
+     * @type {Date}
+     */
+    set max(value) {
+        this._max = value;
+    }
+
+    /**
+     * Today date
+     * @type {Date}
+     */
+    get todayDate() {
+        return this._todayDate;
+    }
+    /**
+     * Today date
+     * @type {Date}
+     */
+    set todayDate(value) {
+        this._todayDate = value;
+    }
+
+    /**
+     * Today date title
+     * @type {String}
+     */
+    get todayString() {
+        return this._todayString;
+    }
+    /**
+     * Today date title
+     * @type {String}
+     */
+    set todayString(value) {
+        this._todayString = value;
     }
 
 }
@@ -24664,6 +25673,9 @@ Colibri.UI.DatePicker = class extends Colibri.UI.Pane {
     /** @private */
     _renderContent() {
 
+        const min = this.parent.parent.min;
+        const max = this.parent.parent.max;
+
         this._element.html('');
         let dateformat = App.DateFormat || 'ru-RU';
         const formatter = new Intl.DateTimeFormat(dateformat, { day: '2-digit' });
@@ -24680,7 +25692,7 @@ Colibri.UI.DatePicker = class extends Colibri.UI.Pane {
         let dt = this.parent.value.copy();
         let checkedDate = dt.copy();
 
-        let today = new Date();
+        let today = this.parent.parent.todayDate ? this.parent.parent.todayDate : new Date();
 
         let weekday = dt.getDay();
         if (weekday == 0) {
@@ -24717,19 +25729,27 @@ Colibri.UI.DatePicker = class extends Colibri.UI.Pane {
                 if (checkedDate.getMonth() != dt.getMonth()) {
                     className += ' ntm';
                 }
-                tr.append(Element.fromHtml('<td class="' + className + '" data-value="' + (dt.getTime()) + '">' + formatter.format(dt) + '</td>'));
+                let cname = '';
+                if(min && dt.toShortDateString() < min.toShortDateString() || max && dt.toShortDateString() > max.toShortDateString()) {
+                    cname = 'disabled';
+                }
+                tr.append(Element.fromHtml('<td class="' + className + ' ' + cname + '" data-value="' + (dt.getTime()) + '">' + formatter.format(dt) + '</td>'));
                 dt.setTime(dt.getTime() + 86400000);
             }
         }
 
-        tfoot.append(Element.fromHtml('<td colspan="7" data-today="today" data-value="' + (today.getTime()) + '">Today</td>'));
+        console.log(today);
+        tfoot.append(Element.fromHtml('<td colspan="7" data-today="today" data-value="' + (today.getTime()) + '">' + (this.parent.parent.todayString || 'Today') + '</td>'));
     }
 
     /** @private */
     _bind() {
         this._element.querySelectorAll('td').forEach((td) => {
             td.addEventListener('mousedown', (e) => {
-                if (e.target.classList.contains('ntm')) {
+                console.log(e.target.classList.contains('ntm'), e.target.classList.contains('disabled'));
+                if (e.target.classList.contains('ntm') || e.target.classList.contains('disabled')) {
+                    e.stopPropagation();
+                    e.preventDefault();
                     return false;
                 }
                 this.parent.value = Date.from(e.target.dataset.value);
@@ -25455,7 +26475,7 @@ Colibri.UI.MassActionsMenu = class extends Colibri.UI.Component {
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('ActionClicked', false, 'Когда кликнули по кнопке в меню');
+        this.RegisterEvent('ActionClicked', false, 'When you click on the button in the menu');
     }
 
     /** @private */
@@ -25634,52 +26654,58 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
 
     /** @private */
     _findPointOnParent() {
-        const parent = this._findParent();
-        const ori = this._orientation[0];
-        const parentBounds = parent.container.bounds(true, true);
-        if(parent.container.contains(this._element)) {
-            parentBounds.left = 0;
-            parentBounds.top = 0;
+        try {
+            const parent = this._findParent();
+            const ori = this._orientation[0];
+            const parentBounds = parent.container ? parent.container.bounds(true, true) : {top: 0, left: 0, width: 0, height: 0};
+            if(parent?.container?.contains(this._element)) {
+                parentBounds.left = 0;
+                parentBounds.top = 0;
+            }
+            switch(ori) {
+                default:
+                case Colibri.UI.ToolTip.RB: {
+                    return {
+                        left: parentBounds.left + parentBounds.outerWidth, 
+                        top: parentBounds.top + parentBounds.outerHeight
+                    };
+                }
+                case Colibri.UI.ToolTip.LB: {
+                    return {
+                        left: parentBounds.left, 
+                        top: parentBounds.top + parentBounds.outerHeight
+                    };
+                }
+                case Colibri.UI.ToolTip.LM: {
+                    return {
+                        left: parentBounds.left, 
+                        top: parentBounds.top + (parentBounds.outerHeight / 2)
+                    };
+                }
+                case Colibri.UI.ToolTip.LT: {
+                    return {
+                        left: parentBounds.left, 
+                        top: parentBounds.top
+                    };
+                }
+                case Colibri.UI.ToolTip.RT: {
+                    return {
+                        left: parentBounds.left + parentBounds.outerWidth, 
+                        top: parentBounds.top
+                    };
+                }
+                case Colibri.UI.ToolTip.RM: {
+                    return {
+                        left: parentBounds.left + parentBounds.outerWidth, 
+                        top: parentBounds.top + (parentBounds.outerHeight / 2)
+                    };
+                }
+            }
+        } catch(e) {
+
         }
-        switch(ori) {
-            default:
-            case Colibri.UI.ToolTip.RB: {
-                return {
-                    left: parentBounds.left + parentBounds.outerWidth, 
-                    top: parentBounds.top + parentBounds.outerHeight
-                };
-            }
-            case Colibri.UI.ToolTip.LB: {
-                return {
-                    left: parentBounds.left, 
-                    top: parentBounds.top + parentBounds.outerHeight
-                };
-            }
-            case Colibri.UI.ToolTip.LM: {
-                return {
-                    left: parentBounds.left, 
-                    top: parentBounds.top + (parentBounds.outerHeight / 2)
-                };
-            }
-            case Colibri.UI.ToolTip.LT: {
-                return {
-                    left: parentBounds.left, 
-                    top: parentBounds.top
-                };
-            }
-            case Colibri.UI.ToolTip.RT: {
-                return {
-                    left: parentBounds.left + parentBounds.outerWidth, 
-                    top: parentBounds.top
-                };
-            }
-            case Colibri.UI.ToolTip.RM: {
-                return {
-                    left: parentBounds.left + parentBounds.outerWidth, 
-                    top: parentBounds.top + (parentBounds.outerHeight / 2)
-                };
-            }
-        }
+        
+        return {left: 0, top: 0};    
     }
 
     /** @private */
@@ -25688,40 +26714,40 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
         const thisBounds = this._element.bounds(true, true);
         switch(ori) {
             default:
-            case Colibri.UI.ToolTip.RB: {
-                return {
-                    left: pointOnParent.left, 
-                    top: pointOnParent.top
-                };
-            }
             case Colibri.UI.ToolTip.LB: {
                 return {
-                    left: pointOnParent.left - thisBounds.outerWidth, 
-                    top: pointOnParent.top
+                    left: pointOnParent.left, 
+                    top: pointOnParent.top - thisBounds.outerHeight
                 };
             }
             case Colibri.UI.ToolTip.LM: {
                 return {
-                    left: pointOnParent.left - thisBounds.outerWidth, 
-                    top: pointOnParent.top - (thisBounds.outerHeight / 2)
+                    left: pointOnParent.left, 
+                    top: pointOnParent.top - (thisBounds.outerHeight / 2) - 10
                 };
             }
             case Colibri.UI.ToolTip.LT: {
                 return {
                     left: pointOnParent.left, 
-                    top: pointOnParent.top 
+                    top: pointOnParent.top  - 10
+                };
+            }
+            case Colibri.UI.ToolTip.RB: {
+                return {
+                    left: pointOnParent.left - thisBounds.outerWidth, 
+                    top: pointOnParent.top - thisBounds.outerHeight - 10
                 };
             }
             case Colibri.UI.ToolTip.RT: {
                 return {
                     left: pointOnParent.left - thisBounds.outerWidth, 
-                    top: pointOnParent.top - thisBounds.outerHeight
+                    top: pointOnParent.top - 10
                 };
             }
             case Colibri.UI.ToolTip.RM: {
                 return {
-                    left: pointOnParent.left, 
-                    top: pointOnParent.top - (thisBounds.outerHeight / 2)
+                    left: pointOnParent.left - thisBounds.outerWidth, 
+                    top: pointOnParent.top - (thisBounds.outerHeight / 2) - 10
                 };
             }
         }
@@ -25791,10 +26817,11 @@ Colibri.UI.ToolTip = class extends Colibri.UI.Component {
      * Show tooltip on component
      * @param {Colibri.UI.Component} parent parent component
      */
-    Show(parent = null) {
+    Show(parent = null, permanent = false) {
         if(parent) {
             this.parent = parent;
         }
+        this.permanent = permanent;
         if(!this.shown) {
             this.shown = true;
         }
@@ -25947,8 +26974,8 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
     _registerEvents() {
         super._registerEvents();
 
-        this.RegisterEvent('Changed', false, 'Когда выбор изменился');
-        this.RegisterEvent('ChooserClicked', false, 'Когда нажали на кнопку выбора');
+        this.RegisterEvent('Changed', false, 'When the choice changed');
+        this.RegisterEvent('ChooserClicked', false, 'When you press the select button');
     }
 
     /**
@@ -25958,8 +26985,9 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         if(this._chooser) {
             const component = this._chooser;
             if(!this._chooserObject) {
-                this._chooserObject = new component(this.name + '-chooser', document.body, this._selector?.params || {}, this._values, this._selector.title, this._selector.value);
+                this._chooserObject = new component(this.name + '-chooser', document.body, null, this._selector?.params || {}, this._values, this._selector.title, this._selector.value, this._value);
                 this._chooserObject.AddHandler('Choosed', (event, args) => {
+                    this.values = this._chooserObject.values;
                     this.value = args.value;
                     this.valueObject = args.valueObject;
                     this.Dispatch('Changed', {});
@@ -26157,7 +27185,7 @@ Colibri.UI.Chooser = class extends Colibri.UI.Component {
         }
         
         if(!this.values) {
-            Colibri.Common.Wait(Array.isArray(this.values)).then(() => {
+            Colibri.Common.Wait(() => Array.isArray(this.values)).then(() => {
                 set();
             })
         } else {
@@ -26286,13 +27314,18 @@ Colibri.UI.Chooser.ChooseWindow = class extends Colibri.UI.Window {
      * @param {number} width window width
      * @param {number} height window height
      */
-    constructor(name, container, element, title, width, height) {
-        super(name, container, element, title, width, height);
+    constructor(name, container, element, params, values, titleField, valueField, selectedValue) {
+        super(name, container, element, 'Choose', 800, 600);
+        this._params = params;
+        this._values = values;
+        this._value = selectedValue;
+        this._valueField = valueField;
+        this._titleValue = titleField;
     }
 
     /** @protected */
     _registerEvents() {
-        this.RegisterEvent('Choosed', false, 'Когда выбор сделан');
+        this.RegisterEvent('Choosed', false, 'When the choice is made');
     }
 
     /**
@@ -26397,28 +27430,34 @@ Colibri.UI.GoogleChart = class extends Colibri.UI.Pane {
             legend: 'none'
         }, this._options);
 
-        let data;
-        if(this._drawDataHandle) {
-            data = this._drawDataHandle(this._value, this);
-        } else {
-            data = google.visualization.arrayToDataTable(this._value);
+        try {
+
+            let data;
+            if(this._drawDataHandle) {
+                data = this._drawDataHandle(this._value, this);
+            } else {
+                data = google.visualization.arrayToDataTable(this._value);
+            }
+
+
+            this._chart.draw(data, options);
+            google.visualization.events.addListener(this._chart, 'ready', () => {
+                setTimeout(() => {
+                    if(this._chartReadyHandler) {
+                        this._chartReadyHandler(this._chart);
+                    }
+                }, 500);
+            });
+        } catch(e) {
+            console.log(e);
         }
 
-
-        this._chart.draw(data, options);
-        google.visualization.events.addListener(this._chart, 'ready', () => {
-            setTimeout(() => {
-                if(this._chartReadyHandler) {
-                    this._chartReadyHandler(this._chart);
-                }
-            }, 500);
-        });
     }
 
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('GoogleChartsLoaded', false, 'Когда загрузка завершена');
+        this.RegisterEvent('GoogleChartsLoaded', false, 'When the download is complete');
     }
 
     /**
@@ -26479,6 +27518,7 @@ Colibri.UI.GoogleChart = class extends Colibri.UI.Pane {
      * @type {Object}
      */
     set options(value) {
+        value = this._convertProperty('Object', value);
         this._options = value;
     }
 
@@ -26618,6 +27658,7 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
      * @type {boolean}
      */
     set shown(value) {
+
         value = value === true || value === 'true';
         super.shown = value;
 
@@ -26675,7 +27716,7 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
 
         if(!super.shown && this._connectToBody) {
             this.Disconnect();
-            this.ConnectTo(this.parent.container);
+            this?.parent?.container && this.ConnectTo(this?.parent?.container);
             this.hasShadow = value;
         }
     }
@@ -26703,6 +27744,10 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
         this._align = value;
     }
 
+    get connectedToBody() {
+        return this._connectToBody;
+    }
+
     /**
      * Show popup
      * @param {Colibri.UI.Component} parent parent of popup
@@ -26720,6 +27765,7 @@ Colibri.UI.Popup = class extends Colibri.UI.Pane {
             this.container.data('for', parent.path);
         }
         this.shown = true;
+        this.BringToFront();
     }
     
 }
@@ -26823,7 +27869,11 @@ Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
         this._values = values;
 
         this._yearSelector = new Colibri.UI.Selector(this.name + '-year', this);
-        this._quarterSelector = new Colibri.UI.Selector(this.name + '-quarter', this);
+        this._quarterSelector = new Colibri.UI.Selector(this.name + '-quarter', this, true);
+        this._quarterSelector.placeholderinfo = (value, values) => new Promise((resolve, reject) => {
+            resolve(value.map(v => ['I', 'II', 'III', 'IV'][parseInt(v.value) - 1]).join(', '));
+        });
+
         this._yearSelector.searchable = false;
         this._yearSelector.readonly = false;
         this._quarterSelector.searchable = false;
@@ -26847,7 +27897,7 @@ Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('Changed', false, 'Когда значение изменилось');
+        this.RegisterEvent('Changed', false, 'When the meaning changed');
     }
 
     /**
@@ -26881,7 +27931,8 @@ Colibri.UI.YearQuarterSelector = class extends Colibri.UI.FlexBox {
      * @param {*} args event arguments
      */ 
     __quarterSelectorChanged(event, args) {
-        this._value = {year: this._yearSelector.value.value, quarter: this._quarterSelector.value.value};
+        this._value = {year: this._yearSelector.value.value, quarter: this._quarterSelector.value.map(v => v.value).join(';')};
+        // this._quarterSelector.ClosePopup();
         this.Dispatch('Changed', Object.assign(args, {value: this._value}));
     }
 
@@ -27209,47 +28260,65 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
     _setFilledMark() {
         Object.forEach(this._fields, (name, fieldData) => {
             const fieldComponent = this.Children(name);
-            fieldComponent._setFilledMark && fieldComponent._setFilledMark();
+            fieldComponent?._setFilledMark && fieldComponent?._setFilledMark();
         });
     }
 
     /** @protected */
     _calcRuntimeValues(rootValue = null) {
-        if(this._calculating) {
+        if(this._calculating || !this.needRecalc) {
             return;
         }
 
         this._calculating = true;
-        Object.forEach(this._fields, (name, fieldData) => {
-            const fieldComponent = this.Children(name);            
-            if(!fieldComponent) {
-                return true;
-            } 
+        try {
 
-            if(fieldComponent instanceof Colibri.UI.Forms.Object || fieldComponent instanceof Colibri.UI.Forms.Array || fieldComponent instanceof Colibri.UI.Forms.Tabs) {
-                fieldComponent._calcRuntimeValues();
-            } else {
-                if(fieldData?.params?.valuegenerator) {
-                    const f = eval(fieldData?.params?.valuegenerator);
-                    const v = f(this.value, this.value, fieldComponent, this);
-                    fieldComponent.value = v;
+            Object.forEach(this._fields, (name, fieldData) => {
+                const fieldComponent = this.Children(name);            
+                if(!fieldComponent || !fieldComponent.needRecalc) {
+                    return true;
+                } 
+
+                if(fieldComponent instanceof Colibri.UI.Forms.Object || fieldComponent instanceof Colibri.UI.Forms.Array || fieldComponent instanceof Colibri.UI.Forms.Tabs) {
+                    fieldComponent._calcRuntimeValues();
+                } else {
+                    if(fieldData?.params?.valuegenerator) {
+                        const f = eval(fieldData?.params?.valuegenerator);
+                        const v = f(this.value, this.value, fieldComponent, this);
+                        fieldComponent.value = v;
+                    }
                 }
-            }
-        });
-        this._calculating = false;
+            });
+        } catch(e) {
+                
+        } finally {
+            this._calculating = false;
+        }
+
     }
 
     /** @protected */
     _hideAndShow() {
 
+        if(!this.needHideAndShow) {
+            return;
+        }
+
         const data = this.value;
 
         Object.forEach(this._fields, (name, fieldData) => {
-            const fieldComponent = this.Children(name);
+            let fieldComponent = this.Children(name);
+            if(!fieldComponent || !fieldComponent.needHideAndShow) {
+                return true;
+            }
 
             if(fieldData?.params?.fieldgenerator) {
                 const gen = eval(fieldData.params.fieldgenerator);
                 gen(fieldData, fieldComponent, this);
+                if(fieldData?.replace ?? false) {
+                    fieldComponent.Dispose();
+                    fieldComponent = this._renderField(name, fieldData, data[name] ?? null, true);
+                }
             } 
 
             if(fieldData.params && fieldData.params.condition) {
@@ -27549,11 +28618,27 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         if(value && value[name] !== undefined) {
             component.value = value[name];
         }
+
+    }
+
+    get needRecalc() {
+        let nr = false;
+        this.ForEach((n, c) => {
+            nr = nr || c.needRecalc;
+        });
+        return nr;
+    }
+
+    get needHideAndShow() {
+        let nr = false;
+        this.ForEach((n, c) => {
+            nr = nr || c.needHideAndShow;
+        });
+        return nr;
     }
 
     /** @private */
     _renderFields(value) {
-        
         let hasGroups = false;
         Object.forEach(this._fields, (name, fieldData) => {
             fieldData = Object.cloneRecursive(fieldData);
@@ -27584,10 +28669,12 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
                     fieldData.group && (fieldData.group = fieldData.group[Lang.Current] ?? fieldData.group);
                     if(fieldData.group !== 'window') {
                         if(fieldData.group === groupName) {
+                            this.Children(name).Retreive();
                             this.Children(name).shown = true;
                         }
                         else {
                             this.Children(name).shown = false;
+                            this.Children(name).KeepInMind();
                         }
                     }
                 });
@@ -27680,6 +28767,20 @@ Colibri.UI.Forms.Form = class extends Colibri.UI.Component {
         }
     }
 
+    defaultValues(fields = null) {
+        let ret = {};
+        Object.forEach(fields || this._fields, (name, field) => {
+            if(field.fields) {
+                ret[name] = this.defaultValues(field.fields);
+            } else if(field.default) {
+                ret[name] = field.default
+            } else {
+                ret[name] = null;
+            }
+        });
+        return ret;
+    }
+
 } 
 /**
  * @class
@@ -27726,68 +28827,74 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
         if(!field.component && !field.type) {
             return ;
         }
+        try {
 
-        let component = field.component || '';
-        if(!component) {
+            let component = field.component || '';
+            if(!component) {
 
-            if(field.values !== undefined || field.lookup !== undefined) {
-                component = 'Select';
-            }
-            else if(['varchar', 'char'].indexOf(field.type) !== -1 && field.class === 'string') {
-                component = 'Text';
-            }
-            else if(['text', 'longtext', 'tinytext', 'mediumtext'].indexOf(field.type) !== -1 && field.class === 'string') {
-                component = 'TextArea';
-            }
-            else if(['date', 'datetime', 'timestamp'].indexOf(field.type)) {
-                component = 'Date';
-            }
-            else if(['tinyint'].indexOf(field.type) !== -1) {
-                component = 'Bool';
-            }
-            else if(['int', 'integer', 'bigint', 'float', 'decimal', 'double', 'real', 'smallint'].indexOf(field.type) !== -1) {
-                component = 'Number';
-            }
-            else if(['json', 'longtext'].indexOf(field.type) !== -1) {
-                if(field.class.indexOf('ArrayField') !== -1) {
-                    component = 'Object';
+                if(field.values !== undefined || field.lookup !== undefined) {
+                    component = 'Select';
                 }
-                else {
-                    component = 'Array';
-                }   
+                else if(['varchar', 'char'].indexOf(field.type) !== -1 && field.class === 'string') {
+                    component = 'Text';
+                }
+                else if(['text', 'longtext', 'tinytext', 'mediumtext'].indexOf(field.type) !== -1 && field.class === 'string') {
+                    component = 'TextArea';
+                }
+                else if(['date', 'datetime', 'timestamp'].indexOf(field.type)) {
+                    component = 'Date';
+                }
+                else if(['tinyint'].indexOf(field.type) !== -1) {
+                    component = 'Bool';
+                }
+                else if(['int', 'integer', 'bigint', 'float', 'decimal', 'double', 'real', 'smallint'].indexOf(field.type) !== -1) {
+                    component = 'Number';
+                }
+                else if(['json', 'longtext'].indexOf(field.type) !== -1) {
+                    if(field.class.indexOf('ArrayField') !== -1) {
+                        component = 'Object';
+                    }
+                    else {
+                        component = 'Array';
+                    }   
+                }
             }
-        }
 
-        if(!component) {
-            return null;
-        }
-
-        let componentObject = null;
-
-        if(component === 'Colibri.UI.Forms.Hidden') {
-            componentObject = new Colibri.UI.Forms.HiddenField(name, container, field, parent, root);
-        } else {
-
-            if (typeof Colibri.UI.Forms[component] === 'function') {
-                componentObject = new Colibri.UI.Forms[component](name, container, field, parent, root);
-            } else if (eval(`typeof ${component}`) === 'function') {
-                componentObject = eval(`new ${component}(name, container, field, parent, root);`);
+            if(!component) {
+                return null;
             }
 
-            if (!componentObject || !(componentObject instanceof Colibri.UI.Forms.Field)) {
-                throw new Error(`${component} is not an Colibri.UI.Forms.Field instance`);
+            let componentObject = null;
+
+            if(component === 'Colibri.UI.Forms.Hidden') {
+                componentObject = new Colibri.UI.Forms.HiddenField(name, container, field, parent, root);
+            } else {
+
+                if (typeof Colibri.UI.Forms[component] === 'function') {
+                    componentObject = new Colibri.UI.Forms[component](name, container, field, parent, root);
+                } else if (eval(`typeof ${component}`) === 'function') {
+                    componentObject = eval(`new ${component}(name, container, field, parent, root);`);
+                }
+
+                if (!componentObject || !(componentObject instanceof Colibri.UI.Forms.Field)) {
+                    throw new Error(`${component} is not an Colibri.UI.Forms.Field instance`);
+                }
             }
+
+            componentObject.shown = true;
+            componentObject.tabIndex = true;
+            if(field.attrs) {
+                Object.forEach(field.attrs, (attrName, attrValue) => {
+                    componentObject[attrName] = attrValue;
+                });
+            }
+
+            return componentObject;
+        
+        } catch(e) {
+            debugger;
         }
 
-        componentObject.shown = true;
-        componentObject.tabIndex = true;
-        if(field.attrs) {
-            Object.forEach(field.attrs, (attrName, attrValue) => {
-                componentObject[attrName] = attrValue;
-            });
-        }
-
-        return componentObject;
     }
 
     /**
@@ -27963,12 +29070,12 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
     /** @protected */
     _registerEvents() { 
         super._registerEvents();  
-        this.RegisterEvent('Validated', false, 'Прошла валидация')
-        this.RegisterEvent('Changed', false, 'Прозошло изменение данных компонента') 
-        this.RegisterEvent('KeyDown', false, 'Когда кнопка нажата')
-        this.RegisterEvent('KeyUp', false, 'Когда кнопка отжата')
-        this.RegisterEvent('FieldsRendered', false, 'Когда поля созданы');
-        this.RegisterEvent('MessageClicked', false, 'Когда ткнули в ошибку')
+        this.RegisterEvent('Validated', false, 'Validation passed')
+        this.RegisterEvent('Changed', false, 'A change in component data has occurred') 
+        this.RegisterEvent('KeyDown', false, 'When the button is pressed')
+        this.RegisterEvent('KeyUp', false, 'When the button is released')
+        this.RegisterEvent('FieldsRendered', false, 'When the fields are created');
+        this.RegisterEvent('MessageClicked', false, 'When you were pointed at an error')
     }
 
     
@@ -28182,6 +29289,7 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
      */
     set field(value) {
         this._fieldData = value;
+        
     }
 
     /**
@@ -28242,6 +29350,54 @@ Colibri.UI.Forms.Field = class extends Colibri.UI.Component {
      */
     get original() {
         return this._original;
+    }
+
+    _needRecalcF(fields) {
+        let nr = false;
+        Object.forEach(fields, (n, f) => {
+            if(!!f.fields) {
+                nr = nr || this._needRecalcF(f.fields);
+            } else {
+                nr = nr || !!(f?.params?.valuegenerator ?? false);
+            }
+        });
+        return nr;
+    }
+
+    _needHideAndShowF(fields) {
+        let nr = false;
+        Object.forEach(fields, (n, f) => {
+            if(!!f.fields) {
+                nr = nr || (!!(f?.params?.fieldgenerator ?? false) || !!(f?.params?.condition ?? false) || !!(f?.params?.hidden ?? false)) || this._needHideAndShowF(f.fields);
+            } else {
+                nr = nr || (!!(f?.params?.fieldgenerator ?? false) || !!(f?.params?.condition ?? false) || !!(f?.params?.hidden ?? false));
+            }
+        });
+        return nr;
+    }
+
+    /**
+     * Needs recalc every time when changed to form field
+     * @readonly
+     */
+    get needRecalc() {
+        if(!!this._fieldData.fields) {
+            return !!(this._fieldData?.params?.valuegenerator ?? false) || this._needRecalcF(this._fieldData.fields);
+        } else {
+            return !!(this._fieldData?.params?.valuegenerator ?? false);
+        }
+    }
+
+    /**
+     * Needs hide and show when changed the form
+     * @readonly
+     */
+    get needHideAndShow() {
+        if(!!this._fieldData.fields) {
+            return (!!(this._fieldData?.params?.fieldgenerator ?? false) || !!(this._fieldData?.params?.condition ?? false) || !!(this._fieldData?.params?.hidden ?? false)) || this._needHideAndShowF(this._fieldData.fields);
+        } else {
+            return (!!(this._fieldData?.params?.fieldgenerator ?? false) || !!(this._fieldData?.params?.condition ?? false) || !!(this._fieldData?.params?.hidden ?? false));
+        }
     }
 
 }
@@ -28310,6 +29466,18 @@ Colibri.UI.Forms.HiddenField = class extends Colibri.UI.Component {
      */
     ResetValidation() {
         // Do nothing
+    }
+
+    get needRecalc() {
+        return false;
+    }
+
+    get loading() {
+        return this._loading ?? false;
+    }
+
+    set loading(value) {
+        this._loading = value;
     }
 
 }
@@ -28956,6 +30124,7 @@ Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
 
         this._input = new Colibri.UI.DateSelector(this._name + '-input', contentContainer);
         this._input.shown = true;
+        this._input.clearIcon = false;
         this._input.AddHandler('Changed', (event, args) => this.Dispatch('Changed', Object.assign(args || {}, {component: this})));
         this._input.AddHandler('KeyUp', (event, args) => this.Dispatch('KeyUp', args));
         this._input.AddHandler('Clicked', (event, args) => {
@@ -28988,6 +30157,16 @@ Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
         else {
             this.enabled = this._fieldData.params.enabled;
         }
+
+        this._input.clearIcon = this._fieldData?.params?.dateselectorclear ?? false;
+        this._min = this._fieldData?.params?.min ? new Date(this._fieldData?.params?.min + ' 00:00:00') : new Date(-8640000000000000);
+        this._max = this._fieldData?.params?.max ? new Date(this._fieldData?.params?.max + ' 23:59:59') : new Date(8640000000000000);
+        this._todayDate = this._fieldData?.params?.today ? new Date(this._fieldData?.params?.today) : null;
+        this._todayString = this._fieldData?.params?.today_title ?? null;
+        this._input.min = this._min;
+        this._input.max = this._max;
+        this._input.todayDate = this._todayDate;
+        this._input.todayString = this._todayString;
 
     }
     /**
@@ -29047,6 +30226,11 @@ Colibri.UI.Forms.Date = class extends Colibri.UI.Forms.Field {
     set value(value) {
         if(typeof value == 'string') {
             value = new Date(value);
+        }
+        if(value < this._min) {
+            return;
+        } else if(value > this._max) {
+            return;
         }
         this._input.value = value;
     }
@@ -29641,6 +30825,19 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
             };
         }
 
+        if(this._fieldData?.values) {
+            this.values = this._fieldData?.values ?? [];
+        }
+
+    }
+
+    /**
+     * Register events
+     * @protected
+     */
+    _registerEvents() {
+        super._registerEvents();
+        this.RegisterEvent('LookupCompleted', false, 'When lookup finalized');
     }
 
     /**
@@ -29723,6 +30920,9 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
                     let dependsValue = this._getDependsValue();
                     let dependsField = this._lookup.depends ?? null;   
                     lookupPromise = lookupMethod(this._input._input.value, dependsValue, dependsField, this);
+                    if(!(lookupPromise instanceof Promise)) {
+                        lookupPromise = Promise.resolve(lookupPromise);
+                    }
                 }
             }
             else if(this._lookup?.binding) {
@@ -29738,7 +30938,7 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
                         App.Store.AsyncQuery(binding).then((results) => {
                             let ret = [];
                             for(const result of results) {
-                                if(result[dependsField] == dependsValue) {
+                                if(!dependsField || result[dependsField] == dependsValue) {
                                     ret.push(result);
                                 }
                             }
@@ -29779,10 +30979,14 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
     set values(value) {
         value = this._convertProperty('Array', value);
         let required = this._fieldData?.params?.required;
+        let multiple = this._fieldData?.params?.multiple;
         if(required === undefined) {
             required = false;
         }
-        if(!required) {
+        if(multiple === undefined) {
+            multiple = false;
+        }
+        if(!required && !multiple) {
             const o = {};
             o[this._fieldData?.selector?.title ?? 'title'] = '---';
             o[this._fieldData?.selector?.value ?? 'value'] = 0;
@@ -29958,6 +31162,7 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
                     this.values = response.result || response;
                 }).finally(() => {
                     this.loading = false;
+                    let isChanged = false;
                     if(this._lastValue) {
                         this.value = this._lastValue;
                         this._lastValue = null;
@@ -29965,7 +31170,8 @@ Colibri.UI.Forms.Select = class extends Colibri.UI.Forms.Field {
                         this._input._renderValue(false);
                     }
                     this.RemoveClass('app-select-loading');
-                    this._setEnabled();
+                    this._setEnabled();        
+                    this.Dispatch('LookupCompleted');
                 });
             });
         } else {
@@ -30573,7 +31779,8 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
             this._input.AddHandler('InputFileChanged', (event, args) => {
                 this._files.shown = true;
                 this.lastValue = this.value;
-                this._addValue(this._input.Files());
+                let validatedFiles = this._validate(this._input.Files());
+                this._addValue(validatedFiles);
 
                 if (this._fieldData.params && this._fieldData.params.more) {
                     this._input.title = this._fieldData.params.more;
@@ -30604,7 +31811,7 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
             const deleteIcon = new Colibri.UI.TextSpan('delete', container);
 
             filename.AddClass('files-file-name');
-            if ((itemData.file?.type ?? itemData.file?.mimetype).match('image.*')) {
+            if ((itemData.file?.type ?? itemData.file?.mimetype)?.match('image.*') ?? false) {
                 picture.shown = filename.shown = deleteIcon.shown = true;
                 picture.image = itemData.file;
                 picture.width = picture.height = 40;
@@ -30766,27 +31973,32 @@ Colibri.UI.Forms.Files = class extends Colibri.UI.Forms.Field {
                 }
             });
         }
-
-        if (this._allowedExtensions) {
+        this._allowedExtensions = this._allowedExtensions.filter(v => !!v);
+        if (this._allowedExtensions && 
+            (Array.isArray(this._allowedExtensions) ? 
+                (this._allowedExtensions.includes('*') || this._allowedExtensions.includes('*.*')) : 
+                (this._allowedExtensions != '*' && this._allowedExtensions != '*.*'))
+        ) {
             let extensions = this._allowedExtensions.map((item) => item.toLowerCase());
-
-            filesList.forEach((file, index) => {
-                let fileName = file.name;
-                let ext = '';
-
-                if (fileName.includes('.')) {
-                    ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                    ext = ext.toLowerCase();
-                }
-
-                if (!extensions.includes(ext)) {
-                    error = true;
-                    this._validated = false;
-
-                    validatedList.splice(index, 1);
-                    this._errorMessages.push('Invalid file format ' + fileName);
-                }
-            });
+            if(!(extensions.includes('*') || extensions.includes('*.*'))) {
+                filesList.forEach((file, index) => {
+                    let fileName = file.name;
+                    let ext = '';
+    
+                    if (fileName.includes('.')) {
+                        ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        ext = ext.toLowerCase();
+                    }
+    
+                    if (!extensions.includes(ext)) {
+                        error = true;
+                        this._validated = false;
+    
+                        validatedList.splice(index, 1);
+                        this._errorMessages.push('Invalid file format ' + fileName);
+                    }
+                });    
+            }
         }
 
         if (!error) {
@@ -31398,11 +32610,14 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
                 }, 500);
             }
         });
-        this._input.addEventListener('paste', (e) => Colibri.Common.Delay(100).then(() => {
+        const onInputPasted = (e) => Colibri.Common.Delay(100).then(() => {
             this._input.emitHtmlEvents('change');
             this._original = this._input.value;
             this.Dispatch('Pasted', { domEvent: e });
-        }));
+            this.Dispatch('Changed', {domEvent: e, component: this});
+        });
+        this._input.addEventListener('paste', onInputPasted);
+        this._input.addEventListener('input', onInputPasted);
         this._input.addEventListener('keydown', (e) => this.Dispatch('KeyDown', {domEvent: e}));
         this._input.addEventListener('focus', (e) => this.Dispatch('ReceiveFocus', {domEvent: e}));
         this._input.addEventListener('blur', (e) => this.Dispatch('LoosedFocus', {domEvent: e}));
@@ -31432,7 +32647,7 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
             this.eyeIcon = this._fieldData?.params?.eyeicon;
         }
 
-        this.AddHandler(['Changed', 'KeyUp', 'Paste', 'ReceiveFocus'], (event, args) => {
+        this.AddHandler(['KeyUp', 'Pasted', 'ReceiveFocus'], (event, args) => {
             const strength = this.CalcPasswordStrength();
             this._showPasswordTip(strength);
             this.Dispatch('PasswordValidated', {strength: strength});
@@ -31458,42 +32673,50 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
             if(!this._passwordTip) {
                 this._passwordTip = new Colibri.UI.ToolTip(
                     this.name + '_tip', document.body, 
-                    tipData.orientation ? tipData.orientation : [Colibri.UI.ToolTip.RB, Colibri.UI.ToolTip.LB
-                ]);
+                    tipData.orientation ? tipData.orientation : [Colibri.UI.ToolTip.RB, Colibri.UI.ToolTip.LB]
+                );
             }
+
 
             if(tipData.className) {
                 this._passwordTip.AddClass(tipData.className);
             }
 
+            const requirements = this._fieldData?.params?.requirements || {digits: 8, strength: 40};
+
             let cls = 'bad';
-            if (strength > 80) {
+            if (strength > requirements?.minForStrong ?? 80) {
                 cls = "strong";
             }
-            else if (strength > 60) {
+            else if (strength > requirements?.minForGood ?? 60) {
                 cls = "good";
             }
-            else if (strength >= 30) {
+            else if (strength >= requirements?.minForWeak ?? 30) {
                 cls = "weak";
             }
-            const requirements = this._fieldData?.params?.requirements || {digits: 8, strength: 40};
-            let tipText = '<p>' + (Array.isArray(tipData.text) ? tipData.text.join('</p><p>') : tipData.text) + '</p>' + 
-                '<ul><li>' + (Array.isArray(tipData.digits) ? requirements.digits.formatSequence(tipData.digits, true) : tipData.digits.replaceAll('%s', requirements.digits)) + '</li>' + tipData.additional.map(f => '<li>' + f + '</li>').join('') + '</ul>' + 
-                '<div class="password-progress ' + cls + '"><span style="width: ' + strength + '%"></span></div>' +  
-                '<p>' + (strength < requirements.strength ? tipData.error : tipData.success) + '</p>' + 
-                '<a href="#">' + tipData.generate + '</a>';
-            
+            let tipText = '';
+            if(typeof tipData.text === 'function') {
+                const f = tipData.text;
+                tipText = f(strength, tipData, requirements, cls, this.value);
+            } else {
+                tipText = '<p>' + (Array.isArray(tipData.text) ? tipData.text.join('</p><p>') : tipData.text) + '</p>' + 
+                    '<ul><li>' + (Array.isArray(tipData.digits) ? requirements.digits.formatSequence(tipData.digits, true) : tipData.digits.replaceAll('%s', requirements.digits)) + '</li>' + tipData.additional.map(f => '<li>' + f + '</li>').join('') + '</ul>' + 
+                    '<div class="password-progress ' + cls + '"><span style="width: ' + strength + '%"></span></div>' +  
+                    '<p>' + (strength < requirements.strength ? tipData.error : tipData.success) + '</p>' + 
+                    '<a href="#">' + tipData.generate + '</a>';
+            }
             
             this._passwordTip.value = tipText;
-            this._passwordTip.Show(this.contentContainer);
             const a = this._passwordTip.container.querySelector('a');
             if(a) {
                 a.addEventListener('click', (e) => this._generatePassword(e));
             }
 
-            if(cls != 'weak' && cls != 'bad') {
+            if(cls === 'strong') {
                 this._hidePasswordTip();
-            }            
+            } else if(this.value.length > 0 && this.elementIsInOffset) {
+                this._passwordTip.Show(this.contentContainer, true);
+            }     
             
         }
     }
@@ -31520,7 +32743,14 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
      */
     CalcPasswordStrength() {
         const pass = this.value;
+
         const requirements = this._fieldData?.params?.requirements || {digits: 8, strength: 40};
+
+        if(this._fieldData?.params?.strengthMethod) {
+            const f = this._fieldData?.params?.strengthMethod;
+            return f(pass, requirements);
+        }
+
 
         if (!pass || pass.length < requirements.digits) {
             return 0;
@@ -31759,6 +32989,14 @@ Colibri.UI.Forms.Password = class extends Colibri.UI.Forms.Field {
         super.Dispose();
     }
 
+    /**
+     * 
+     * @type {Colibri.UI.ToolTip}
+     */
+    get passwordTip() {
+        return this._passwordTip;
+    }
+
 }
 
 Colibri.UI.Forms.Field.RegisterFieldComponent('Password', 'Colibri.UI.Forms.Password', 'Password')
@@ -31821,8 +33059,7 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
      */
     set value(value) {
         this._value = value;
-        this._showValue();
-        this.Validate();
+        this._loadValues();
     }
 
     /** @private */
@@ -31879,6 +33116,19 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
                 }
                 contentContainer.container.append(Element.fromHtml('<label><input type="radio" name="' + this.name + '" id="' + ident + '" value="' + value.value + '"' + (value?.__selected ? ' checked="checked"' : '') + ' /><span>' + (value.title[Lang.Current] ?? value.title) + '</span></label>'))
             });
+
+            
+            if(!(this._fieldData?.params?.required ?? false)) {
+                const icon = new Colibri.UI.Icon('clear', contentContainer);
+                icon.shown = true;
+                icon.iconSVG = 'Colibri.UI.CloseIcon';
+                icon.toolTip = 'Clear';
+                icon.AddHandler('Clicked', (event, args) => {
+                    contentContainer.container.querySelectorAll('input').forEach(input => input.checked = false);
+                    this._value = null;
+                    this.Dispatch('Changed', {domEvent: args.domEvent, component: this});
+                });
+            }
     
             contentContainer.container.querySelectorAll('input').forEach(input => input.addEventListener('click', e => {
                 this._value = e.target.value;
@@ -31890,12 +33140,14 @@ Colibri.UI.Forms.Radio = class extends Colibri.UI.Forms.Field {
             }
             
             this._showValue();
+            this.Validate();
 
             if(this._focusOnFirst) {
                 this.Focus();
             }
 
         });
+
 
 
 
@@ -33492,7 +34744,7 @@ Colibri.UI.Forms.DateRange = class extends Colibri.UI.Forms.Field {
         this._input1 = new Colibri.UI.DateSelector(this._name + '-input1', contentContainer);
         this._input1.shown = true;
         this._input1.AddHandler('Changed', (event, args) => this.Dispatch('Changed', Object.assign(args || {}, {component: this})));
-        this._input1.AddHandler('KeyUp', (event, args) => this.Dispatch('KeyUp', args));
+        this._input1.AddHandler('KeyUp', (event, args) => this.Dispatch('KeyUp', Object.assign(args || {}, {component: this._input1})));
         this._input1.AddHandler('Clicked', (event, args) => {
             this.Focus();
             this.Dispatch('Clicked', args);
@@ -33507,7 +34759,7 @@ Colibri.UI.Forms.DateRange = class extends Colibri.UI.Forms.Field {
         this._input2.shown = true;
         this._input2.hasIcon = false;
         this._input2.AddHandler('Changed', (event, args) => this.Dispatch('Changed', Object.assign(args || {}, {component: this})));
-        this._input2.AddHandler('KeyUp', (event, args) => this.Dispatch('KeyUp', args));
+        this._input2.AddHandler('KeyUp', (event, args) => this.Dispatch('KeyUp', Object.assign(args || {}, {component: this._input2})));
         this._input2.AddHandler('Clicked', (event, args) => {
             this.Focus();
             this.Dispatch('Clicked', args);
@@ -33538,6 +34790,7 @@ Colibri.UI.Forms.DateRange = class extends Colibri.UI.Forms.Field {
             this._input2.format = new Intl.DateTimeFormat(this._fieldData?.params?.format?.locale || dateformat, this._fieldData?.params?.format?.options ?? {day: '2-digit', month: 'short', year: 'numeric'});
         }
 
+
     }
 
     /**
@@ -33561,6 +34814,9 @@ Colibri.UI.Forms.DateRange = class extends Colibri.UI.Forms.Field {
     }
 
 }
+
+Colibri.UI.Forms.Field.RegisterFieldComponent('DateRange', 'Colibri.UI.Forms.DateRange', 'Date range')
+
 /**
  * @class
  * @extends Colibri.UI.Forms.Field
@@ -34088,7 +35344,18 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
 
         const contentContainer = this.contentContainer;
         for(const v of value) {
-            contentContainer.Children(this._name + '-input-' + String.MD5(v.value + v.title)).checked = true;
+            try {
+                let input = contentContainer.Children(this._name + '-input-' + String.MD5(v.value + v.title));
+                if(!input) {
+                    input = new Colibri.UI.Checkbox(this._name + '-input-' + String.MD5(v.value + v.title), contentContainer);
+                    input.shown = true;
+                    input.placeholder = v.title;
+                    input.tag = v;
+                    input.tabIndex = true;
+                    this._handleEvents(input);
+                }
+                input.checked = v.__checked ?? true;
+            } catch(e) {}
         }
 
     }
@@ -34155,6 +35422,11 @@ Colibri.UI.Forms.CheckboxList = class extends Colibri.UI.Forms.Field {
             input.placeholder = v.title;
             input.tag = v;
             input.tabIndex = true;
+            if(v.__checked) {
+                input.checked = true;
+            } else {
+                input.checked = false;
+            }
             this._handleEvents(input);
 
         }
@@ -34183,7 +35455,11 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
         this._renderFields();
         this._hideAndShow();
 
-        this.AddHandler('Changed', (event, args) => this._hideAndShow());
+        this.AddHandler('Changed', (event, args) => {
+            if(!this.root) {
+                this._hideAndShow();
+            }
+        });
 
         if(this._fieldData.className) {
             this.AddClass(this._fieldData.className);
@@ -34202,6 +35478,27 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
             this.enabled = this._fieldData.params.enabled;
         }
 
+    }
+
+    _renderField(name, fieldData, value, shown = true) {
+        const component = Colibri.UI.Forms.Field.Create(name, this.contentContainer, fieldData, this, this.root);
+        if(!component) {
+            return true;
+        }
+        if(this._fieldData?.params?.removedesc !== false) {
+            let placeholder = this._fieldData?.params?.vertical ? fieldData.placeholder : fieldData.desc;
+            placeholder = placeholder ? placeholder[Lang.Current] ?? placeholder : '';
+            if(!this._fieldData?.params?.vertical) {
+                delete fieldData.desc;
+            }
+            component.placeholder = placeholder;
+        }
+
+        component.message = false;
+        component.shown = shown;
+        if(value) {
+            component.value = value;
+        }
     }
 
     /** @protected */
@@ -34226,24 +35523,9 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
             Object.forEach(this._fieldData.fields, (name, fieldData) => {
             
                 const field = Object.cloneRecursive(fieldData);
-                
-                const component = Colibri.UI.Forms.Field.Create(name, this.contentContainer, field, this, this.root);
-                if(!component) {
-                    return true;
-                }
-                if(this._fieldData?.params?.removedesc !== false) {
-                    let placeholder = this._fieldData?.params?.vertical ? field.placeholder : field.desc;
-                    placeholder = placeholder ? placeholder[Lang.Current] ?? placeholder : '';
-                    if(!this._fieldData?.params?.vertical) {
-                        delete field.desc;
-                    }
-                    component.placeholder = placeholder;
-                }
 
-                component.message = false;
-                component.shown = true;
-                component.AddHandler('Changed', (event, args) => this.Dispatch('Changed', Object.assign({component: this}, args)))
-                
+                this._renderField(name, field, null, true);
+
             });    
         }
 
@@ -34349,7 +35631,19 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
             }    
         }
 
-        this._hideAndShow();
+        Colibri.Common.Wait(() => {
+            let loading = false;
+            this.ForEveryField((name, component) => {
+                if(component.loading) {
+                    loading = true;
+                    return false;
+                }
+                return true;
+            });
+            return !loading;
+        }).then(() => {
+            this._hideAndShow();
+        });
 
         this.readonly = !!this._fieldData?.params?.readonly;
 
@@ -34430,7 +35724,15 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
 
     /** @protected */
     _calcRuntimeValues(rootValue = null) {
+        if(!this.needRecalc) {
+            return;
+        }
+
         this.ForEveryField((name, fieldComponent) => {
+            if(!fieldComponent || !fieldComponent.needRecalc) {
+                return true;
+            }
+
             const fieldData = fieldComponent.field;
             if(fieldComponent instanceof Colibri.UI.Forms.Object || fieldComponent instanceof Colibri.UI.Forms.Array || fieldComponent instanceof Colibri.UI.Forms.Tabs) {
                 fieldComponent._calcRuntimeValues();
@@ -34446,6 +35748,10 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
     
     /** @protected */
     _hideAndShow() {
+        
+        if(!this.needHideAndShow) {
+            return;
+        }
 
         const data = this.value;
         const formData = this.root.value;
@@ -34455,10 +35761,14 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
                 return true;
             }
 
-            const fieldComponent = this.contentContainer.Children(name);
+            let fieldComponent = this.contentContainer.Children(name);
             if(fieldData?.params?.fieldgenerator) {
                 const gen = eval(fieldData.params.fieldgenerator);
                 gen(fieldData, fieldComponent, this);
+                if(fieldData?.replace ?? false) {
+                    fieldComponent.Dispose();
+                    fieldComponent = this._renderField(name, fieldData, data[name] ?? null, true);
+                }
             } 
         
             if(fieldComponent && fieldData.params && fieldData.params.condition) {
@@ -34527,7 +35837,6 @@ Colibri.UI.Forms.Object = class extends Colibri.UI.Forms.Field {
     ForEveryField(callback) {
         this.contentContainer && this.contentContainer.ForEach(callback);
     }
-
     
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Object', 'Colibri.UI.Forms.Object', 'Object with sub properties')
@@ -34578,13 +35887,16 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
     /** @private */
     _createAddNewLink() {
-        if(this._fieldData.params && this._fieldData.params.addlink === null) {
+        if (!this._fieldData?.params) {
+            this._fieldData.params = {};
+        }
+        if(this._fieldData?.params && this._fieldData.params?.addlink === null) {
             return;
         }
 
         this.contentContainer.Children('add-new') && this.contentContainer.Children('add-new').Dispose();
-        if(typeof Lang.Translate(this._fieldData.params.addlink) === 'object') {
-            const linkData = this._fieldData.params.addlink;
+        if(typeof Lang.Translate(this._fieldData.params?.addlink) === 'object') {
+            const linkData = this._fieldData.params?.addlink;
             const c = eval(linkData.component);
             this._link = new c('add-new', this.contentContainer);
             Object.forEach(linkData.attrs, (name, value) => {
@@ -34593,9 +35905,9 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
         } else {
             this._fieldData.desc = this._fieldData.desc ? this._fieldData.desc[Lang.Current] ?? this._fieldData.desc : ''; 
-            this._fieldData.params.addlink = this._fieldData?.params?.addlink ? this._fieldData.params.addlink[Lang.Current] ?? this._fieldData.params.addlink : '';
+            this._fieldData.params.addlink = this._fieldData?.params?.addlink ? this._fieldData.params?.addlink[Lang.Current] ?? this._fieldData.params?.addlink : '';
             this._link = new Colibri.UI.Link('add-new', this.contentContainer);
-            this._link.value = this._fieldData.params && this._fieldData.params.addlink || 'Add new «' + (this._fieldData.desc) + '»';    
+            this._link.value = this._fieldData.params && this._fieldData.params?.addlink || 'Add new «' + (this._fieldData.desc) + '»';    
         }
         
 
@@ -34628,6 +35940,7 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
         }
         const object = this._addNew(value);
         this.Dispatch('Changed', {component: this});
+        
         return object;
     }
 
@@ -34683,7 +35996,9 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
                 this.Dispatch('ObjectRemoved', {component: this});
 
-                this._hideAndShow();
+                if(!this.root) {
+                    this._hideAndShow();
+                }
 
             });
         }
@@ -34704,7 +36019,7 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
                 const f = eval(this._fieldData.params.title);
                 f && f(object, this);
             }
-            return this.Dispatch('Changed', Object.assign(args ?? {}, {component: this}));
+            // return this.Dispatch('Changed', Object.assign(args ?? {}, {component: this}));
         });
         this._itemsContainer.Children(object.name, object);
         if(this._fieldData.params && this._fieldData.params.title !== null) {
@@ -34897,6 +36212,10 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
     /** @proptected */
     _calcRuntimeValues(rootValue = null) {
+        if(!this.needRecalc) {
+            return ;
+        }
+
         const formValue = rootValue ?? this.root?.value ?? {};
         this.itemsContainer.ForEach((name, rowObject) => {
             rowObject._calcRuntimeValues(formValue);
@@ -34914,8 +36233,25 @@ Colibri.UI.Forms.Array = class extends Colibri.UI.Forms.Field {
 
     /** @private */
     _hideAndShow() {
+        if(!this.needHideAndShow) {
+            return;
+        }
         this.ForEveryField((name, component) => component._hideAndShow());
     }
+
+    ClearAllRows() {
+        this._itemsContainer.Clear();
+    }
+
+    HideAddLink() {
+        this._linkCanBeShown = false;
+        this._link.shown = false;
+    }
+    ShowAddLink() {
+        this._linkCanBeShown = true;
+        this._link.shown = true;
+    }
+
 
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Array', 'Colibri.UI.Forms.Array', 'Array of objects')
@@ -34935,10 +36271,11 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
         this._tabs = new Colibri.UI.Tabs('tabs', this.contentContainer);
         this._tabs.shown = true;
+        this._tabs.allTabsInDoc = true;
 
         this._tabs.AddHandler('SelectionChanged', (event, args) => {
             // ! нужно видимо убрать событие TabChanged
-            this.Dispatch('TabChanged', args);
+            // this.Dispatch('TabChanged', args);
             this.Dispatch('Changed', args);
         });
 
@@ -34947,7 +36284,11 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
         this._tabs.selectedIndex = 0;
 
-        this.AddHandler('Changed', (event, args) => this._hideAndShow());
+        this.AddHandler('Changed', (event, args) => {
+            if(!this.root) {
+                this._hideAndShow();
+            }
+        });
 
         if(this._fieldData.className) {
             this.AddClass(this._fieldData.className);
@@ -34968,6 +36309,31 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
     }
 
+    _renderField(name, fieldData, value, shown = true) {
+        
+        const field = Object.cloneRecursive(fieldData);
+        const tabTitle = field.desc[Lang.Current] ?? field.desc ?? '';
+
+        delete field.desc;
+
+        const component = Colibri.UI.Forms.Field.Create(name, this._tabs.container, fieldData, this, this.root);
+        component.message = false;
+        component.shown = shown;
+        // component.AddHandler('Changed', (event, args) => {
+        //     this.Dispatch('Changed', {component: this});
+        // });
+
+        const tabButton = new Colibri.UI.Button(component.name + '-button', this._tabs.header);
+        tabButton.value = tabTitle;
+        tabButton.shown = shown;
+
+        if(value) {
+            component.value = value;
+        }
+
+        this._tabs.AddTab(tabButton, component);
+    }
+
     /** @protected */
     _renderFields() {
 
@@ -34975,26 +36341,7 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
         // this._fieldData.params && this._fieldData.params.merged && this.AddClass('app-merged-object-component');
 
         Object.forEach(this._fieldData.fields, (name, fieldData) => {
-
-            const field = Object.cloneRecursive(fieldData);
-            const tabTitle = field.desc[Lang.Current] ?? field.desc ?? '';
-
-            delete field.desc;
-            
-            const component = Colibri.UI.Forms.Field.Create(name, this._tabs.container, field, this, this.root);
-            component.message = false;
-            component.shown = true;
-            component.AddHandler('Changed', (event, args) => {
-                this.Dispatch('Changed', {component: this});
-            });
-
-            const tabButton = new Colibri.UI.Button(component.name + '-button', this._tabs.header);
-            tabButton.value = tabTitle;
-            tabButton.shown = true;
-
-            this._tabs.AddTab(tabButton, component);
-            
-            
+            this._renderField(name, fieldData, null, true);
         });
 
         this.Dispatch('FieldsRendered');
@@ -35061,7 +36408,6 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
      */
     set value(value) {
         value = eval_default_values(value);
-        
         Object.forEach(this._tabs.components, (name, component) => {
             if(name == '_adds') {
                 // если наткнулись на _adds
@@ -35092,10 +36438,29 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
                 oneof.value = keys[0];
             }
         }
+
+        Colibri.Common.Wait(() => {
+            let loading = false;
+            this.ForEveryField((name, component) => {
+                if(component.loading) {
+                    loading = true;
+                    return false;
+                }
+                return true;
+            });
+            return !loading;
+        }).then(() => {
+            this._hideAndShow();
+        });
+
+        
     }
 
     /** @protected */
     _hideAndShow() {
+        if(!this.needHideAndShow) {
+            return;
+        }
 
         const data = this.value;
         const formData = this.root.value;
@@ -35105,10 +36470,15 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
                 return true;
             }
             
-            const fieldComponent = this.contentContainer.Children(name);
+            let fieldComponent = this.contentContainer.Children(name);
             if(fieldData?.params?.fieldgenerator) {
                 const gen = eval(fieldData.params.fieldgenerator);
                 gen(fieldData, fieldComponent, this);
+                if(fieldData?.replace ?? false) {
+                    fieldComponent.Dispose();
+                    fieldComponent = this._renderField(name, fieldData, data[name] ?? null, true);
+                }
+
             } 
             if(fieldComponent && fieldData.params && fieldData.params.condition) {
                 const condition = fieldData.params.condition;
@@ -35210,8 +36580,17 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
 
     /** @protected */
     _calcRuntimeValues(rootValue = null) {
+        if(!this.needRecalc) {
+            return;
+        }
+
         Object.forEach(this._fieldData.fields, (name, fieldData) => {
+
             const fieldComponent = this.Fields(name);         
+            if(!fieldComponent || !fieldComponent.needRecalc) {
+                return true;
+            }
+            
             if(fieldComponent instanceof Colibri.UI.Forms.Object || fieldComponent instanceof Colibri.UI.Forms.Array || fieldComponent instanceof Colibri.UI.Forms.Tabs) {
                 fieldComponent._calcRuntimeValues();
             } else {
@@ -35224,7 +36603,6 @@ Colibri.UI.Forms.Tabs = class extends Colibri.UI.Forms.Object {
         });
     }
     
-
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('Tabs', 'Colibri.UI.Forms.Tabs', 'Tabs')
 
@@ -35268,13 +36646,14 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     /** @protected */
     _handleEvents() {
         /** Открыть окно с новым объектом */
-        this._addObjectButton.AddHandler('Clicked', (event, args) => this.__newObject(event, args));
+        this._addObjectButton.AddHandler('Clicked', (event, args) => this.newObject(event, args));
 
         /** Открыть окно с выбранным объектом */
         this._objectsGrid.AddHandler('SelectionChanged', (event, args) => {
             // не открываем окно, если на строке вызывают контекстное меню
-            if (args.isContextMenuEvent !== true) {
-                this.__showObject(event, Object.assign({object_row: this._getSelected()}, args))
+            const selected = this._getSelected();
+            if (args.isContextMenuEvent !== true && selected) {
+                this.showObject(selected.value);
             }
         });
 
@@ -35284,15 +36663,12 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
         /** Вызвать нужный обработчик контекстного меню */
         this._objectsGrid.AddHandler('ContextMenuItemClicked', (event, args) => this.__processContextMenuAction(event, args));
 
-        this._objectsGrid.AddHandler('RowSelected', (event, args) => this.__toggleMassActionsMenu(event, args));
-
-         this._objectsGrid.AddHandler('MassActionsMenuActionClicked', (event, args) => this.__processMassAction(event, args));
     }
 
     /** @private */
     _renderAddObjectButton() {
         this._addObjectButton = new Colibri.UI.OutlineBlueButton(this._name + '-add-object-button', this.contentContainer);
-        this._addObjectButton.value = this._fieldData.params?.addlink || 'Add «' + (this._fieldData.desc) + '»';
+        this._addObjectButton.value = Lang.Translate(this._fieldData.params?.addlink) || 'Add «' + (Lang.Translate(this._fieldData.desc)) + '»';
         this._addObjectButton.shown = true;
     }
 
@@ -35301,15 +36677,14 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
         this._objectsGrid = new Colibri.UI.Grid(this._name + '-container-grid', this.contentContainer);
         this._objectsGrid.selectionMode = Colibri.UI.Grid.FullRow;
         this._objectsGrid.hasContextMenu = true;
-        this._objectsGrid.hasMassActionsMenu = true;
         this._objectsGrid.shown = true;
+        this._objectsGrid.rows.title = '';
 
         this._displayedColumns.forEach((column) => {
-            let newColumn = this._objectsGrid.header.columns.Add(column.name, column.title);
+            let newColumn = this._objectsGrid.header.columns.Add(column.name, Lang.Translate(column.title));
             newColumn.viewer = column.viewer || null;
             newColumn.editor = column.editor || null;
         });
-        this._objectsGrid.header.columns.Add('controls-column-' + Date.Now().getTime(), '');
     }
 
     /**
@@ -35321,26 +36696,34 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
         if (!this._objectWindow) {
             this._objectWindow = new Colibri.UI.Forms.ArrayGrid.ObjectWindow(this._name + '-object-window', document.body);
             this._objectWindow.parent = this;
+            this._objectWindow.closable = true;
 
             this._objectWindow.fields = this._fieldData.fields;
-            this._objectWindow.title = this._fieldData.desc;
-            this._objectWindow.stickyX = "center";
-            this._objectWindow.stickyY = "center";
+            if(this._fieldData?.desc) {
+                this._objectWindow.title = Lang.Translate(this._fieldData.desc);
+            }
+            // this._objectWindow.stickyX = "center";
+            // this._objectWindow.stickyY = "center";
             this._objectWindow.root = this.root;
+            this._objectWindow.width = this.width;
 
             if (this._fieldData.params?.window) { this._objectWindow.setParams(this._fieldData.params.window); }
 
             /** Добавить или обновить объект после отправки формы */
             this._objectWindow.AddHandler('FormSubmitted', (event, args) => {
                 let newArgs = Object.assign({object_row: this._getSelected()}, args);
-                this._objectWindow.containsNewObject ? this.__addObjectRow(event, newArgs) : this.__updateObjectRow(event, newArgs);
+                if(this._objectWindow.containsNewObject) {
+                    this.addObjectRow(args.value) 
+                } else {
+                    this.updateObjectRow(args.value);
+                }
 
                 this._objectsGrid.UnselectAllRows();
             });
             /** Обновить объект, когда содержимое формы изменилось */
             this._objectWindow.AddHandler('Changed', (event, args) => {
                 if (!this._objectWindow.containsNewObject) {
-                    this.__updateObjectRow(event, Object.assign({object_row: this._getSelected()}, args));
+                    this.updateObjectRow(event, Object.assign({object_row: this._getSelected()}, args));
                 }
             });
             /** Удалить окно из свойства, если оно было удалено из DOM */
@@ -35354,65 +36737,25 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
         this._objectWindow.shown = true;
     }
 
-    /**
-     * @private
-     * @param {Colibri.Events.Event} event event object
-     * @param {*} args event arguments
-     */ 
-    __newObject(event, args) {
+    newObject(event, args) {
         this._openObjectWindow();
     }
 
-    /**
-     * @private
-     * @param {Colibri.Events.Event} event event object
-     * @param {*} args event arguments
-     */ 
-    __showObject(event, args) {
-        let row = this._getRow(args.object_row);
-        if (row) { this._openObjectWindow(row.tag._objectValue || null); }
+    showObject(value) {
+        this._openObjectWindow(value); 
     }
 
-    /**
-     * @private
-     * @param {Colibri.Events.Event} event event object
-     * @param {*} args event arguments
-     */ 
-    __addObjectRow(event, args) {
-        let value = this._objectWindow?.value || args.formValues || {};
-        this._addRow(value);
+    addObjectRow(value) {
+        this._objectsGrid.rows.Add('row-' + Date.Now().getTime(), value || {});
+        this.Dispatch('Changed');
     }
 
-    /**
-     * @private
-     * @param {Colibri.Events.Event} event event object
-     * @param {*} args event arguments
-     */ 
-    __updateObjectRow(event, args) {
-        let row = this._getRow(args.object_row);
-        let value = this._objectWindow?.value || args.formValues || {};
-
-        if (row) { row.value = row.tag._objectValue = value; }
-    }
-
-    /**
-     * @private
-     * @param {Colibri.Events.Event} event event object
-     * @param {*} args event arguments
-     */ 
-    __removeObjectRow(event, args) {
-        let row = this._getRow(args.object_row);
-        if (row) { row.Dispose(); }
-    }
-
-    /**
-     * Adds a new row
-     * @param {Object} value
-     * @private
-     */
-    _addRow(value) {
-        let row = this._objectsGrid.rows.Add('row-' + Date.Now().getTime(), value || {});
-        row.tag._objectValue = value;
+    updateObjectRow(value) {
+        let row = this._getSelected();
+        if (row) { 
+            row.value = value;
+            this.Dispatch('Changed');
+        }
     }
 
     /**
@@ -35435,6 +36778,16 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
                 title: 'Delete',
                 icon: Colibri.UI.ContextMenuRemoveIcon
             },
+            {
+                name: 'up-object-row',
+                title: 'Up',
+                icon: Colibri.UI.UpIcon
+            },
+            {
+                name: 'down-object-row',
+                title: 'Down',
+                icon: Colibri.UI.DownIcon
+            },
         ];
 
         args.item.contextmenu = contextmenu;
@@ -35453,49 +36806,17 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
                     this._objectsGrid.UnselectAllRows();
                     args.item.selected = true;
 
-                    this.__showObject(event, Object.assign({object_row: args.item}, args));
+                    this.showObject(args.item.value || null);
                     break;
 
                 case 'remove-object-row':
-                    this.__removeObjectRow(event, Object.assign({object_row: args.item}, args));
+                    args.item.Dispose();
                     break;
-            }
-        }
-    }
-
-    /**
-     * @private
-     * @param {Colibri.Events.Event} event event object
-     * @param {*} args event arguments
-     */ 
-    __toggleMassActionsMenu(event, args) {
-        if (this._objectsGrid.checked.length > 1) {
-            this._objectsGrid.massActionsMenu = [
-                {
-                    name: 'remove-object-rows',
-                    title: 'remove'
-                }
-            ];
-
-            this._objectsGrid.ShowMassActionsMenu(document.body);
-        } else {
-            this._objectsGrid.massActionsMenu = null;
-        }
-    }
-
-    /**
-     * @private
-     * @param {Colibri.Events.Event} event event object
-     * @param {*} args event arguments
-     */ 
-    __processMassAction(event, args) {
-        if (args?.menuData && args?.items) {
-            switch (args.menuData.name) {
-                case 'remove-object-rows':
-                    args.items.forEach((item) => {
-                        this.__removeObjectRow(event, Object.assign({object_row: item}, args));
-                    })
-                    this._objectsGrid.massActionsMenu = null;
+                case 'up-object-row':
+                    args.item.MoveUp();
+                    break;
+                case 'down-object-row':
+                    args.item.MoveDown();
                     break;
             }
         }
@@ -35530,17 +36851,20 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
     _setDisplayedColumns() {
         this._displayedColumns = [];
         let paramColumns = this._fieldData.params?.displayed_columns;
+        if(typeof paramColumns === 'string') {
+            paramColumns = paramColumns.split(';');
+        }
 
         Object.forEach(this._fieldData.fields, (fieldName, fieldData) => {
-            if (paramColumns !== undefined && !(fieldName in paramColumns)) {
+            if (paramColumns !== undefined && paramColumns.indexOf(fieldName) === -1) {
                 return;
             }
 
             let column = {};
             column['name'] = fieldName;
             column['title'] = fieldData.desc || '';
-            column['viewer'] = paramColumns ? (paramColumns[fieldName]?.viewer || null) : null;
-            column['editor'] = paramColumns ? (paramColumns[fieldName]?.editor || null) : null;
+            column['viewer'] = fieldData?.params?.viewer ? fieldData.params.viewer : null;
+            column['editor'] = fieldData?.params?.editor ? fieldData.params.editor : null;
 
             this._displayedColumns.push(column);
         });
@@ -35573,10 +36897,7 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
      * @type {Object[]}
      */
     get value() {
-        let data = [];
-        this._objectsGrid.rows?.ForEach((name, row) => data.push(row.value));
-
-        return data;
+        return this._objectsGrid.value;
     }
     /**
      * Value
@@ -35588,8 +36909,7 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
             throw new Error('Pass an array'); 
         }
 
-        this._objectsGrid.rows.Clear();
-        value && value.forEach((item) => this._addRow(item));
+        this._objectsGrid.value = value;
         
     }
 
@@ -35633,7 +36953,7 @@ Colibri.UI.Forms.ArrayGrid = class extends Colibri.UI.Forms.Field {
  * @extends Colibri.UI.ModelessWindow
  * @memberof Colibri.UI.Forms.ArrayGrid
  */
-Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindow {
+Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.Window {
 
     /**
      * @constructor
@@ -35644,16 +36964,17 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
         super(name, container);
         this.AddClass('app-component-array-grid-object-window');
 
+        this.title = 'Add/Edit element';
+
         this._containsNewObject = true;
 
         this._form = new Colibri.UI.Forms.Form(this._name + '-form', this.container);
         this._saveButton = new Colibri.UI.SuccessButton(this._name + '-save-button', this.footer);
         this._saveButton.value = 'Save';
 
-        this._form.AddHandler('Changed', () => this.Dispatch('Changed', {formValues: this._form.value, component: this}));
         this._saveButton.AddHandler('Clicked', (event, args) => {
-            this.Dispatch('FormSubmitted', {formValues: this._form.value});
-            this.close();
+            this.Dispatch('FormSubmitted', {value: this._form.value});
+            this.Hide();
         });
 
         this._form.shown = true;
@@ -35663,7 +36984,6 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
     /** @protected */
     _registerEvents() {
         super._registerEvents();
-        this.RegisterEvent('Changed', 'Когда содержимое формы внутри окна изменилось');
         this.RegisterEvent('FormSubmitted', 'Когда форма внутри окна отправлена');
     }
 
@@ -35718,7 +37038,7 @@ Colibri.UI.Forms.ArrayGrid.ObjectWindow = class extends Colibri.UI.ModelessWindo
      * @type {Object|null}
      */
     set value(value) {
-        this._form.value = value;
+        this._form.value = value || this._form.defaultValues();
     }
 
     /**
@@ -35787,11 +37107,14 @@ Colibri.UI.Forms.SimpleArray = class extends Colibri.UI.Forms.Field {
             this.enabled = true;
         }
         else {
-            this.enabled = this._fieldData.params.enabled;
+            this.enabled = this._fieldData?.params?.enabled;
         }
 
-        this._fieldData.params.simplearraywidth = (this._fieldData.params?.simplearraywidth ?? 1);
-        this._fieldData.params.simplearrayheight = (this._fieldData.params?.simplearrayheight ?? 1);
+        if(!this._fieldData.params) {
+            this._fieldData.params = {};
+        }
+        this._fieldData.params.simplearraywidth = (this._fieldData?.params?.simplearraywidth ?? 1);
+        this._fieldData.params.simplearrayheight = (this._fieldData?.params?.simplearrayheight ?? 1);
 
         const column = this._grid.header.columns.Add('col0', '');
         column.width = 50;
@@ -35980,6 +37303,8 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
         this._fieldData.params.simplearraywidth = (this._fieldData.params?.simplearraywidth ?? 1);
         this._fieldData.params.simplearrayheight = (this._fieldData.params?.simplearrayheight ?? 1);
 
+        this._grid.hasContextMenu = true;
+
         const column1 = this._grid.header.columns.Add('key', '');
         column1.width = '50%';
         column1.align = 'left';
@@ -35995,10 +37320,25 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
         column2.editor = Colibri.UI.TextEditor;
         column2.value = 'Value';
 
+        this._grid.AddHandler('ContextMenuIconClicked', (event, args) => this.__gridContextMenuIconClicked(event, args));
+        this._grid.AddHandler('ContextMenuItemClicked', (event, args) => this.__gridContextMenuItemClicked(event, args));
         this._grid.AddHandler('CellEditorChanged', (event, args) => this.Dispatch('Changed', {component: this}));
         this._link.AddHandler('Clicked', (event, args) => this._grid.rows.Add('row' + Date.Mc(), {key: 'new-key-' + (this._grid.rows.children - 1), value: ''}));
 
-    } 
+    }
+    
+    __gridContextMenuIconClicked(event, args) {
+        args.item.contextmenu = [{name: 'remove', title: 'Delete'}];
+        args.item.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB], '', args.isContextMenuEvent ? {left: args.domEvent.clientX, top: args.domEvent.clientY} : null);
+    }
+
+    __gridContextMenuItemClicked(event, args) {
+        if(args.menuData?.name) {
+            if(args.menuData?.name === 'remove') {
+                args.item.Dispose();
+            }
+        }
+    }
 
     /** @protected */
     _registerEvents() {
@@ -36077,7 +37417,7 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
             this._grid.rows.Add('row' + Date.Mc(), {key: key, value: value});
         });
 
-        if(this._grid.rows.children === 1) {
+        if(this._grid.rows.children === 1 && this._fieldData?.params?.initempty === true) {
             this._link.Dispatch('Clicked');
         }
 
@@ -36117,6 +37457,63 @@ Colibri.UI.Forms.KeyValueObject = class extends Colibri.UI.Forms.Field {
 
 }
 Colibri.UI.Forms.Field.RegisterFieldComponent('KeyValueObject', 'Colibri.UI.Forms.KeyValueObject', 'Object (key/value)')
+
+/**
+ * Token with generator button
+ * @class
+ * @extends Colibri.UI.Forms.Field
+ * @memberof Colibri.UI.Forms
+ */
+Colibri.UI.Forms.Token = class extends Colibri.UI.Forms.Field {
+    
+    /**
+     * Render field component
+     */
+    RenderFieldContainer() {
+        this.AddClass('colibri-ui-forms-token');
+        this._enabled = true;
+
+        const contentContainer = this.contentContainer;
+
+        this._input = new Colibri.UI.Input('input', contentContainer);
+        this._input.shown = true;
+        this._input.hasIcon = false;
+        this._input.hasClearIcon = false;
+
+        this._button = new Colibri.UI.Button('button', contentContainer);
+        this._button.shown = true;
+        this._button.value = 'Сгенерировать';
+
+        this._button.AddHandler('Clicked', (event, args) => this.__buttonClicked(event, args)); 
+        this._input.AddHandler('Changed', (event, args) => this.Dispatch('Changed', {domEvent: e, component: this}));
+
+    }
+
+    __buttonClicked(event, args) {
+        this._input.value = String.Password(40);
+        this._input.Select();
+        this._input.Focus();
+        this.Dispatch('Changed', {domEvent: args.domEvent, component: this});
+    }
+
+    /**
+     * Value String
+     * @type {String}
+     */
+    get value() {
+        return this._input.value;
+    }
+    /**
+     * Value String
+     * @type {String}
+     */
+    set value(value) {
+        this._input.value = value;
+    }
+
+}
+
+Colibri.UI.Forms.Field.RegisterFieldComponent('Token', 'Colibri.UI.Forms.Token', 'Token (with generator)')
 
 /**
  * Extended buttons base class
@@ -36532,10 +37929,35 @@ Colibri.UI.Loading = class extends Colibri.UI.Pane {
     }
 
     /**
+     * Use event to show and hide custom loading
+     * @type {boolean}
+     */
+    get useEvent() {
+        return this._useEvent;
+    }
+    /**
+     * Use event to show and hide custom loading
+     * @type {boolean}
+     */
+    set useEvent(value) {
+        this._useEvent = value;
+    }
+
+    /**
      * Show/Hide component
      * @type {boolean}
      */
     set shown(value) {
+
+        if(this._useEvent === true) {
+            if(value) {
+                this.Dispatch('Shown');
+            } else {
+                this.Dispatch('Hidden');
+            }
+            return;
+        }
+
         super.shown = value;
         if(this._sendToFront) {
             if (super.shown) {
@@ -36810,13 +38232,15 @@ Colibri.UI.ConfirmDialog = class extends Colibri.UI.Window {
      * @param {string} cancelbutton cancel button title
      * @returns Promise
      */
-    Show(title, message, okbutton = null, cancelbutton = null) {
+    Show(title, message, okbutton = null, cancelbutton = null, hideCancelButton = false) {
     
         return new Promise((resolve, reject) => {
             this.title = title;
             this.Children('message').value = message;
             this.Children('btn-save').value = okbutton || 'Continue';
             this.Children('btn-cancel').value = cancelbutton || 'Cancel';
+            this.Children('btn-cancel').shown = !hideCancelButton;
+            
             super.Show();
 
             this.Children('btn-save').ClearHandlers();
@@ -36973,7 +38397,9 @@ Colibri.UI.PromptDialog = class extends Colibri.UI.Window {
             this._form.Children('firstChild').Focus();
 
             this._validator.ClearHandlers();
-            this._validator.AddHandler('Validated', (event, args) => this._save.enabled = this._validator.Validate());
+            this._validator.AddHandler('Validated', (event, args) => {
+                return this._save.enabled = this._validator.Validate();
+            });
 
             this._save.ClearHandlers();
             this._save.AddHandler('Clicked', (event, args) => {
@@ -37363,6 +38789,10 @@ Colibri.UI.DateViewer = class extends Colibri.UI.Viewer {
         }
 
         this._value = value;
+        if(this._field?.params?.format) {
+            let dateformat = App.DateFormat || 'ru-RU';
+            this._format = new Intl.DateTimeFormat(dateformat, this._field?.params?.format);
+        }
     
         try {
             super.value = this._value && this._format.format(this._value);
@@ -37657,20 +39087,24 @@ Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
                     let isObject = false;
                     for(let vv of value) {
                         if(Object.isObject(vv)) {
-                            r.push(vv[this._field?.selector?.title ?? 'title']);
+                            r.push(Lang ? Lang.Translate(vv[this._field?.selector?.title ?? 'title']) : vv[this._field?.selector?.title ?? 'title']);
                             isObject = true;
                         }
                     }
 
                     if(isObject) {
                         if(r.length > 1) {
-                            let v1 = r.splice(0, 1);
-                            let v2 = r.join('<br />');
-                            super.value = v1;
-                            const icon1 = new Colibri.UI.Icon(this.name + '-hover', this);
-                            icon1.shown = true;
-                            icon1.value = '<em>+' + r.length + '</em> ' + (this._field.params?.infoIcon ?? Colibri.UI.InfoIcon);
-                            icon1.toolTip = v2;
+                            if((this._field?.params?.showicon ?? false)) {                        
+                                let v1 = r.splice(0, 1);
+                                let v2 = r.join('<br />');
+                                super.value = v1;
+                                const icon1 = new Colibri.UI.Icon(this.name + '-hover', this);
+                                icon1.shown = true;
+                                icon1.value = '<em>+' + r.length + '</em> ' + (this._field.params?.infoIcon ?? Colibri.UI.InfoIcon);
+                                icon1.toolTip = v2;
+                            } else {
+                                super.value = r.join(', ');
+                            }
                         }
                         else {
                             super.value = r.pop();
@@ -37682,7 +39116,7 @@ Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
                             if(_result?.length) {
                                 for (let val of _result) {
                                     if (value.indexOf(val[this._field?.selector?.value || 'value']) !== -1) {
-                                        r.push(val[this._field?.selector?.title || 'title']);
+                                        r.push(Lang ? Lang.Translate(val[this._field?.selector?.title || 'title']) : val[this._field?.selector?.title || 'title']);
                                     }
                                 }
                             }
@@ -37690,13 +39124,17 @@ Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
                             this.RemoveClass('app-viewer-loading')
 
                             if(r.length > 1) {
-                                let v1 = '<dd>' + r[0] + '</dd>';
-                                let v2 = r.join('<br />');
-                                super.value = v1;
-                                const icon1 = new Colibri.UI.Icon(this.name + '-hover', this);
-                                icon1.shown = true;
-                                icon1.value = '<em>' + r.length + '</em> ' + (this._field.params?.infoIcon ?? Colibri.UI.InfoIcon);
-                                icon1.toolTip = v2;
+                                if((this._field?.params?.showicon ?? false)) {     
+                                    let v1 = '<dd>' + r[0] + '</dd>';
+                                    let v2 = r.join('<br />');
+                                    super.value = v1;
+                                    const icon1 = new Colibri.UI.Icon(this.name + '-hover', this);
+                                    icon1.shown = true;
+                                    icon1.value = '<em>' + r.length + '</em> ' + (this._field.params?.infoIcon ?? Colibri.UI.InfoIcon);
+                                    icon1.toolTip = v2;
+                                } else {
+                                    super.value = r.join(', ');
+                                }
                             }
                             else {
                                 super.value = r.pop();
@@ -37705,19 +39143,25 @@ Colibri.UI.SelectViewer = class extends Colibri.UI.Viewer {
                         });
                     }
                     else if(this._field.values) {
-                        for(const v of this._field.values) {
-                            if(vv == (v.value ?? v.title ?? v)) {
-                                r.push(v.title);
+                        for(let vv of value) {
+                            for(const v of this._field.values) {
+                                if(vv == (v?.value ?? v?.title ?? v)) {
+                                    r.push(Lang ? Lang.Translate(v?.title) : v?.title);
+                                }
                             }
                         }
                         if(r.length > 1) {
-                            let v1 = '<dd>' + r[0] + '</dd>';
-                            let v2 = r.join('<br />');
-                            super.value = v1;
-                            const icon1 = new Colibri.UI.Icon(this.name + '-hover', this);
-                            icon1.shown = true;
-                            icon1.value = '<em>' + r.length + '</em> ' + (this._field.params?.infoIcon ?? Colibri.UI.InfoIcon);
-                            icon1.toolTip = v2;
+                            if((this._field?.params?.showicon ?? false)) {     
+                                let v1 = '<dd>' + r[0] + '</dd>';
+                                let v2 = r.join('<br />');
+                                super.value = v1;
+                                const icon1 = new Colibri.UI.Icon(this.name + '-hover', this);
+                                icon1.shown = true;
+                                icon1.value = '<em>' + r.length + '</em> ' + (this._field.params?.infoIcon ?? Colibri.UI.InfoIcon);
+                                icon1.toolTip = v2;
+                            } else {
+                                super.value = r.join(', ');
+                            }
                         }
                         else {
                             super.value = r.pop();
@@ -38086,13 +39530,13 @@ Colibri.UI.FieldsViewer = class extends Colibri.UI.Viewer {
                 const title = new Colibri.UI.TextSpan(name + '-title', pane);
                 title.AddClass('app-field-title');
                 try {
-                    let tvalue = field.desc[Lang.Current] ?? field.desc;
-                    if(typeof tvalue === 'function') {
+                    if(typeof field.desc === 'function') {
+                        const tvalue = field.desc;
                         tvalue(field, this).then((value) => {
                             title.value = value;
                         });
                     } else {
-                        title.value = tvalue;
+                        title.value = Lang !== undefined ? Lang.Translate(field.desc) : field.desc;
                     }
                 } catch(e) {
                     title.value = field.desc;
@@ -38432,7 +39876,7 @@ Colibri.UI.BoolViewer = class extends Colibri.UI.Viewer {
         }
 
         
-        let value = this._value[this._field.selector?.value || 'value'] ?? this._value;
+        let value = this._value && (this._value[this._field.selector?.value || 'value'] ?? this._value);
         value = this._convertValue(value);
 
         const values = Object.values(this._field.values);
@@ -39009,6 +40453,7 @@ Colibri.UI.HtmlDataViewer = class extends Colibri.UI.Viewer {
     constructor(name, container, element = null, root = null) {
         super(name, container, element || Element.create('span'), root);
         this.AddClass('app-htmldata-viewer-component');
+        this._strip = true;
     }
 
     /**
@@ -39023,9 +40468,27 @@ Colibri.UI.HtmlDataViewer = class extends Colibri.UI.Viewer {
      * @type {string}
      */
     set value(value) {
-        let v = !value ? '&mdash;' : value.replaceAll(/\n/, '<br />');
-        v = v.stripHtml().words(20);
+        let v = !value ? '&mdash;' : (Lang ? Lang.Translate(value) : value).replaceAll(/\n/, '<br />');
+        if((this._strip ?? true)) {
+            v = v.stripHtml().words(20);
+        }
         super.value = v;
+    }
+
+    /**
+     * 
+     * @type {Boolean}
+     */
+    get strip() {
+        return this._strip;
+    }
+    /**
+     * 
+     * @type {Boolean}
+     */
+    set strip(value) {
+        value = this._convertProperty('Boolean', value);
+        this._strip = value;
     }
 
 
@@ -39802,6 +41265,8 @@ Colibri.UI.DateRangeViewer = class extends Colibri.UI.Viewer {
 
     }
 }
+
+Colibri.UI.Viewer.Register('Colibri.UI.DateRangeViewer', 'Date range');
 /**
  * @class
  * @memberof Colibri.UI
@@ -39848,6 +41313,120 @@ Colibri.UI.DateDiffViewer = class extends Colibri.UI.Viewer {
         }
 
     }
+}
+Colibri.UI.Viewer.Register('Colibri.UI.DateDiffViewer', 'Diff between dates');
+/**
+ * Shown progress
+ * @class
+ * @extends Colibri.UI.Viewer
+ * @memberof Colibri.UI
+ */
+Colibri.UI.ProgressViewer = class extends Colibri.UI.Viewer {
+    
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.component} container container of component
+     */
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container);
+        this.AddClass('colibri-ui-progressviewer');
+
+        this._bar = new Colibri.UI.Pane('bar', this);
+        this._view = new Colibri.UI.Pane('view', this._bar);
+        this._text = new Colibri.UI.Pane('text', this._bar);
+        this._bar.shown = this._view.shown = this._text.shown = true;
+
+    }
+
+    /**
+     * Value Object
+     * @type {Object}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value Object
+     * @type {Object}
+     */
+    set value(value) {
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        
+        const max = this._value?.max ?? 100;
+        const min = this._value?.min ?? 0; 
+        const value = this._value.value;
+
+        this._view.width = value === 0 ? 0 : (value * 100 / (max - min)) + '%';
+        this._text.value = value === 0 ? '0%' : (value * 100 / (max - min)).toMoney(2) + '%'
+
+    }
+
+}
+/**
+ * View images
+ * @class
+ * @extends Colibri.UI.Viewer
+ * @memberof Colibri.UI
+ */
+Colibri.UI.ImagesViewer = class extends Colibri.UI.Viewer {
+    
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.component} container container of component
+     */
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container, Colibri.UI.Templates['Colibri.UI.ImagesViewer']);
+        this.AddClass('colibri-ui-imagesviewer');
+
+        this._grid = new Colibri.UI.PaneGrid('grid', this);
+        this._grid.columns = 'repeat(4, 1fr)';
+        this._grid.rows = 'max-content';
+        this._grid.shown = true;
+
+    }
+
+    /**
+     * Register events
+     * @protected
+     */
+    _registerEvents() {
+        super._registerEvents();
+        this.RegisterEvent('ImageClicked', false, 'When clicked on image');
+    }
+    
+    /**
+     * Value Array
+     * @type {Array}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value Array
+     * @type {Array}
+     */
+    set value(value) {
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        this._grid.Clear();
+        for(const image of this._value) {
+            const im = new Colibri.UI.Img(image.id, this._grid);
+            im.shown = true;
+            im.source = image.path;
+            im.AddHandler('Clicked', (event, args) => this.Dispatch('ImageClicked', {image: im}));
+        }
+
+    }
+
 }
 /**
  * @class
@@ -39972,8 +41551,30 @@ Colibri.UI.Editor = class extends Colibri.UI.Component {
             fieldEditoPane.tag('component').RemoveClass('-filled');
         }
     }
-
-
+    /**
+     * Registered editors
+     * @private
+     * @static
+     * @type {Array}
+     */
+    static _registered = [];
+    /**
+     * Registers the editor
+     * @static
+     * @param {string} name name of editor
+     * @param {string} desc description of editor
+     */
+    static Register(name, desc) {
+        Colibri.UI.Editor._registered.push({value: name, title: desc});
+    }
+    /**
+     * Enums the registered editors
+     * @static
+     * @returns Array
+     */
+    static Enum() {
+        return Colibri.UI.Editor._registered;
+    }
 
 }
 /**
@@ -40111,6 +41712,7 @@ Colibri.UI.EmailEditor = class extends Colibri.UI.Editor {
     }
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.EmailEditor', 'Email');
 /**
  * @class
  * @extends Colibri.UI.Editor
@@ -40346,6 +41948,7 @@ Colibri.UI.FilesEditor = class extends Colibri.UI.Editor {
     }
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.FilesEditor', 'Files');
 /**
  * @class
  * @extends Colibri.UI.Editor
@@ -40444,6 +42047,7 @@ Colibri.UI.LinkEditor = class extends Colibri.UI.Editor {
 
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.LinkEditor', 'Link');
 /**
  * @class
  * @extends Colibri.UI.Editor
@@ -40590,6 +42194,7 @@ Colibri.UI.TextEditor = class extends Colibri.UI.Editor {
     }
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.TextEditor', 'Text');
 /**
  * @class
  * @memberof Colibri.UI
@@ -40752,6 +42357,7 @@ Colibri.UI.NumberEditor = class extends Colibri.UI.Editor {
     }
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.NumberEditor', 'Number');
 /**
  * @class
  * @memberof Colibri.UI
@@ -40869,6 +42475,7 @@ Colibri.UI.CheckboxEditor = class extends Colibri.UI.Editor {
     }
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.CheckboxEditor', '');
 /**
  * @class
  * @memberof Colibri.UI
@@ -41262,6 +42869,7 @@ Colibri.UI.SelectEditor = class extends Colibri.UI.Editor {
 
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.SelectEditor', 'Select');
 /**
  * @class
  * @memberof Colibri.UI
@@ -41408,6 +43016,7 @@ Colibri.UI.TextAreaEditor = class extends Colibri.UI.Editor {
     }
 
 }
+Colibri.UI.Editor.Register('Colibri.UI.TextAreaEditor', 'Text area');
 /**
  * @class
  * @extends Colibri.Events.Dispatcher
@@ -41539,10 +43148,12 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
         this._field = fieldComponent;
         fieldComponent.container.tag('validator', this);
         this._field.AddHandler(['Changed', 'KeyUp', 'Pasted'], (event, args) => {
-            this.Clear();
-            const messages = !(event.sender._fieldData?.params && event.sender._fieldData.params.messages === false);
-            this.Validate(messages, this._className);
-            this.Dispatch('Validated', {messages: messages});
+            Colibri.Common.Delay(100).then(() => {
+                this.Clear();
+                const messages = !(event.sender._fieldData?.params && event.sender._fieldData.params.messages === false);
+                this.Validate(messages, this._className);
+                this.Dispatch('Validated', {messages: messages});    
+            });
         });
         this._field.AddHandler('FieldsRendered', (event, args) => {
             this._createValidators();
@@ -41592,6 +43203,7 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
         let message;
         this._validated = true;
 
+        
         if (this._validators.length > 0) {
             this._validators.forEach((validator) => {
                 const v = validator.Validate(messages, className);
@@ -41611,9 +43223,8 @@ Colibri.UI.FieldValidator = class extends Colibri.Events.Dispatcher {
                     continue;
                 }
 
-                const v = validate[key],
-                      method = eval(v.method);
-
+                const v = validate[key]; 
+                const method = typeof v.method === 'string' ? eval(v.method) : v.method;
                 if (!method(this._field, this)) {
                     this._validated = false;
                     message = v.message instanceof Function ? v.message(this._field, this) : v.message;
@@ -41782,14 +43393,14 @@ Colibri.UI.SimpleFormValidator = class {
         }
 
         for(const field of fields) {
-            if(field.field?.params?.validate) {    
+            // if(field.field?.params?.validate) {    
                 if(field.field.params && field.field.params.validated !== 'success') {
                     return false;
                 }
                 if(!this.Status(field.Fields ? field.Fields() : [])) {
                     return false;
                 }
-            }
+            //}
         }
 
         return true;
@@ -41876,7 +43487,7 @@ Colibri.UI.SimpleFormValidator = class {
      * @param {string} message validation message 
      */
     Invalidate(field, message) {
-        if(field == 'form') {
+        if(field == 'form' || field instanceof Colibri.UI.Forms.Form) {
             this._form.message = message;
             return;
         }
@@ -41896,6 +43507,23 @@ Colibri.UI.SimpleFormValidator = class {
      */
     get form() {
         return this._form;
+    }
+
+    GetFirstInvalid(fields = null) {
+        let found = null;
+        if(!fields) {
+            fields = this._form.Fields();
+        }
+        Object.forEach(fields, (name, field) => {
+            if(field.field.params.validated === 'error') {
+                found = field;
+                return false;
+            }
+            if( field.Fields && (found = this.GetFirstInvalid(field.Fields())) ) {
+                return false;
+            }
+        });
+        return found;
     }
 
 
@@ -42469,6 +44097,9 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
         this._handleNavigate = (e) => {
             let url = '';
             let options = {};
+            if(!e.destination || !e.destination.sameDocument) {
+                return;
+            }
             if(this._type == Colibri.Web.Router.RouteOnHash) {
                 url = e.destination.url;
                 options = url.split('#')[1]?.toObject(['&', '=']) || {};
@@ -42477,8 +44108,9 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
                 url = e.destination.url;
                 options = url.split('?')[1]?.toObject(['&', '=']) || {};
                 this._url = url.split('?')[0];
+                this._url = this._url.replaceAll(location.protocol + '//' + location.hostname, '');
             }
-            this._path = url.split('/').filter(v => v != '');
+            this._path = this._url.split('/').filter(v => v != '');
             this._options = options;
             this._history.push({url: this._url, options: this._options});
             
@@ -42649,8 +44281,11 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
 
         this._preventNextEvent = preventNextEvent;
 
-        const saveParams = this.GetSafeParamsAsString();
-        const u = url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) + (saveParams ? '&' + saveParams : '') : '');
+        const saveParams = this.GetSafeParamsAsObject();
+        if(Object.countKeys(saveParams)) {
+            options = Object.assign(options, saveParams);
+        }
+        const u = url + (Object.countKeys(options) > 0 ? '?' + String.fromObject(options, ['&', '=']) : '');
         if(this._type == Colibri.Web.Router.RouteOnHash) {
             location.hash = '#' + u;
         } else if(this._type == Colibri.Web.Router.RouteOnHistory) {
@@ -42820,7 +44455,21 @@ Colibri.Web.Router = class extends Colibri.Events.Dispatcher {
         }
         return ret.join('&');
     }
-
+    
+    /**
+     * Gets the object representation of safe query parameters.
+     * @returns {string} - The string representation of safe query parameters.
+     * @private
+     */
+    GetSafeParamsAsObject() {
+        let ret = {};
+        for(const param of this.safeParams) {
+            if(this.options[param]) {
+                ret[param] = this.options[param];
+            }
+        }
+        return ret;
+    }
 }
 
 /** Routing based on hash */
@@ -43822,6 +45471,9 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
             plugin = eval('cordova.plugins.' + query);
         }
         if(!plugin) {
+            plugin = eval('window.plugins.' + query);
+        }
+        if(!plugin) {
             plugin = eval('window.' + query);
         }
         if(!plugin) {
@@ -43947,6 +45599,17 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
             this._geoLocation = new Colibri.Devices.GeoLocation(this);
         }
         return this._geoLocation;
+    }
+
+    /**
+     * Retrieves the sim instance.
+     * @returns {Colibri.Devices.Sim} The sim instance.
+     */
+    get Sim() {
+        if(!this._sim) {
+            this._sim = new Colibri.Devices.Sim(this);
+        }
+        return this._sim;
     }
 
 }
@@ -45141,13 +46804,16 @@ Colibri.Devices.Sms = class extends Destructable {
                         intent: intent
                         //intent: '' // send SMS without opening any other app, require : android.permission.SEND_SMS and android.permission.READ_PHONE_STATE
                     }
-                }, () => {
+                }, (response) => {
+                    alert(JSON.stringify(response));
                     resolve();
-                }, () => {
+                }, (error) => {
+                    alert(JSON.stringify(error));
                     reject();
                 });        
             }).catch(e => {
                 // do nothing
+                
             });
         });
     }
@@ -45390,6 +47056,83 @@ Colibri.Devices.GeoLocation = class extends Destructable {
     }
 
 }
+
+/**
+ * Represents a utility for accessing sim information.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Devices
+ */
+Colibri.Devices.Sim = class extends Destructable {
+
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
+    _device = null;
+
+    /**
+     * Creates an instance of GeoLocation.
+     * @constructor
+     * @param {Colibri.Devices.Device} device - The device object.
+     */
+    constructor(device) {
+        super();
+        this._device = device;
+        this._plugin = this._device.Plugin('sim');
+    }
+
+    /**
+     * Detects the current position.
+     * @returns {Promise} - Promise resolving with the current position.
+     */
+    HasPermission() {
+        return new Promise((resolve, reject) => {
+            this._plugin.hasReadPermission((result) => {
+                resolve(result);
+            }, (error) => {
+                reject(error);
+            });
+        });
+    }
+
+    /**
+     * Detects the current position.
+     * @returns {Promise} - Promise resolving with the current position.
+     */
+    RequestPermission() {
+        this._plugin.requestReadPermission();
+    }
+
+
+    /**
+     * Detects the current sim installed.
+     * @returns {Promise<{carrierName,countryCode,mcc,mnc}>} - Promise resolving with the current position.
+     */
+    Detect() {
+        return new Promise((resolve, reject) => {
+            const _detect = () => {
+                this._plugin.getSimInfo((result) => {
+                    resolve(result);
+                }, (error) => {
+                    reject(error);
+                });                   
+            };
+            const _check = () => {
+                this.HasPermission()
+                    .then(_detect)
+                    .catch(() => {
+                        Colibri.Common.Delay(5000).then(_check);        
+                    });
+            }
+            this.RequestPermission();
+            Colibri.Common.Delay(5000).then(_check);
+            
+        });
+    }
+
+}
 /**
  * The main application class.
  * @class
@@ -45415,6 +47158,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /** 
      * Constructs a new instance of the Colibri.App class.
+     * @constructor
      */
     constructor() {
         super('App'); 
@@ -45428,9 +47172,27 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
   
     } 
 
+    destructor() {
+        this._actions = null;
+        this._alertDialog = null;
+        this._browser = null;
+        this._comet = null;
+        this._confirmDialog = null;
+        this._db = null;
+        this._device = null;
+        this._loader = null;
+        this._loadingBallun = null;
+        this._loadingBox = null;
+        this._notices = null;
+        this._promptDialog = null;
+        this._request = null;
+        this._router = null;
+    }
+
     /**
      * Registers application events.
      * @public
+     * @method
      */
     RegisterEvents() { 
         this.RegisterEvent('Event', false, 'When any event dispatched');
@@ -45445,6 +47207,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Registers event handlers.
+     * @method
      */
     RegisterEventHandlers() {
         this.AddHandler('DocumentShown', (event, args) => {
@@ -45454,6 +47217,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Initializes the application with the specified configuration.
+     * @method
      * @param {string} [name='app'] - The name of the application.
      * @param {number} [version=1] - The version of the application.
      * @param {string} [routerType=Colibri.Web.Router.RouteOnHash] - The type of router to use.
@@ -45507,6 +47271,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
             this._router = new Colibri.Web.Router(routerType);
             this._device = new Colibri.Devices.Device();
             this._browser = new Colibri.Common.BrowserStorage();
+            this._session = new Colibri.Common.SessionStorage();
             this._db = new Colibri.Web.IndexDB(this._name, this._version);
             this._dateformat = dateformat;
             this._numberformat = numberformat;
@@ -45606,16 +47371,17 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
                     reject();
                 });
     
-    
                 this._notices = new Colibri.UI.Notices('notices', document.body);
     
-                
-                
+            });
+
+            document.addEventListener("visibilitychange", () => {
+                this._isActive = !document.hidden;
             });
     
             this._initialized = true;
+            
         });
-
 
 
     }
@@ -45689,7 +47455,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the version of the application.
-     * @returns {number} The version of the application.
+     * @type {number} The version of the application.
      */
     get appVersion() {
         return this._appVersion;
@@ -45697,7 +47463,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Sets the version of the application.
-     * @param {number} value - The version of the application.
+     * @type {number} value - The version of the application.
      */
     set appVersion(value) {
         this._appVersion = value;
@@ -45705,7 +47471,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the name of the application.
-     * @returns {string} The name of the application.
+     * @type {string} The name of the application.
      */
     get name() {
         return this._name;
@@ -45713,23 +47479,15 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the actions associated with the application.
-     * @returns {Colibri.Common.HashActions} The actions associated with the application.
+     * @type {Colibri.Common.HashActions} The actions associated with the application.
      */
     get Actions() {
         return this._actions;
     } 
-
-    /**
-     * Gets the storage associated with the application.
-     * @returns {Colibri.Storages.Store} The storage associated with the application.
-     */
-    get Storage() {
-        return this._storage;
-    }
     
     /**
      * Gets the store associated with the application.
-     * @returns {Colibri.Storages.Store} The store associated with the application.
+     * @type {Colibri.Storages.Store} The store associated with the application.
      */
     get Store() {
         return this._store;
@@ -45737,7 +47495,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the request associated with the application.
-     * @returns {Colibri.Web.Request} The request associated with the application.
+     * @type {Colibri.Web.Request} The request associated with the application.
      */
     get Request() {
         return this._request;
@@ -45745,7 +47503,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the router associated with the application.
-     * @returns {Colibri.Web.Router} The router associated with the application.
+     * @type {Colibri.Web.Router} The router associated with the application.
      */
     get Router() {
         return this._router;
@@ -45753,7 +47511,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the notices associated with the application.
-     * @returns {Colibri.UI.Notices} The notices associated with the application.
+     * @type {Colibri.UI.Notices} The notices associated with the application.
      */
     get Notices() {
         return this._notices;
@@ -45761,7 +47519,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the loader associated with the application.
-     * @returns {Colibri.UI.LoadingContainer} The loader associated with the application.
+     * @type {Colibri.UI.LoadingContainer} The loader associated with the application.
      */
     get Loader() {
         if(!this._loader) {
@@ -45772,7 +47530,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the confirm dialog associated with the application.
-     * @returns {Colibri.UI.ConfirmDialog} The confirm dialog associated with the application.
+     * @type {Colibri.UI.ConfirmDialog} The confirm dialog associated with the application.
      */
     get Confirm() {
         return this._confirmDialog;
@@ -45780,7 +47538,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the prompt dialog associated with the application.
-     * @returns {Colibri.UI.PromptDialog} The prompt dialog associated with the application.
+     * @type {Colibri.UI.PromptDialog} The prompt dialog associated with the application.
      */
     get Prompt() {
         return this._promptDialog;
@@ -45788,7 +47546,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
     
     /**
      * Gets the alert dialog associated with the application.
-     * @returns {Colibri.UI.AlertDialog} The alert dialog associated with the application.
+     * @type {Colibri.UI.AlertDialog} The alert dialog associated with the application.
      */
     get Alert() {
         return this._alertDialog;
@@ -45796,7 +47554,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the loading box associated with the application.
-     * @returns {Colibri.UI.Loading} The loading box associated with the application.
+     * @type {Colibri.UI.Loading} The loading box associated with the application.
      */
     get Loading() {
         return this._loadingBox;
@@ -45804,7 +47562,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
     
     /**
      * Gets the loading ballun associated with the application.
-     * @returns {Colibri.UI.LoadingBallun} The loading ballun associated with the application.
+     * @type {Colibri.UI.LoadingBallun} The loading ballun associated with the application.
      */
     get LoadingBallun() {
         return this._loadingBallun;
@@ -45812,7 +47570,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the comet associated with the application.
-     * @returns {Colibri.Web.Comet} The comet associated with the application.
+     * @type {Colibri.Web.Comet} The comet associated with the application.
      */
     get Comet() {
         return this._comet;
@@ -45820,15 +47578,23 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the browser storage associated with the application.
-     * @returns {Colibri.Common.BrowserStorage} The browser storage associated with the application.
+     * @type {Colibri.Common.BrowserStorage} The browser storage associated with the application.
      */
     get Browser() {
         return this._browser;
     }
 
     /**
+     * Gets the browser session storage associated with the application.
+     * @type {Colibri.Common.SessionStorage} The browser session storage associated with the application.
+     */
+    get Session() {
+        return this._session;
+    }
+
+    /**
      * Gets the database associated with the application.
-     * @returns {Colibri.Web.IndexDB} The database associated with the application.
+     * @type {Colibri.Web.IndexDB} The database associated with the application.
      */
     get Db() {
         return this._db;
@@ -45836,7 +47602,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the tooltip associated with the application.
-     * @returns {Colibri.UI.ToolTip} The tooltip associated with the application.
+     * @type {Colibri.UI.ToolTip} The tooltip associated with the application.
      */
     get ToolTip() {
         return this._customToolTip;
@@ -45844,7 +47610,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the device associated with the application.
-     * @returns {Colibri.Devices.Device} The device associated with the application.
+     * @type {Colibri.Devices.Device} The device associated with the application.
      */
     get Device() {
         return this._device;
@@ -45852,7 +47618,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the remote domain associated with the application.
-     * @returns {string} The remote domain associated with the application.
+     * @type {string} The remote domain associated with the application.
      */
     get RemoteDomain() {
         return this._remoteDomain;
@@ -45860,7 +47626,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
     
     /**
      * Indicates whether the application is initialized.
-     * @returns {boolean} `true` if the application is initialized; otherwise, `false`.
+     * @type {boolean} `true` if the application is initialized; otherwise, `false`.
      */
     get Initialized() {
         return this._initialized;
@@ -45868,42 +47634,42 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the date format used by the application.
-     * @returns {string|null} The date format used by the application, or `null` if not set.
+     * @type {string|null} The date format used by the application, or `null` if not set.
      */
     get DateFormat() {
         return this._dateformat;
     }
     /**
      * Sets the date format used by the application.
-     * @param {string} value - The date format to set.
+     * @type {string} value - The date format to set.
      */
     set DateFormat(value) {
         this._dateformat = value;
     }
     /**
      * Gets the number format used by the application.
-     * @returns {string|null} The number format used by the application, or `null` if not set.
+     * @type {string|null} The number format used by the application, or `null` if not set.
      */
     get NumberFormat() {
         return this._numberformat;
     }
     /**
      * Sets the number format used by the application.
-     * @param {string} value - The number format to set.
+     * @type {string} value - The number format to set.
      */
     set NumberFormat(value) {
         this._numberformat = value;
     }
     /**
      * Gets the currency used by the application.
-     * @returns {string|null} The currency used by the application, or `null` if not set.
+     * @type {string|null} The currency used by the application, or `null` if not set.
      */
     get Currency() {
         return this._currency;
     }
     /**
      * Sets the currency used by the application.
-     * @param {string} value - The currency to set.
+     * @type {string} value - The currency to set.
      */
     set Currency(value) {
         this._currency = value;
@@ -45911,7 +47677,7 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
 
     /**
      * Gets the CSRF token used by the application.
-     * @returns {string|null} The CSRF token used by the application, or `null` if not set.
+     * @type {string|null} The CSRF token used by the application, or `null` if not set.
      */
     get CsrfToken()
     {
@@ -45919,11 +47685,20 @@ Colibri.App = class extends Colibri.Events.Dispatcher {
     }
     /**
      * Sets the CSRF token used by the application.
-     * @param {string} value - The CSRF token to set.
+     * @type {string|null} value - The CSRF token to set.
      */
     set CsrfToken(value) {
         this._csrfToken = value;
     }
+
+    /**
+     * Is browser tab is active
+     * @type {Boolean}
+     */
+    get isActive() {
+        return this._isActive;
+    }
+    
 
 }
 
@@ -45947,7 +47722,6 @@ App.Modules = class {
 App.Components = class {
 
 }
-
 
 
 // try {
@@ -45982,6 +47756,7 @@ App.Modules.Lang = class extends Colibri.Modules.Module {
     constructor() {
         super('Lang');
         
+        this._langCookie = 'lang';
     }
 
     InitializeModule() {
@@ -46014,18 +47789,23 @@ App.Modules.Lang = class extends Colibri.Modules.Module {
     }
 
     RegisterEvents() {
+        super.RegisterEvents();
         console.log('Registering module events for Lang');
+        this.RegisterEvent('LanguageChanged', false, 'When language was changed');
     }
 
     RegisterEventHandlers() {
+        super.RegisterEventHandlers();
         console.log('Registering event handlers for Lang');
     }
 
     ChangeLanguage(lang) {
-        Colibri.Common.Cookie.Set('lang', lang, 365, '/', location.hostname);
-        Colibri.Common.Delay(100).then(() => {
-            location.reload();
-        });
+        if(Colibri.Common.Cookie.Get('lang') !== lang) {
+            Colibri.Common.Cookie.Set('lang', lang, 365, '/', location.hostname);
+            Colibri.Common.Delay(100).then(() => {
+                location.reload();
+            });
+        }
     }
 
     get Current() {
@@ -46046,6 +47826,13 @@ App.Modules.Lang = class extends Colibri.Modules.Module {
         }
 
         return this._current;
+    }
+
+    set langCookie(value) {
+        this._langCookie = value;
+    }
+    get langCookie() {
+        return this._langCookie;
     }
 
     Texts(term, notfilled, page, pagesize, returnPromise) {
@@ -46164,14 +47951,21 @@ App.Modules.Lang = class extends Colibri.Modules.Module {
 
 }
 const Lang = new App.Modules.Lang();
-Lang.Translate = function(value) {
+Lang.Translate = function(value, lang = null) {
+    if(!lang) {
+        lang = Lang.Current;
+    }
     if(Object.isObject(value)) {
-        return value[Lang.Current] ?? value;
+        if(Object.keys(value).indexOf(lang) !== -1) {
+            return (value[lang]) + '';
+        } else {
+            return value;
+        }
     } else if(typeof value === 'string') {
         try {
             const v = JSON.parse(value);
             if(Object.isObject(v)) {
-                return v[Lang.Current];
+                return v[lang];
             } else {
                 return value;
             }
@@ -46225,7 +48019,14 @@ Colibri.UI.MultiLangViewer = class extends Colibri.UI.ArrayViewer {
     
     _showValue() {
         
-        Lang.Store.AsyncQuery('lang.langs').then(langs => {
+        let promise = null;
+        if(LangData) {
+            promise = Promise.resolve(LangData);
+        } else {
+            promise = Lang.Store.AsyncQuery('lang.langs');
+        }
+
+        promise.then(langs => {
 
             if(Array.isArray(this._value)) {
                 let ret = [];
@@ -46281,11 +48082,23 @@ App.Modules.Lang.UI.Text = class extends Colibri.UI.Forms.Object {
         this._links.AddHandler('Changed', (event, args) => {
             const selectedKey = args.button.name;
             this.contentContainer.ForEach((name, component) => {
-                component.shown = name === selectedKey;
+                const show = name === selectedKey;
+                component.shown = show;
+                if(show) {
+                    component.Focus();
+                }
             });
         });
 
-        Lang.Store.AsyncQuery('lang.langs').then((langs) => {
+        let promise = null;
+        if(LangData) {
+            promise = Promise.resolve(LangData);
+        } else {
+            promise = Lang.Store.AsyncQuery('lang.langs');
+        }
+
+
+        promise.then((langs) => {
             
             this._fieldData.fields = {};
             
@@ -46323,7 +48136,7 @@ App.Modules.Lang.UI.Text = class extends Colibri.UI.Forms.Object {
         const langs = args.menuData.name.split('-');
         Lang.TranslateTextObject(this.value, langs[0], langs[1]).then((response) => {
             this.value = response.result;
-            this.Dispatch('Changed');
+            this.Dispatch('Changed', {component: this});
         });
     }
 
@@ -46333,6 +48146,12 @@ App.Modules.Lang.UI.Text = class extends Colibri.UI.Forms.Object {
      * @param {*} args event arguments
      */ 
     __contextMenu(event, args) {
+
+        const ignore = this._fieldData.params['ignore-translation'] || false;
+        if(ignore) {
+            return;
+        }
+
         Promise.all([
             Lang.Store.AsyncQuery('lang.settings'),
             Lang.Store.AsyncQuery('lang.langs')
@@ -46350,15 +48169,18 @@ App.Modules.Lang.UI.Text = class extends Colibri.UI.Forms.Object {
 
                 const children = [];
                 langs.forEach((l) => {
-                    const childs = [];
+                    const childs = [
+                        {name: l + '-*', title: '*'}
+                    ];
                     langs.forEach((ll) => {
                         if(ll != l) {
-                            children.push({name: l + '-' + ll, title: l.toUpperCase() + ' → ' + ll.toUpperCase()});
+                            childs.push({name: l + '-' + ll, title: ll.toUpperCase()});
                         }
                     });                    
-                    children.push({name: l + '-*', title: l.toUpperCase() + ' → *'});
+
+                    children.push({name: l, title: l.toUpperCase(), children: childs});
                 });
-                contextmenu.push({name: 'translate', title: 'Translate using the cloud', icon: App.Modules.Lang.Icons.ContextMenuTranslateIcon, children: children});
+                contextmenu.push({name: 'translate', title: 'Translate', icon: App.Modules.Lang.Icons.ContextMenuTranslateIcon, children: children});
 
                 if(contextmenu.length > 0) {
                     this.contextmenu = contextmenu;
@@ -46410,24 +48232,37 @@ App.Modules.Lang.UI.TextArea = class extends Colibri.UI.Forms.Object {
             removedesc: false,
         });
         
+        const isVirtual = this._fieldData.params?.visual ?? false;
+        const isCode = this._fieldData.params?.code ?? false;
         
         this._links = new Colibri.UI.ButtonGroup(this.name + '-buttons', this.contentPane);
         this._links.shown = true;
         this._links.AddHandler('Changed', (event, args) => {
             const selectedKey = args.button.name;
             this.contentContainer.ForEach((name, component) => {
-                component.shown = name === selectedKey;
+                const show = name === selectedKey;
+                component.shown = show;
+                if(show) {
+                    component.Focus();
+                }
             });
         });
 
-        Lang.Store.AsyncQuery('lang.langs').then((langs) => {
+        let promise = null;
+        if(LangData) {
+            promise = Promise.resolve(LangData);
+        } else {
+            promise = Lang.Store.AsyncQuery('lang.langs');
+        }
+
+
+        promise.then((langs) => {
             
             this._fieldData.fields = {};
             
             Object.forEach(langs, (langKey, langDesc) => {
-
                 this._fieldData.fields[langKey] = {
-                    component: 'TextArea',
+                    component: isVirtual || isCode ? 'App.Modules.Manage.UI.TinyMCETextArea' : 'TextArea',
                     desc: langDesc.desc,
                     placeholder: this._fieldData.placeholder,
                     params: childParams
@@ -46467,6 +48302,12 @@ App.Modules.Lang.UI.TextArea = class extends Colibri.UI.Forms.Object {
      * @param {*} args event arguments
      */ 
     __contextMenu(event, args) {
+
+        const ignore = this._fieldData.params['ignore-translation'] || false;
+        if(ignore) {
+            return;
+        }
+
         Promise.all([
             Lang.Store.AsyncQuery('lang.settings'),
             Lang.Store.AsyncQuery('lang.langs')
@@ -46484,15 +48325,18 @@ App.Modules.Lang.UI.TextArea = class extends Colibri.UI.Forms.Object {
 
                 const children = [];
                 langs.forEach((l) => {
-                    const childs = [];
+                    const childs = [
+                        {name: l + '-*', title: '*'}
+                    ];
                     langs.forEach((ll) => {
                         if(ll != l) {
-                            children.push({name: l + '-' + ll, title: l.toUpperCase() + ' → ' + ll.toUpperCase()});
+                            childs.push({name: l + '-' + ll, title: ll.toUpperCase()});
                         }
                     });                    
-                    children.push({name: l + '-*', title: l.toUpperCase() + ' → *'});
+
+                    children.push({name: l, title: l.toUpperCase(), children: childs});
                 });
-                contextmenu.push({name: 'translate', title: 'Translate using the cloud', icon: App.Modules.Lang.Icons.ContextMenuTranslateIcon, children: children});
+                contextmenu.push({name: 'translate', title: 'Translate', icon: App.Modules.Lang.Icons.ContextMenuTranslateIcon, children: children});
 
                 if(contextmenu.length > 0) {
                     this.contextmenu = contextmenu;
@@ -46760,6 +48604,14 @@ App.Modules.Lang.LangTextsViewer = class extends Colibri.UI.Viewer {
     set value(value) {
         
         this._value = value;
+
+        const vv = [];
+        Object.forEach(value, (k, v) => {
+            if(v) {
+                vv.push(k + ': ' + v);
+            }
+        });
+        super.value = vv.join('<br />');
         
         // super.value = this._value && this._value.toShortRUString();
 
@@ -47239,7 +49091,7 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
                 contextmenu.push({name: 'new-lang', title: 'New language', icon: Colibri.UI.ContextMenuAddIcon});
 
                 this._langs.contextmenu = contextmenu;
-                this._langs.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB], '', args.isContextMenuEvent ? {left: args.domEvent.clientX, top: args.domEvent.clientY} : null);
+                this._langs.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RT, Colibri.UI.ContextMenu.LT], '', args.isContextMenuEvent ? {left: args.domEvent.clientX, top: args.domEvent.clientY} : null);
 
             }
             else {
@@ -47335,7 +49187,7 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
                             }
                         });                    
                     });
-                    contextmenu.push({name: 'translate', title: 'Translate using the cloud', icon: App.Modules.Lang.Icons.ContextMenuTranslateIcon, children: children});
+                    contextmenu.push({name: 'translate', title: 'Translate', icon: App.Modules.Lang.Icons.ContextMenuTranslateIcon, children: children});
 
                 }
             
@@ -47543,7 +49395,7 @@ App.Modules.Lang.SettingsPage = class extends Colibri.UI.Component {
         
     }
 
-}
+} 
 
 
 App.Modules.Sites = class extends Colibri.Modules.Module {
@@ -47963,6 +49815,17 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
             });
     }
 
+    SaveDataInList(storage, data) {
+        return this.Call('Data', 'SaveDataList', {storage: storage, data: data})
+            .then((response) => {
+                this._store.IntersectList('sites.data', 'id', response.result);
+            })
+            .catch(error => {
+                App.Notices.Add(new Colibri.UI.Notice(error.result, Colibri.UI.Notice.Error, 15000));
+                console.error(error);
+            });
+    }
+
     ExportData(storage, term = null, filters = null, sortField = null, sortOrder = null) {
         this.Call('Data', 'Export', {storage: storage.name, term: term, filters: filters, sortfield: sortField, sortorder: sortOrder})
             .then((response) => {
@@ -48010,29 +49873,20 @@ App.Modules.Sites = class extends Colibri.Modules.Module {
     }
 
     LoadData(storage, term = null, filters = null, sortField = null, sortOrder = null, page = 1, pagesize = 20, returnPromise = false) {
-        App.Loading.Show();
         const promise = this.Call('Data', 'List', {storage: storage.name, term: term, filters: filters, sortfield: sortField, sortorder: sortOrder, page: page, pagesize: pagesize});
         if(returnPromise) {
             return promise;
         }
 
+        App.Loading.Show();
         promise.then((response) => {
             this._store.Set('sites.data', response.result);
-            App.Loading.Hide();
-            // if(page == 1) {
-            // }
-            // else if(Array.isArray(response.result)) {
-            //     let data = this._store.Query('sites.data');
-            //     if(!data || !Array.isArray(data)) {
-            //         data = [];
-            //     }
-            //     data = data.concat(response.result);
-            //     this._store.Set('sites.data', data);
-            // }
         })
         .catch(error => {
             App.Notices.Add(new Colibri.UI.Notice(error.result));
             console.error(error);
+        }).finally(() => {
+            App.Loading.Hide();
         });
     }
 
@@ -48373,6 +50227,7 @@ Colibri.UI.AddTemplate('App.Modules.Sites.UI.Pager',
 '    <TextSpan shown="true" name="max-pages" />' + 
 '    <Icon shown="true" name="right" iconSVG="Colibri.UI.RightArrowIcon"  />' + 
 '    <Icon shown="true" name="reload" iconSVG="Colibri.UI.ReloadIcon"  />' + 
+'    <Input shown="true" name="current-pagesize" value="20" type="number" hasClearIcon="false" hasIcon="false"  />' + 
 '</div>' + 
 '');
 App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
@@ -48387,6 +50242,8 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
         this._maxPagesO = this.Children('max-pages');
         this._currentPage = this.Children('current-page');
         this._reload = this.Children('reload');
+        this._currentPagesize = this.Children('current-pagesize');
+        
         
         
         this.maxPages = 1;
@@ -48396,6 +50253,7 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
         this._left.AddHandler('Clicked', (event, args) => this.__leftClicked(event, args));
         this._right.AddHandler('Clicked', (event, args) => this.__rightClicked(event, args)); 
         this._currentPage.AddHandler(['Filled', 'Cleared'], (event, args) => this.__currentPageChanged(event, args));   
+        this._currentPagesize.AddHandler(['Filled', 'Cleared'], (event, args) => this.__currentPagesizeChanged(event, args));   
         this._reload.AddHandler('Clicked', (event, args) => this.__reloadClicked(event, args));
 
     }
@@ -48453,6 +50311,15 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
             this.value = this._currentPage.value;
         } else {
             this.value = 1;
+        }
+        this.Dispatch('Changed', {value: this.value});
+    }
+
+    __currentPagesizeChanged(event, args) {
+        if(!this.hasMaxPages || (this._currentPagesize.value >= 1 && this._currentPagesize.value <= this._affected)) {
+            this.pageSize = this._currentPagesize.value;
+        } else {
+            this.pageSize = 20;
         }
         this.Dispatch('Changed', {value: this.value});
     }
@@ -48518,7 +50385,7 @@ App.Modules.Sites.UI.Pager = class extends Colibri.UI.FlexBox {
         this._showMaxPages();
     }
     _showMaxPages() {
-        this._maxPagesO.value = 'of ' + this._maxPages;
+        this._maxPagesO.value = 'of %s'.replaceAll('%s', this._maxPages);
         this.value = 1;
     }
 
@@ -48859,16 +50726,16 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
     set storage(value) {
         if(value === null) {
             this._storageChanged = true;
-            this._storage = null;    
+            this._storageObject = null;    
         }
         else {
-            this._storageChanged = this._storage?.name != value.name;
-            this._storage = value;
+            this._storageChanged = this._storageObject?.name != value.name;
+            this._storageObject = value;
         }
     }
 
     get storage() {
-        return this._storage;
+        return this._storageObject;
     }
 
     set value(value) {
@@ -48925,7 +50792,7 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
             this.ClearAllRows();
         }
 
-        if(this._storage && this._storage?.fields && this._storageChanged) {
+        if(this._storageObject && this._storageObject?.fields && this._storageChanged) {
                 
             let idColumn = this.header.columns.Children('id');
             if(!idColumn) {
@@ -48942,7 +50809,7 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
                 dateCreatedColumn.sortable = true;
             }
 
-            if(this._storage.params.softdeletes && this._storage.params.deletedautoshow) {
+            if(this._storageObject.params.softdeletes && this._storageObject.params.deletedautoshow) {
                 let dateDeletedColumn = this.header.columns.Children('datedeleted');
                 if(!dateDeletedColumn) {
                     dateDeletedColumn = this.header.columns.Add('datedeleted', 'Deleted', {width: '10%'});
@@ -48954,7 +50821,7 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
 
             const intemplate = {};
             let column = null;
-            Object.forEach(this._storage.fields, (name, field, index) => {
+            Object.forEach(this._storageObject.fields, (name, field, index) => {
                 if(field.params?.template === true) {
                     intemplate[name] = field;
                 }
@@ -48985,8 +50852,8 @@ App.Modules.Sites.DataGrid = class extends Colibri.UI.Grid {
 
             if(Object.countKeys(intemplate) > 0) {
                 this.rowTemplateComponent = 'App.Modules.Sites.UI.DataGridRowTemplateComponent';
-                Object.forEach(this._storage.params.template_args, (key, val) => !val ? (delete this._storage.params.template_args[key]) : null);
-                this.rowTemplateAttrs = Object.assign({rows: 'max-content', columns: 3, orientation: 'hr', gap: '0px 0px', flow: 'row'}, this._storage.params.template_args, {fields: intemplate});
+                Object.forEach(this._storageObject.params.template_args, (key, val) => !val ? (delete this._storageObject.params.template_args[key]) : null);
+                this.rowTemplateAttrs = Object.assign({rows: 'max-content', columns: 3, orientation: 'hr', gap: '0px 0px', flow: 'row'}, this._storageObject.params.template_args, {fields: intemplate});
             } else {
                 this.rowTemplateComponent = null;
             }
@@ -49206,28 +51073,28 @@ App.Modules.Sites.StoragesManagerTree = class extends Colibri.UI.Tree {
         return moduleNode;
     }
 
-    _insertStorageNode(moduleNode, storage) {
+    _insertStorageNode(storageNode, storage) {
        
-        let storageNode = this.FindNode(storage.name);
-        if(!storage.params.visible) {
-            storageNode.Dispose();
-            return null;
-        }
-        if(!storageNode) {
-            storageNode = moduleNode.nodes.Add(storage.name);
-        }
+        // let storageNode = this.FindNode(storage.name);
+        // if(!storage.params.visible) {
+        //     storageNode.Dispose();
+        //     return null;
+        // }
+        // if(!storageNode) {
+        //     storageNode = moduleNode.nodes.Add(storage.name);
+        // }
 
-        this._names.set(storage.name, storage.name);
+        // this._names.set(storage.name, storage.name);
         
-        const group = (storage.group ? ((storage.group[Lang.Current] ?? storage.group) + ': ') : '');
-        const desc = storage.desc[Lang.Current] ?? storage.desc;
+        // const group = (storage.group ? ((storage.group[Lang.Current] ?? storage.group) + ': ') : '');
+        // const desc = storage.desc[Lang.Current] ?? storage.desc;
 
-        storageNode.text = group + desc + ' (' + storage.name + ')';
-        storageNode.isLeaf = Object.countKeys(storage.fields) == 0;
-        storageNode.icon = App.Modules.Sites.Icons.StorageIcon;
-        storageNode.tag.entry = storage;
-        storageNode.tag.type = 'storage';
-        storageNode.isLeaf = false;
+        // storageNode.text = group + desc + ' (' + storage.name + ')';
+        // storageNode.isLeaf = Object.countKeys(storage.fields) == 0;
+        // storageNode.icon = App.Modules.Sites.Icons.StorageIcon;
+        // storageNode.tag.entry = storage;
+        // storageNode.tag.type = 'storage';
+        // storageNode.isLeaf = false;
 
         this._names.set(storage.name + '_fields', storage.name + '_fields');
         let fieldsNode = this.FindNode(storage.name + '_fields');
@@ -49256,7 +51123,7 @@ App.Modules.Sites.StoragesManagerTree = class extends Colibri.UI.Tree {
         this._insertFieldIndexes(indicesNode, storage);
 
 
-        moduleNode.isLeaf = false;
+        // moduleNode.isLeaf = false;
 
         return storageNode;
     }
@@ -49329,8 +51196,16 @@ App.Modules.Sites.StoragesManagerTree = class extends Colibri.UI.Tree {
         if(!storage.fields) {
             return;
         }
+
+        const founds = [];
         Object.forEach(storage.indices, (name, index) => {
-            this._insertIndexNode(storageNode, name, index);
+            const indexNode = this._insertIndexNode(storageNode, name, index);
+            founds.push(indexNode.name);
+        });
+        storageNode.nodes.ForEach((name, node) => {
+            if(founds.indexOf(name) === -1) {
+                node.Dispose();
+            }
         });
     }
 
@@ -49342,64 +51217,45 @@ App.Modules.Sites.StoragesManagerTree = class extends Colibri.UI.Tree {
      * @param {String} path 
      */
     __renderBoundedValues(data, path) {
-        
         if(!data) {
-            return;
-        }
-
-        if(Object.isObject(data)) {
-            data = Object.values(data);
-        }
-
-        this.value = data;
-
-    }
-
-    /**
-     * Value Array
-     * @type {Array}
-     */
-    get value() {
-        return this._value;
-    }
-    /**
-     * Value Array
-     * @type {Array}
-     */
-    set value(value) {
-        this._value = value;
-        this._showValue();
-    }
-    _showValue() {
-        
-        if(!this._module) {
             this.nodes.Clear();
             return;
         }
 
-        this._value.forEach((storage) => {
-            if(storage.module === this._module) {
-                this._insertStorageNode(this, storage);
-            }    
-        });
+        if(Object.countKeys(data) === 0) {
+            this.nodes.Clear();
+            return;
+        }
+
+        this._storageObject = data;
+        this._insertStorageNode(this, data);
+
     }
 
 
     /**
-     * Module name
-     * @type {String}
+     * Storage object
+     * @type {Object}
      */
-    get module() {
-        return this._module;
+    get storage() {
+        return this._storageObject;
     }
     /**
-     * Module name
-     * @type {String}
+     * Storage object
+     * @type {Object}
      */
-    set module(value) {
-        this._module = value;
-        this.nodes.Clear();
-        this._showValue();
+    set storage(value) {
+        this._storageObject = value;
+        if(value) {
+            this.binding = 'app.manage.storages.' + this._storageObject.name; 
+            this.nodes.Clear();
+            this._insertStorageNode(this, this._storageObject);
+        } else {
+            this.binding = null; 
+            this.nodes.Clear();
+        }
+
+  
     }
     
 }
@@ -50084,7 +51940,7 @@ Colibri.UI.AddTemplate('App.Modules.Sites.DataPage',
 '                <Input name="search-input" shown="true" placeholder="Search" enabled="false" />' + 
 '                <Icon shown="true" name="filters" iconSVG="Colibri.UI.Filters"  enabled="false" />' + 
 '            </FlexBox>' + 
-'            <DataGrid name="data" shown="true" enabled="false" binding="app.sites.data" selectionMode="fullrow" showCheckboxes="true" hasContextMenu="true" emptyMessage="Data not found" clearOnChange="true" />' + 
+'            <DataGrid name="data" shown="true" enabled="false" binding="app.sites.data" selectionMode="fullrow" showCheckboxes="true" hasContextMenu="true" emptyMessage="Data not found" />' + 
 '            <FlexBox name="buttons-pane" shown="true">' + 
 '                <SuccessButton name="add-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuAddIcon">Add</SuccessButton>' + 
 '                <SuccessButton name="dubl-data" shown="true" enabled="false" icon="Colibri.UI.ContextMenuDublicateIcon">Dublicate</SuccessButton>' + 
@@ -50093,14 +51949,14 @@ Colibri.UI.AddTemplate('App.Modules.Sites.DataPage',
 '                <SuccessButton name="restore-data" shown="false" enabled="false" icon="Colibri.UI.ContextMenuRemoveIcon">Restore</SuccessButton>' + 
 '                <SuccessButton name="export-data" shown="true" enabled="false">Export</SuccessButton>' + 
 '                <UI.Pager shown="true" name="pager" hasMaxPages="false" enabled="false" />' + 
+'                <FlexBox shown="true" name="additional"></FlexBox>' + 
 '            </FlexBox>' + 
 '        </Pane>' + 
 '    </Split>    ' + 
 '' + 
 '</div>' + 
 '');
-App.Modules.Sites.DataPage = class extends Colibri.UI.Component 
-{
+App.Modules.Sites.DataPage = class extends Colibri.UI.Component {
 
     constructor(name, container) {
         super(name, container, Colibri.UI.Templates['App.Modules.Sites.DataPage']);
@@ -50119,18 +51975,20 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._restoreData = this.Children('split/data-pane/buttons-pane/restore-data');
         this._exportData = this.Children('split/data-pane/buttons-pane/export-data');
         this._pagerData = this.Children('split/data-pane/buttons-pane/pager');
-        
+        this._additionalData = this.Children('split/data-pane/buttons-pane/additional');
+
+
 
         this._storages.AddHandler('SelectionChanged', (event, args) => this.__storagesSelectionChanged(event, args));
 
         // this._data.AddHandler('ScrolledToBottom', (event, args) => this.__dataScrolledToBottom(event, args));
-        this._pagerData.AddHandler('Changed', (event, args) => this.__pagerDataChanged(event, args));   
+        this._pagerData.AddHandler('Changed', (event, args) => this.__pagerDataChanged(event, args));
         this._data.AddHandler('SelectionChanged', (event, args) => this.__dataSelectionChanged(event, args));
         this._data.AddHandler('CheckChanged', (event, args) => this.__checkChangedOnData(event, args));
         this._data.AddHandler('DoubleClicked', (event, args) => this.__doubleClickedOnData(event, args));
         this._data.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderDataContextMenu(event, args));
-        this._data.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnDataContextMenu(event, args));        
-        this._data.AddHandler('ColumnClicked', (event, args) => this.__clickOnDataColumn(event, args));        
+        this._data.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnDataContextMenu(event, args));
+        this._data.AddHandler('ColumnClicked', (event, args) => this.__clickOnDataColumn(event, args));
 
         this._deleteData.AddHandler('Clicked', (event, args) => this.__deleteDataButtonClicked(event, args));
         this._restoreData.AddHandler('Clicked', (event, args) => this.__restoreDataButtonClicked(event, args));
@@ -50140,20 +51998,60 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._exportData.AddHandler('Clicked', (event, args) => this.__exportDataButtonClicked(event, args));
 
         this._searchInput.AddHandler(['Filled', 'Cleared'], (event, args) => this.__searchInputFilled(event, args));
-        this._searchFilter.AddHandler('Clicked', (event, args) => this.__searchFilterClicked(event, args)); 
+        this._searchFilter.AddHandler('Clicked', (event, args) => this.__searchFilterClicked(event, args));
+    }
+
+    _addAdditionalModuleMethods() {
+
+        const selection = this._storages.selected;
+        const storage = selection?.tag;
+        if (!storage) {
+            return;
+        }
+
+        const module = storage.module;
+        const m = eval(module);
+        if (m?.DataPageAdditionalMethods ?? false) {
+            m.DataPageAdditionalMethods(this, storage).then(methods => {
+                storage.methods = methods;
+                this._additionalData.Clear();
+                if(storage.methods?.buttons) {
+                    for(const button of storage.methods?.buttons) {
+                        const b = new Colibri.UI.SuccessButton(button.name, this._additionalData);
+                        b.shown = true;
+                        b.value = button.title;
+                        b.icon = button.icon;
+                        b.AddHandler('Clicked', (event, args) => {
+                            m?.DataPageAdditionalExecuteMethod(button, storage, {filter: this._filterData, search: this._searchInput.value}).then(() => {
+                                this._loadDataPage(
+                                    storage, 
+                                    this._searchInput.value, 
+                                    this._filterData, 
+                                    this._data.sortColumn?.name, 
+                                    this._data.sortOrder, 
+                                    this._pagerData.value
+                                );
+                            });
+                        });
+                    }
+                }
+
+            });
+        }
+
     }
 
     _showFilters() {
         const selection = this._storages.selected;
         const storage = selection?.tag;
-        if(!storage) {
+        if (!storage) {
             return;
         }
 
         Manage.FilterWindow.Show('Rows filter «' + (storage.desc[Lang.Current] ?? storage.desc ?? '') + '»', 800, 'app.manage.storages(' + storage.name + ')', this._filterData)
             .then((data) => {
                 this._filterData = data;
-                if(Object.countKeys(this._filterData) > 0) {
+                if (Object.countKeys(this._filterData) > 0) {
                     this._searchFilter.AddClass('-selected');
                 } else {
                     this._searchFilter.RemoveClass('-selected');
@@ -50161,38 +52059,38 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
                 this._data.storage = storage;
                 this._loadDataPage(storage, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, 1);
             })
-            .catch(() => {});
+            .catch(() => { });
     }
 
     /**
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __searchFilterClicked(event, args) {
         this._showFilters();
     }
 
-    
+
     _loadDataPage(storage, searchTerm, searchFilters, sortField, sortOrder, page) {
         this._pagerData.value = page;
-        Sites.LoadData(storage, searchTerm, searchFilters, sortField, sortOrder, page, 20);
+        Sites.LoadData(storage, searchTerm, searchFilters, sortField, sortOrder, page, this._pagerData.pageSize);
     }
 
-    
+
     /**
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __searchInputFilled(event, args) {
         const selected = this._storages.selected;
-        if(!selected || (selected.tag === 'module' || selected.tag === 'group')) {
+        if (!selected || (selected.tag === 'module' || selected.tag === 'group')) {
             this._data.storage = null;
-            this._data.ClearAll(); 
-            return;           
+            this._data.ClearAll();
+            return;
         }
-        
+
         this._data.storage = selected.tag;
         this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, 1);
     }
@@ -50201,11 +52099,11 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __storagesSelectionChanged(event, args) {
 
         const selection = this._storages.selected;
-        
+
         this._searchInput.enabled = selection != null && selection.tag !== 'module' && selection.tag !== 'group';
         this._searchFilter.enabled = selection != null && selection.tag !== 'module' && selection.tag !== 'group';
         this._data.enabled = selection != null && selection.tag !== 'module' && selection.tag !== 'group';
@@ -50219,24 +52117,26 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
         this._pagerData.enabled = selection != null && selection.tag !== 'module' && selection.tag !== 'group';
 
         this.__searchInputFilled(event, args);
-        
+
+        this._addAdditionalModuleMethods();
+
     }
 
     /**
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __pagerDataChanged(event, args) {
         const selected = this._storages.selected;
-        this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, this._pagerData.value);        
+        this._loadDataPage(selected?.tag, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder, this._pagerData.value);
     }
 
     /**
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __dataSelectionChanged(event, args) {
         const checked = this._data.checked;
         const selected = this._data.selected;
@@ -50249,8 +52149,8 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
-    __checkChangedOnData(event, args) { 
+     */
+    __checkChangedOnData(event, args) {
         const checked = this._data.checked;
         const selected = this._data.selected;
         this._editData.enabled = checked.length == 1 || !!selected;
@@ -50261,7 +52161,7 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __doubleClickedOnData(event, args) {
         this._editData.Dispatch('Clicked');
     }
@@ -50270,14 +52170,14 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __restoreDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
-        if(!storage) {
+        if (!storage) {
             return;
         }
-        if(this._data.checked.length == 0) {
+        if (this._data.checked.length == 0) {
             App.Confirm.Show('Restore data', 'Are you sure you want to restore the selected rows?', 'Restore!').then(() => {
                 Sites.RestoreData(storage, [this._data.selected?.value?.id]);
             });
@@ -50297,14 +52197,14 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __deleteDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
-        if(!storage) {
+        if (!storage) {
             return;
         }
-        if(this._data.checked.length == 0) {
+        if (this._data.checked.length == 0) {
             App.Confirm.Show('Data row delete', '', 'Delete').then(() => {
                 Sites.DeleteData(storage, [this._data.selected?.value?.id]);
             });
@@ -50324,25 +52224,25 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __addDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
-        if(!storage) {
+        if (!storage) {
             return;
         }
 
-        if(Security.IsCommandAllowed('sites.storages.' + storage.name + '.edit')) {
+        if (Security.IsCommandAllowed('sites.storages.' + storage.name + '.edit')) {
             Manage.FormWindow.Show('New row «' + (storage.desc[Lang.Current] ?? storage.desc ?? '') + '»', 1024, 'app.manage.storages(' + storage.name + ')', {})
                 .then((data) => {
                     Sites.SaveData(storage.name, data);
                 })
-                .catch(() => {});
+                .catch(() => { });
         }
         else {
             App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
         }
-            
+
 
     }
 
@@ -50350,21 +52250,21 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __editDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
         const dta = this._data.selected?.value;
-        if(!storage || !dta) {
+        if (!storage || !dta) {
             return;
         }
 
-        if(Security.IsCommandAllowed('sites.storages.' + storage.name + '.edit')) {
-            Manage.FormWindow.Show('New row «' + (storage.desc[Lang.Current] ?? storage.desc ?? '') + '»', 1024, 'app.manage.storages(' + storage.name + ')', dta)
+        if (Security.IsCommandAllowed('sites.storages.' + storage.name + '.edit')) {
+            Manage.FormWindow.Show('Edit row «' + (storage.desc[Lang.Current] ?? storage.desc ?? '') + '»', 1024, 'app.manage.storages(' + storage.name + ')', dta)
                 .then((data) => {
                     Sites.SaveData(storage.name, data);
                 })
-                .catch(() => {});
+                .catch(() => { });
         }
         else {
             App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
@@ -50376,23 +52276,23 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __dublDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
         const dta = this._data.selected?.value;
-        if(!storage || !dta) {
+        if (!storage || !dta) {
             return;
         }
 
         delete dta.id;
 
-        if(Security.IsCommandAllowed('sites.storages.' + storage.name + '.edit')) {
+        if (Security.IsCommandAllowed('sites.storages.' + storage.name + '.edit')) {
             Manage.FormWindow.Show('New row «' + (storage.desc[Lang.Current] ?? storage.desc ?? '') + '»', 1024, 'app.manage.storages(' + storage.name + ')', dta)
                 .then((data) => {
                     Sites.SaveData(storage.name, data);
                 })
-                .catch(() => {});
+                .catch(() => { });
         }
         else {
             App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
@@ -50404,74 +52304,116 @@ App.Modules.Sites.DataPage = class extends Colibri.UI.Component
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __exportDataButtonClicked(event, args) {
         const selection = this._storages.selected;
         const storage = selection?.tag;
-        if(!storage) {
+        if (!storage) {
             return;
         }
 
         Sites.ExportData(storage, this._searchInput.value, this._filterData, this._data.sortColumn?.name, this._data.sortOrder);
     }
 
-    
+
     /**
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __renderDataContextMenu(event, args) {
         let contextmenu = [];
         this._data.selected = args.item;
-        
-        contextmenu.push({name: 'dubl-data', title: 'Dublicate data', icon: Colibri.UI.ContextMenuDublicateIcon});
-        contextmenu.push({name: 'edit-data', title: 'Edit data', icon: Colibri.UI.ContextMenuEditIcon});
 
-        if(!args.item.value.datedeleted) {
-            contextmenu.push({name: 'remove-data', title: 'Delete', icon: Colibri.UI.ContextMenuRemoveIcon});
+        contextmenu.push({ name: 'dubl-data', title: 'Dublicate data', icon: Colibri.UI.ContextMenuDublicateIcon });
+        contextmenu.push({ name: 'edit-data', title: 'Edit data', icon: Colibri.UI.ContextMenuEditIcon });
+
+        if (!args.item.value.datedeleted) {
+            contextmenu.push({ name: 'remove-data', title: 'Delete', icon: Colibri.UI.ContextMenuRemoveIcon });
         } else {
-            contextmenu.push({name: 'restore-data', title: 'Restore', icon: Colibri.UI.ContextMenuRemoveIcon});
+            contextmenu.push({ name: 'restore-data', title: 'Restore', icon: Colibri.UI.ContextMenuRemoveIcon });
+        }
+
+        const selection = this._storages.selected;
+        const storage = selection?.tag;
+        if (!storage) {
+            return;
+        }
+
+        if (storage.methods?.contextmenu) {
+            contextmenu = contextmenu.concat([{name: '-'}]);
+            contextmenu = contextmenu.concat(storage.methods?.contextmenu);
         }
 
         args.item.contextmenu = contextmenu;
-        args.item.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB], '', args.isContextMenuEvent ? {left: args.domEvent.clientX, top: args.domEvent.clientY} : null);
-        
+        args.item.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB], '', args.isContextMenuEvent ? { left: args.domEvent.clientX, top: args.domEvent.clientY } : null);
+
     }
 
     /**
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __clickOnDataContextMenu(event, args) {
 
         const item = args?.item;
         const menuData = args.menuData;
-        if(!menuData) {
+        if (!menuData) {
             return false;
         }
 
-        if(menuData.name == 'edit-data') {
+        if (menuData.name == 'edit-data') {
             this._editData.Dispatch('Clicked');
         }
-        else if(menuData.name == 'dubl-data') {
+        else if (menuData.name == 'dubl-data') {
             this._dublData.Dispatch('Clicked');
         }
-        else if(menuData.name == 'remove-data') {
+        else if (menuData.name == 'remove-data') {
             this._deleteData.Dispatch('Clicked');
         }
-        else if(menuData.name == 'restore-data') {
+        else if (menuData.name == 'restore-data') {
             this._restoreData.Dispatch('Clicked');
         }
+
+        const selection = this._storages.selected;
+        const storage = selection?.tag;
+        if (!storage) {
+            return;
+        }
+
+        const module = storage.module;
+        const m = eval(module);
+        let dta = this._data.selected?.value;
+        const checked = this._data.checked;
+        if (checked.length > 0) {
+            dta = checked.map(v => v.value);
+        }
+
+        if (storage.methods?.contextmenu) {
+            m?.DataPageAdditionalExecuteMethod(menuData, storage, dta).then(() => {
+                this._loadDataPage(
+                    storage, 
+                    this._searchInput.value, 
+                    this._filterData, 
+                    this._data.sortColumn?.name, 
+                    this._data.sortOrder, 
+                    this._pagerData.value
+                );
+            });
+        }
+
     }
 
     /**
      * @private
      * @param {Colibri.Events.Event} event event object
      * @param {*} args event arguments
-     */ 
+     */
     __clickOnDataColumn(event, args) {
+        if(this._data.sortColumn?.name === 'button-container-for-row-selection') {
+            return;
+        }
         this.__searchInputFilled(event, args);
     }
 
@@ -50481,12 +52423,17 @@ Colibri.UI.AddTemplate('App.Modules.Sites.StoragesPage',
 '' + 
 '    <Pane name="storages-pane" shown="true">' + 
 '        <H2 name="ttl" shown="true">Storages</H2>' + 
-'        <Split shown="true" name="split">' + 
-'            <Pane shown="true" name="left">' + 
-'                <ModulesManagerList shown="true" name="modules"></ModulesManagerList>' + 
-'            </Pane>' + 
-'            <Pane shown="true" name="right">' + 
-'                <StoragesManagerTree name="storages" shown="true" hasContextMenu="true" expandOnClick="true"  />' + 
+'        <Split shown="true" name="split" orientation="horizontal">' + 
+'            <Split shown="true" name="split2" orientation="vertical">' + 
+'                <Pane shown="true" name="left">' + 
+'                    <ModulesManagerList shown="true" name="modules"></ModulesManagerList>' + 
+'                </Pane>' + 
+'                <Pane shown="true" name="right">' + 
+'                    <StoragesManagerList shown="true" name="storages"></StoragesManagerList>' + 
+'                </Pane>' + 
+'            </Split>' + 
+'            <Pane shown="true" name="bottom">' + 
+'                <StoragesManagerTree name="storage" shown="true" hasContextMenu="true" expandOnClick="true"  />' + 
 '            </Pane>' + 
 '        </Split>' + 
 '    </Pane>' + 
@@ -50508,22 +52455,27 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         this._storagesPane = this.Children('storages-pane');
         this._storagesCannotchange = this.Children('storages-cannotchange');
 
-        this._storages = this.Children('storages-pane/split/right/storages');
-        this._modules = this.Children('storages-pane/split/left/modules');
+        this._modules = this.Children('left/modules');
+        this._storages = this.Children('right/storages');
+        this._storage = this.Children('bottom/storage');
         
 
         this._modules.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderModulesContextMenu(event, args))
         this._modules.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnModulesContextMenu(event, args));
         this._storages.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderStoragesContextMenu(event, args))
         this._storages.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnStoragesContextMenu(event, args));
-        this._storages.AddHandler('DoubleClicked', (event, args) => this.__storagesDoubleClick(event, args));
+        this._storage.AddHandler('ContextMenuIconClicked', (event, args) => this.__renderStorageContextMenu(event, args))
+        this._storage.AddHandler('ContextMenuItemClicked', (event, args) => this.__clickOnStorageContextMenu(event, args));
+
+        this._storage.AddHandler('DoubleClicked', (event, args) => this.__storagesDoubleClick(event, args));
 
         this._modules.AddHandler('SelectionChanged', (event, args) => this.__modulesSelectionChanged(event, args)); 
+        this._storages.AddHandler('SelectionChanged', (event, args) => this.__storagesSelectionChanged(event, args)); 
 
-        this._dragManager = new Colibri.UI.DragManager([this._storages], [this._storages]);
+        this._dragManager = new Colibri.UI.DragManager([this._storage], [this._storage]);
         this._dragManager.AddHandler('DragDropComplete', (event, args) => this.__dragDropComplete(event, args));
         this._dragManager.AddHandler('DragDropOver', (event, args) => this.__dragDropOver(event, args));
-        this._storages.sorting = true;    
+        this._storage.sorting = true;    
 
         App.Store.AsyncQuery('app.settings').then((settings) => {
             if(settings.mode != 'local') {
@@ -50533,7 +52485,8 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                 this._storagesPane.shown = true;
                 this._storagesCannotchange.shown = false;
                 this._modules.binding = 'app.manage.modules';
-                this._storages.binding = 'app.manage.storages';
+                // this._storages.binding = 'app.manage.storages';
+                // this._storage.binding = 'app.manage.storages';
             }
         });
 
@@ -50551,15 +52504,22 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
     __modulesSelectionChanged(event, args) {
         const selected = this._modules.selected;
         if(!selected) {
-            this._storages.value = null;
+            this._storages.module = null;
+            this._storage.storage = null;
         } else {
-
+            this._storage.storage = null;
             const module = selected.value;
-            this._storages.module = module.name;
-            // App.Store.AsyncQuery('app.manage.storages').then(storages => {
-            //     const storagesList = Object.values(storages).filter(v => v.module == module.name);
-            //     this._storages.value = storagesList;
-            // });
+            this._storages.module = module;
+        }
+    }
+
+    __storagesSelectionChanged(event, args) {
+        const selected = this._storages.selected;
+        if(!selected) {
+            this._storage.storage = null;
+        } else {
+            const storage = selected.value;
+            this._storage.storage = storage;
         }
     }
 
@@ -50585,19 +52545,24 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         let contextmenu = [];
 
+        contextmenu.push({ name: 'edit-storage', title: 'Edit storage properties', icon: Colibri.UI.ContextMenuEditIcon });
+        contextmenu.push({ name: 'remove-storage', title: 'Delete storage', icon: Colibri.UI.ContextMenuRemoveIcon });
+        contextmenu.push({ name: 'new-field', title: 'New property', icon: Colibri.UI.ContextMenuAddIcon });
+        contextmenu.push({ name: 'new-index', title: 'New index', icon: Colibri.UI.ContextMenuAddIcon });
+
+        args.item.contextmenu = contextmenu;
+        args.item.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB], '', args.isContextMenuEvent ? { left: args.domEvent.clientX, top: args.domEvent.clientY } : null);
+
+    }
+
+    __renderStorageContextMenu(event, args) {
+
+        let contextmenu = [];
+
         const node = args.item;
         const tag = node.tag;
         const nodeType = tag.type;
         switch (nodeType) {
-            case 'module':
-                contextmenu.push({ name: 'new-storage', title: 'New storage', icon: Colibri.UI.ContextMenuAddIcon });
-                break;
-            case 'storage':
-                contextmenu.push({ name: 'edit-storage', title: 'Edit storage properties', icon: Colibri.UI.ContextMenuEditIcon });
-                contextmenu.push({ name: 'remove-storage', title: 'Delete storage', icon: Colibri.UI.ContextMenuRemoveIcon });
-                contextmenu.push({ name: 'new-field', title: 'New property', icon: Colibri.UI.ContextMenuAddIcon });
-                contextmenu.push({ name: 'new-index', title: 'New index', icon: Colibri.UI.ContextMenuAddIcon });
-                break;
             case 'fields':
                 contextmenu.push({ name: 'new-field', title: 'New property', icon: Colibri.UI.ContextMenuAddIcon });
                 contextmenu.push({ name: 'new-virtual-field', title: 'New virtual property', icon: Colibri.UI.ContextMenuAddIcon });
@@ -50633,7 +52598,7 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
     _storageFields() {
         return {
             name: 'Storage',
-            desc: 'Хранилища',
+            desc: 'Storages',
             fields: {
                 name: {
                     type: 'varchar',
@@ -51393,6 +53358,13 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                             component: 'Checkbox',
                             default: true
                         },
+                        displayed_columns: {
+                            type: 'varchar',
+                            placeholder: 'Grid columns for ArrayGrid',
+                            note: 'Works only with ArrayGrid',
+                            component: 'Text',
+                            default: ''
+                        },
                         maxadd: {
                             type: 'int',
                             component: 'Number',
@@ -51450,12 +53422,14 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                         valuegenerator: {
                             type: 'varchar',
                             placeholder: 'Runtime value generator',
+                            note: 'For example: (fieldValue, formValue, fieldComponent, component) => {}',
                             component: 'TextArea',
                             default: ''
                         },
                         onchangehandler: {
                             type: 'varchar',
                             placeholder: 'OnChanged Handler',
+                            note: 'For example: (event, args) => {}',
                             component: 'TextArea',
                             default: ''
                         },
@@ -51516,7 +53490,6 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                                     },
                                     lookup: (term, dependsValue, dependsField, obj) => {
                                         return new Promise((rs, rj) => {
-                                            console.log(moduleNode);
                                             Manage.Store.AsyncQuery('manage.storages').then((storages) => {
                                                 rs({ 
                                                     result: Object.values(storages)
@@ -51810,6 +53783,17 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                             component: 'Text',
                             desc: 'Component for Chooser',
                         }
+                    }
+                },
+                tag: {
+                    type: 'json',
+                    component: 'KeyValueObject',
+                    group: 'Tags',
+                    desc: 'Tags',
+                    params: {
+                        simplearrayheight: 1,
+                        simplearraywidth: 1,
+                        initempty: false
                     }
                 }
 
@@ -52139,8 +54123,13 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
      */ 
     __clickOnStoragesContextMenu(event, args) {
 
-        const node = this._storages.selected;
-        if (!node) {
+        const module = this._modules.selected;
+        if(!module) {
+            return false;
+        }
+
+        const storage = this._storages.selected;
+        if (!storage) {
             return false;
         }
 
@@ -52149,30 +54138,14 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             return false;
         }
 
-        if (menuData.name == 'new-storage') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            if (Security.IsCommandAllowed('sites.storages.add')) {
-                Manage.FormWindow.Show('New storage', 800, this._storageFields(), {})
-                    .then((data) => {
-                        Sites.SaveStorage(moduleNode.value, data);
-                    })
-                    .catch(() => { });
-            }
-            else {
-                App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
-            }
-        }
-        else if (menuData.name == 'edit-storage') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
+        if (menuData.name == 'edit-storage') {
             if (Security.IsCommandAllowed('sites.storages.edit')) {
-                const storageData = node.tag.entry;
-                if(storageData.group) {
-                    storageData.group_enabled = true;
+                if(storage.value.group) {
+                    storage.value.group_enabled = true;
                 }
-                console.log(storageData);
-                Manage.FormWindow.Show('Edit storage', 800, this._storageFields(), storageData)
+                Manage.FormWindow.Show('Edit storage', 800, this._storageFields(), storage.value)
                     .then((data) => {
-                        Sites.SaveStorage(moduleNode.value, data);
+                        Sites.SaveStorage(module.value, data);
                     })
                     .catch(() => { });
             }
@@ -52182,33 +54155,19 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         }
         else if (menuData.name == 'remove-storage') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            App.Confirm.Show('Delete storage', 'Are you sure you want to delete the datastore?', 'Delete').then(() => {
-                Sites.DeleteStorage(moduleNode.value, node.tag.entry);
-            });
-        }
-        else if (menuData.name == 'copy-field') {
-            if(node.tag.type === 'field') {
-                this._copiedField = node.tag.entry;
-                App.Notices.Add(new Colibri.UI.Notice('Field data is copied', Colibri.UI.Notice.Success, 5000));
-            }
-        }
-        else if (menuData.name == 'paste-field') {
-            const data = this._copiedField;
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node, data.name), data, true).then((response) => {
-                App.Notices.Add(new Colibri.UI.Notice('Field is successfully passed', Colibri.UI.Notice.Success, 5000));
-                this._copiedField = null;
+            App.Confirm.Show(
+                'Delete storage',
+                'Are you sure you want to delete the datastore?',
+                'Delete'
+            ).then(() => {
+                Sites.DeleteStorage(module.value, storage.value);
             });
         }
         else if (menuData.name == 'new-field') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) { // node.tag.type === 'fields'
-                Manage.FormWindow.Show('New property', 1024, this._fieldFields(true, moduleNode.value), {})
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.fields')) { // node.tag.type === 'fields'
+                Manage.FormWindow.Show('New property', 1024, this._fieldFields(true, module.value), {})
                     .then((data) => {
-                        Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node, data.name), data, true);
+                        Sites.SaveField(module.value, storage.value, data.name, data, true);
                     })
                     .catch(() => { });
             }
@@ -52217,13 +54176,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             }
         }
         else if (menuData.name == 'new-virtual-field') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.fields')) {
                 Manage.FormWindow.Show('New virtual property', 1024, this._fieldVirtualFields(), {})
                     .then((data) => {
                         data.virtual = true;
-                        Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node, data.name), data, true);
+                        Sites.SaveField(module.value, storage.value, data.name, data, true);
                     })
                     .catch(() => { });
             }
@@ -52231,10 +54188,82 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                 App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
             }
         }
+        else if (menuData.name == 'new-index') {
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.indexes')) {
+                Manage.FormWindow.Show('New index', 800, this._fieldIndex(storage.value.name), {})
+                    .then((data) => {
+                        Sites.SaveIndex(module.value, storage.value, data);
+                    })
+                    .catch(() => { });
+            }
+            else {
+                App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
+            }
+        }
+
+    }
+
+    __clickOnStorageContextMenu(event, args) {
+        const module = this._modules.selected;
+        if(!module) {
+            return;
+        }
+
+        const storage = this._storages.selected;
+        if(!storage) {
+            return;
+        }
+
+        const node = this._storage.selected;
+        if (!node) {
+            return false;
+        }
+
+        const menuData = args.menuData;
+        if (!menuData) {
+            return false;
+        }
+
+        if (menuData.name == 'copy-field') {
+            if(node.tag.type === 'field') {
+                this._copiedField = node.tag.entry;
+                App.Notices.Add(new Colibri.UI.Notice('Field data is copied', Colibri.UI.Notice.Success, 5000));
+            }
+        }
+        else if (menuData.name == 'new-field') {
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.fields')) { // node.tag.type === 'fields'
+                Manage.FormWindow.Show('New property', 1024, this._fieldFields(true, module.value), {})
+                    .then((data) => {
+                        Sites.SaveField(module.value, storage.value, this._getPath(node, data.name), data, true);
+                    })
+                    .catch(() => { });
+            }
+            else {
+                App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
+            }
+        }
+        else if (menuData.name == 'new-virtual-field') {
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.fields')) {
+                Manage.FormWindow.Show('New virtual property', 1024, this._fieldVirtualFields(), {})
+                    .then((data) => {
+                        data.virtual = true;
+                        Sites.SaveField(module.value, storage.value, this._getPath(node, data.name), data, true);
+                    })
+                    .catch(() => { });
+            }
+            else {
+                App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
+            }
+        }
+        else if (menuData.name == 'paste-field') {
+            const data = this._copiedField;
+            Sites.SaveField(module.value, storage.value, this._getPath(node, data.name), data, true).then((response) => {
+                App.Notices.Add(new Colibri.UI.Notice('Field is successfully passed', Colibri.UI.Notice.Success, 5000));
+                this._copiedField = null;
+            });
+        }
         else if (menuData.name == 'edit-field') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.fields')) {
                 
                 const fieldData = node.tag.entry;
                 if(fieldData.default) {
@@ -52246,11 +54275,15 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
                 }
 
                 // node.parentNode.tag.type === 'fields'
-                Manage.FormWindow.Show('Edit property', 1024, fieldData.virtual ? this._fieldVirtualFields(moduleNode.value) : this._fieldFields(true, moduleNode.value), fieldData)
-                    .then((data) => {
-                        Sites.SaveField(moduleNode.value, storageNode.tag.entry, this._getPath(node), data, false);
-                    })
-                    .catch(() => { });
+                Manage.FormWindow.Show(
+                    'Edit property', 
+                    1024, 
+                    fieldData.virtual ? this._fieldVirtualFields(module.value) : this._fieldFields(true, module.value), 
+                    fieldData
+                ).then((data) => {
+                    Sites.SaveField(module.value, storage.value, this._getPath(node), data, false);
+                })
+                .catch(() => { });
             }
             else {
                 App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
@@ -52258,12 +54291,13 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         }
         else if (menuData.name == 'remove-field') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            const selectedNode = this.selected;
-            if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
-                App.Confirm.Show('Delete property', 'Are you sure you want to delete the property?', 'Delete').then(() => {
-                    Sites.DeleteField(moduleNode.value, storageNode.tag.entry, this._getPath(node));
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.fields')) {
+                App.Confirm.Show(
+                    'Delete property', 
+                    'Are you sure you want to delete the property?', 
+                    'Delete'
+                ).then(() => {
+                    Sites.DeleteField(module.value, storage.value, this._getPath(node));
                 });
             }
             else {
@@ -52271,27 +54305,11 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
             }
 
         }
-        else if (menuData.name == 'new-index') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.indexes')) {
-                Manage.FormWindow.Show('New index', 800, this._fieldIndex(storageNode.tag.entry.name), {})
-                    .then((data) => {
-                        Sites.SaveIndex(moduleNode.value, storageNode.tag.entry, data);
-                    })
-                    .catch(() => { });
-            }
-            else {
-                App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
-            }
-        }
         else if (menuData.name == 'edit-index') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.indexes')) {
-                Manage.FormWindow.Show('Edit index', 800, this._fieldIndex(storageNode.tag.entry.name), node.tag.entry)
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.indexes')) {
+                Manage.FormWindow.Show('Edit index', 800, this._fieldIndex(storage.value.name), node.tag.entry)
                     .then((data) => {
-                        Sites.SaveIndex(moduleNode.value, storageNode.tag.entry, data);
+                        Sites.SaveIndex(storage.value, storage.value, data);
                     })
                     .catch(() => { });
             }
@@ -52301,17 +54319,30 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
 
         }
         else if (menuData.name == 'remove-index') {
-            const moduleNode = this._modules.selected; // node.FindParent((node) => node.tag.type === 'module');
-            const storageNode = node.FindParent((node) => node.tag.type === 'storage');
-            if (Security.IsCommandAllowed('sites.storages.' + storageNode.tag.entry.name + '.fields')) {
-                App.Confirm.Show('Delete index', 'Are you sure you want to delete the index?', 'Delete').then(() => {
-                    Sites.DeleteIndex(moduleNode.value, storageNode.tag.entry, node.tag.entry);
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.fields')) {
+                App.Confirm.Show(
+                    'Delete index', 
+                    'Are you sure you want to delete the index?', 
+                    'Delete'
+                ).then(() => {
+                    Sites.DeleteIndex(module.value, storage.value, node.tag.entry);
                 });
             }
             else {
                 App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
             }
 
+        } else if (menuData.name == 'new-index') {
+            if (Security.IsCommandAllowed('sites.storages.' + storage.value.name + '.indexes')) {
+                Manage.FormWindow.Show('New index', 800, this._fieldIndex(storage.value.name), {})
+                    .then((data) => {
+                        Sites.SaveIndex(module.value, storage.value, data);
+                    })
+                    .catch(() => { });
+            }
+            else {
+                App.Notices.Add(new Colibri.UI.Notice('Operation not permitted', Colibri.UI.Notice.Error, 5000));
+            }
         }
     }
 
@@ -52352,16 +54383,12 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         }
         else if(dragged.tag.type === 'field') {
 
-            const draggedField = dragged.tag.entry;
             const draggedFieldParent = dragged.parentNode;
-            const draggedStorage = dragged.FindParent((node) => node.tag.type === 'storage');
 
-            const droppedToField = droppedTo.tag.entry;
             const droppedToFieldParent = droppedTo.parentNode;
-            const droppedToStorage = droppedTo.FindParent((node) => node.tag.type === 'storage');
             const dropSibling = droppedToElement.attr('drop');
 
-            if(!dropSibling || !draggedStorage || !droppedToStorage || draggedStorage.tag.entry.name != droppedToStorage.tag.entry.name || draggedFieldParent != droppedToFieldParent) {
+            if(!dropSibling || draggedFieldParent != droppedToFieldParent) {
                 effects.effectAllowed = 'none';
                 effects.dropEffect = 'none';
             }
@@ -52385,9 +54412,9 @@ App.Modules.Sites.StoragesPage = class extends Colibri.UI.Component {
         const dropSibling = droppedToElement.attr('drop');
 
         const moduleNode = this._modules.selected; // dragged.FindParent((node) => node.tag.type === 'module');
-        const storageNode = dragged.FindParent((node) => node.tag.type === 'storage');
+        const storageNode = this._storages.selected; 
 
-        Sites.MoveField(moduleNode.value, storageNode.tag.entry, this._getPath(dragged), this._getPath(droppedTo), dropSibling);
+        Sites.MoveField(moduleNode.value, storageNode.value, this._getPath(dragged), this._getPath(droppedTo), dropSibling);
 
     }
 
@@ -52484,7 +54511,7 @@ App.Modules.Sites.DataWindow = class extends Colibri.UI.Window {
 
     _loadDataPage(storage, searchTerm, sortField, sortOrder, page) {
         this._dataCurrentPage = page;
-        Sites.LoadData(storage, searchTerm, sortField, sortOrder, page, 20);
+        Sites.LoadData(storage, searchTerm, {}, sortField, sortOrder, page, 20);
     }
 
     /**
@@ -52568,6 +54595,7 @@ App.Modules.Sites.ModulesManagerList = class extends Colibri.UI.List {
         this._names = new Map();
         this.removeHiddenNodes = true;
 
+        this.idField = 'name';
         this.AddClass('-has-search');
         this.rendererComponent = 'App.Modules.Sites.ModulesManagerListItem';
 
@@ -52592,7 +54620,18 @@ App.Modules.Sites.ModulesManagerList = class extends Colibri.UI.List {
             data = Object.values(data);
         }
 
+        const selected = this.selected?.value ?? null;
+        
         this._group.value = data;
+
+
+        if(selected) {
+            const newSelected = this._group.FindByKey(selected.name);
+            if(newSelected != null) {
+                const s = this._group.Items(newSelected);
+                this.SelectItem(s);            
+            }
+        }
 
     }
     
@@ -52648,7 +54687,169 @@ App.Modules.Sites.ModulesManagerListItem = class extends Colibri.UI.Pane {
         this._showValue();
     }
     _showValue() {
-        this._ttl.value = this._value.desc;
+        this._ttl.value = Lang.Translate(this._value.desc);
+        this._nam.value = this._value.name;
+    }
+
+}
+App.Modules.Sites.StoragesManagerList = class extends Colibri.UI.List {
+    
+    
+
+    constructor(name, container) {
+        super(name, container);
+        this.AddClass('app-manager-storages-list-component');
+        this.AddClass('-has-search');
+
+        this.idField = 'name';
+        this.rendererComponent = 'App.Modules.Sites.StoragesManagerListItem';
+
+        this._group = new Colibri.UI.List.Group(this.name + '_group', this);
+        this._group.shown = true;
+
+    }
+
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
+        if(!data) {
+            return;
+        }
+
+        const selected = this.selected?.value ?? null;
+
+        const storagesList = Object.values(data).filter(v => v.module == this._module.name);
+        this._group.value = storagesList;
+
+        if(selected) {
+            const newSelected = this._group.FindByKey(selected.name);
+            if(newSelected != null) {
+                const s = this._group.Items(newSelected);
+                this.SelectItem(s);            
+            }
+        }
+
+    }
+
+
+    /**
+     * Module object
+     * @type {Object}
+     */
+    get module() {
+        return this._module;
+    }
+    /**
+     * Module object
+     * @type {Object}
+     */
+    set module(value) {
+        this._module = value;
+        this._showModule();
+    }
+    _showModule() {
+        if(!this._module) {
+            this._group.value = [];
+            return;
+        }
+
+        this.binding = 'app.manage.storages';
+        App.Store.AsyncQuery('app.manage.storages').then(storages => {
+            const storagesList = Object.values(storages).filter(v => v.module == this._module.name);
+            this._group.value = storagesList;
+        });    
+    }
+
+    /**
+     * Value Array
+     * @type {Array}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value Array
+     * @type {Array}
+     */
+    set value(value) {
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        this._group.value = this._value;
+    }
+
+}
+Colibri.UI.AddTemplate('App.Modules.Sites.StoragesManagerListItem', 
+'<div namespace="App.Modules.Sites.StoragesManagerListItem">' + 
+'' + 
+'    <Pane shown="true" name="container">' + 
+'        <H3 shown="true" name="ttl2"></H3>' + 
+'        <TextSpan shown="true" name="nam"></TextSpan>' + 
+'    </Pane>' + 
+'' + 
+'</div>' + 
+'');
+App.Modules.Sites.StoragesManagerListItem = class extends Colibri.UI.Pane {
+    
+    
+
+    constructor(name, container) {
+        super(name, container, Colibri.UI.Templates['App.Modules.Sites.StoragesManagerListItem']);
+        this.AddClass('app-manager-storage-list-item-component');
+        
+        this._ttl = this.Children('container/ttl2');
+        this._nam = this.Children('container/nam');
+        this.hasContextMenu = true;
+
+        this.AddHandler('ContextMenuIconClicked', (event, args) => this.__thisContextMenuItemClicked(event, args));
+
+    }
+
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(data, path) {
+        if(!data) {
+            return;
+        }
+        this.value = data;
+    }
+
+    /**
+     * @private
+     * @param {Colibri.Events.Event} event event object
+     * @param {*} args event arguments
+     */ 
+    __thisContextMenuItemClicked(event, args) {
+        this.parent.Dispatch('ContextMenuIconClicked', args);
+    }
+
+    /**
+     * Value Object
+     * @type {Object}
+     */
+    get value() {
+        return this._value;
+    }
+    /**
+     * Value Object
+     * @type {Object}
+     */
+    set value(value) {
+        this._value = value;
+        this._showValue();
+    }
+    _showValue() {
+        this.binding = 'app.manage.storages.' + this._value.name;
+        this._ttl.value = Lang.Translate(this._value.desc);
         this._nam.value = this._value.name;
     }
 
@@ -53483,22 +55684,14 @@ App.Modules.Tools.DomainsAndThemesTree = class extends Colibri.UI.Tree {
 
 
     __renderBoundedValues(data, binded) {
-
+        
         if(binded.indexOf('domainkeys') !== -1) {
 
-            if(!data) {
-                this.nodes.Clear();
-            }
-
+            this.nodes.Clear();  
             if(Object.isObject(data)) {
                 data = Object.values(data);
             }
 
-            if(data.length == 0) {
-                this.nodes.Clear();
-            }
-
-            let found = [];
             for(const domainkey of data) {
     
                 let newNode = this.FindNode('domainkey' + domainkey.value);
@@ -53510,19 +55703,16 @@ App.Modules.Tools.DomainsAndThemesTree = class extends Colibri.UI.Tree {
                 newNode.icon = App.Modules.Sites.Icons.FolderIconPublished;
                 newNode.tag = {type: 'domain', data: domainkey};
     
-                found.push('domainkey' + domainkey.value);
-    
             }
-
-            this._removeUnexistent(found, 'domainkey');
 
         }
         else if(binded.indexOf('themes') !== -1) {
-            
             if(!data) {
-                for(const node of this.nodes.Children()) {
-                    node.nodes.Clear();
-                }
+                this.nodes.ForEach((name, node) => {
+                    for(const n of node.nodes.Children()) {
+                        n.nodes.Clear();
+                    }                        
+                });
             }
 
             if(Object.isObject(data)) {
@@ -53530,12 +55720,13 @@ App.Modules.Tools.DomainsAndThemesTree = class extends Colibri.UI.Tree {
             }
 
             if(data.length == 0) {
-                for(const node of this.nodes.Children()) {
-                    node.nodes.Clear();
-                }
+                this.nodes.ForEach((name, node) => {
+                    for(const n of node.nodes.Children()) {
+                        n.nodes.Clear();
+                    }                        
+                });
             }
 
-            let found = [];
             for(const theme of data) {
 
                 theme.value = theme.id;
@@ -53554,12 +55745,7 @@ App.Modules.Tools.DomainsAndThemesTree = class extends Colibri.UI.Tree {
                 newNode.icon = theme.current ? App.Modules.Tools.Icons.ThemesCurrentIcon : App.Modules.Tools.Icons.ThemesIcon;
                 newNode.tag = {type: 'theme', data: theme};
     
-                found.push('theme' + theme.id);
-    
             }
-
-            this._removeUnexistent(found, 'theme');
-
 
         }
 
@@ -54218,7 +56404,7 @@ App.Modules.Tools.NoticesPage = class extends Colibri.UI.Component
         if(!itemData) {
             contextmenu.push({name: 'new-notice', title: 'Create notice', icon: Colibri.UI.ContextMenuAddIcon});
             this._notices.contextmenu = contextmenu;
-            this._notices.ShowContextMenu(args.isContextMenuEvent ? 'right bottom' : 'left top', '', args.isContextMenuEvent ? {left: args.domEvent.clientX, top: args.domEvent.clientY} : null);
+            this._notices.ShowContextMenu(args.isContextMenuEvent ? [Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.RB] : [Colibri.UI.ContextMenu.RT, Colibri.UI.ContextMenu.LT], '', args.isContextMenuEvent ? {left: args.domEvent.clientX, top: args.domEvent.clientY} : null);
         }
         else {
             contextmenu.push({name: 'remove-notice', title: 'Delete notice', icon: Colibri.UI.ContextMenuRemoveIcon});
@@ -54580,7 +56766,7 @@ Colibri.UI.AddTemplate('App.Modules.Tools.ThemesPage',
 '            <H2 name="ttl" shown="true">Domains and themes</H2>' + 
 '            <App.Modules.Tools.DomainsAndThemesTree name="themes" shown="true" hasContextMenu="true" binding="app.sites.domainkeys;app.tools.themes" />' + 
 '        </Pane>' + 
-'        <Tabs name="vars-pane" shown="true">' + 
+'        <Tabs name="vars-pane" shown="true" allTabsInDoc="true">' + 
 '            <component-header>' + 
 '                <component Component="Colibri.UI.Button" shown="true" name="vars-button" value="Variables" />' + 
 '                <component Component="Colibri.UI.Button" shown="true" name="mixins-button" value="Mixins" />' + 
@@ -54819,7 +57005,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         else if(menuData.name == 'remove-theme') {
             const theme = item.tag.data;
             this._domainsAndThemes.selected = null;
-            App.Confirm.Show('Delete theme', 'Are you sure you want to delete the topic? Artifacts may appear on sites linked to this topic', 'Delete').then(() => {
+            App.Confirm.Show(
+                'Delete theme',
+                'Are you sure you want to delete the topic? Artifacts may appear on sites linked to this topic',
+                'Delete'
+            ).then(() => {
                 Tools.DeleteTheme(theme.id);
             });
         }
@@ -54830,7 +57020,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         }
         else if(menuData.name == 'set-current') {
             const theme = item.tag.data;
-            App.Confirm.Show('Installing', 'Are you sure you want to set the theme as current?', 'Continue').then(() => {
+            App.Confirm.Show(
+                'Installing',
+                'Are you sure you want to set the theme as current?',
+                'Continue'
+            ).then(() => {
                 Tools.SetThemeAsCurrent(theme.id);
             });
         }
@@ -55029,7 +57223,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
         const selectedVar = this._varsGrid.selected;
         const checkedVars = this._varsGrid.checked;
         if(checkedVars.length > 0) {
-            App.Confirm.Show('Delete variables', 'Are you sure you want to delete variables?', 'Delete').then(() => {
+            App.Confirm.Show(
+                'Delete variables',
+                'Are you sure you want to delete variables?',
+                'Delete'
+            ).then(() => {
                 let names = [];
                 checkedVars.forEach(variable => {
                     names.push(variable.value.name);
@@ -55038,7 +57236,11 @@ App.Modules.Tools.ThemesPage = class extends Colibri.UI.Component
             });    
         }
         else {
-            App.Confirm.Show('Delete variable', 'Are you sure you want to delete the variable?', 'Delete').then(() => {
+            App.Confirm.Show(
+                'Delete variable',
+                'Are you sure you want to delete the variable?',
+                'Delete'
+            ).then(() => {
                 Tools.DeleteThemeVars(theme?.id, [selectedVar.value.name]);
             });    
         }
@@ -55339,61 +57541,43 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     InitParkingApp() {
         this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
 
-            if(settings.version != App.appVersion) {
-                App.Router.Navigate('/update');
-                return;
-                
-            }
+            this._initComet(settings.session);
 
-            if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
+            // if(settings.version != App.appVersion) {
+            //     App.Router.Navigate('/update');
+            //     return;
+                
+            // }
+
+            if(!!settings.session && !!settings.session.telegram_id && !settings.chat) {
+                App.Router.Navigate('/bot');
+                return;
+            } 
+
+            if(!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
                 if(['', '/', '/payment', '/vahiles', '/registration', '/update'].indexOf(App.Router.current) !== -1) {
                     App.Router.Navigate('/main');
                 }
-            } else if(!!settings.session && !!settings.session.phone && settings.session.verified && settings.vahiles.length == 0) {
+            } else if(!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && settings.vahiles.length == 0) {
                 App.Router.Navigate('/vahiles');
-            } else if(!!settings.session && !!settings.session.phone && settings.session.verified && (Object.countKeys(settings.session.settings) == 0 || settings.session.settings?.payment_type === undefined)) {
+            } else if(!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && (Object.countKeys(settings.session.settings) == 0 || settings.session.settings?.payment_type === undefined)) {
                 App.Router.Navigate('/payment');
             } else {
                 App.Router.Navigate('/registration');
             }
 
-            const watingTimerData = App.Modules.YerevanParking.Timer.IsTimerStarted('wating');
-            if(watingTimerData && (App.Router.current != 'wait' && App.Router.current != '/wait')) {
-                App.Router.Navigate('/wait', watingTimerData.tag);
+            let activeParkings = settings.waitings.concat(settings.parkings);
+            activeParkings = activeParkings.reverse();
+            if(activeParkings.length > 0) {
+                App.Router.Navigate('/parking', {});
             }
 
-            const parkingTimerData = App.Modules.YerevanParking.Timer.IsTimerStarted('parking');
-            if(parkingTimerData && (App.Router.current != 'parking' && App.Router.current != '/parking')) {
-                App.Router.Navigate('/parking', parkingTimerData.tag);
-            }
-
-            try {
-                App.Device.Notifications.RemoveActions('paynow-cancel');
-                App.Device.Notifications.RemoveActions('enhance-leave');
-                App.Device.Notifications.AddActions('paynow-cancel', [
-                    {id: 'paynow-ok', title: 'Pay now!'},
-                    {id: 'paynow-cancel', title: 'Cancel'}
-                ]);
-                App.Device.Notifications.AddActions('enhance-leave', [
-                    {id: 'enhance-ok', title: 'Enhance'},
-                    {id: 'enhance-cancel', title: 'Leave'}
-                ]);
-                // App.Device.Notifications.On('click', this.PayNowEventHandler, this);
-                App.Device.Notifications.On('paynow-ok', this.PayNowEventHandler, this);
-                App.Device.Notifications.On('enhance-ok', this.PayNowEventHandler, this);
-                App.Device.Notifications.On('paynow-cancel', this.CancelEventHandler, this);
-                App.Device.Notifications.On('enhance-cancel', this.CancelEventHandler, this);
-
-            } catch(e) {
-                
-            }
-
-            this.ParkingZones().then(() => {
-                App.Device.GeoLocation.Watch((location) => {
-                    const street = this._checkPosition(location.coords.latitude, location.coords.longitude);
-                    this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
-                });                        
-            });
+            // this.ParkingZones().then(() => {
+            //     App.Device.GeoLocation.Watch((location) => {
+            //         const street = this._checkPosition(location.coords.latitude, location.coords.longitude);
+            //         this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
+            //     });                        
+            // });
             
 
         });
@@ -55443,6 +57627,18 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             });
         }
 
+        Colibri.Common.Wait(() => !!window.Telegram.WebApp).then(() => {
+            Telegram.WebApp.ready();
+            const initData = Telegram.WebApp.initData || "";
+            const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
+
+            if(initData && initDataUnsafe.query_id) {
+                this.CheckTelegramInitData(initData, initDataUnsafe);
+            }
+
+            window.Telegram.WebApp.expand();
+        });
+
         this.InitParkingApp();
 
     }
@@ -55472,31 +57668,48 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             return;
         }
 
-        App.Comet.Init({guid: session.token, name: session.fio, avatar: session.avatar}, App.Store, 'app.messages');
+        App.Comet.Init({guid: session.key, name: session.fio, avatar: session.avatar}, App.Store, 'app.messages');
         App.Comet.ClearHandlers();
         // App.Comet.AddHandler('MessageReceived', (event, args) => {  console.log(args); });
         App.Comet.AddHandler('EventReceived', (event, args) => {
-            console.log(args.event.action);
-            if(args.event.action === '5minutes-before-payment') {
-
+            console.log(args.event);
+            if(args.event.action === 'payment-successed' ||args.event.action === 'payment-canceled') {
+                this._store.Reload('yerevan-parking.settings', false);
+            } else if(args.event.action === 'unpark') {
+                App.Loading.Hide();
+                App.Router.Navigate('/main', {});
+                if(args.event.message.message) {
+                    App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
+                }
+            } else if(args.event.action === 'parking-started') {
+                App.Loading.Hide();
+                App.Router.Navigate('/parking', {});
+                if(args.event.message.message) {
+                    App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
+                }
+            } else if(args.event.action === 'wallet-changed') {
+                this._store.Reload('yerevan-parking.settings', false);
+                if(args.event.message.message) {
+                    App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
+                }
+            } else if(args.event.action === 'parking-tick') {
+                if(this.ActivePage.name === 'timer-page') {
+                    this.ActivePage.Tick(args.event.message);
+                }
+            } else if(args.event.action === 'parking-failed') {
+                App.Loading.Hide();
+                if(args.event.message.options.thrown === 'CanNotBePaidByWallet') {
+                    App.Notices.Add(new Colibri.UI.Notice('Please, top up your wallet for payment'));
+                    App.Router.Navigate('/wallet', {amount: 5000});
+                } else if(args.event.message.message) {
+                    App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
+                }
+    
             }
         });
 
     }
 
-    // Sample: 
-    // Credits(page = 1, pagesize = 20, params = {}, returnPromise = false) {
-    //     const promise = this.Call('Controller', 'Action', Object.assign(params, {page: page, pagesize: pagesize}));
-    //     if(returnPromise) {
-    //         return promise;
-    //     }
-    //     promise.then((response) => {
-    //         this._store.Set('{data path in storage}', response.result);
-    //     }).catch(error => {
-    //         App.Notices.Add(new Colibri.UI.Notice(error.result));
-    //         console.error(error);
-    //     });
-    // }
 
     get Store() {
         return this._store;
@@ -55531,6 +57744,13 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             this._mainPage = new App.Modules.YerevanParking.Layers.MainPage('main-page', document.body);
         }
         return this._mainPage;
+    }
+
+    get BotPage() {
+        if(!this._botPage) {
+            this._botPage = new App.Modules.YerevanParking.Layers.TelegramChat('bot-page', document.body);
+        }
+        return this._botPage;
     }
 
     get RegistrationPage() {
@@ -55575,13 +57795,6 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return this._walletPage;
     }
     
-    get WaitPage() {
-        if(!this._waitPage) {
-            this._waitPage = new App.Modules.YerevanParking.Layers.WaitPage('wait-page', document.body);
-        }
-        return this._waitPage;
-    }
-
     get UpdatePage() {
         if(!this._updatePage) {
             this._updatePage = new App.Modules.YerevanParking.Layers.UpdatePage('update-page', document.body);
@@ -55622,6 +57835,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         if(this._registrationPage && except != 'registration') {
             this._registrationPage.Hide();
         }
+        if(this._botPage && except != 'bot') {
+            this._botPage.Hide();
+        }
         if(this._mainPage && except != 'main') {
             this._mainPage.Hide();
         }
@@ -55640,9 +57856,6 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         if(this._walletPage && except != 'wallet') {
             this._walletPage.Hide();
         }
-        if(this._waitPage && except != 'wait') {
-            this._waitPage.Hide();
-        }
         if(this._updatePage && except != 'update') {
             this._updatePage.Hide();
         }
@@ -55659,6 +57872,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         if(layer === 'main') {
             this.MainPage.Show();
             this._activePage = this.MainPage;
+        } else if(layer === 'bot') {
+            this.BotPage.Show();
+            this._activePage = this.BotPage;
         } else if(layer === 'vahiles') {
             this.VahilesPage.Show();
             this._activePage = this.VahilesPage;
@@ -55674,9 +57890,6 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         } else if(layer === 'parking') {
             this.TimerPage.Show();
             this._activePage = this.TimerPage;
-        } else if(layer === 'wait') {
-            this.WaitPage.Show();
-            this._activePage = this.WaitPage;
         } else if(layer === 'wallet') {
             this.WalletPage.Show();
             this._activePage = this.WalletPage;
@@ -55689,6 +57902,30 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
 
     } 
+
+    LoginFromTelegram(user) {
+        return new Promise((resolve, reject) => {
+            this.Call('Client', 'RegisterByTelegram', {user: user}).then(response => {
+                this._store.Set('yerevan-parking.settings', response.result);
+                this.InitParkingApp();
+                if(response.result.session.telegram_id) {
+                    location('https://t.me/yerevan_parking_bot');
+                }
+                resolve(response.result);
+            }).catch(error => console.log(error.result));
+        });
+    }
+
+    CheckTelegramInitData(initData, initDataUnsafe) {
+        return new Promise((resolve, reject) => {
+            this.Call('Client', 'CheckTelegramInitData', { initData, initDataUnsafe }).then(response => {
+                this._store.Set('yerevan-parking.settings', response.result);
+                this.isInitedFromTelegram = true;
+                this.InitParkingApp();
+                resolve(response.result);
+            }).catch(error => console.log(error.result));
+        });
+    }
 
     SendMessage(phone) {
         return new Promise((resolve, reject) => {
@@ -55755,6 +57992,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 amount: amount
             }).then((response) => {
                 // может быть надо переадресовать куда то для получения подтверждения
+                if(response.result.redirect) {
+                    window.open(response.result.redirect);
+                }
 
                 this._store.Set('yerevan-parking.settings', response.result);
                 resolve();
@@ -55762,73 +58002,31 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         });
     }
 
-    Pay(zone, vahile, paytime) {
+    
+    Unpark() {
+        // unpark the vahicle
         return new Promise((resolve, reject) => {
-            zone = zone.toLowerCase();
-
-            const settings = YerevanParking.Store.Query('yerevan-parking.settings');
-            const paymenttype = settings.session.settings.payment_type ?? null;
-            const sendsms = (settings.session.settings.sendsms ?? 0) === 1;
-            const amount = parseFloat(settings.zones[zone]);
-            if(paymenttype === 'sms') {
-                const zoneSettings = settings.sms;
-                if(sendsms) {
-                    this.Call('Client', 'AddHistory', {
-                        vahile: vahile,
-                        paytime: paytime,
-                        payment_type: paymenttype,
-                        zone: zone,
-                        amount: amount
-                    }).then((response) => {
-                        this._store.Set('yerevan-parking.settings', response.result);
-                        try {
-                            App.Device.Sms.Send(zoneSettings[zone], vahile, '');
-                        } catch(e) {
-                            
-                        }
-                        resolve();
-                    }).catch((response) => reject(response));
-                } else { 
-                    this.Call('Client', 'AddHistory', {
-                        vahile: vahile,
-                        paytime: paytime,
-                        payment_type: paymenttype,
-                        zone: zone,
-                        amount: amount
-                    }).then((response) => {
-                        this._store.Set('yerevan-parking.settings', response.result);
-                        resolve();
-                    }).catch((response) => reject(response));
-                }
-            
-            } else if(paymenttype === 'wallet') {
-
-                const paymentPercent = 0.01;
-
-                if(parseFloat(settings.session.settings.wallet) < amount + (amount * paymentPercent)) {
-                    App.Router.Navigate('/wallet', {zone: zone, amount: (amount + (amount * paymentPercent)) - parseFloat(settings.session.settings.wallet)});
-                    reject({code: 501, message: 'You do not have enough funds in your account, please top up your wallet before paying'});
-                } else {
-
-                    this.Call('Client', 'AddHistory', {
-                        vahile: vahile,
-                        paytime: paytime,
-                        payment_type: paymenttype,
-                        zone: zone,
-                        amount: amount
-                    }).then((response) => {
-                        this._store.Set('yerevan-parking.settings', response.result);
-                        resolve();
-                    }).catch((response) => reject(response));
-    
-                }
-    
-            }
+            this.Call('Client', 'StopActiveParking', {}).then((response) => {
+                this._store.Set('yerevan-parking.settings', response.result);
+                resolve();
+            }).catch((response) => reject(response));
         });
-
     }
 
-    
+    StartPark(waitbeforestart, zone, vahile) {
+        return new Promise((resolve, reject) => {
+            zone = zone.toLowerCase();
+            this.Call('Client', 'StartParking', {
+                waitbeforestart: waitbeforestart, 
+                vahile: vahile,
+                zone: zone
+            }).then((response) => {
+                this._store.Set('yerevan-parking.settings', response.result);
+                resolve();
+            }).catch((response) => reject(response));
+        });
+    }
+
     CreateTimer(name, handlerObject, seconds = 0, beforeEndSeconds = 0, tag = null) {
         this.DisposeTimer();
         this._currentTimer = new App.Modules.YerevanParking.Timer(name);
@@ -55837,9 +58035,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         this._currentTimer.AddHandler('TimerEnds', (event, args) => handlerObject.__currentTimerTimerEnds(event, args));
         this._currentTimer.AddHandler('TimerBeforeEnd', (event, args) => handlerObject.__currentTimerTimerBeforeEnd(event, args));
         this._currentTimer.tag = tag;
-        if (!this._currentTimer.started) {
-            this._currentTimer.Start(seconds, beforeEndSeconds);
-        }
+        this._currentTimer.Start(seconds, beforeEndSeconds);
         return this._currentTimer;
     }
 
@@ -55851,6 +58047,21 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         }
     }
 
+
+    /**
+     * Is initialized from telegram
+     * @type {Boolean}
+     */
+    get isInitedFromTelegram() {
+        return this._isInitedFromTelegram;
+    }
+    /**
+     * Is initialized from telegram
+     * @type {Boolean}
+     */
+    set isInitedFromTelegram(value) {
+        this._isInitedFromTelegram = value;
+    }
 
 }
 
@@ -56207,6 +58418,7 @@ App.Modules.YerevanParking.Components.Form.VahileField = class extends Colibri.U
 
         this._input1.AddHandler('KeyUp', (event, args) => this.__input1KeyUp(event, args));
         this._input2.AddHandler('KeyUp', (event, args) => this.__input2KeyUp(event, args));
+        this._input2.AddHandler('KeyDown', (event, args) => this.__input2KeyDown(event, args));
         this._input3.AddHandler('KeyUp', (event, args) => this.__input3KeyUp(event, args));
 
         this._input1.AddHandler('Changed', (event, args) => this.__changed(event, args));
@@ -56243,7 +58455,11 @@ App.Modules.YerevanParking.Components.Form.VahileField = class extends Colibri.U
             this._input1.Dispatch('Changed', {domEvent: args.domEvent});
         }, 500);
     }
+    __input2KeyDown(event, args) {
+        this._input2.value = this._input2.value.toUpperCase();
+    }
     __input2KeyUp(event, args) {
+        this._input2.value = this._input2.value.toUpperCase();
         if((this._input2.value + '').length == 2) {
             this._input3.Focus();
         } else if((this._input2.value + '') === '' && args.domEvent.code === 'Backspace') {
@@ -56721,12 +58937,6 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.MainPage',
 '            </FlexBox>' + 
 '        </FlexBox>' + 
 '' + 
-'        <FlexBox shown="false" name="choose">' + 
-'            <Forms.Form shown="true" name="form" />' + 
-'            <SuccessButton shown="true" className="small" name="start" value="Start parking" />' + 
-'            <SimpleButton shown="true" className="small" name="cancel" value="Go back" />' + 
-'        </FlexBox>' + 
-'' + 
 '    </FlexBox>' + 
 '' + 
 '    ' + 
@@ -56747,19 +58957,8 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
         this._containerGeopositionName = this.Children('container/geoposition/name');
         this._containerGeopositionValue = this.Children('container/geoposition/value');
         
-
-        this._containerChoose = this.Children('container/choose');
-        this._containerChooseForm = this.Children('container/choose/form');
-        this._containerChooseStart = this.Children('container/choose/start');
-        this._containerChooseCancel = this.Children('container/choose/cancel');
-
         this._zoneA.AddHandler('Clicked', (event, args) => this.__zoneAClicked(event, args));
         this._zoneB.AddHandler('Clicked', (event, args) => this.__zoneBClicked(event, args));
-
-        this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
-
-        this._containerChooseStart.AddHandler('Clicked', (event, args) => this.__containerChooseStartClicked(event, args));
-        this._containerChooseCancel.AddHandler('Clicked', (event, args) => this.__containerChooseCancelClicked(event, args));
 
         YerevanParking.AddHandler('GeoPositionChanged', (event, args) => this.__geoPositionChanged(event, args));
 
@@ -56770,135 +58969,86 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
         this._containerGeopositionValue.value = args.position.lat + ' ' + args.position.lng;
     }
 
-    _showFields() {
-        this._containerChooseForm.fields = {
-            vahile: {
-                component: 'Radio',
-                desc: 'Vahile',
-                values: () => new Promise((resolve, reject) => {
-                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then((settings) => {
-                        let selected = 0;
-                        resolve(settings.vahiles.map(v => {
-                            return { value: v.number, title: v.name + ' (' + v.number + ')', __selected: selected++ === 0 };
-                        }));
-                    });
-                })
-            },
-            paytime: {
-                component: 'Radio',
-                desc: 'Select parking duration',
-                values: () => new Promise((resolve, reject) => {
-                    YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
-                        const paymenttype = settings.session.settings.payment_type ?? null;
-                        if (paymenttype === 'sms') {
-                            resolve([
-                                { value: '1', 'title': '1 hour', __selected: true }
-                            ]);
-                        } else {
-                            resolve([
-                                { value: '1', title: '1 hour', __selected: true },
-                                { value: '2', title: '2 hours' },
-                                { value: '3', title: '3 hours' },
-                                { value: '4', title: '4 hours' },
-                                // {value: '24', 'title': '1 day'},
-                                // {value: '48', 'title': '2 days'},
-                            ]);
-                        }
-                    });
-
-
-                })
-            }
-        };
-    }
-
-    __thisShown(event, args) {
-        const currentZone = App.Browser.Get('current-zone');
-        if (currentZone) {
-            this._zoneA.shown = false;
-            this._zoneB.shown = false;
-            this._containerChoose.shown = true;
-            this._showFields();
-        } else {
-            this._zoneA.shown = true;
-            this._zoneB.shown = true;
-            this._containerChoose.shown = false;
-        }
-    }
 
     __zoneAClicked(event, args) {
-        App.Browser.Set('current-zone', 'A');
-        this._zoneA.shown = false;
-        this._zoneB.shown = false;
-        this._containerChoose.shown = true;
-        this._showFields();
+        this._startParking('A');
     }
 
     __zoneBClicked(event, args) {
-        App.Browser.Set('current-zone', 'B');
-        this._zoneA.shown = false;
-        this._zoneB.shown = false;
-        this._containerChoose.shown = true;
-        this._showFields();
+        this._startParking('B');
     }
 
-    __containerChooseCancelClicked(event, args) {
-        App.Browser.Delete('current-zone');
-        this._zoneA.shown = true;
-        this._zoneB.shown = true;
-        this._containerChoose.shown = false;
-    }
+    _startParking(zone) {
 
-    __containerChooseStartClicked(event, args) {
-        const currentZone = App.Browser.Get('current-zone');
-        const vahile = this._containerChooseForm.value.vahile;
-        const paytime = this._containerChooseForm.value.paytime;
-        App.Browser.Delete('current-zone');
-        YerevanParking.Confirm.Show(
-            'Free time',
-            'The first 15 minutes of parking are free, do you want to wait?',
-            'Wait',
-            'Pay now'
-        ).then(() => { 
-            App.Router.Navigate('/wait', {
-                zone: currentZone,
-                vahile: vahile,
-                paytime: paytime
-            });
-        }).catch(() => {
+        const startParkingCheckWait = (vahile) => {
+            let waitbeforepark = false;
+            YerevanParking.Confirm.Show(
+                'Free time',
+                'The first 15 minutes of parking are free, do you want to wait?',
+                'Wait',
+                'Pay now'
+            ).then(() => { 
+                waitbeforepark = true;
+            }).catch(() => {
+                waitbeforepark = false;
+            }).finally(() => {
 
-            YerevanParking.Pay(
-                currentZone,
-                vahile,
-                paytime
-            ).then(() => {
+                App.Loading.Show();
 
-                App.Router.Navigate('/parking', {
-                    zone: currentZone,
-                    vahile: vahile,
-                    paytime: paytime
+                YerevanParking.StartPark(
+                    waitbeforepark,
+                    zone,
+                    vahile
+                ).catch(response => {
+                    
+                    let message = 'An unexpected error occurred when paying for parking, you may not have permission to send SMS or there is no connection, check your permissions and connection and try again';
+                    if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
+                        message = 'Parking has already been paid untill %s, give permission to the application to automatically renew parking for convenience'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
+                    } else if(response.code === 501) {
+                        message = response.result.message;
+                    }
+
+                    YerevanParking.Alert.Show(
+                        'Payment error',
+                        message,
+                        'Okay'
+                    );
+
                 });
-
-            }).catch(response => {
-                
-                let message = 'An unexpected error occurred when paying for parking, you may not have permission to send SMS or there is no connection, check your permissions and connection and try again';
-                if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
-                    message = 'Parking has already been paid untill %s, give permission to the application to automatically renew parking for convenience'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
-                } else if(response.code === 501) {
-                    message = response.result.message;
-                }
-
-                YerevanParking.Alert.Show(
-                    'Payment error',
-                    message,
-                    'Okay'
-                );
-
             });
+        };
 
-        })
+        YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
 
+            const vahicles = settings.vahiles.map(v => {
+                return {
+                    value: v.number,
+                    title: v.name + ' (' + v.number + ')'
+                };
+            });
+            if(vahicles.length === 0) {
+                App.Router.Navigate('/vahiles');
+            } else if(vahicles.length == 1) {
+                startParkingCheckWait(vahicles[0].value);
+            } else {
+                YerevanParking.Prompt.Show('Vahile', {
+                    vahile: {
+                        component: 'Radio', 
+                        desc: '',
+                        params: {
+                            required: true
+                        },
+                        values: vahicles
+                    }
+                }, 'Start parking').then((form) => {
+                    startParkingCheckWait(form.vahile)
+                });
+            }
+            
+            
+        });
 
+        
     }
 
 }
@@ -56916,6 +59066,9 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.RegistrationPage',
 '            <SuccessButton shown="false" name="login" enabled="false"  value="Sign in" />' + 
 '        ' + 
 '            <SimpleButton shown="false" name="cancel" value="Enter another number" />' + 
+'' + 
+'            <Pane shown="true" name="telegram"></Pane>' + 
+'' + 
 '        </FlexBox>' + 
 '    ' + 
 '    </FlexBox>' + 
@@ -56935,6 +59088,7 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
         this._register = this.Children('container/content/register');
         this._login = this.Children('container/content/login');
         this._cancel = this.Children('container/content/cancel');
+        this._containerContentTelegram = this.Children('container/content/telegram');
         
         
         this._register.AddHandler('Clicked', (event, args) => this.__registerClicked(event, args));
@@ -56947,9 +59101,28 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
                 this._form.value = {phone: settings.session.phone};
                 this._register.enabled = true;
             }
+
+            this._loginWithTelegram();
+
         });
 
         this._cancel.AddHandler('Clicked', (event, args) => this.__cancelClicked(event, args));        
+
+    }
+
+    _loginWithTelegram() {
+
+        const script = document.createElement("script");
+        script.src = "https://telegram.org/js/telegram-widget.js?20";
+        script.setAttribute("data-telegram-login", 'yerevan_parking_bot');
+        script.setAttribute("data-size", 'large');
+        script.setAttribute("data-radius", '10');
+        script.setAttribute("data-request-access", 'phone');
+        script.setAttribute("data-userpic", 'true');
+        script.setAttribute("data-lang", Lang.Current);
+        script.setAttribute("data-onauth", "YerevanParking.LoginFromTelegram(user)");
+        script.async = true;
+        this._containerContentTelegram.container.append(script);
 
     }
 
@@ -56997,7 +59170,9 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
 
         YerevanParking.SendMessage(this._phone).then((result) => {
             try {
-                App.Device.Sms.Send(result.session.phone, result.session.verification, '');
+                if(!result.chat) {
+                    App.Device.Sms.Send(result.session.phone, result.session.verification, '');
+                }
             } catch(e) {
                 App.Notices.Add(new Colibri.UI.Notice('We were unable to send you a confirmation SMS, please try another number'));  
             }
@@ -57316,7 +59491,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.TimerPage',
 '    <FlexBox shown="true" name="container">    ' + 
 '    ' + 
 '        <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
-'        <SuccessButton shown="true" className="small" name="paynow" value="Enhance parking time" />' + 
+'' + 
 '        <SimpleButton shown="true" className="small" name="cancel" value="Leave" />' + 
 '    ' + 
 '    </FlexBox>' + 
@@ -57332,240 +59507,82 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this.AddClass('app-layer-component');
 
         this._containerCancel = this.Children('container/cancel');
-        this._containerPaynow = this.Children('container/paynow');
         this._containerTimer = this.Children('container/timer');
         
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
 
         this._containerCancel.AddHandler('Clicked', (event, args) => this.__containerCancelClicked(event, args));
-        this._containerPaynow.AddHandler('Clicked', (event, args) => this.__containerPaynowClicked(event, args));
 
     }
 
     
     destructor() {
-        App.Device.Notifications.Cancel(4);
-    }
-
-    TryCancel() {
-        try {
-            App.Device.Notifications.Cancel(2);
-            App.Device.Notifications.Cancel(4);
-            App.Device.Notifications.Cancel(5);
-        } catch(e) {}
         YerevanParking.DisposeTimer();
-        App.Router.Navigate('/main');
     }
 
     __containerCancelClicked(event, args) {
-        this.TryCancel()
-    }
-
-    TryEnhance() {
-
-        const settings = YerevanParking.Store.Query('yerevan-parking.settings');
-        const paymenttype = settings.session.settings.payment_type ?? null;
-        if(paymenttype === 'sms') {
-            YerevanParking.Pay(App.Router.options.zone, App.Router.options.vahile, 1).then(() => {
-                this._containerTimer.RemoveClass('-urgent');
-                this._containerPaynow.RemoveClass('-urgent');
-                this._currentTimer.Enhance(60 * 60, Object.assign(
-                    {}, 
-                    this._currentTimer.tag, 
-                    {paytime: parseInt(this._currentTimer.tag.paytime) + 1}
-                ));
-                App.Notices.Add(new Colibri.UI.Notice('Parking has been enhanced', Colibri.UI.Notice.Success));
-            }).catch((response) => {
-                let message = 'An unexpected error occurred when paying for parking, you may not have permission to send SMS or there is no connection, check your permissions and connection and try again';
-                if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
-                    message = 'Parking has already been paid untill %s, give permission to the application to automatically renew parking for convenience'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
-                } else if(response.code === 501) {
-                    message = response.result.message;
-                }
-                YerevanParking.Alert.Show(
-                    'Payment error',
-                    message,
-                    'Okay'
-                );
-            });
-            // we can enhance no more than 1 hour
-        } else {
-
-            // show choose page
-            YerevanParking.Prompt.Show(
-                'Enhance parking',
-                {
-                    paytime: {
-                        component: 'Radio',
-                        desc: 'Select parking duration',
-                        values: [
-                            { value: '1', title: '1 hour' },
-                            { value: '2', title: '2 hours' },
-                            { value: '3', title: '3 hours' },
-                            { value: '4', title: '4 hours' },
-                            // {value: '24', 'title': '1 day'},
-                            // {value: '48', 'title': '2 days'},
-                        ],
-                        attrs: {
-                            class: 'app-paytime-column'
-                        }
-                    }
-                },
-                'Enhance'
-            ).then(response => {
-                YerevanParking.Pay(App.Router.options.zone, App.Router.options.vahile, response.paytime).then(() => {
-                    this._currentTimer.Enhance(response.paytime * 60 * 60, Object.assign(
-                        {}, 
-                        this._currentTimer.tag, 
-                        {paytime: parseInt(this._currentTimer.tag.paytime) + parseInt(response.paytime)}
-                    ));
-                    App.Notices.Add(new Colibri.UI.Notice('Parking has been enhanced', Colibri.UI.Notice.Success));
-                }).catch((response) => {
-                    let message = 'An unexpected error occurred when paying for parking, you may not have permission to send SMS or there is no connection, check your permissions and connection and try again';
-                    if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
-                        message = 'Parking has already been paid untill %s, give permission to the application to automatically renew parking for convenience'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
-                    } else if(response.code === 501) {
-                        message = response.result.message;
-                    }
-                    YerevanParking.Alert.Show(
-                        'Payment error',
-                        message,
-                        'Okay'
-                    );
-                });
-            });
-
-        }
-    }
-
-    __containerPaynowClicked(event, args) {
-        // enhance parking time
-        
-        this.TryEnhance();
-
+        App.Loading.Show();
+        YerevanParking.DisposeTimer();
+        YerevanParking.Unpark().then(() => {
+            App.Router.Navigate('/main');
+        });
     }
 
     __thisShown(event, args) {
-
-        this._containerTimer.RemoveClass('-urgent');
-        this._containerPaynow.RemoveClass('-urgent');
-        this._currentTimer = YerevanParking.CreateTimer('parking', this, App.Router.options.paytime * 60 * 60, 15 * 60, App.Router.options);
-        // this._currentTimer = YerevanParking.CreateTimer('parking', this, 3 * 60, 1 * 60, App.Router.options);
-        const secondsLeft = this._currentTimer.secondsLeft - 15 * 60;
-
         YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
-            const paymenttype = settings.session.settings.payment_type ?? null;
-            const autosms = (settings.session.settings.autosms ?? 0) === 1;
-            if(paymenttype === 'sms' && autosms === true) {
-                try {
-                    App.Device.Notifications.Schedule(
-                        'Parking',
-                        '15 minutes left until parking ends. Parking will enhance automaticaly',
-                        'enhance-leave',
-                        { in: secondsLeft, unit: 'second' },
-                        true,
-                        true,
-                        1, 
-                        2
-                    );
-                } catch (e) {
-                    Colibri.Common.Delay(secondsLeft * 1000).then(() => {
-                        App.Notices.Add(new Colibri.UI.Notice('15 minutes left until parking ends. Parking will enhance automaticaly'));
-                    });
+
+            let activeParkings = settings.waitings.concat(settings.parkings);
+            activeParkings = activeParkings.reverse();
+            console.log(activeParkings);
+            if(activeParkings.length > 0) {
+                const active = JSON.parse(activeParkings[0].payload);
+                const isWaiting = activeParkings[0].class.indexOf('WaitingJob') !== -1;
+                
+                const endAtDate = active.data.data.end.toDate().toLocalTime();
+                const seconds = parseInt((endAtDate - new Date()) / 1000);
+                
+                if(isWaiting) {
+                    this._currentTimer = YerevanParking.CreateTimer('wating', this, seconds, 5 * 60, App.Router.options);
+                } else {
+                    this._currentTimer = YerevanParking.CreateTimer('parking', this, seconds, 15 * 60, App.Router.options);
                 }
-            } else {
-                try {
-                    App.Device.Notifications.Schedule(
-                        'Parking',
-                        '15 minutes left until parking ends',
-                        'enhance-leave',
-                        { in: secondsLeft, unit: 'second' },
-                        true,
-                        true,
-                        1, 
-                        2
-                    );
-                            
-                } catch (e) { 
-                    Colibri.Common.Delay(secondsLeft * 1000).then(() => {
-                        App.Notices.Add(new Colibri.UI.Notice('15 minutes left until parking ends'));
-                    });
-                }
+
+
             }
+
         });
-        
 
     }
 
+    Tick(options) {
+        console.log(options);
+    }
 
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
-        try {
-            if(App.Device.isAndroid && args.secondsLeft % 60 == 0) {
-                App.Device.Notifications.Schedule(
-                    'Parking',
-                    'Time left ' + args.secondsLeft.toTimeString(':'),
-                    'enhance-leave',
-                    null,
-                    true, 
-                    true, 
-                    1, 
-                    4, {
-                        value: parseInt(args.secondsLeft * 100 / (parseInt(App.Router.options.paytime) * 60 * 60))
-                    }, false
-                );
-            }
-        } catch(e) {
-            
-        }
     }
 
     __currentTimerTimerStarts(event, args) {
         if(args.secondsLeft < 0) {
-            this.TryCancel();
+            App.Router.Navigate('/main');
         } else {
             this._containerTimer.value = args.secondsLeft;
-            this._containerPaynow.RemoveClass('-urgent');
-            try {
-                if(App.Device.isAndroid) {
-                    App.Device.Notifications.Schedule(
-                        'Parking',
-                        'Time left ' + args.secondsLeft.toTimeString(':'),
-                        'enhance-leave',
-                        null,
-                        true, 
-                        true, 
-                        1, 
-                        4, {
-                            value: parseInt(args.secondsLeft * 100 / (parseInt(App.Router.options.paytime) * 60 * 60))
-                        }, false
-                    );
-                }
-            } catch(e) {
-                
-            }
         }
     }
 
     __currentTimerTimerBeforeEnd(event, args) {
         this._containerTimer.AddClass('-urgent');
-        this._containerPaynow.AddClass('-urgent');
-        try {
-            App.Device.Dialogs.Beep(1);
-        } catch (e) {
-            // do nothing
-        }
+        // must beep
     }
 
     __currentTimerTimerEnds(event, args) {
 
-        const settings = YerevanParking.Store.Query('yerevan-parking.settings');
-        const paymenttype = settings.session.settings.payment_type ?? null;
-        const autosms = (settings.session.settings.autosms ?? 0) === 1;
-        if(paymenttype === 'sms' && autosms === true) {
-            this.TryEnhance();
+        const waitbeforestart = App.Router.options.waitbeforestart === 'true';
+        if(waitbeforestart && this._currentTimer.name === 'wating') {
+            this._currentTimer.DisposeTimer();
+            this._currentTimer = YerevanParking.CreateTimer('parking', this, 60 * 60, 5 * 60, App.Router.options);
         } else {
-            this.TryCancel();
+            App.Router.Navigate('/main');
         }
 
     }
@@ -57587,10 +59604,11 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage',
 '                        values: [' + 
 '                            {value: \'arca\', title: \'Debet or credit card\', icon: \'App.Modules.YerevanParking.Icons.Arca\'},' + 
 '                            {value: \'telcell\', title: \'TellCell Wallet\', icon: \'App.Modules.YerevanParking.Icons.TellCell\'},' + 
-'                            {value: \'easy\', title: \'EasyWallet\', icon: \'App.Modules.YerevanParking.Icons.Easy\'}' + 
+'                            {value: \'easy\', title: \'EasyWallet\', icon: \'App.Modules.YerevanParking.Icons.Easy\'},' + 
+'                            {value: \'coins\', title: \'Cryptocurrency\', icon: \'App.Modules.YerevanParking.Icons.Coins\'}' + 
 '                        ],' + 
-'                        params: {' + 
-'                            rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\'' + 
+'                        params: {   ' + 
+'                            rendererComponent: \'App.Modules.YerevanParking.Components.ListItems.PaymentType\' ' + 
 '                        }' + 
 '                    },' + 
 '                    amount: {' + 
@@ -57601,8 +59619,17 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage',
 '            </fields>' + 
 '        </Forms.Form>' + 
 '        <SuccessButton shown="true" name="pay" value="Top up wallet" />' + 
+'' + 
+'        <Pane shown="false" name="successed">' + 
+'            <Strong shown="true">Payment was successful, thank you</Strong>' + 
+'        </Pane>' + 
+'        <Pane shown="false" name="canceled">' + 
+'            <Strong shown="true">You have cancelled the payment</Strong>' + 
+'        </Pane>' + 
 '    ' + 
 '    </FlexBox>' + 
+'' + 
+'    ' + 
 '' + 
 '' + 
 '' + 
@@ -57619,10 +59646,26 @@ App.Modules.YerevanParking.Layers.WalletPage = class extends Colibri.UI.FlexBox 
 
         this._form = this.Children('container/form');
         this._pay = this.Children('container/pay');
+        this._containerCanceled = this.Children('container/canceled');
+        this._containerSuccessed = this.Children('container/successed');
         
 
         if(App.Router.options.amount) {
+            this._form.shown = true;
+            this._pay.shown = true;
+            this._containerCanceled.shown = false;
+            this._containerSuccessed.shown = false;
             this._form.value = {type: 'arca', amount: App.Router.options.amount};
+        } else if(App.Router.options.state == 'successed') {
+            this._form.shown = false;
+            this._pay.shown = false;
+            this._containerCanceled.shown = false;
+            this._containerSuccessed.shown = true;
+        } else if(App.Router.options.state == 'canceled') {
+            this._form.shown = false;
+            this._pay.shown = false;
+            this._containerCanceled.shown = true;
+            this._containerSuccessed.shown = false;
         }
 
         this._pay.AddHandler('Clicked', (event, args) => this.__payClicked(event, args));
@@ -57634,189 +59677,6 @@ App.Modules.YerevanParking.Layers.WalletPage = class extends Colibri.UI.FlexBox 
     }
 
 }
-Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WaitPage', 
-'<div namespace="App.Modules.YerevanParking.Layers.WaitPage">' + 
-'    <!-- yerevanparking-layers-waitpage -->' + 
-'    ' + 
-'    ' + 
-'    <Layouts.Header shown="true" name="header" />' + 
-'' + 
-'    <FlexBox shown="true" name="container">' + 
-'' + 
-'        <Components.Timer shown="true" name="timer" />' + 
-'        <SuccessButton shown="true" className="small" name="paynow" value="Pay parking" />' + 
-'        <SimpleButton shown="true" className="small" name="cancel" value="Leave parking" />' + 
-'' + 
-'    </FlexBox>' + 
-'' + 
-'</div>' + 
-'');
-App.Modules.YerevanParking.Layers.WaitPage = class extends Colibri.UI.FlexBox {
-    
-    constructor(name, container) {
-        /* создаем компонент и передаем шаблон */
-        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.WaitPage']);
-        this.AddClass('app-modules-yerevanparking-layers-waitpage');
-        this.AddClass('app-layer-component');
-
-        this._containerCancel = this.Children('container/cancel');
-        this._containerPaynow = this.Children('container/paynow');
-        this._containerTimer = this.Children('container/timer');
-
-        this._containerCancel.AddHandler('Clicked', (event, args) => this.__containerCancelClicked(event, args));
-        this._containerPaynow.AddHandler('Clicked', (event, args) => this.__containerPaynowClicked(event, args));
-
-        this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
-        
-        App.Device.Notifications.Cancel(1);
-        App.Device.Notifications.Cancel(3);
-        this._containerPaynow.RemoveClass('-urgent');
-        this._containerTimer.RemoveClass('-urgent');    
-    }
-
-    destructor() {
-        App.Device.Notifications.Cancel(3);
-    }
-
-    __thisShown(event, args) {
-        this._containerPaynow.RemoveClass('-urgent');
-        this._containerTimer.RemoveClass('-urgent');
-        this._currentTimer = YerevanParking.CreateTimer('wating', this, 15 * 60, 5 * 60, App.Router.options);
-        try {
-            App.Device.Notifications.Schedule(
-                'Free parking',
-                'Less than 5 minutes left before free parking ends ',
-                'paynow-cancel',
-                { in: 10, unit: 'minute' },
-                true,
-                true,
-                1, 
-                1
-            );
-        } catch(e) {
-            Colibri.Common.Delay(10 * 20 * 1000).then(() => {
-                App.Notices.Add(new Colibri.UI.Notice('Less than 5 minutes left before free parking ends '));
-            });
-        }
-    }
-
-    TryCancel() {
-        try {
-            App.Device.Notifications.Cancel(1);
-            App.Device.Notifications.Cancel(3);
-        } catch(e) { }
-        YerevanParking.DisposeTimer();
-        App.Router.Navigate('/main');
-    }
-
-    __containerCancelClicked(event, args) {
-        this.TryCancel();
-    }
-
-    TryPayNow() {
-        try {
-            App.Device.Notifications.Cancel(1);
-            App.Device.Notifications.Cancel(3);
-        } catch(e) { }
-        YerevanParking.DisposeTimer();
-        YerevanParking.Pay(
-            App.Router.options.zone,
-            App.Router.options.vahile,
-            App.Router.options.paytime
-        ).then(() => {
-            App.Router.Navigate('/parking', App.Router.options);
-        }).catch((response) => {
-            let message = 'An unexpected error occurred when paying for parking, you may not have permission to send SMS or there is no connection, check your permissions and connection and try again';
-            if(response.result.exception.indexOf('ZoneAllreadyPaid') !== -1) {
-                message = 'Parking has already been paid untill %s, give permission to the application to automatically renew parking for convenience'.replaceAll('%s', response.result.message.toDate().intlFormat(true));
-            } else if(response.code === 501) {
-                message = response.result.message;
-            }
-            YerevanParking.Alert.Show(
-                'Payment error',
-                message,
-                'Okay'
-            );
-        });
-    }
-
-    __containerPaynowClicked(event, args) {
-        this.TryPayNow();
-    }
-
-    __currentTimerTimerTick(event, args) {
-        this._containerTimer.value = args.secondsLeft;
-
-        if(App.Device.isAndroid && args.secondsLeft % 60 == 0) {
-            try {
-                App.Device.Notifications.Schedule(
-                    'Free parking',
-                    'Time left ' + args.secondsLeft.toTimeString(':'),
-                    'paynow-cancel',
-                    null,
-                    true, 
-                    true,  
-                    1, 
-                    3, {
-                        value: parseInt(args.secondsLeft * 100 / 900)
-                    }, false
-                );
-            } catch(e) {
-
-            }
-        }
-    }
-
-    __currentTimerTimerStarts(event, args) {
-        if(args.secondsLeft < 0) {
-            this.__containerCancelClicked(null, null);
-        } else {
-            this._containerTimer.value = args.secondsLeft;
-            this._containerPaynow.RemoveClass('-urgent');
-            this._containerTimer.RemoveClass('-urgent');
-            try {
-                if(App.Device.isAndroid) {
-                    App.Device.Notifications.Schedule(
-                        'Free parking',
-                        'Time left ' + args.secondsLeft.toTimeString(':'),
-                        'paynow-cancel',
-                        null,
-                        true, 
-                        true, 
-                        1, 
-                        3, {
-                            value: parseInt(args.secondsLeft * 100 / 600)
-                        }
-                    );
-                }    
-            } catch(e) {
-                App.Notices.Add(new Colibri.UI.Notice('Time left ' + args.secondsLeft.toTimeString(':')));
-            }
-        }
-    }
-
-    __currentTimerTimerBeforeEnd(event, args) {
-        this._containerTimer.AddClass('-urgent');
-        this._containerPaynow.AddClass('-urgent');
-        try {
-            App.Device.Dialogs.Beep(1);
-            App.Device.WakeUp();
-        } catch (e) { }
-    }
-
-    __currentTimerTimerEnds(event, args) {
-        const settings = YerevanParking.Store.Query('yerevan-parking.settings');
-        const paymenttype = settings.session.settings.payment_type ?? null;
-        const autosms = (settings.session.settings.autosms ?? 0) === 1;
-        if(paymenttype === 'sms' && autosms === true) {
-            this.TryPayNow();
-        } else {
-            this.TryCancel();
-        }
-    }
-    
-
-}
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.UpdatePage', 
 '<div namespace="App.Modules.YerevanParking.Layers.UpdatePage">' + 
 '    <!-- yerevanparking-layers-updatepage -->' + 
@@ -57824,10 +59684,10 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.UpdatePage',
 '' + 
 '    <FlexBox shown="true" name="container">' + 
 '' + 
-'        <H2 shown="true" name="h2" value="Version is outdated" />' + 
+'        <H2 shown="true" name="h2" value="" />' + 
 '' + 
 '        <Pane shown="true" name="text">' + 
-'            The app version is outdated, please update it from the app store' + 
+'            ' + 
 '        </Pane>' + 
 '' + 
 '    </FlexBox>' + 
@@ -57846,6 +59706,44 @@ App.Modules.YerevanParking.Layers.UpdatePage = class extends Colibri.UI.FlexBox 
     }
 
 }
+Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.TelegramChat', 
+'<div namespace="App.Modules.YerevanParking.Layers.TelegramChat">' + 
+'    <!-- yerevanparking-layers-telegramchat -->' + 
+'    <Layouts.Header shown="true" name="header" />' + 
+'' + 
+'    <FlexBox shown="true" name="container">' + 
+'' + 
+'        <H2 shown="true" name="h2" value="Telegram Bot" />' + 
+'' + 
+'        <Link shown="true" name="telegram" href="https://t.me/yerevan_parking_bot?start=" target="_blank">Подключить бота</Link>' + 
+'' + 
+'    </FlexBox>' + 
+'    ' + 
+'</div>' + 
+'');
+/**
+ * Button to integrate with telegram bot
+ * @class
+ * @extends Colibri.UI.FlexBox
+ * @memberof App.Modules.YerevanParking.Layers
+ */
+App.Modules.YerevanParking.Layers.TelegramChat = class extends Colibri.UI.FlexBox {
+    
+    /**
+     * @constructor
+     * @param {string} name name of component
+     * @param {Element|Colibri.UI.component} container container of component
+     */
+    constructor(name, container) {
+        /* создаем компонент и передаем шаблон */
+        super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.TelegramChat']);
+        this.AddClass('app-modules-yerevanparking-layers-telegramchat');
+        this.AddClass('app-layer-component');
+
+
+    }
+
+}
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header', 
 '<div namespace="App.Modules.YerevanParking.Layouts.Header">' + 
 '    <!-- yerevanparking-layouts-header -->' + 
@@ -57853,17 +59751,16 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header',
 '    <FlexBox shown="true" name="row1">' + 
 '        <Icon shown="true" name="logo" iconSVG="App.Modules.YerevanParking.Icons.HeaderLogo" width="120" height="120" />' + 
 '        <FlexBox shown="true" name="right">' + 
-'            <Wallet shown="false" name="wallet" />' + 
-'            <Icon shown="true" name="settings" iconSVG="App.Modules.YerevanParking.Icons.SettingIcon"  />' + 
-'            <Lang.LangChangeIcon shown="true" savePlace="storage" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]" iconSVG="App.Modules.YerevanParking.Icons.Langs"  binding="app.yerevan-parking.langs" />' + 
-'            <Icon shown="true" name="logout" iconSVG="App.Modules.YerevanParking.Icons.Logout"  />' + 
+'            <FlexBox shown="true" name="r">' + 
+'                <Icon shown="true" name="settings" iconSVG="App.Modules.YerevanParking.Icons.SettingIcon"  />' + 
+'                <Lang.LangChangeIcon shown="true" savePlace="cookie" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]" iconSVG="App.Modules.YerevanParking.Icons.Langs"  binding="app.yerevan-parking.langs" />' + 
+'                <Icon shown="true" name="logout" iconSVG="App.Modules.YerevanParking.Icons.Logout"  />' + 
+'            </FlexBox>' + 
+'            <FlexBox shown="true" name="r2">' + 
+'                <Wallet shown="false" name="wallet" />' + 
+'            </FlexBox>' + 
 '        </FlexBox>' + 
 '    </FlexBox>' + 
-'    <!-- <FlexBox shown="true" name="row2">' + 
-'        <H1 shown="true" name="title" value="Yerevan Parking" />' + 
-'        <TextSpan shown="true" name="span" value="free, no ads and no extra charges" />' + 
-'    </FlexBox> -->' + 
-'' + 
 '' + 
 '</div>' + 
 '');
@@ -57874,17 +59771,20 @@ App.Modules.YerevanParking.Layouts.Header = class extends Colibri.UI.FlexBox {
         super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layouts.Header']);
         this.AddClass('app-modules-yerevanparking-layouts-header');
 
-        this._row1Langs = this.Children('row1/langs');
-        this._row1RightSettings = this.Children('row1/right/settings');
-        this._row1RightWallet = this.Children('row1/right/wallet');
-        this._row1RightLogout = this.Children('row1/right/logout');
+        this._row1Langs = this.Children('r/langs');
+        this._row1RightSettings = this.Children('r/settings');
+        this._row1RightLogout = this.Children('r/logout');
+        this._row1RightWallet = this.Children('r2/wallet');
         this._row1Logo = this.Children('row1/logo');
-        
         
         this._row1Logo.AddHandler('Clicked', (event, args) => this.__row1LogoClicked(event, args));
         this._row1RightLogout.AddHandler('Clicked', (event, args) => this.__row1RightLogoutClicked(event, args));
         this._row1RightWallet.AddHandler('Clicked', (event, args) => this.__row1RightWalletClicked(event, args));
         this._row1RightSettings.AddHandler('Clicked', (event, args) => this.__row1RightSettingsClicked(event, args));
+
+        Colibri.Common.Wait(() => !!YerevanParking.isInitedFromTelegram).then(() => {
+            this._row1RightLogout.shown = false;
+        });
     }
 
     __row1LogoClicked(event, args) {
@@ -57892,7 +59792,9 @@ App.Modules.YerevanParking.Layouts.Header = class extends Colibri.UI.FlexBox {
     }
 
     __row1RightLogoutClicked(event, args) {
-        YerevanParking.Logout();
+        if(!YerevanParking.isInitedFromTelegram) {
+            YerevanParking.Logout();
+        }
     }
 
     __row1RightWalletClicked(event, args) {
@@ -58017,6 +59919,7 @@ App.Modules.YerevanParking.Icons.PaymentIcon = '<svg width="102" height="98" vie
 App.Modules.YerevanParking.Icons.TellCell = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="#FF5C39"/><path d="M61 55H137V88V185.5H102V88H61V55Z" fill="white"/><rect x="147" y="55" width="34" height="34" fill="white"/></svg>';
 App.Modules.YerevanParking.Icons.Arca = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M58.1039 120.138C58.1039 118.381 61.1953 102.647 62.741 95H72.2593L74.4558 97.1965C75.5948 112.979 77.9215 144.739 78.1167 145.52C78.2666 146.12 79.4805 146.853 80.4782 147.456C80.7803 147.639 81.0626 147.809 81.2895 147.961H60.0564L58.1039 146.496V136.978H54.6871L56.3955 127.948H59.3242C58.9174 126.077 58.1039 121.895 58.1039 120.138ZM109.356 106.959H90.8078C90.9998 107.17 91.2372 107.377 91.4878 107.595C92.2988 108.301 93.2484 109.128 93.2484 110.62C93.2484 111.678 89.0881 129.01 86.1793 141.129L86.1767 141.139L86.1685 141.174C85.7271 143.013 85.3147 144.731 84.9504 146.252C84.9504 146.496 84.9992 146.838 85.1944 147.229C85.5312 147.902 86.008 147.961 86.1707 147.961H105.939L103.499 145.764V144.544L103.743 143.08C105.289 136.246 108.429 122.383 108.624 121.602C108.735 121.159 108.795 120.917 108.897 120.694C109.019 120.425 109.2 120.183 109.6 119.65C110.186 118.869 111.146 118.674 111.553 118.674L119.607 118.43C119.825 118.357 120.14 118.349 120.465 118.341C120.869 118.331 121.289 118.321 121.559 118.186C122.047 117.942 122.291 117.453 122.535 116.721C122.779 115.989 125.22 106.471 125.22 106.471H117.41C117.085 106.633 116.19 107.203 115.214 108.179C114.237 109.155 112.854 111.515 112.285 112.572H110.088L110.821 110.864V108.179C110.821 107.935 110.088 106.959 109.356 106.959ZM171.103 95H143.036C141.979 95 139.034 95.781 135.715 98.9049C132.395 102.029 131.077 105.576 130.833 106.959L125.22 131.609C125.139 132.016 124.927 133.122 124.732 134.293C124.488 135.758 124.244 137.954 124.732 140.151C125.22 142.347 125.952 143.812 126.684 144.544C126.75 144.609 126.827 144.69 126.915 144.783L126.916 144.784C127.821 145.734 129.94 147.961 133.274 147.961H158.656C159.226 147.961 160.609 147.619 161.585 146.252C162.561 144.886 164.269 137.71 165.002 134.293C164.758 134.7 164.123 135.611 163.537 136.002C162.952 136.392 161.829 136.653 161.341 136.734H148.894C148.243 136.571 146.844 136.099 146.453 135.514L144.989 133.317C144.907 133.317 144.794 133.024 144.989 131.853C145.184 130.681 148.65 116.559 150.358 109.644C150.602 109.155 151.334 108.033 152.311 107.447L154.751 105.983H166.466C167.035 105.739 168.272 105.006 168.663 104.03C169.053 103.054 170.29 98.5795 170.859 96.4644L171.103 95ZM48.0975 95.2441C48.911 95.5695 50.5381 96.6596 50.5381 98.4168C50.5381 100.174 34.9183 130.226 27.1085 145.032C27.1085 145.046 27.1017 145.068 27.0915 145.102C27.0407 145.272 26.9051 145.724 27.1085 146.74C27.499 147.717 28.0847 147.961 28.3288 147.961H45.4129C44.7621 147.473 43.4604 146.301 43.4604 145.52V144.3L47.3654 136.734H50.5381L52.4906 127.948H49.8059L54.199 120.138L59.3242 95.2441H48.0975ZM179.401 122.335H192.336L191.36 127.704C190.953 127.785 189.944 128.094 189.163 128.68C188.382 129.266 187.536 130.877 187.211 131.609C186.967 132.91 186.479 135.709 186.479 136.49C186.479 137.466 187.211 138.198 187.699 138.687C188.09 139.077 188.838 139.175 189.163 139.175V142.103C188.919 142.754 188.187 144.349 187.211 145.52C186.235 146.692 184.364 147.473 183.55 147.717H174.032C172.567 147.717 171.591 146.985 170.615 146.252C169.834 145.667 169.151 143.73 168.907 142.836V137.954C168.907 136.978 169.72 134.131 170.127 132.829C170.94 130.958 172.909 126.728 174.276 124.775C175.643 122.823 178.262 122.335 179.401 122.335ZM182.574 106.959L180.865 113.304C180.784 113.63 180.621 114.329 180.621 114.525C180.621 114.769 180.865 115.989 181.11 115.989C181.191 115.989 181.272 116.016 181.381 116.052C181.598 116.125 181.923 116.233 182.574 116.233H194.777C195.184 116.314 196.046 116.624 196.241 117.209C196.436 117.795 196.485 119.406 196.485 120.138L191.36 144.788C191.279 145.113 191.116 145.911 191.116 146.496C191.116 147.229 191.848 147.961 192.336 147.961H210.641C209.908 147.554 208.444 146.399 208.444 145.032C208.444 143.665 213 125.426 215.278 116.477V111.108C215.196 110.701 214.741 109.644 213.569 108.667C212.398 107.691 211.129 107.122 210.641 106.959H182.574Z" fill="#0F57AB"/></svg>';
 App.Modules.YerevanParking.Icons.Easy = '<svg width="241" height="241" viewBox="0 0 241 241" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="241" height="241" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M43.9488 116.39L66.2566 103.546C69.5014 101.653 69.5014 98.5433 66.2566 96.7857L43.9488 83.8066C40.704 81.9138 38 83.4686 38 87.2542V113.01C38 116.728 40.704 118.215 43.9488 116.39Z" fill="#A5CD39"/><path fill-rule="evenodd" clip-rule="evenodd" d="M67.0002 105.371L43.8812 119.364C40.6364 121.324 38 125.989 38 129.707V154.651C38 158.437 40.6364 159.924 43.8812 157.963L67.0002 143.97C70.245 142.01 72.8814 137.345 72.8814 133.628V108.683C72.8138 104.898 70.1774 103.478 67.0002 105.371ZM43.8812 141.131C42.5292 141.942 41.4476 141.537 41.4476 140.185C41.4476 138.833 42.5292 137.075 43.8812 136.264C45.2332 135.453 46.3148 135.858 46.3148 137.21C46.3148 138.562 45.2332 140.32 43.8812 141.131Z" fill="#A5CD39"/><path fill-rule="evenodd" clip-rule="evenodd" d="M88.2941 124.028C88.4969 128.287 90.9305 130.991 95.1893 130.991C97.6229 130.991 99.9889 129.909 100.935 127.611H110.332C108.439 134.641 101.949 137.751 95.0541 137.751C85.0494 137.751 78.2218 131.667 78.2218 121.392C78.2218 111.996 85.7254 105.168 94.8513 105.168C105.87 105.168 111.413 113.415 110.94 123.893L88.2941 124.028ZM100.8 118.35C100.597 114.835 98.1637 112.063 94.7837 112.063C91.2009 112.063 88.9025 114.564 88.2265 118.35H100.8Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M112.562 115.714C112.765 111.658 114.59 109.021 117.362 107.534C120.134 105.979 123.581 105.371 127.096 105.371C134.33 105.371 141.428 106.993 141.428 115.646V129.098C141.428 131.735 141.428 134.574 142.644 136.94H132.504C132.099 135.993 132.099 135.047 131.896 134.033C129.26 136.805 125.474 137.819 121.756 137.819C115.807 137.819 111.278 134.844 111.278 128.558C111.278 118.62 122.162 119.364 129.192 117.877C130.95 117.471 131.896 116.93 131.896 115.038C131.896 112.739 129.124 111.793 127.029 111.793C124.122 111.793 122.432 113.077 121.959 115.646L112.562 115.714ZM125.542 131.6C130.341 131.6 131.964 128.896 131.761 122.541C130.341 123.42 127.705 123.555 125.542 124.231C123.243 124.772 121.35 125.718 121.35 128.152C121.35 130.586 123.243 131.6 125.542 131.6Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M152.919 126.8C152.919 128.422 153.595 129.504 154.609 130.248C155.556 130.991 156.908 131.329 158.395 131.329C160.288 131.329 163.127 130.45 163.127 128.084C163.127 125.651 159.882 125.313 158.192 124.84C151.838 123.217 143.929 123.082 143.929 114.767C143.929 107.466 151.905 105.371 157.989 105.371C164.682 105.371 171.847 107.331 172.185 115.308H162.924C162.924 114.024 162.519 113.145 161.64 112.604C160.896 112.063 159.815 111.86 158.395 111.86C156.705 111.86 154.069 112.063 154.069 114.159C154.069 116.998 160.761 117.674 165.425 118.62C171.644 119.905 173.199 124.366 173.199 126.868C173.199 135.047 165.425 137.819 158.463 137.819C151.162 137.819 143.726 135.385 143.388 126.8H152.919Z" fill="#58595B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M191.857 139.644C189.491 146.336 185.705 147.215 179.013 147.215H174.281V139.103H177.796C180.094 139.103 181.852 137.819 181.852 135.655C181.852 133.965 179.892 129.233 179.283 127.611L171.374 106.25H181.987L187.801 126.259H187.936L193.749 106.25H204.025L191.857 139.644Z" fill="#58595B"/></svg>';
+App.Modules.YerevanParking.Icons.Coins = '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M63.0394 39.7411C58.7654 56.8841 41.4024 67.3171 24.2574 63.0421C7.11937 58.7681 -3.31363 41.4041 0.962367 24.2621C5.23437 7.11711 22.5974 -3.31689 39.7374 0.957107C56.8814 5.23111 67.3134 22.5971 63.0394 39.7411Z" fill="#F7931A"/><path d="M46.1092 27.4409C46.7462 23.1829 43.5042 20.8939 39.0712 19.3669L40.5092 13.5989L36.9982 12.7239L35.5982 18.3399C34.6752 18.1099 33.7272 17.8929 32.7852 17.6779L34.1952 12.0249L30.6862 11.1499L29.2472 16.9159C28.4832 16.7419 27.7332 16.5699 27.0052 16.3889L27.0092 16.3709L22.1672 15.1619L21.2332 18.9119C21.2332 18.9119 23.8382 19.5089 23.7832 19.5459C25.2052 19.9009 25.4622 20.8419 25.4192 21.5879L23.7812 28.1589C23.8792 28.1839 24.0062 28.2199 24.1462 28.2759C24.0292 28.2469 23.9042 28.2149 23.7752 28.1839L21.4792 37.3889C21.3052 37.8209 20.8642 38.4689 19.8702 38.2229C19.9052 38.2739 17.3182 37.5859 17.3182 37.5859L15.5752 41.6049L20.1442 42.7439C20.9942 42.9569 21.8272 43.1799 22.6472 43.3899L21.1942 49.2239L24.7012 50.0989L26.1402 44.3269C27.0982 44.5869 28.0282 44.8269 28.9382 45.0529L27.5042 50.7979L31.0152 51.6729L32.4682 45.8499C38.4552 46.9829 42.9572 46.5259 44.8522 41.1109C46.3792 36.7509 44.7762 34.2359 41.6262 32.5959C43.9202 32.0669 45.6482 30.5579 46.1092 27.4409ZM38.0872 38.6899C37.0022 43.0499 29.6612 40.6929 27.2812 40.1019L29.2092 32.3729C31.5892 32.9669 39.2212 34.1429 38.0872 38.6899ZM39.1732 27.3779C38.1832 31.3439 32.0732 29.3289 30.0912 28.8349L31.8392 21.8249C33.8212 22.3189 40.2042 23.2409 39.1732 27.3779Z" fill="white"/></svg>';
 App.Modules.YerevanParking.Icons.Logout = '<svg width="24" height="24" viewBox="0 0 46 61" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M33.75 45.75V53.375H7.5V7.625H33.75V15.25H41.25V4C41.25 4 41 2 40 1C39 0 37 0 37 0H4.5C4.5 0 2 0 1 1C0 2 0 4.5 0 4.5V57C0 57 0 59 1 60C2 61 4 61 4 61H37C37 61 38.75 61.25 40 60C41.25 58.75 41.25 57 41.25 57V45.75H33.75ZM15 36.0057V24.5057H31V18.5L46 30.5L31 42.5V36.0057H15Z" fill="#2D2D2D"/></svg>';
 App.Modules.YerevanParking.Icons.Langs = '<svg width="48" height="30" viewBox="0 0 118 71" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M35.5774 63.0332C37.8793 63.0332 40.1813 62.7489 42.4832 62.1734C42.199 61.598 41.6235 61.3137 40.7568 61.598C41.6165 57.5695 42.192 55.5588 43.9185 53.8323C45.0695 52.9726 45.6449 51.5304 44.7782 50.3794C44.2028 49.5196 43.0518 48.9441 42.192 49.2284C40.4656 49.5127 41.6165 47.2177 40.1813 46.9265C38.746 46.6422 36.7283 43.7647 34.7176 42.898C33.5666 42.3226 32.4156 40.8873 30.6892 40.8873C29.2539 40.8873 26.952 42.3226 26.952 41.1716C26.952 37.7187 26.6677 35.4167 26.6677 34.2657C26.6677 33.406 26.0922 33.9814 28.3942 33.9814C29.5451 33.9814 28.9697 31.6795 30.1206 31.6795C31.2716 31.6795 33.8578 32.8305 34.4333 32.255C35.0088 31.9707 39.0372 42.6138 39.0372 33.9814C39.0372 32.8305 38.4617 31.104 39.0372 30.2442C40.4725 27.9423 41.9147 25.3561 43.0657 22.7629C41.9147 22.4786 40.4794 22.4786 39.3284 22.7629C38.753 23.0472 39.6127 23.9139 38.753 23.9139C35.8755 24.4894 33.2893 23.0541 34.149 21.6119C35.0088 20.1767 38.4617 21.0364 38.753 18.159C39.0372 16.4325 39.0372 14.7061 39.0372 13.2708C42.7744 13.8463 42.4902 8.95811 37.602 7.80713H36.1667C22.9305 7.80713 11.7119 17.0149 9.11877 29.96C10.2698 31.1109 12.2805 31.1109 13.1472 29.6757C12.8629 29.3914 12.8629 29.3914 13.1472 29.1002C14.2982 29.96 16.0246 29.96 16.0246 31.4021C16.0246 36.2903 16.3089 41.4697 20.6285 41.4697C22.355 42.0452 23.506 43.4805 24.0815 45.2069C24.3657 46.3579 26.0922 45.2069 27.5344 45.2069C28.3942 45.2069 27.5344 46.6422 27.5344 49.5196C27.5344 52.3971 34.149 57.2853 34.149 57.2853C34.149 59.0117 34.149 60.447 34.4333 62.1734C33.5736 62.1734 32.4226 62.1734 31.5559 62.4577C32.9911 63.0332 34.1421 63.0332 35.5774 63.0332ZM61.4743 26.202C61.4743 26.202 61.1901 26.202 61.1901 25.9177C59.4636 21.3138 55.1509 24.7667 56.5862 28.5039C48.5293 34.5431 50.8313 38.8627 53.4244 41.1646C54.8597 42.5999 56.0107 44.0421 56.8774 45.7686C56.0176 48.0705 59.4636 47.495 61.7656 44.0421C62.9165 41.1647 63.2008 38.0029 63.2008 34.8343V32.248C63.2008 31.6726 63.2008 31.0971 62.9165 30.8128C62.6253 29.6549 62.0498 27.9284 61.4743 26.202Z" fill="#2D2D2D"/><path d="M35.8686 65.6265C19.1794 65.6265 5.65894 52.106 5.65894 35.4168C5.65894 18.7276 19.1794 5.2002 35.8686 5.2002C52.5578 5.2002 66.0783 18.7207 66.0783 35.4099C66.0783 52.099 52.5578 65.6265 35.8686 65.6265ZM35.8686 8.07764C20.9059 8.07764 8.53638 20.4472 8.53638 35.4099C8.53638 50.3726 20.9059 62.749 35.8686 62.749C50.8313 62.749 63.2008 50.3795 63.2008 35.4168C63.2008 20.4541 50.8313 8.07764 35.8686 8.07764Z" fill="#2D2D2D"/><path d="M87.7811 23.2275L105.35 40.851L99.9578 46.243L82.3891 28.6195L87.7811 23.2275Z" fill="#212121"/><path d="M117.85 28.3773L100.144 46.3826L94.7521 40.9906L112.458 22.9853L117.85 28.3773Z" fill="#212121"/></svg>';
 App.Modules.YerevanParking.Icons.SettingIcon = '<svg width="22" height="22" viewBox="0 0 61 61" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M57.1687 24.5232H53.9626C53.3666 22.1998 52.4365 20.0237 51.2235 18.0332L53.5285 15.723C54.1507 15.1008 54.4928 14.2706 54.4928 13.3891C54.4928 12.509 54.1481 11.6775 53.5285 11.0565L49.6869 7.21889C48.4409 5.97168 46.2637 5.97299 45.023 7.21757L42.6207 9.60541C40.6526 8.45819 38.5423 7.5741 36.2176 7.00576V3.57463C36.2176 1.75514 34.7638 0.259277 32.9444 0.259277H27.5135C25.6939 0.259277 24.2626 1.75514 24.2626 3.57463V7.00444C21.9392 7.57147 19.8159 8.45688 17.845 9.60541L15.444 7.21757C14.1994 5.97037 12.0208 5.97169 10.7723 7.21625L6.93329 11.0539C6.31759 11.6683 5.96631 12.5182 5.96631 13.3865C5.96631 14.2666 6.30706 15.0955 6.93066 15.7177L9.23563 18.0332C8.02394 20.0237 7.09248 22.1998 6.49783 24.5232H3.29035C1.46954 24.5232 0 25.9861 0 27.8017V33.2286C0 35.0495 1.46954 36.4795 3.29035 36.4795H6.49783C7.09248 38.8029 8.02262 40.992 9.23299 42.9826L6.92803 45.302C6.30443 45.9243 5.96237 46.7571 5.96237 47.6386C5.96237 48.52 6.30574 49.3528 6.92803 49.9751L10.7696 53.8154C11.3932 54.4376 12.2208 54.7797 13.1009 54.7797C13.9811 54.7797 14.8099 54.4364 15.4335 53.8154L17.845 51.4262C19.8159 52.5747 21.9392 53.4589 24.2626 54.0285V57.4544C24.2626 59.2738 25.6939 60.7408 27.5135 60.7408H32.9444C34.7638 60.7408 36.2176 59.2738 36.2176 57.4544V54.0272C38.5423 53.4589 40.6526 52.5747 42.6233 51.4262L45.0138 53.8101C45.6374 54.4351 46.4663 54.777 47.349 54.777C48.2304 54.777 49.0606 54.4337 49.6829 53.8127L53.5245 49.9751C54.1467 49.3541 54.4875 48.524 54.4902 47.6438C54.4902 46.7623 54.1455 45.9348 53.5245 45.3112L51.2222 42.9826C52.4325 40.9907 53.3627 38.8003 53.9586 36.4795H57.1662C58.9856 36.4795 60.4815 35.0495 60.4815 33.2286V27.8017C60.4828 25.9861 58.9883 24.5232 57.1687 24.5232ZM30.2276 40.846C24.4678 40.846 19.7974 36.219 19.7974 30.5158C19.7974 24.8086 24.4678 20.1882 30.2276 20.1882C35.9887 20.1882 40.6617 24.8086 40.6617 30.5158C40.6604 36.2203 35.9887 40.846 30.2276 40.846Z" fill="#2D2D2D"/></svg>';

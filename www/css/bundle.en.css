@@ -99,14 +99,17 @@ body {
   width: 2px;
   height: 2px;
   border: 0px;
+  border-radius: 0px;
 }
 .-custom-scroll::-webkit-scrollbar-track {
   background: #fff;
   border: 0px;
+  border-radius: 0px;
 }
 .-custom-scroll::-webkit-scrollbar-thumb {
   background: #b5b5b5;
   border: 0px;
+  border-radius: 0px;
   outline: none;
 }
 .-custom-scroll::-webkit-scrollbar-thumb:hover {
@@ -189,14 +192,17 @@ body {
   width: 7px;
   height: 7px;
   border: 0px;
+  border-radius: 0px;
 }
 .app-ui-component::-webkit-scrollbar-track {
   background: #fff;
   border: 0px;
+  border-radius: 0px;
 }
 .app-ui-component::-webkit-scrollbar-thumb {
   background: #b5b5b5;
   border: 0px;
+  border-radius: 0px;
   outline: none;
 }
 .app-ui-component::-webkit-scrollbar-thumb:hover {
@@ -784,14 +790,17 @@ h4.app-component-heading {
   width: 1px;
   height: 1px;
   border: 0px;
+  border-radius: 0px;
 }
 .app-toolbar-container-component::-webkit-scrollbar-track {
   background: inherit;
   border: 0px;
+  border-radius: 0px;
 }
 .app-toolbar-container-component::-webkit-scrollbar-thumb {
   background: inherit;
   border: 0px;
+  border-radius: 0px;
   outline: none;
 }
 .app-toolbar-container-component::-webkit-scrollbar-thumb:hover {
@@ -1096,6 +1105,9 @@ h4.app-component-heading {
 }
 .app-ui-grid-container [data-object-name="app-ui-grid-content"] .app-ui-grid-head {
   background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 .app-ui-grid-container [data-object-name="app-ui-grid-content"] .app-ui-grid-head.app-component-shown {
   display: table-header-group;
@@ -1479,6 +1491,7 @@ h4.app-component-heading {
 .app-ui-tree-component .nodes .node > div:not([data-object-name]) .expander {
   cursor: pointer;
   width: 12px;
+  flex: 0 0 12px;
   height: 12px;
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='11' height='11' rx='1.5' stroke='%23435466'/%3E%3Crect x='2.76929' y='5.53845' width='6.46154' height='0.923077' rx='0.461538' fill='%23435466'/%3E%3Crect x='5.53845' y='2.76923' width='0.923077' height='6.46154' rx='0.461538' fill='%23435466'/%3E%3C/svg%3E%0A");
 }
@@ -1867,6 +1880,23 @@ h4.app-component-heading {
 .app-component-chart .app-component-barchart .barchart-body {
   height: 5px;
   background-color: black;
+  width: 100%;
+}
+.app-component-chart.app-component-chart-vertical {
+  overflow: auto;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.app-component-chart.app-component-chart-vertical.app-component-shown {
+  display: flex;
+}
+.app-component-chart.app-component-chart-vertical .app-component-barchart {
+  width: auto;
+  height: 100%;
+  align-items: flex-end;
+}
+.app-component-chart.app-component-chart-vertical .app-component-barchart.app-component-shown {
+  display: flex;
 }
 .app-component-checkbox {
   -webkit-user-select: none;
@@ -2399,13 +2429,22 @@ h4.app-component-heading {
 .app-date-selector-component.app-component-shown {
   display: flex;
 }
-.app-date-selector-component .app-component-icon {
+.app-date-selector-component [data-object-name="icon"] {
   width: 20px;
   height: 20px;
 }
-.app-date-selector-component .app-component-icon svg {
+.app-date-selector-component [data-object-name="icon"] svg {
   width: 20px;
   height: 20px;
+}
+.app-date-selector-component [data-object-name="clear-icon"] {
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+}
+.app-date-selector-component [data-object-name="clear-icon"] svg {
+  width: 10px;
+  height: 10px;
 }
 .app-date-selector-component input[type=date]::-webkit-calendar-picker-indicator {
   display: none;
@@ -2468,18 +2507,21 @@ h4.app-component-heading {
 .app-date-selector-popup-component tbody td, .app-date-selector-popup-component tfoot td {
   cursor: pointer;
 }
-.app-date-selector-popup-component tbody td:not(.ntm), .app-date-selector-popup-component tfoot td:not(.ntm) {
+.app-date-selector-popup-component tbody td:not(.ntm):not(.disabled), .app-date-selector-popup-component tfoot td:not(.ntm):not(.disabled) {
   border-radius: 3px;
 }
-.app-date-selector-popup-component tbody td:not(.ntm):hover, .app-date-selector-popup-component tfoot td:not(.ntm):hover {
+.app-date-selector-popup-component tbody td:not(.ntm):not(.disabled):hover, .app-date-selector-popup-component tfoot td:not(.ntm):not(.disabled):hover {
   background: #e4f4ff;
+}
+.app-date-selector-popup-component tbody td.disabled, .app-date-selector-popup-component tfoot td.disabled {
+  color: #B5B2B2;
 }
 .app-date-selector-popup-component tbody td.current, .app-date-selector-popup-component tfoot td.current {
   background-color: #4295fa;
   color: #ffffff;
 }
 .app-date-selector-popup-component tbody td.current:hover, .app-date-selector-popup-component tfoot td.current:hover {
-  background-color: #4295fa;
+  background-color: #4295fa !important;
 }
 .app-date-selector-popup-component tbody td.today, .app-date-selector-popup-component tfoot td.today {
   box-shadow: 0px 0px 0px 1px #cccccc inset;
@@ -3588,6 +3630,7 @@ h4.app-component-heading {
   align-items: center;
   justify-content: flex-start;
   background: #FFFFFF;
+  position: relative;
 }
 .app-component-radio-field [data-object-name$="-content"] > [data-object-name$="-container"].app-component-shown {
   display: flex;
@@ -3624,6 +3667,14 @@ h4.app-component-heading {
 }
 .app-component-radio-field [data-object-name$="-content"] > [data-object-name$="-container"] label input:checked + span:before {
   border: 5px solid #0095FF;
+}
+.app-component-radio-field [data-object-name$="-content"] > [data-object-name$="-container"] [data-object-name="clear"] {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
 }
 .app-component-period-field [data-object-name$="-content"] > [data-object-name$="-container"] {
   align-items: center;
@@ -3958,14 +4009,17 @@ h4.app-component-heading {
   width: 7px;
   height: 7px;
   border: 0px;
+  border-radius: 0px;
 }
 .app-component-array-field > [data-object-name$="-content"] > [data-object-name$="-container"] [data-object-name$="-items"]::-webkit-scrollbar-track {
   background: #fff;
   border: 0px;
+  border-radius: 0px;
 }
 .app-component-array-field > [data-object-name$="-content"] > [data-object-name$="-container"] [data-object-name$="-items"]::-webkit-scrollbar-thumb {
   background: #b5b5b5;
   border: 0px;
+  border-radius: 0px;
   outline: none;
 }
 .app-component-array-field > [data-object-name$="-content"] > [data-object-name$="-container"] [data-object-name$="-items"]::-webkit-scrollbar-thumb:hover {
@@ -3995,36 +4049,21 @@ h4.app-component-heading {
 .app-component-array-grid-field > [data-object-name$="-content"] > [data-object-name$="-container"] > [data-object-name$="-add-object-button"] {
   margin: 10px 0;
 }
+.app-component-array-grid-field > [data-object-name$="-content"] > [data-object-name$="-container"] .app-ui-grid-container {
+  contain: content;
+}
 .app-component-array-grid-field > [data-object-name$="-content"] > [data-object-name$="-container"] table [data-object-name^="controls-column-"] {
   width: 0;
 }
-.app-component-simplearray-field {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #D9DCE3;
+.app-component-array-grid-object-window [data-object-name$="-form"] {
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
 }
-.app-component-simplearray-field > [data-object-name$="-title"] {
-  display: block;
-  font-size: 18px;
-}
-.app-component-simplearray-field [data-object-name="add-new"] {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 140%;
-  color: #0076E0;
-  cursor: pointer;
-  margin-top: 8px;
-  display: inline-block;
-}
-.app-component-simplearray-field > [data-object-name$="-content"] > [data-object-name$="-container"].app-component-shown {
-  display: block;
-}
-.app-component-simplearray-field .app-component-object-field {
-  margin-bottom: 10px;
-  padding-right: 30px;
-  min-height: 65px;
+.app-component-array-grid-object-window [data-object-name$="-form"].app-component-shown {
+  display: flex;
 }
 .app-component-simplearray-field {
   margin-top: 10px;
@@ -4053,6 +4092,47 @@ h4.app-component-heading {
   margin-bottom: 10px;
   padding-right: 30px;
   min-height: 65px;
+}
+.app-component-simplearray-field {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #D9DCE3;
+}
+.app-component-simplearray-field > [data-object-name$="-title"] {
+  display: block;
+  font-size: 18px;
+}
+.app-component-simplearray-field [data-object-name="add-new"] {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 140%;
+  color: #0076E0;
+  cursor: pointer;
+  margin-top: 8px;
+  display: inline-block;
+}
+.app-component-simplearray-field > [data-object-name$="-content"] > [data-object-name$="-container"].app-component-shown {
+  display: block;
+}
+.app-component-simplearray-field .app-component-object-field {
+  margin-bottom: 10px;
+  padding-right: 30px;
+  min-height: 65px;
+}
+.colibri-ui-forms-token [data-object-name$="-container"] {
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+.colibri-ui-forms-token [data-object-name$="-container"].app-component-shown {
+  display: flex;
+}
+.colibri-ui-forms-token [data-object-name$="-container"] [data-object-name="input"] {
+  flex: 1 1 100%;
+}
+.colibri-ui-forms-token [data-object-name$="-container"] [data-object-name="button"] {
+  flex: 0 0 20%;
 }
 .app-extended-button-component {
   align-items: center;
@@ -4306,6 +4386,7 @@ h4.app-component-heading {
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
   background: #ffffff;
   border-radius: 25px;
+  cursor: pointer;
   padding: 10px;
   gap: 10px;
   flex-wrap: nowrap;
@@ -4750,6 +4831,16 @@ h4.app-component-heading {
 .colibri-ui-jsonviewer .app-fields-viewer-component .app-field-pane > .app-field-title {
   width: 150px;
 }
+.colibri-ui-progressviewer {
+  position: relative;
+}
+.colibri-ui-progressviewer [data-object-name="text"] {
+  position: absolute;
+  right: 0px;
+}
+.colibri-ui-imagesviewer.app-component-shown {
+  display: block;
+}
 .app-email-editor-component {
   width: 100%;
   height: 100%;
@@ -5119,101 +5210,33 @@ body {
   overflow: hidden;
 }
 [lang="hy"] body, [lang="hy"] html, [lang="hy"] td, [lang="hy"] button, [lang="hy"] .app-ui-component {
-  font-family: "Mardoto";
+  font-family: "Arian AMU";
 }
 @font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Italic.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Italic.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Italic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Italic.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Italic.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Italic.svg#Mardoto-Italic") format("svg");
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BoldItalic.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BoldItalic.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BoldItalic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BoldItalic.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BoldItalic.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BoldItalic.svg#Mardoto-BoldItalic") format("svg");
-  font-weight: bold;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BlackItalic.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BlackItalic.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BlackItalic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BlackItalic.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BlackItalic.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-BlackItalic.svg#Mardoto-BlackItalic") format("svg");
-  font-weight: 900;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Medium.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Medium.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Medium.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Medium.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Medium.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Medium.svg#Mardoto-Medium") format("svg");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Bold.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Bold.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Bold.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Bold.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Bold.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Bold.svg#Mardoto-Bold") format("svg");
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Black.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Black.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Black.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Black.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Black.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Black.svg#Mardoto-Black") format("svg");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Light.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Light.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Light.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Light.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Light.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Light.svg#Mardoto-Light") format("svg");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-LightItalic.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-LightItalic.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-LightItalic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-LightItalic.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-LightItalic.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-LightItalic.svg#Mardoto-LightItalic") format("svg");
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Thin.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Thin.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Thin.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Thin.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Thin.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Thin.svg#Mardoto-Thin") format("svg");
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-ThinItalic.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-ThinItalic.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-ThinItalic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-ThinItalic.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-ThinItalic.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-ThinItalic.svg#Mardoto-ThinItalic") format("svg");
-  font-weight: 100;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Regular.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Regular.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Regular.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Regular.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Regular.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-Regular.svg#Mardoto-Regular") format("svg");
+  font-family: "Arian AMU";
+  src: url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Mardoto";
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-MediumItalic.eot");
-  src: url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-MediumItalic.eot?#iefix") format("embedded-opentype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-MediumItalic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-MediumItalic.woff") format("woff"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-MediumItalic.ttf") format("truetype"), url("https://ypark.colibrilab.pro/res/fonts/Mardoto/Mardoto-MediumItalic.svg#Mardoto-MediumItalic") format("svg");
-  font-weight: 500;
+  font-family: "Arian AMU";
+  src: url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU-Italic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU-Italic.woff") format("woff");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Arian AMU";
+  src: url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU-Bold.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Arian AMU";
+  src: url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU-BoldItalic.woff2") format("woff2"), url("https://ypark.colibrilab.pro/res/fonts/ArianAMU/ArianAMU-BoldItalic.woff") format("woff");
+  font-weight: bold;
   font-style: italic;
   font-display: swap;
 }
@@ -5266,7 +5289,7 @@ body {
 .app-lang-textarea-field [data-object-name$="-content"] [data-object-name$="-buttons"] {
   position: absolute;
   right: 6px;
-  top: -30px;
+  top: 17px;
 }
 .app-lang-textarea-field [data-object-name$="-content"] [data-object-name$="-buttons"] button {
   padding: 6px 12px 5px;
@@ -5429,13 +5452,16 @@ body {
   gap: 10px;
   width: auto;
 }
-.app-modules-sites-ui-pager [data-object-name="current-page"] {
+.app-modules-sites-ui-pager [data-object-name="current-page"], .app-modules-sites-ui-pager [data-object-name="current-pagesize"] {
   flex: 0 0 30px;
   padding: 0px;
   border: 0px;
 }
-.app-modules-sites-ui-pager [data-object-name="current-page"] input {
+.app-modules-sites-ui-pager [data-object-name="current-page"] input, .app-modules-sites-ui-pager [data-object-name="current-pagesize"] input {
   text-align: center;
+}
+.app-modules-sites-ui-pager [data-object-name="current-pagesize"] {
+  flex: 0 0 50px;
 }
 .app-modules-sites-ui-pager [data-object-name="max-pages"] {
   line-height: 21px;
@@ -5535,12 +5561,20 @@ body {
 .app-data-page-component [data-object-name="split"] [data-object-name="data-pane"].app-component-shown {
   display: grid;
 }
-.app-data-page-component [data-object-name="split"] [data-object-name="buttons-pane"] .app-component-button {
+.app-data-page-component [data-object-name="split"] [data-object-name="buttons-pane"] > .app-component-button {
   margin-right: 10px;
   padding: 0px 20px;
   margin-top: 10px;
   height: 30px;
   white-space: nowrap;
+}
+.app-data-page-component [data-object-name="split"] [data-object-name="buttons-pane"] [data-object-name="additional"] {
+  width: auto;
+  align-items: center;
+  justify-content: flex-end;
+}
+.app-data-page-component [data-object-name="split"] [data-object-name="buttons-pane"] [data-object-name="additional"].app-component-shown {
+  display: inline-flex;
 }
 .app-data-page-component [data-object-name="split"] [data-object-name="search-pane"] {
   flex-wrap: nowrap;
@@ -5601,13 +5635,52 @@ body {
 .app-sites-storages-page-component [data-object-name="storages-cannotchange"].app-component-shown {
   display: flex;
 }
-.app-sites-storages-page-component [data-object-name="split"] .app-component-split-left {
-  flex: 0 0 25%;
+.app-sites-storages-page-component [data-object-name="modules"] {
+  height: 100%;
+  overflow: auto;
+}
+.app-sites-storages-page-component [data-object-name="split"] {
+  width: 100%;
   height: 100%;
 }
-.app-sites-storages-page-component [data-object-name="split"] .app-component-split-right {
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-left {
+  flex: 0 0 25%;
+  height: 100%;
+  overflow: auto;
+}
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-left [data-object-name="split2"] {
+  width: 100%;
+  height: 100%;
+}
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-left [data-object-name="split2"] > .app-component-split-left {
+  flex: 0 0 50%;
+  height: 100%;
+  overflow: auto;
+}
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-left [data-object-name="split2"] > .app-component-split-right {
   height: 100%;
   padding-left: 10px;
+  overflow: auto;
+}
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-left [data-object-name="split2"] > .app-component-split-right [data-object-name="right"] {
+  overflow: auto;
+}
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-left [data-object-name="split2"] > .app-component-split-handler {
+  height: 100%;
+}
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-right {
+  height: 100%;
+  padding-top: 10px;
+  overflow: auto;
+}
+.app-sites-storages-page-component [data-object-name="split"] > .app-component-split-handler {
+  width: 100%;
+}
+.app-sites-storages-page-component [data-object-name="left"] {
+  overflow: auto;
+}
+.app-sites-storages-page-component [data-object-name="bottom"] {
+  overflow: auto;
 }
 .app-data-window-component .app-component-window-container {
   width: 95%;
@@ -5663,6 +5736,25 @@ body {
   display: block;
 }
 .app-manager-module-list-item-component [data-object-name="nam"].app-component-shown {
+  display: block;
+}
+.app-manager-storages-list-component {
+  height: 100%;
+}
+.app-manager-storages-list-component [data-object-name="modules_group"] > div {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  flex-direction: column;
+  gap: 0px;
+}
+.app-manager-storage-list-item-component {
+  padding: 20px;
+}
+.app-manager-storage-list-item-component [data-object-name="ttl"].app-component-shown {
+  display: block;
+}
+.app-manager-storage-list-item-component [data-object-name="nam"].app-component-shown {
   display: block;
 }
 .app-tools-backup-log-component {
@@ -6036,6 +6128,10 @@ input::placeholder, textarea::placeholder, select::placeholder {
   width: 100%;
   overflow: auto;
 }
+.app-layer-component > .app-ui-component {
+  max-width: 700px;
+  margin: 0 auto;
+}
 .app-component-window .app-component-window-content {
   display: flex;
   flex-direction: column;
@@ -6302,6 +6398,7 @@ input::placeholder, textarea::placeholder, select::placeholder {
 }
 .app-modules-yerevanparking-components-form-vahilefield > [data-object-name$="-content"] {
   width: 320px;
+  max-width: 100%;
   flex-direction: row;
   justify-content: center;
 }
@@ -6310,6 +6407,7 @@ input::placeholder, textarea::placeholder, select::placeholder {
 }
 .app-modules-yerevanparking-components-form-vahilefield > [data-object-name$="-content"] > [data-object-name$="-container"] {
   width: 320px;
+  max-width: 100%;
   padding: 10px;
   border: 1px solid #B9B9B9;
   border-radius: 6px;
@@ -6749,22 +6847,6 @@ input::placeholder, textarea::placeholder, select::placeholder {
   justify-content: center;
   gap: 20px;
 }
-.app-modules-yerevanparking-layers-waitpage {
-  flex-direction: column;
-  gap: 20px;
-  flex-wrap: nowrap;
-}
-.app-modules-yerevanparking-layers-waitpage [data-object-name="container"] {
-  height: 100%;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-.app-modules-yerevanparking-layers-waitpage [data-object-name="paynow"].-urgent {
-  background: #9E0507;
-}
 .app-modules-yerevanparking-layers-updatepage {
   flex-direction: column;
   gap: 20px;
@@ -6778,10 +6860,34 @@ input::placeholder, textarea::placeholder, select::placeholder {
   justify-content: center;
   gap: 20px;
 }
+.app-modules-yerevanparking-layers-telegramchat {
+  flex-direction: column;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
+.app-modules-yerevanparking-layers-telegramchat [data-object-name="container"] {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.app-modules-yerevanparking-layers-telegramchat [data-object-name="container"] [data-object-name="telegram"] {
+  background-color: #2481cc;
+  background-image: linear-gradient(270deg, rgba(100, 181, 239, 0) 48.44%, #64b5ef 75.52%, rgba(100, 181, 239, 0) 100%);
+  padding: 10px 20px;
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: bold;
+  border-radius: 10px;
+  color: white;
+}
 .app-modules-yerevanparking-layouts-header {
   gap: 10px;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] {
+  grid-template-columns: 20% 80%;
   flex-wrap: nowrap;
   align-items: flex-start;
   justify-content: space-between;
@@ -6789,14 +6895,28 @@ input::placeholder, textarea::placeholder, select::placeholder {
   padding-top: constant(safe-area-inset-top);
   padding-top: env(safe-area-inset-top);
 }
+.app-modules-yerevanparking-layouts-header [data-object-name="row1"].app-component-shown {
+  display: grid;
+}
 .app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] {
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+}
+.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"].app-component-shown {
+  display: grid;
+}
+.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] [data-object-name="r"] {
   align-items: center;
+  justify-content: end;
   width: auto;
   gap: 15px;
 }
-.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] [data-object-name="settings"] {
+.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] [data-object-name="r"] [data-object-name="settings"] {
   width: 28px;
   height: 28px;
+}
+.app-modules-yerevanparking-layouts-header [data-object-name="row1"] [data-object-name="right"] [data-object-name="r2"] {
+  justify-content: end;
 }
 .app-modules-yerevanparking-layouts-header [data-object-name="row2"] {
   flex-wrap: nowrap;

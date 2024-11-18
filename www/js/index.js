@@ -131,7 +131,12 @@ function onDeviceReady() {
             App.appVersion = '1.0.34.0';
             App.Device.backgroundMode = true;
             App.Device.overrideBackButton = true;
-        });
+            // App.Device.Sim.Detect().then((result) => {
+            //     alert(JSON.stringify(result));
+            // }).catch(error => {
+            //     alert(JSON.stringify(error));
+            // });
+    });
 
    });
 
