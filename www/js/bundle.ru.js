@@ -45348,7 +45348,7 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
      * @returns {boolean} True if the device platform is Android, otherwise false.
      */
     get isAndroid() {
-        return this._platform === Colibri.Devices.Device.Android;
+        return this._platform === Colibri.Devices.Device.Platform.Android;
     }
 
     /**
@@ -45356,7 +45356,7 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
      * @returns {boolean} True if the device platform is iOS, otherwise false.
      */
     get isIOs() {
-        return this._platform === Colibri.Devices.Device.IOs;
+        return this._platform === Colibri.Devices.Device.Platform.IOs;
     }
 
     /**
@@ -45364,7 +45364,7 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
      * @returns {boolean} True if the device platform is Windows, otherwise false.
      */
     get isWindows() {
-        return this._platform === Colibri.Devices.Device.Windows;
+        return this._platform === Colibri.Devices.Device.Platform.Windows;
     }
 
     /**
@@ -45372,7 +45372,7 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
      * @returns {boolean} True if the device platform is Web, otherwise false.
      */
     get isWeb() {
-        return this._platform === Colibri.Devices.Device.Web;
+        return this._platform === Colibri.Devices.Device.Platform.Web;
     }
 
     /**
@@ -57903,14 +57903,21 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     } 
 
+    TelegramOAuth(code) {
+        return new Promise((resolve, reject) => {
+            this.Call('Telegram', 'OAuth', {code: code}).then(response => {
+                resolve(response.result);
+            }).catch(error => console.log(error.result));
+        });
+    }
+
     LoginFromTelegram(user) {
         return new Promise((resolve, reject) => {
+            App.Loading.Show();
             this.Call('Client', 'RegisterByTelegram', {user: user}).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
-                if(response.result.session.telegram_id) {
-                    location('https://t.me/yerevan_parking_bot');
-                }
+                App.Loading.Hide();
                 resolve(response.result);
             }).catch(error => console.log(error.result));
         });
@@ -59111,7 +59118,6 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
     }
 
     _loginWithTelegram() {
-
         if (App.Device.isWeb) {
             const script = document.createElement("script");
             script.src = "https://telegram.org/js/telegram-widget.js?20";
@@ -59124,37 +59130,25 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
             script.setAttribute("data-onauth", "YerevanParking.LoginFromTelegram(user)");
             script.async = true;
             this._containerContentTelegram.container.append(script);
-        } else if (App.Device.isAndroid) {
+        } else {
             const loginButton = new Colibri.UI.SuccessButton('telegram-login-button', this._containerContentTelegram);
             loginButton.shown = true;
             loginButton.value = 'Войти через Telegram';
             loginButton.AddHandler('Clicked', (event, args) => {
                 const inAppBrowserRef = cordova.InAppBrowser.open(
-                    'https://oauth.telegram.org/auth?bot_id=' + yerevan_parking_bot + '&origin=' + encodeURIComponent('https://ypark.colibrilab.pro') + '&embed=1',
+                    'https://oauth.telegram.org/auth?bot_id=6717457869&origin=' + encodeURIComponent('https://ypark.colibrilab.pro') + '&embed=1',
                     '_blank', 
                     'location=no,hidden=no'
                 );
-
-                if (event.url.includes('https://oauth.telegram.org/')) {
-                    inAppBrowserRef.executeScript(
-                        {
-                            code: `
-                                if (window.TelegramLoginWidget && TelegramLoginWidget.getAuthData) {
-                                    TelegramLoginWidget.getAuthData((user) => {
-                                        window.alert(JSON.stringify(user));
-                                        user; // Возвращаем данные пользователя
-                                    });
-                                }
-                            `,
-                        },
-                        function (result) {
-                            if (result && result[0]) {
-                                const userData = result[0];
-                                YerevanParking.LoginFromTelegram(userData);
-                            }
-                        }
-                    );
-                }
+                inAppBrowserRef.addEventListener('loadstop', function (event) {
+                    if (event.url.includes('tgAuthResult')) {
+                        const parts = event.url.split('tgAuthResult=');
+                        let code = parts[1];
+                        code = window.atob(code);
+                        YerevanParking.LoginFromTelegram(JSON.parse(code));
+                        inAppBrowserRef.close();
+                    }
+                });
             });
         }
 
@@ -59788,7 +59782,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layouts.Header',
 '        <FlexBox shown="true" name="right">' + 
 '            <FlexBox shown="true" name="r">' + 
 '                <Icon shown="true" name="settings" iconSVG="App.Modules.YerevanParking.Icons.SettingIcon"  />' + 
-'                <Lang.LangChangeIcon shown="true" savePlace="cookie" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]" iconSVG="App.Modules.YerevanParking.Icons.Langs"  binding="app.yerevan-parking.langs" />' + 
+'                <Lang.LangChangeIcon shown="true" savePlace="storage" name="langs" contextMenuPosition="[Colibri.UI.ContextMenu.RB, Colibri.UI.ContextMenu.LB]" iconSVG="App.Modules.YerevanParking.Icons.Langs"  binding="app.yerevan-parking.langs" />' + 
 '                <Icon shown="true" name="logout" iconSVG="App.Modules.YerevanParking.Icons.Logout"  />' + 
 '            </FlexBox>' + 
 '            <FlexBox shown="true" name="r2">' + 

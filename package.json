@@ -81,5 +81,8 @@
       "cordova-plugin-sim": {},
       "cordova-plugin-inappbrowser": {}
     }
+  },
+  "dependencies": {
+    "cordova-simulate": "^1.3.2"
   }
 }

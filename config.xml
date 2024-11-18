@@ -38,6 +38,8 @@
         
         <preference name="Fullscreen" value="true" />
         <preference name="AndroidLaunchMode" value="singleInstance"/>
+        <preference name="PreferredContentMode" value="mobile" />
+        <preference name="InAppBrowserStatusBarStyle" value="lightcontent" />
 
         <resource-file src="resources/google-services.json" target="app/google-services.json" />
         <config-file target="AndroidManifest.xml" parent="/manifest">
