@@ -59076,7 +59076,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.RegistrationPage',
 '</div>' + 
 '');
 App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.FlexBox {
-    
+
     constructor(name, container) {
         /* создаем компонент и передаем шаблон */
         super(name, container, Colibri.UI.Templates['App.Modules.YerevanParking.Layers.RegistrationPage']);
@@ -59089,16 +59089,16 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
         this._login = this.Children('container/content/login');
         this._cancel = this.Children('container/content/cancel');
         this._containerContentTelegram = this.Children('container/content/telegram');
-        
-        
+
+
         this._register.AddHandler('Clicked', (event, args) => this.__registerClicked(event, args));
         this._login.AddHandler('Clicked', (event, args) => this.__loginClicked(event, args));
         this._form.AddHandler('Changed', (event, args) => this.__formChanged(event, args));
 
         this._showPhoneFields();
         YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then((settings) => {
-            if(!!settings.session && !!settings.session.phone) {
-                this._form.value = {phone: settings.session.phone};
+            if (!!settings.session && !!settings.session.phone) {
+                this._form.value = { phone: settings.session.phone };
                 this._register.enabled = true;
             }
 
@@ -59106,23 +59106,58 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
 
         });
 
-        this._cancel.AddHandler('Clicked', (event, args) => this.__cancelClicked(event, args));        
+        this._cancel.AddHandler('Clicked', (event, args) => this.__cancelClicked(event, args));
 
     }
 
     _loginWithTelegram() {
 
-        const script = document.createElement("script");
-        script.src = "https://telegram.org/js/telegram-widget.js?20";
-        script.setAttribute("data-telegram-login", 'yerevan_parking_bot');
-        script.setAttribute("data-size", 'large');
-        script.setAttribute("data-radius", '10');
-        script.setAttribute("data-request-access", 'phone');
-        script.setAttribute("data-userpic", 'true');
-        script.setAttribute("data-lang", Lang.Current);
-        script.setAttribute("data-onauth", "YerevanParking.LoginFromTelegram(user)");
-        script.async = true;
-        this._containerContentTelegram.container.append(script);
+        if (App.Device.isWeb) {
+            const script = document.createElement("script");
+            script.src = "https://telegram.org/js/telegram-widget.js?20";
+            script.setAttribute("data-telegram-login", 'yerevan_parking_bot');
+            script.setAttribute("data-size", 'large');
+            script.setAttribute("data-radius", '10');
+            script.setAttribute("data-request-access", 'phone');
+            script.setAttribute("data-userpic", 'true');
+            script.setAttribute("data-lang", Lang.Current);
+            script.setAttribute("data-onauth", "YerevanParking.LoginFromTelegram(user)");
+            script.async = true;
+            this._containerContentTelegram.container.append(script);
+        } else if (App.Device.isAndroid) {
+            const loginButton = new Colibri.UI.SuccessButton('telegram-login-button', this._containerContentTelegram);
+            loginButton.shown = true;
+            loginButton.value = 'Login with Telegram';
+            loginButton.AddHandler('Clicked', (event, args) => {
+                const inAppBrowserRef = cordova.InAppBrowser.open(
+                    'https://oauth.telegram.org/auth?bot_id=' + yerevan_parking_bot + '&origin=' + encodeURIComponent('https://ypark.colibrilab.pro') + '&embed=1',
+                    '_blank', 
+                    'location=no,hidden=no'
+                );
+
+                if (event.url.includes('https://oauth.telegram.org/')) {
+                    inAppBrowserRef.executeScript(
+                        {
+                            code: `
+                                if (window.TelegramLoginWidget && TelegramLoginWidget.getAuthData) {
+                                    TelegramLoginWidget.getAuthData((user) => {
+                                        window.alert(JSON.stringify(user));
+                                        user; // Возвращаем данные пользователя
+                                    });
+                                }
+                            `,
+                        },
+                        function (result) {
+                            if (result && result[0]) {
+                                const userData = result[0];
+                                YerevanParking.LoginFromTelegram(userData);
+                            }
+                        }
+                    );
+                }
+            });
+        }
+
 
     }
 
@@ -59153,9 +59188,9 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
     }
 
     __formChanged(event, args) {
-        if((this._phone + '').length === 11 && (this._form.value?.code + '').length === 4) {
+        if ((this._phone + '').length === 11 && (this._form.value?.code + '').length === 4) {
             this._login.enabled = true;
-        } else if((this._form.value?.phone + '').length === 11) {
+        } else if ((this._form.value?.phone + '').length === 11) {
             this._register.enabled = true;
         }
     }
@@ -59170,11 +59205,11 @@ App.Modules.YerevanParking.Layers.RegistrationPage = class extends Colibri.UI.Fl
 
         YerevanParking.SendMessage(this._phone).then((result) => {
             try {
-                if(!result.chat) {
+                if (!result.chat) {
                     App.Device.Sms.Send(result.session.phone, result.session.verification, '');
                 }
-            } catch(e) {
-                App.Notices.Add(new Colibri.UI.Notice('We were unable to send you a confirmation SMS, please try another number'));  
+            } catch (e) {
+                App.Notices.Add(new Colibri.UI.Notice('We were unable to send you a confirmation SMS, please try another number'));
             }
         }).catch((error) => {
             App.Notices.Add(new Colibri.UI.Notice('We were unable to send you a confirmation SMS, please try another number'));
