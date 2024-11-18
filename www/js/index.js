@@ -128,7 +128,7 @@ function onDeviceReady() {
                 symbol: '֏'
             }
         ).finally(() => {
-            App.appVersion = '1.0.34.0';
+            App.appVersion = 'dev-master';
             App.Device.backgroundMode = true;
             App.Device.overrideBackButton = true;
             // App.Device.Sim.Detect().then((result) => {
