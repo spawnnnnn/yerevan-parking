@@ -113,6 +113,7 @@ function onDeviceReady() {
         LoadScript('./../js/' + jsFile, null, 'body')
     ]).then(responses => {
 
+        Colibri.Web.Comet.Options = {origin: 'ypark.colibrilab.pro'};
         App.InitializeApplication(
             'yerevan-parking',
             1,

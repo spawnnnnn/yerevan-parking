@@ -23778,35 +23778,45 @@ Colibri.UI.Notices = class extends Colibri.UI.Pane {
             console.trace();
             debugger;
         }
-        const notice = this._group.AddItem(noticeData);
-        
-        const removeNotice = () => {
-            notice.RemoveClass(noticeData.className);
-            Colibri.Common.Delay(300).then(() => {
-                notice.height = 0;
-                return Colibri.Common.Delay(100);
-            }).then(() => {
-                notice.Dispose();
-                if(this._group.children == 0) {
-                    this.shown = false;
-                }
-            });
-        };
 
-        Colibri.Common.Delay(10).then(() => {
-
-            notice.AddClass(noticeData.className);
-
-            const icon = new Colibri.UI.Icon('icon', notice);
-            icon.shown = true;
-            icon.value = Colibri.UI.CloseIcon;
-            icon.AddClass('app-notice-icon-component');
-            icon.AddHandler('Clicked', removeNotice);
-            notice.AddHandler('Clicked', removeNotice);
-
-            Colibri.Common.Delay(noticeData.timeout).then(removeNotice);
+        if(App.Device.isWeb) {
+            const notice = this._group.AddItem(noticeData);
             
-        });
+            const removeNotice = () => {
+                notice.RemoveClass(noticeData.className);
+                Colibri.Common.Delay(300).then(() => {
+                    notice.height = 0;
+                    return Colibri.Common.Delay(100);
+                }).then(() => {
+                    notice.Dispose();
+                    if(this._group.children == 0) {
+                        this.shown = false;
+                    }
+                });
+            };
+    
+            Colibri.Common.Delay(10).then(() => {
+    
+                notice.AddClass(noticeData.className);
+    
+                const icon = new Colibri.UI.Icon('icon', notice);
+                icon.shown = true;
+                icon.value = Colibri.UI.CloseIcon;
+                icon.AddClass('app-notice-icon-component');
+                icon.AddHandler('Clicked', removeNotice);
+                notice.AddHandler('Clicked', removeNotice);
+    
+                Colibri.Common.Delay(noticeData.timeout).then(removeNotice);
+                
+            });
+        } else {
+
+            App.Device.Notifications.Schedule(noticeData.title, noticeData.message, null);
+            App.Device.Dialogs.Beep(1);
+
+        }
+
+        
         return notice;
     }
 
@@ -44506,6 +44516,10 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
     /** @type {string} */
     _clientId = null;
 
+    static Options = {
+        origin: location.domain
+    };
+
     /**
      * @constructor
      * @param {object} settings - Settings for the Comet connection.
@@ -44723,7 +44737,7 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
     Command(userGuid, action, message = null) {
         try {
             if(this._ws.readyState === 1) {
-                this._ws.send(JSON.stringify({action: action, user: userGuid, message: message, domain: document.domain}));
+                this._ws.send(JSON.stringify({action: action, user: userGuid, message: message, domain: Colibri.Web.Comet.Options.origin}));
             }
             else {
                 console.log('server goes away');
@@ -44745,7 +44759,7 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         try {
             const id = Date.Mc();
             if(this._ws.readyState === 1) {
-                this._ws.send(JSON.stringify({action: action, recipient: userGuid, message: {text: message, id: id}, domain: document.domain}));
+                this._ws.send(JSON.stringify({action: action, recipient: userGuid, message: {text: message, id: id}, domain: Colibri.Web.Comet.Options.origin}));
                 return id;
             }
             else {
