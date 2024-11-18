@@ -57509,7 +57509,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     /** @constructor */
     constructor() {
         super('YerevanParking');
-        
+
         // Uncomment this lines if you using an authorization
         this.authorizationCookieName = 'yp-jwt'; // - change the authorization cookie name
         this.useAuthorizationCookie = true; // - indicates using of authorization cookie in requests
@@ -57520,7 +57520,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         super.InitializeModule();
 
         console.log('Initializing module YerevanParking');
-        
+
         this._store = App.Store.AddChild('app.yerevan-parking', {});
         this._store.AddPathLoader('yerevan-parking.settings', 'YerevanParking:YerevanParking.Settings');
         this._store.AddPathLoader('yerevan-parking.langs', 'YerevanParking:YerevanParking.Langs');
@@ -57534,7 +57534,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         // this._store.AddPathLoader('yerevan-parking.settings', 'YerevanParking:YerevanParking.Settings');
         // this._store.AddPathLoader('yerevan-parking.settings', () => this.MethodName(1, 20, filters, orders, and etc));
 
-        if(App.name === 'yerevan-parking') {
+        if (App.name === 'yerevan-parking') {
             App.Loader.icon = App.Modules.YerevanParking.Icons.Logo;
             App.Loader.progressColor = '#8C8C8C';
             App.Loader.StartProgress(300, 1.2);
@@ -57543,12 +57543,12 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
         this.AddHandler('CallCompleted', (event, args) => {
             args.result = JSON.parse(args.result);
-            if(args.result.session && args.result.session.token) {
+            if (args.result.session && args.result.session.token) {
                 App.Browser.Set('yp-jwt', args.result.session.token);
             }
         });
 
-        
+
 
     }
 
@@ -57560,21 +57560,21 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             // if(settings.version != App.appVersion) {
             //     App.Router.Navigate('/update');
             //     return;
-                
+
             // }
 
-            if(!!settings.session && !!settings.session.telegram_id && !settings.chat) {
+            if (!!settings.session && !!settings.session.telegram_id && !settings.chat) {
                 App.Router.Navigate('/bot');
                 return;
-            } 
+            }
 
-            if(!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
-                if(['', '/', '/payment', '/vahiles', '/registration', '/update'].indexOf(App.Router.current) !== -1) {
+            if (!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && settings.vahiles.length > 0 && Object.countKeys(settings.session.settings) > 0 && settings.session.settings?.payment_type !== undefined) {
+                if (['', '/', '/payment', '/vahiles', '/registration', '/update'].indexOf(App.Router.current) !== -1) {
                     App.Router.Navigate('/main');
                 }
-            } else if(!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && settings.vahiles.length == 0) {
+            } else if (!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && settings.vahiles.length == 0) {
                 App.Router.Navigate('/vahiles');
-            } else if(!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && (Object.countKeys(settings.session.settings) == 0 || settings.session.settings?.payment_type === undefined)) {
+            } else if (!!settings.session && (!!settings.session.phone || !!settings.session.telegram_id) && settings.session.verified && (Object.countKeys(settings.session.settings) == 0 || settings.session.settings?.payment_type === undefined)) {
                 App.Router.Navigate('/payment');
             } else {
                 App.Router.Navigate('/registration');
@@ -57582,7 +57582,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
             let activeParkings = settings.waitings.concat(settings.parkings);
             activeParkings = activeParkings.reverse();
-            if(activeParkings.length > 0) {
+            if (activeParkings.length > 0) {
                 App.Router.Navigate('/parking', {});
             }
 
@@ -57592,7 +57592,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             //         this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
             //     });                        
             // });
-            
+
 
         });
     }
@@ -57600,17 +57600,17 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     _checkPosition(lat, lng) {
 
         const zones = this.Store.Query('yerevan-parking.parkingzones');
-        for(const zone of zones) {
+        for (const zone of zones) {
 
-            for(const poly of zone.polylines) {
-            
+            for (const poly of zone.polylines) {
+
                 const polygon = [];
-                for(const p of poly.polyline) {
+                for (const p of poly.polyline) {
                     polygon.push([parseFloat(p.lat), parseFloat(p.lng)]);
                 }
-                
+
                 const check = geometric.pointOnPolygon([lat, lng], polygon, 0.1);
-                if(check) {
+                if (check) {
                     return {
                         zone: zone.zone,
                         street: zone.street
@@ -57618,7 +57618,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 }
 
             }
-    
+
 
         }
 
@@ -57627,14 +57627,14 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     Render(domainSettings) {
-        console.log('Rendering Module YerevanParking');    
+        console.log('Rendering Module YerevanParking');
 
         App.Router.AddHandler('RouteChanged', (event, args) => {
             const layer = args.url.trimString('/');
             this._swithInterface(layer);
         });
 
-        if(App.name === 'yerevan-parking') {
+        if (App.name === 'yerevan-parking') {
             App.Loader.StopProgress();
             Colibri.Common.Delay(1500).then(() => {
                 App.Loader.Hide();
@@ -57646,7 +57646,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             const initData = Telegram.WebApp.initData || "";
             const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
 
-            if(initData && initDataUnsafe.query_id) {
+            if (initData && initDataUnsafe.query_id) {
                 this.CheckTelegramInitData(initData, initDataUnsafe);
             }
 
@@ -57656,9 +57656,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         this.InitParkingApp();
 
     }
-    
-    Call(controller, method, params = null, headers= {}, withCredentials= true, requestKeyword = Date.Mc()) {
-        if(!headers) {
+
+    Call(controller, method, params = null, headers = {}, withCredentials = true, requestKeyword = Date.Mc()) {
+        if (!headers) {
             headers = {};
         }
         headers.clientId = App.Comet.clientId;
@@ -57678,47 +57678,47 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     _initComet(session) {
-        if(!App.Comet || !session) {
+        if (!App.Comet || !session) {
             return;
         }
 
-        App.Comet.Init({guid: session.key, name: session.fio, avatar: session.avatar}, App.Store, 'app.messages');
+        App.Comet.Init({ guid: session.key + '_' + App.Comet.clientId, name: session.fio, avatar: session.avatar }, App.Store, 'app.messages');
         App.Comet.ClearHandlers();
         // App.Comet.AddHandler('MessageReceived', (event, args) => {  console.log(args); });
         App.Comet.AddHandler('EventReceived', (event, args) => {
             console.log(args.event);
-            if(args.event.action === 'payment-successed' ||args.event.action === 'payment-canceled') {
+            if (args.event.action === 'payment-successed' || args.event.action === 'payment-canceled') {
                 this._store.Reload('yerevan-parking.settings', false);
-            } else if(args.event.action === 'unpark') {
+            } else if (args.event.action === 'unpark') {
                 App.Loading.Hide();
                 App.Router.Navigate('/main', {});
-                if(args.event.message.message) {
+                if (args.event.message.message) {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
                 }
-            } else if(args.event.action === 'parking-started') {
+            } else if (args.event.action === 'parking-started') {
                 App.Loading.Hide();
                 App.Router.Navigate('/parking', {});
-                if(args.event.message.message) {
+                if (args.event.message.message) {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
                 }
-            } else if(args.event.action === 'wallet-changed') {
+            } else if (args.event.action === 'wallet-changed') {
                 this._store.Reload('yerevan-parking.settings', false);
-                if(args.event.message.message) {
+                if (args.event.message.message) {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
                 }
-            } else if(args.event.action === 'parking-tick') {
-                if(this.ActivePage.name === 'timer-page') {
+            } else if (args.event.action === 'parking-tick') {
+                if (this.ActivePage.name === 'timer-page') {
                     this.ActivePage.Tick(args.event.message);
                 }
-            } else if(args.event.action === 'parking-failed') {
+            } else if (args.event.action === 'parking-failed') {
                 App.Loading.Hide();
-                if(args.event.message.options.thrown === 'CanNotBePaidByWallet') {
+                if (args.event.message.options.thrown === 'CanNotBePaidByWallet') {
                     App.Notices.Add(new Colibri.UI.Notice('Խնդրում ենք լիցքավորել ձեր դրամապանակը'));
-                    App.Router.Navigate('/wallet', {amount: 5000});
-                } else if(args.event.message.message) {
+                    App.Router.Navigate('/wallet', { amount: 5000 });
+                } else if (args.event.message.message) {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
                 }
-    
+
             }
         });
 
@@ -57730,7 +57730,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     get Alert() {
-        if(!this._alert) {
+        if (!this._alert) {
             this._alert = new App.Modules.YerevanParking.Components.Windows.AlertDialog('yerevan-parking-alert-dialog', document.body, 780);
             // this._alert.closable = false;
         }
@@ -57738,7 +57738,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     get Prompt() {
-        if(!this._prompt) {
+        if (!this._prompt) {
             this._prompt = new App.Modules.YerevanParking.Components.Windows.PromptDialog('yerevan-parking-prompt-dialog', document.body, 780);
             // this._alert.closable = false;
         }
@@ -57746,7 +57746,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     get Confirm() {
-        if(!this._confirm) {
+        if (!this._confirm) {
             this._confirm = new App.Modules.YerevanParking.Components.Windows.ConfirmDialog('yerevan-parking-confirm-dialog', document.body, 780);
             // this._confirm.closable = false;
         }
@@ -57754,63 +57754,63 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     get MainPage() {
-        if(!this._mainPage) {
+        if (!this._mainPage) {
             this._mainPage = new App.Modules.YerevanParking.Layers.MainPage('main-page', document.body);
         }
         return this._mainPage;
     }
 
     get BotPage() {
-        if(!this._botPage) {
+        if (!this._botPage) {
             this._botPage = new App.Modules.YerevanParking.Layers.TelegramChat('bot-page', document.body);
         }
         return this._botPage;
     }
 
     get RegistrationPage() {
-        if(!this._registrationPage) {
+        if (!this._registrationPage) {
             this._registrationPage = new App.Modules.YerevanParking.Layers.RegistrationPage('registration-page', document.body);
         }
         return this._registrationPage;
     }
 
     get VahilesPage() {
-        if(!this._vahilesPage) {
+        if (!this._vahilesPage) {
             this._vahilesPage = new App.Modules.YerevanParking.Layers.VahilesPage('vahiles-page', document.body);
         }
         return this._vahilesPage;
     }
 
     get PaymentPage() {
-        if(!this._paymentPage) {
+        if (!this._paymentPage) {
             this._paymentPage = new App.Modules.YerevanParking.Layers.PaymentPage('payment-page', document.body);
         }
         return this._paymentPage;
     }
 
     get SettingsPage() {
-        if(!this._settingsPage) {
+        if (!this._settingsPage) {
             this._settingsPage = new App.Modules.YerevanParking.Layers.SettingsPage('settings-page', document.body);
         }
         return this._settingsPage;
     }
-    
+
     get TimerPage() {
-        if(!this._timerPage) {
+        if (!this._timerPage) {
             this._timerPage = new App.Modules.YerevanParking.Layers.TimerPage('timer-page', document.body);
         }
         return this._timerPage;
     }
 
     get WalletPage() {
-        if(!this._walletPage) {
+        if (!this._walletPage) {
             this._walletPage = new App.Modules.YerevanParking.Layers.WalletPage('wallet-page', document.body);
         }
         return this._walletPage;
     }
-    
+
     get UpdatePage() {
-        if(!this._updatePage) {
+        if (!this._updatePage) {
             this._updatePage = new App.Modules.YerevanParking.Layers.UpdatePage('update-page', document.body);
         }
         return this._updatePage;
@@ -57819,8 +57819,8 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     PayNowEventHandler(notification, eopts) {
         try {
             App.Device.WakeUp();
-        } catch(e) {}
-        if(this._currentTimer.name === 'wating') {
+        } catch (e) { }
+        if (this._currentTimer.name === 'wating') {
             this._swithInterface('wait');
             this.ActivePage.TryPayNow();
         } else {
@@ -57834,10 +57834,10 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         this.DisposeTimer();
         try {
             App.Device.WakeUp();
-        } catch(e) {}
+        } catch (e) { }
         App.Router.Navigate('/main');
 
-        if(this._currentTimer.name === 'wating') {
+        if (this._currentTimer.name === 'wating') {
             this._swithInterface('wait');
         } else {
             this._swithInterface('parking');
@@ -57846,31 +57846,31 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     _hideAll(except = '') {
-        if(this._registrationPage && except != 'registration') {
+        if (this._registrationPage && except != 'registration') {
             this._registrationPage.Hide();
         }
-        if(this._botPage && except != 'bot') {
+        if (this._botPage && except != 'bot') {
             this._botPage.Hide();
         }
-        if(this._mainPage && except != 'main') {
+        if (this._mainPage && except != 'main') {
             this._mainPage.Hide();
         }
-        if(this._vahilesPage && except != 'vahiles') {
+        if (this._vahilesPage && except != 'vahiles') {
             this._vahilesPage.Hide();
         }
-        if(this._paymentPage && except != 'payment') {
+        if (this._paymentPage && except != 'payment') {
             this._paymentPage.Hide();
         }
-        if(this._settingsPage && except != 'settings') {
+        if (this._settingsPage && except != 'settings') {
             this._settingsPage.Hide();
         }
-        if(this._timerPage && except != 'parking') {
+        if (this._timerPage && except != 'parking') {
             this._timerPage.Hide();
         }
-        if(this._walletPage && except != 'wallet') {
+        if (this._walletPage && except != 'wallet') {
             this._walletPage.Hide();
         }
-        if(this._updatePage && except != 'update') {
+        if (this._updatePage && except != 'update') {
             this._updatePage.Hide();
         }
     }
@@ -57883,31 +57883,31 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
         this._hideAll(layer);
 
-        if(layer === 'main') {
+        if (layer === 'main') {
             this.MainPage.Show();
             this._activePage = this.MainPage;
-        } else if(layer === 'bot') {
+        } else if (layer === 'bot') {
             this.BotPage.Show();
             this._activePage = this.BotPage;
-        } else if(layer === 'vahiles') {
+        } else if (layer === 'vahiles') {
             this.VahilesPage.Show();
             this._activePage = this.VahilesPage;
-        } else if(layer === 'registration') {
+        } else if (layer === 'registration') {
             this.RegistrationPage.Show();
             this._activePage = this.RegistrationPage;
-        } else if(layer === 'payment') {
+        } else if (layer === 'payment') {
             this.PaymentPage.Show();
             this._activePage = this.PaymentPage;
-        } else if(layer === 'session') {
+        } else if (layer === 'session') {
             this.SettingsPage.Show();
             this._activePage = this.SettingsPage;
-        } else if(layer === 'parking') {
+        } else if (layer === 'parking') {
             this.TimerPage.Show();
             this._activePage = this.TimerPage;
-        } else if(layer === 'wallet') {
+        } else if (layer === 'wallet') {
             this.WalletPage.Show();
             this._activePage = this.WalletPage;
-        } else if(layer === 'update') {
+        } else if (layer === 'update') {
             this.UpdatePage.Show();
             this._activePage = this.UpdatePage;
         } else {
@@ -57915,11 +57915,11 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         }
 
 
-    } 
+    }
 
     TelegramOAuth(code) {
         return new Promise((resolve, reject) => {
-            this.Call('Telegram', 'OAuth', {code: code}).then(response => {
+            this.Call('Telegram', 'OAuth', { code: code }).then(response => {
                 resolve(response.result);
             }).catch(error => console.log(error.result));
         });
@@ -57928,7 +57928,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     LoginFromTelegram(user) {
         return new Promise((resolve, reject) => {
             App.Loading.Show();
-            this.Call('Client', 'RegisterByTelegram', {user: user}).then(response => {
+            this.Call('Client', 'RegisterByTelegram', { user: user }).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
                 App.Loading.Hide();
@@ -57950,7 +57950,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     SendMessage(phone) {
         return new Promise((resolve, reject) => {
-            this.Call('Client', 'Register', {phone: phone}).then(response => {
+            this.Call('Client', 'Register', { phone: phone }).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 resolve(response.result);
             }).catch(error => console.log(error.result));
@@ -57959,7 +57959,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     Login(phone, code) {
         return new Promise((resolve, reject) => {
-            this.Call('Client', 'Login', {phone: phone, code: code}).then(response => {
+            this.Call('Client', 'Login', { phone: phone, code: code }).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
                 resolve(response.result);
@@ -57979,16 +57979,16 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     ParkingZones(vahiles) {
         return new Promise((resolve, reject) => {
-            this.Call('YerevanParking', 'ParkingZones', {vahiles: vahiles}).then(response => {
+            this.Call('YerevanParking', 'ParkingZones', { vahiles: vahiles }).then(response => {
                 this._store.Set('yerevan-parking.parkingzones', response.result);
                 resolve(response.result);
             }).catch(error => console.log(error.result));
         });
     }
-    
+
     SaveVahiles(vahiles) {
         return new Promise((resolve, reject) => {
-            this.Call('Client', 'SaveVahiles', {vahiles: vahiles}).then(response => {
+            this.Call('Client', 'SaveVahiles', { vahiles: vahiles }).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
                 resolve(response.result);
@@ -57998,7 +57998,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
 
     SavePaymentType(paymentType, autosms, sendsms) {
         return new Promise((resolve, reject) => {
-            this.Call('Client', 'SavePaymentType', {type: paymentType, autosms: autosms, sendsms: sendsms}).then(response => {
+            this.Call('Client', 'SavePaymentType', { type: paymentType, autosms: autosms, sendsms: sendsms }).then(response => {
                 this._store.Set('yerevan-parking.settings', response.result);
                 this.InitParkingApp();
                 resolve(response.result);
@@ -58013,7 +58013,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 amount: amount
             }).then((response) => {
                 // может быть надо переадресовать куда то для получения подтверждения
-                if(response.result.redirect) {
+                if (response.result.redirect) {
                     window.open(response.result.redirect);
                 }
 
@@ -58023,7 +58023,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         });
     }
 
-    
+
     Unpark() {
         // unpark the vahicle
         return new Promise((resolve, reject) => {
@@ -58038,7 +58038,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         return new Promise((resolve, reject) => {
             zone = zone.toLowerCase();
             this.Call('Client', 'StartParking', {
-                waitbeforestart: waitbeforestart, 
+                waitbeforestart: waitbeforestart,
                 vahile: vahile,
                 zone: zone
             }).then((response) => {
@@ -58093,7 +58093,6 @@ App.Modules.YerevanParking.Images.SampleImage = 'svg image oneline content';
 App.Modules.YerevanParking.Icons.SampleIcon = 'svg image oneline content';
 
 const YerevanParking = new App.Modules.YerevanParking();
-
 
 
 App.Modules.YerevanParking.Components = class {};
