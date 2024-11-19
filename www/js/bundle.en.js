@@ -57682,7 +57682,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             return;
         }
 
-        App.Comet.Init({ guid: session.key + '_' + App.Comet.clientId, name: session.fio, avatar: session.avatar }, App.Store, 'app.messages');
+        App.Comet.Init({ guid: session.key, name: session.fio, avatar: session.avatar }, App.Store, 'app.messages');
         App.Comet.ClearHandlers();
         // App.Comet.AddHandler('MessageReceived', (event, args) => {  console.log(args); });
         App.Comet.AddHandler('EventReceived', (event, args) => {
