@@ -59675,7 +59675,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
             this._containerInfoState.value = isWaiting ? 'Սպասում' : 'Կայանատեղի';
             this._containerInfoVahile.value = parkinginfo.vahile + ' (' + settings.vahiles.filter(v => v.number == parkinginfo.vahile)[0].name + ')';
             this._containerInfoZone.value = parkinginfo.zone.toUpperCase();
-            this._containerInfoEnddate.value = endAtDate.toDbDate();
+            this._containerInfoEnddate.value = endAtDate.intlFormat(true);
 
         } else {
             App.Router.Navigate('/main');
