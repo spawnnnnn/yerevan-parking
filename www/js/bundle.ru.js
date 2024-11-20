@@ -23806,11 +23806,13 @@ Colibri.UI.Notices = class extends Colibri.UI.Pane {
                 icon.AddHandler('Clicked', removeNotice);
                 notice.AddHandler('Clicked', removeNotice);
     
-                Colibri.Common.Delay(noticeData.timeout).then(removeNotice);
+                if(noticeData.timeout > 0) {
+                    Colibri.Common.Delay(noticeData.timeout).then(removeNotice);
+                }
                 
             });
             
-            return notice;
+            return notice; 
         } else {
 
             App.Device.Notifications.Schedule(noticeData.title, noticeData.message, null);
@@ -23838,6 +23840,9 @@ Colibri.UI.Notice = class {
     static Warning = 'warning';
     /** White message */
     static White = 'white';
+
+    /** Permanent notice */
+    static Permanent = 0;
 
     /** @type {object} */
     _exception = null;
@@ -57585,7 +57590,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             let activeParkings = settings.waitings.concat(settings.parkings);
             activeParkings = activeParkings.reverse();
             if (activeParkings.length > 0) {
-                App.Router.Navigate('/parking', {});
+                App.Router.Navigate('/parking', {_: Date.Mc()}); 
             }
 
             // this.ParkingZones().then(() => {
@@ -57699,7 +57704,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 }
             } else if (args.event.action === 'parking-started') {
                 App.Loading.Hide();
-                App.Router.Navigate('/parking', {});
+                App.Router.Navigate('/parking', {_: Date.Mc()});
                 if (args.event.message.message) {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
                 }
@@ -57721,6 +57726,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
                 }
 
+            } else if(args.event.action === 'emergency-error') {
+                App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Error, 50000));
+                App.Router.Navigate('/main');
             }
         });
 
@@ -57848,31 +57856,31 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     _hideAll(except = '') {
-        if (this._registrationPage && except != 'registration') {
+        if (this._registrationPage) { //  && except != 'registration'
             this._registrationPage.Hide();
         }
-        if (this._botPage && except != 'bot') {
+        if (this._botPage) { //  && except != 'bot'
             this._botPage.Hide();
         }
-        if (this._mainPage && except != 'main') {
+        if (this._mainPage) { //  && except != 'main'
             this._mainPage.Hide();
         }
-        if (this._vahilesPage && except != 'vahiles') {
+        if (this._vahilesPage) { //  && except != 'vahiles'
             this._vahilesPage.Hide();
         }
-        if (this._paymentPage && except != 'payment') {
+        if (this._paymentPage) { //  && except != 'payment'
             this._paymentPage.Hide();
         }
-        if (this._settingsPage && except != 'settings') {
+        if (this._settingsPage) { //  && except != 'settings'
             this._settingsPage.Hide();
         }
-        if (this._timerPage && except != 'parking') {
+        if (this._timerPage) { //  && except != 'parking'
             this._timerPage.Hide();
         }
-        if (this._walletPage && except != 'wallet') {
+        if (this._walletPage) { //  && except != 'wallet'
             this._walletPage.Hide();
         }
-        if (this._updatePage && except != 'update') {
+        if (this._updatePage) { //  && except != 'update'
             this._updatePage.Hide();
         }
     }
@@ -59534,6 +59542,12 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.TimerPage',
 '' + 
 '    <FlexBox shown="true" name="container">    ' + 
 '    ' + 
+'        <FlexBox shown="true" name="info">' + 
+'            <Pane shown="true" name="zone"></Pane>' + 
+'            <Pane shown="true" name="vahile"></Pane>' + 
+'            <Pane shown="true" name="state"></Pane>' + 
+'        </FlexBox>' + 
+'' + 
 '        <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
 '' + 
 '        <SimpleButton shown="true" className="small" name="cancel" value="Уехать" />' + 
@@ -59552,7 +59566,12 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
         this._containerCancel = this.Children('container/cancel');
         this._containerTimer = this.Children('container/timer');
+        this._containerInfo = this.Children('container/info');
+        this._containerInfoState = this.Children('container/info/state');
+        this._containerInfoVahile = this.Children('container/info/vahile');
+        this._containerInfoZone = this.Children('container/info/zone');
         
+
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
 
         this._containerCancel.AddHandler('Clicked', (event, args) => this.__containerCancelClicked(event, args));
@@ -59577,7 +59596,6 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
 
             let activeParkings = settings.waitings.concat(settings.parkings);
             activeParkings = activeParkings.reverse();
-            console.log(activeParkings);
             if(activeParkings.length > 0) {
                 const active = JSON.parse(activeParkings[0].payload);
                 const isWaiting = activeParkings[0].class.indexOf('WaitingJob') !== -1;
@@ -59585,12 +59603,23 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 const endAtDate = active.data.data.end.toDate().toLocalTime();
                 const seconds = parseInt((endAtDate - new Date()) / 1000);
                 
+                debugger;
                 if(isWaiting) {
                     this._currentTimer = YerevanParking.CreateTimer('wating', this, seconds, 5 * 60, App.Router.options);
                 } else {
                     this._currentTimer = YerevanParking.CreateTimer('parking', this, seconds, 15 * 60, App.Router.options);
                 }
 
+                let parkinginfo = active.data.data;
+                if(parkinginfo?.parkinginfo) {
+                    parkinginfo = parkinginfo.parkinginfo;
+                }
+
+                this._containerTimer.RemoveClass('-urgent');
+
+                this._containerInfoState.value = isWaiting ? 'Ожидание' : 'Парковка';
+                this._containerInfoVahile.value = parkinginfo.vahile + ' (' + settings.vahiles.filter(v => v.number == parkinginfo.vahile)[0].name + ')';
+                this._containerInfoZone.value = parkinginfo.zone.toUpperCase();
 
             }
 
