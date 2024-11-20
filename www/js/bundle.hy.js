@@ -16566,6 +16566,7 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
     }
 
     _createSortHandler() {
+        this.AddClass('-sortable');
         this._sortHandler = Element.create('span', {class: 'sort-handler'});
         this._sortHandler.html(this.sortIcons['none'] ?? '');
         this._element.append(this._sortHandler);
@@ -16573,6 +16574,7 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
 
     _removeSortHandler() {
         this._sortHandler && this._sortHandler.remove();
+        this.RemoveClass('-sortable');
     }
 
     /**
@@ -23822,7 +23824,7 @@ Colibri.UI.Notices = class extends Colibri.UI.Pane {
 
             App.Device.Notifications.Schedule(noticeData.title, noticeData.message, null);
             App.Device.Dialogs.Beep(1);
-
+            App.Device.Vibrate.Vibrate([1000, 2000, 5000]);
         }
 
         
@@ -45638,6 +45640,13 @@ Colibri.Devices.Device = class extends Colibri.Events.Dispatcher {
         return this._sim;
     }
 
+    get Vibrate() {
+        if(!this._vibrate) {
+            this._vibrate = new Colibri.Devices.Vibrate(this);
+        }
+        return this._vibrate;
+    }
+
 }
 /**
  * Represents a file system utility for managing directories and files.
@@ -47156,6 +47165,41 @@ Colibri.Devices.Sim = class extends Destructable {
             Colibri.Common.Delay(5000).then(_check);
             
         });
+    }
+
+}
+
+/**
+ * Represents a utility for accessing sim information.
+ * @class
+ * @extends Destructable
+ * @memberof Colibri.Devices
+ */
+Colibri.Devices.Vibrate = class extends Destructable {
+
+    /**
+     * Instance variable representing the device.
+     * @type {Colibri.UI.Device}
+     * @private
+     */
+    _device = null;
+
+    /**
+     * Creates an instance of GeoLocation.
+     * @constructor
+     * @param {Colibri.Devices.Device} device - The device object.
+     */
+    constructor(device) {
+        super();
+        this._device = device;
+    }
+
+    /**
+     * Vibrates
+     * @param {Array<Number>|Nunber} time 
+     */
+    Vibrate(time) {
+        navigator.vibrate(time);
     }
 
 }
