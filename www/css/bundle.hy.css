@@ -2210,7 +2210,7 @@ h4.app-component-heading {
   top: 20px;
   width: 384px;
 }
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 600px) {
   .app-notices-component {
     width: calc(100% - 20px);
     right: 10px;
@@ -2222,7 +2222,7 @@ h4.app-component-heading {
   overflow-y: auto;
   max-height: calc(100vh - 20px);
 }
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 600px) {
   .app-notices-component .app-component-list {
     padding: 0px 0px;
   }
@@ -2248,7 +2248,7 @@ h4.app-component-heading {
   padding-right: 50px;
   opacity: 0;
 }
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 600px) {
   .app-notices-component .app-component-list-group .app-component-list-item:not(.disable-default) {
     margin-left: unset;
     margin-top: -100%;
@@ -2273,7 +2273,7 @@ h4.app-component-heading {
   background: white;
   color: black;
 }
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 600px) {
   .app-notices-component .app-component-list-group .app-component-list-item:not(.disable-default).app-notice-white-component {
     margin-left: unset;
     margin-top: 0px;
@@ -2288,7 +2288,7 @@ h4.app-component-heading {
   margin-left: 0px;
   background: #00B333;
 }
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 600px) {
   .app-notices-component .app-component-list-group .app-component-list-item:not(.disable-default).app-notice-success-component {
     margin-left: unset;
     margin-top: 0px;
@@ -2303,7 +2303,7 @@ h4.app-component-heading {
   background: #ED3545;
   margin-left: 0px;
 }
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 600px) {
   .app-notices-component .app-component-list-group .app-component-list-item:not(.disable-default).app-notice-error-component {
     margin-left: unset;
     margin-top: 0px;
@@ -2318,7 +2318,7 @@ h4.app-component-heading {
   opacity: 1;
   background: #FF6A00;
 }
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 600px) {
   .app-notices-component .app-component-list-group .app-component-list-item:not(.disable-default).app-notice-warning-component {
     margin-left: unset;
     margin-top: 0px;
