@@ -59593,7 +59593,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
     __thisShown(event, args) {
-        YerevanParking.Store.Reload('yerevan-parking.settings', true).then(settings => {
+        YerevanParking.Store.Reload('yerevan-parking.settings', false).then(settings => {
 
             let activeParkings = settings.waitings.concat(settings.parkings);
             activeParkings = activeParkings.reverse();
