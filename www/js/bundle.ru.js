@@ -44795,6 +44795,10 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         return this._clientId;
     }
 
+    get connected() {
+        return !!this._ws;       
+    }
+
 }
 /**
  * Manages IndexedDB operations.
@@ -57609,15 +57613,14 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     InitParkingApp() {
-        this._store.AsyncQuery('yerevan-parking.settings').then(settings => {
-
+        
+        this._store.Reload('yerevan-parking.settings', false);
+        Colibri.Common.StartTimer('settings', 10000, () => {
+            this._store.Reload('yerevan-parking.settings', false);
+        });
+        this._store.AddPathHandler('yerevan-parking.settings', (settings) => {
+            console.log('settings', settings);
             this._initComet(settings.session);
-
-            // if(settings.version != App.appVersion) {
-            //     App.Router.Navigate('/update');
-            //     return;
-
-            // }
 
             if (!!settings.session && !!settings.session.telegram_id && !settings.chat) {
                 App.Router.Navigate('/bot');
@@ -57637,8 +57640,8 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             }
 
             let activeParkings = settings.waitings.concat(settings.parkings);
-            activeParkings = activeParkings.reverse();
             if (activeParkings.length > 0) {
+                activeParkings = activeParkings.reverse();
                 App.Router.Navigate('/parking', {_: Date.Mc()}); 
             }
 
@@ -57648,8 +57651,6 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             //         this.Dispatch('GeoPositionChanged', {position: {lat: location.coords.latitude, lng: location.coords.longitude}, found: street});
             //     });                        
             // });
-
-
         });
     }
 
@@ -57738,11 +57739,14 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             return;
         }
 
+        if(App.Comet.connected) {
+            return;
+        }
+
         App.Comet.Init({ guid: session.key, name: session.fio, avatar: session.avatar }, App.Store, 'app.messages');
         App.Comet.ClearHandlers();
         // App.Comet.AddHandler('MessageReceived', (event, args) => {  console.log(args); });
         App.Comet.AddHandler('EventReceived', (event, args) => {
-            console.log(args.event);
             if (args.event.action === 'payment-successed' || args.event.action === 'payment-canceled') {
                 this._store.Reload('yerevan-parking.settings', false);
             } else if (args.event.action === 'unpark') {
@@ -57753,6 +57757,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 }
             } else if (args.event.action === 'parking-started') {
                 App.Loading.Hide();
+                this._store.Reload('yerevan-parking.settings', false);
                 App.Router.Navigate('/parking', {_: Date.Mc()});
                 if (args.event.message.message) {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
@@ -59620,10 +59625,55 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._containerInfoVahile = this.Children('container/info/vahile');
         this._containerInfoZone = this.Children('container/info/zone');
         
+        this.binding = 'app.yerevan-parking.settings';
 
         this.AddHandler('Shown', (event, args) => this.__thisShown(event, args));
 
         this._containerCancel.AddHandler('Clicked', (event, args) => this.__containerCancelClicked(event, args));
+
+    }
+
+    /**
+     * Render bounded to component data
+     * @protected
+     * @param {*} data 
+     * @param {String} path 
+     */
+    __renderBoundedValues(settings, path) {
+        if(!settings) {
+            return;
+        }
+
+
+        let activeParkings = settings.waitings.concat(settings.parkings);
+        activeParkings = activeParkings.reverse();
+        if(activeParkings.length > 0) {
+            const active = JSON.parse(activeParkings[0].payload);
+            const isWaiting = activeParkings[0].class.indexOf('WaitingJob') !== -1;
+            
+            const endAtDate = active.data.data.end.toDate().toLocalTime();
+            const seconds = parseInt((endAtDate - new Date()) / 1000);
+            
+            if(isWaiting) {
+                this._currentTimer = YerevanParking.CreateTimer('wating', this, seconds, 5 * 60, {});
+            } else {
+                this._currentTimer = YerevanParking.CreateTimer('parking', this, seconds, 15 * 60, {});
+            }
+
+            let parkinginfo = active.data.data;
+            if(parkinginfo?.parkinginfo) {
+                parkinginfo = parkinginfo.parkinginfo;
+            }
+
+            this._containerTimer.RemoveClass('-urgent');
+
+            this._containerInfoState.value = isWaiting ? 'Ожидание' : 'Парковка';
+            this._containerInfoVahile.value = parkinginfo.vahile + ' (' + settings.vahiles.filter(v => v.number == parkinginfo.vahile)[0].name + ')';
+            this._containerInfoZone.value = parkinginfo.zone.toUpperCase();
+
+        } else {
+            App.Router.Navigate('/main');
+        }
 
     }
 
@@ -59641,43 +59691,9 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
     __thisShown(event, args) {
-        YerevanParking.Store.Reload('yerevan-parking.settings', false).then(settings => {
-
-            let activeParkings = settings.waitings.concat(settings.parkings);
-            activeParkings = activeParkings.reverse();
-            if(activeParkings.length > 0) {
-                const active = JSON.parse(activeParkings[0].payload);
-                const isWaiting = activeParkings[0].class.indexOf('WaitingJob') !== -1;
-                
-                const endAtDate = active.data.data.end.toDate().toLocalTime();
-                const seconds = parseInt((endAtDate - new Date()) / 1000);
-                
-                if(isWaiting) {
-                    this._currentTimer = YerevanParking.CreateTimer('wating', this, seconds, 5 * 60, App.Router.options);
-                } else {
-                    this._currentTimer = YerevanParking.CreateTimer('parking', this, seconds, 15 * 60, App.Router.options);
-                }
-
-                let parkinginfo = active.data.data;
-                if(parkinginfo?.parkinginfo) {
-                    parkinginfo = parkinginfo.parkinginfo;
-                }
-
-                this._containerTimer.RemoveClass('-urgent');
-
-                this._containerInfoState.value = isWaiting ? 'Ожидание' : 'Парковка';
-                this._containerInfoVahile.value = parkinginfo.vahile + ' (' + settings.vahiles.filter(v => v.number == parkinginfo.vahile)[0].name + ')';
-                this._containerInfoZone.value = parkinginfo.zone.toUpperCase();
-
-            }
-
-        });
-
+        this.Tick();
     }
 
-    Tick(options) {
-        console.log(options);
-    }
 
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
@@ -59696,17 +59712,6 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         // must beep
     }
 
-    __currentTimerTimerEnds(event, args) {
-
-        const waitbeforestart = App.Router.options.waitbeforestart === 'true';
-        if(waitbeforestart && this._currentTimer.name === 'wating') {
-            this._currentTimer.DisposeTimer();
-            this._currentTimer = YerevanParking.CreateTimer('parking', this, 60 * 60, 5 * 60, App.Router.options);
-        } else {
-            App.Router.Navigate('/main');
-        }
-
-    }
     
 }
 Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.WalletPage', 
