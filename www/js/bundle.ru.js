@@ -44620,6 +44620,7 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         if(this._ws) {
             this._ws.close();
             this._ws = null;
+            this._connected = false;
         }
     }
 
@@ -44673,7 +44674,7 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
         console.log('Ошибка подключения');
         // App.Notices.Add(new Colibri.UI.Notice('Ошибка подключения'));
         // Colibri.Common.StopTimer('comet-timer');
-
+        this._connected = false;
     } 
 
 
@@ -44796,7 +44797,7 @@ Colibri.Web.Comet = class extends Colibri.Events.Dispatcher {
     }
 
     get connected() {
-        return !!this._ws;       
+        return this._connected;       
     }
 
 }
@@ -57613,11 +57614,6 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
     }
 
     InitParkingApp() {
-        
-        this._store.Reload('yerevan-parking.settings', false);
-        Colibri.Common.StartTimer('settings', 10000, () => {
-            this._store.Reload('yerevan-parking.settings', false);
-        });
         this._store.AddPathHandler('yerevan-parking.settings', (settings) => {
             console.log('settings', settings);
             this._initComet(settings.session);
@@ -57652,6 +57648,12 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
             //     });                        
             // });
         });
+
+        this._store.Reload('yerevan-parking.settings', false);
+        Colibri.Common.StartTimer('settings', 30000, () => {
+            this._store.Reload('yerevan-parking.settings', false);
+        });
+        
     }
 
     _checkPosition(lat, lng) {
@@ -57734,7 +57736,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         console.log('Registering event handlers for YerevanParking');
     }
 
-    _initComet(session) {
+    _initComet(session) { 
         if (!App.Comet || !session) {
             return;
         }
@@ -59600,6 +59602,7 @@ Colibri.UI.AddTemplate('App.Modules.YerevanParking.Layers.TimerPage',
 '            <Pane shown="true" name="zone"></Pane>' + 
 '            <Pane shown="true" name="vahile"></Pane>' + 
 '            <Pane shown="true" name="state"></Pane>' + 
+'            <Pane shown="true" name="enddate"></Pane>' + 
 '        </FlexBox>' + 
 '' + 
 '        <Components.Timer shown="true" name="timer" beforeReady="15:00"  />' + 
@@ -59624,6 +59627,8 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
         this._containerInfoState = this.Children('container/info/state');
         this._containerInfoVahile = this.Children('container/info/vahile');
         this._containerInfoZone = this.Children('container/info/zone');
+        this._containerInfoEnddate = this.Children('container/info/enddate');
+        
         
         this.binding = 'app.yerevan-parking.settings';
 
@@ -59670,6 +59675,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
             this._containerInfoState.value = isWaiting ? 'Ожидание' : 'Парковка';
             this._containerInfoVahile.value = parkinginfo.vahile + ' (' + settings.vahiles.filter(v => v.number == parkinginfo.vahile)[0].name + ')';
             this._containerInfoZone.value = parkinginfo.zone.toUpperCase();
+            this._containerInfoEnddate.value = endAtDate.toDbDate();
 
         } else {
             App.Router.Navigate('/main');
@@ -59689,11 +59695,6 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
             App.Router.Navigate('/main');
         });
     }
-
-    __thisShown(event, args) {
-        this.Tick();
-    }
-
 
     __currentTimerTimerTick(event, args) {
         this._containerTimer.value = args.secondsLeft;
