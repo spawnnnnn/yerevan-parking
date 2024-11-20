@@ -16475,7 +16475,7 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
      */
     set sortState(value) {
         this._sortState = value;
-        this._sortHandler && this._sortHandler.html(value ? this.sortIcons[value] : '');
+        this._sortHandler && this._sortHandler.html(this.sortIcons[value ? value : 'none'] ?? '');
     }
 
     _bindResizeEvents() {
@@ -16563,6 +16563,7 @@ Colibri.UI.Grid.Column = class extends Colibri.UI.Component {
 
     _createSortHandler() {
         this._sortHandler = Element.create('span', {class: 'sort-handler'});
+        this._sortHandler.html(this.sortIcons['none'] ?? '');
         this._element.append(this._sortHandler);
     }
 
@@ -59592,7 +59593,7 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
     }
 
     __thisShown(event, args) {
-        YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then(settings => {
+        YerevanParking.Store.Reload('yerevan-parking.settings', true).then(settings => {
 
             let activeParkings = settings.waitings.concat(settings.parkings);
             activeParkings = activeParkings.reverse();
@@ -59603,7 +59604,6 @@ App.Modules.YerevanParking.Layers.TimerPage = class extends Colibri.UI.FlexBox {
                 const endAtDate = active.data.data.end.toDate().toLocalTime();
                 const seconds = parseInt((endAtDate - new Date()) / 1000);
                 
-                debugger;
                 if(isWaiting) {
                     this._currentTimer = YerevanParking.CreateTimer('wating', this, seconds, 5 * 60, App.Router.options);
                 } else {
