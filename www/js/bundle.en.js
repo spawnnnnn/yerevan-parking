@@ -23824,7 +23824,7 @@ Colibri.UI.Notices = class extends Colibri.UI.Pane {
 
             App.Device.Notifications.Schedule(noticeData.title, noticeData.message, null);
             App.Device.Dialogs.Beep(1);
-            App.Device.Vibrate.Vibrate([1000, 2000, 5000]);
+            App.Device.Vibrate.Vibrate([100, 100, 400, 400, 1000]);
         }
 
         
@@ -57762,7 +57762,7 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
                 if (args.event.message.message) {
                     App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
                 }
-            } else if (args.event.action === 'parking-tick') {
+            } else if (args.event.action === 'parking-tick') { 
                 if (this.ActivePage.name === 'timer-page') {
                     this.ActivePage.Tick(args.event.message);
                 }
