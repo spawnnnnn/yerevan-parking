@@ -6308,6 +6308,29 @@ input::placeholder, textarea::placeholder, select::placeholder {
   font-weight: bold;
   line-height: 100%;
 }
+[data-object-name="yerevan-parking-prompt-dialog"] [data-object-name="vahile"] {
+  width: 300px;
+  max-width: 100%;
+}
+[data-object-name="yerevan-parking-prompt-dialog"] [data-object-name="vahile-container"] {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+}
+[data-object-name="yerevan-parking-prompt-dialog"] [data-object-name="vahile-container"] label {
+  background: #233B79;
+  padding: 20px 20px;
+  border-radius: 10px;
+  width: 100%;
+}
+[data-object-name="yerevan-parking-prompt-dialog"] [data-object-name="vahile-container"] label span {
+  padding-bottom: 0px !important;
+  color: #ffffff;
+}
+[data-object-name="yerevan-parking-prompt-dialog"] [data-object-name="vahile-container"] label input:checked + span:before {
+  border: 5px solid #9E0507;
+}
 .app-modules-yerevanparking-components-form-phonefield {
   flex-direction: column;
   justify-content: center;
