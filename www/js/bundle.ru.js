@@ -59058,12 +59058,14 @@ App.Modules.YerevanParking.Layers.MainPage = class extends Colibri.UI.FlexBox {
     }
 
     __thisShown(event, args) {
-        YerevanParking.Store.AsyncQuery('yerevan-parking.settings', (settings) => {
-            let activeParkings = settings.waitings.concat(settings.parkings);
-            if (activeParkings.length > 0) {
-                activeParkings = activeParkings.reverse();
-                App.Router.Navigate('/parking', {_: Date.Mc()}); 
-            }
+        Colibri.Common.Delay(100).then(() => {
+            YerevanParking.Store.AsyncQuery('yerevan-parking.settings').then((settings) => {
+                let activeParkings = settings.waitings.concat(settings.parkings);
+                if (activeParkings.length > 0) {
+                    activeParkings = activeParkings.reverse();
+                    App.Router.Navigate('/parking', {_: Date.Mc()}); 
+                }
+            });
         });
     }
 
