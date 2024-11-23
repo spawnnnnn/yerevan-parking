@@ -57758,6 +57758,9 @@ App.Modules.YerevanParking = class extends Colibri.Modules.Module {
         App.Comet.AddHandler('EventReceived', (event, args) => {
             if (args.event.action === 'payment-successed' || args.event.action === 'payment-canceled') {
                 this._store.Reload('yerevan-parking.settings', false);
+                if (args.event.message.message) {
+                    App.Notices.Add(new Colibri.UI.Notice(args.event.message.message, Colibri.UI.Notice.Success));
+                }
             } else if (args.event.action === 'unpark') {
                 this._store.Reload('yerevan-parking.settings', false);
                 App.Loading.Hide();
